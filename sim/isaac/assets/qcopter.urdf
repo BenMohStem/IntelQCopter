@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!--
+  Provisional visual/rigid-body model for Isaac Sim import.
+  Frame geometry approximates a 450 mm diagonal X quad; confirm before use.
+  Mass/inertia are placeholders and must be replaced before physics tuning.
+  Motor order: FL, FR, RR, RL; x forward, y left, z up (ROS FLU).
+-->
+<robot name="qcopter">
+  <material name="frame_white"><color rgba="0.88 0.88 0.84 1"/></material>
+  <material name="frame_red"><color rgba="0.80 0.06 0.04 1"/></material>
+  <material name="body_dark"><color rgba="0.12 0.13 0.15 1"/></material>
+  <material name="prop_black"><color rgba="0.04 0.04 0.04 0.85"/></material>
+
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="1.0"/>
+      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.02"/>
+    </inertial>
+    <visual><geometry><box size="0.12 0.10 0.035"/></geometry><material name="body_dark"/></visual>
+    <collision><geometry><box size="0.12 0.10 0.035"/></geometry></collision>
+  </link>
+
+  <!-- 450 mm motor-to-motor diagonal gives +/- 0.1591 m X/Y offsets. -->
+  <link name="motor_fl"><inertial><mass value="0.001"/><inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/></inertial><visual><geometry><cylinder radius="0.012" length="0.018"/></geometry><material name="frame_red"/></visual><collision><geometry><cylinder radius="0.012" length="0.018"/></geometry></collision></link>
+  <link name="motor_fr"><inertial><mass value="0.001"/><inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/></inertial><visual><geometry><cylinder radius="0.012" length="0.018"/></geometry><material name="frame_white"/></visual><collision><geometry><cylinder radius="0.012" length="0.018"/></geometry></collision></link>
+  <link name="motor_rr"><inertial><mass value="0.001"/><inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/></inertial><visual><geometry><cylinder radius="0.012" length="0.018"/></geometry><material name="frame_white"/></visual><collision><geometry><cylinder radius="0.012" length="0.018"/></geometry></collision></link>
+  <link name="motor_rl"><inertial><mass value="0.001"/><inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/></inertial><visual><geometry><cylinder radius="0.012" length="0.018"/></geometry><material name="frame_red"/></visual><collision><geometry><cylinder radius="0.012" length="0.018"/></geometry></collision></link>
+
+  <joint name="motor_fl_mount" type="fixed"><parent link="base_link"/><child link="motor_fl"/><origin xyz="0.1591 0.1591 0" rpy="0 0 0"/></joint>
+  <joint name="motor_fr_mount" type="fixed"><parent link="base_link"/><child link="motor_fr"/><origin xyz="0.1591 -0.1591 0" rpy="0 0 0"/></joint>
+  <joint name="motor_rr_mount" type="fixed"><parent link="base_link"/><child link="motor_rr"/><origin xyz="-0.1591 -0.1591 0" rpy="0 0 0"/></joint>
+  <joint name="motor_rl_mount" type="fixed"><parent link="base_link"/><child link="motor_rl"/><origin xyz="-0.1591 0.1591 0" rpy="0 0 0"/></joint>
+</robot>

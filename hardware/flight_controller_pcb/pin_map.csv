@@ -1,0 +1,41 @@
+Pico2 physical pin,RP2350 GPIO,Signal / net,Connected item,Notes
+1,GP0,BUZZER,optional beeper header,3.3 V logic only
+2,GP1,ARM_SENSE,optional arm/safety input,Input requires defined pull resistor/debounce
+3,GND,GND,ground,Common signal ground
+4,GP2,ESC_FL_SIG,ESC front-left signal,No ESC battery current or BEC 5 V
+5,GP3,ESC_FR_SIG,ESC front-right signal,No ESC battery current or BEC 5 V
+6,GP4,I2C0_SDA,MPU6050 BMP280 HMC5883L,3.3 V bus
+7,GP5,I2C0_SCL,MPU6050 BMP280 HMC5883L,3.3 V bus
+8,GND,GND,ground,Common signal ground
+9,GP6,ESC_RR_SIG,ESC rear-right signal,No ESC battery current or BEC 5 V
+10,GP7,ESC_RL_SIG,ESC rear-left signal,No ESC battery current or BEC 5 V
+11,GP8,AUX_UART_TX,auxiliary UART,3.3 V UART
+12,GP9,AUX_UART_RX,auxiliary UART,3.3 V UART
+13,GND,GND,ground,Common signal ground
+14,GP10,LORA_DIO0,LoRa header,3.3 V
+15,GP11,LORA_RESET,LoRa header,3.3 V
+16,GP12,CC1101_A_GDO0,CC1101 A header,3.3 V
+17,GP13,CC1101_A_GDO2,CC1101 A header,3.3 V
+18,GND,GND,ground,Common signal ground
+19,GP14,CC1101_B_GDO0,CC1101 B header,3.3 V
+20,GP15,CC1101_B_GDO2,CC1101 B header,3.3 V
+21,GP16,SPI0_MISO,LoRa and both CC1101,Shared SPI
+22,GP17,LORA_NSS,LoRa header,CS
+23,GND,GND,ground,Common signal ground
+24,GP18,SPI0_SCK,LoRa and both CC1101,Shared SPI
+25,GP19,SPI0_MOSI,LoRa and both CC1101,Shared SPI
+26,GP20,CC1101_A_CS,CC1101 A header,CS
+27,GP21,CC1101_B_CS,CC1101 B header,CS
+28,GND,GND,ground,Common signal ground
+29,GP22,GPIO_SPARE,expansion,Not allocated
+30,RUN,RP2350_RUN,reset/debug,Board switch circuitry TBD
+31,GP26,VBAT_ADC,3S battery divider 100k:27k,Max nominal divider output about 2.68 V at 12.6 V pack
+32,GP27,GPIO_SPARE,expansion,Not allocated
+33,GP28,GPIO_SPARE,expansion,Not allocated
+34,GND,GND,ground,Common signal ground
+35,ADC_VREF,ADC_VREF,Pico 2 module,Do not drive externally
+36,3V3_OUT,+3V3,Pico 2 module,Observe module current limit
+37,3V3_EN,3V3_EN,Pico 2 module,Leave unconnected in draft
+38,GND,GND,ground,Common signal ground
+39,VSYS,+5V_SYS,external 5 V buck output,VSYS max 5.5 V; never connect 3S directly
+40,VBUS,VBUS_USB,Pico 2 module USB VBUS,Not tied to external 5 V buck

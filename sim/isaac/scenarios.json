@@ -1,0 +1,14 @@
+{
+  "description": "QCopter Isaac Sim scenario plan. Thresholds are intentionally unset until the frame, mass, propellers, motors, and controller gains are known.",
+  "controller_rate_hz": 500,
+  "scenarios": [
+    { "id": "arming_and_sensor_faults", "checks": ["boot_disarmed", "throttle_low_to_arm", "invalid_imu_blocks_arm", "sensor_dropout_response"] },
+    { "id": "rate_pid_steps", "axes": ["roll_rate", "pitch_rate", "yaw_rate"], "checks": ["overshoot", "settling_time", "saturation", "anti_windup_recovery"] },
+    { "id": "angle_mode", "axes": ["roll_angle", "pitch_angle"], "checks": ["bounded_setpoint", "disturbance_rejection", "upright_recovery"] },
+    { "id": "yaw_magnetometer", "checks": ["gyro_rate_tracking", "heading_drift_correction", "magnetic_disturbance", "mag_dropout"] },
+    { "id": "altitude_hold", "checks": ["altitude_capture", "climb_step", "descent_step", "barometer_bias", "pressure_spike", "tilt_acceleration_projection"] },
+    { "id": "radio_link_faults", "checks": ["latency", "packet_loss", "duplicate_packet", "stale_packet", "failsafe_transition"] },
+    { "id": "motor_faults", "checks": ["command_saturation", "motor_response_lag", "single_motor_thrust_loss"] },
+    { "id": "timing", "checks": ["500_hz_loop_interval", "missed_deadlines", "sensor_age", "worst_case_execution_time"] }
+  ]
+}

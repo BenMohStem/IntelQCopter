@@ -1,0 +1,14 @@
+Reference,Qty,Item,Footprint / interface,Status
+U1,1,Raspberry Pi Pico 2 RP2350 module,40-pin 2.54 mm module,selected module class
+J1 J2,2,1x20 female socket for Pico 2,PinSocket_1x20_P2.54mm_Vertical,layout footprint
+J3,1,3S LiPo low-current sense/power input,2-pin 2.54 mm header,connector type TBD; ESC current bypasses PCB
+J4,1,External buck interface VIN/GND/5V OUT,3-pin 2.54 mm header,buck module and exact pin order TBD
+R1,1,100 kOhm battery divider top,0805,provisional
+R2,1,27 kOhm battery divider bottom,0805,provisional
+C1,1,100 nF ADC filter,0805,provisional
+J5-J7,3,I2C sensor breakouts 3V3/GND/SDA/SCL,1x4 2.54 mm header,MPU6050 BMP280 HMC5883L models TBD
+J8,1,LoRa SPI and DIO breakout,1x8 2.54 mm header,exact module TBD
+J9-J10,2,CC1101 SPI GDO breakout,1x8 2.54 mm header,exact modules TBD
+J11-J14,4,ESC signal and signal ground,1x2 2.54 mm header,ESC protocol and plug polarity TBD
+J15,1,Auxiliary UART 3V3/GND/TX/RX,1x4 2.54 mm header,exact lidar/interface TBD
+H1-H4,4,M3 non-plated mounting holes,3.2 mm drill,30.5 mm pattern provisional
