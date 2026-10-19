@@ -7,6 +7,7 @@ This is a fresh rerun captured while organizing the project. Logs preserve the c
 - [`rp2350-build.log`](rp2350-build.log): Pico SDK 2.3.0, `pico2` / RP2350 ARM-S configuration completed. No firmware flashed.
 - [`battery-monitor-host-tests.log`](battery-monitor-host-tests.log): the added battery monitor code passed host checks for scalar pack-voltage filtering, SOC Kalman prediction/correction, SOC uncertainty reduction after a supplied rested-OCV observation, low voltage, critical-cell/BMS alerts, landed-disarm recommendation, and invalid sensor fail-safe.
 - [`pcb-drc.log`](pcb-drc.log): KiCad geometry DRC result is zero geometry violations and 76 unconnected pads. The board is electrically unrouted and cannot be fabricated.
+- [`isaacsim-install-record.md`](isaacsim-install-record.md): records the checksum-verified official package, shared extraction path, setup result, and why no simulator launch was attempted.
 - [`rp2040-build.log`](rp2040-build.log): `pico` / RP2040 configuration completed. No firmware flashed.
 - [`host-and-kalman-tests.log`](host-and-kalman-tests.log): C host checks passed. The production C roll filter ran 500 seeded trials, 2,500 steps each at 500 Hz, with synthetic sensor noise and a synthetic roll trajectory.
 - [`kalman-roll-monte-carlo.csv`](kalman-roll-monte-carlo.csv): at 5.0 s, empirical error σ = 0.103118°, predicted Kalman σ = 0.137386°, mean error = -0.004643°, RMSE = 0.103119°, ±1σ coverage = 81.2%, ±2σ coverage = 99.8%.
