@@ -724,6 +724,7 @@ typedef struct {
     float gyro_noise;
     float bias_walk;
     float accel_noise;
+    float gain_angle, gain_bias, innovation, innovation_variance;
 } angle_kf_t;
 
 typedef struct {
@@ -735,6 +736,7 @@ typedef struct {
     float p11;
     float accel_noise;
     float baro_noise;
+    float gain_height, gain_velocity, innovation, innovation_variance;
 } altitude_kf_t;
 
 typedef struct {
@@ -758,6 +760,7 @@ typedef struct {
     bool imu_valid;
     bool imu_calibrated; /* scaled + offset/gain corrected before control */
     bool barometer_valid;
+    bool barometer_updated; /* apply each independent pressure sample once */
 } sensor_sample_t;
 
 bool sensor_sample_apply_imu_calibration(sensor_sample_t *s,
@@ -834,31 +837,31 @@ static altitude_kf_t altitude_estimator = {
 
 /* Gains are placeholders for simulation/bench tuning, not flight values. */
 static pid_t roll_angle_pid = {
-    .kp = 4.0f, .ki = 0.0f, .kd = 0.0f,
+    .kp = 3.0f, .ki = 0.0f, .kd = 0.0f,
     .integrator_limit = 0.0f, .output_limit = 180.0f
 };
 static pid_t pitch_angle_pid = {
-    .kp = 4.0f, .ki = 0.0f, .kd = 0.0f,
+    .kp = 3.0f, .ki = 0.0f, .kd = 0.0f,
     .integrator_limit = 0.0f, .output_limit = 180.0f
 };
 static pid_t roll_rate_pid = {
-    .kp = 0.006f, .ki = 0.001f, .kd = 0.0001f,
-    .integrator_limit = 0.25f, .output_limit = 0.35f
+    .kp = 0.00118477f, .ki = 0.00789846f, .kd = 0.0f,
+    .integrator_limit = 15.0f, .output_limit = 0.35f
 };
 static pid_t pitch_rate_pid = {
-    .kp = 0.006f, .ki = 0.001f, .kd = 0.0001f,
-    .integrator_limit = 0.25f, .output_limit = 0.35f
+    .kp = 0.00118477f, .ki = 0.00789846f, .kd = 0.0f,
+    .integrator_limit = 15.0f, .output_limit = 0.35f
 };
 static pid_t yaw_rate_pid = {
-    .kp = 0.006f, .ki = 0.001f, .kd = 0.0001f,
-    .integrator_limit = 0.25f, .output_limit = 0.35f
+    .kp = 0.0076795f, .ki = 0.0170656f, .kd = 0.0f,
+    .integrator_limit = 8.0f, .output_limit = 0.35f
 };
-static pid_t vertical_rate_pid = {
-    .kp = 0.08f, .ki = 0.0f, .kd = 0.0f,
-    .integrator_limit = 0.0f, .output_limit = 0.2f
+static pid_t altitude_pid = {
+    .kp = 0.2205f, .ki = 0.09f, .kd = 0.175f,
+    .integrator_limit = 2.0f, .output_limit = 0.35f
 };
 static float altitude_hold_reference_m;
-static const float altitude_position_to_rate = 0.6f; /* placeholder */
+static float hover_collective = FC_HOVER_THROTTLE_PLACEHOLDER;
 static bool altitude_reference_initialized;
 
 static float clampf(float value, float low, float high) {
@@ -879,7 +882,7 @@ static void reset_control_state(void) {
     pid_reset(&roll_rate_pid);
     pid_reset(&pitch_rate_pid);
     pid_reset(&yaw_rate_pid);
-    pid_reset(&vertical_rate_pid);
+    pid_reset(&altitude_pid);
     altitude_reference_initialized = false;
 }
 
@@ -908,33 +911,35 @@ static float pid_update(pid_t *pid, float setpoint, float measurement, float dt)
     return output;
 }
 
+/* Joseph scalar-observation covariance update, H=[1,0]. */
+static void covariance_correct(float *p00, float *p01, float *p10, float *p11,
+                                float k0, float k1, float r) {
+    const float a = *p00, b = (*p01 + *p10)*0.5f, d = *p11;
+    const float z = 1.0f-k0;
+    *p00 = z*z*a + k0*k0*r;
+    *p01 = z*(b-k1*a) + k0*k1*r;
+    *p10 = *p01;
+    *p11 = d-2.0f*k1*b+k1*k1*a+k1*k1*r;
+}
+
 static void angle_kf_update(angle_kf_t *kf, float gyro_dps,
                             float accel_angle_deg, float dt) {
-    const float corrected_rate = gyro_dps - kf->gyro_bias_dps;
-    kf->angle_deg += dt * corrected_rate;
-
-    const float p00 = kf->p00;
-    const float p01 = kf->p01;
-    const float p10 = kf->p10;
-    const float p11 = kf->p11;
-    kf->p00 = p00 + dt * (dt * p11 - p01 - p10 + kf->gyro_noise);
-    kf->p01 = p01 - dt * p11;
-    kf->p10 = p10 - dt * p11;
-    kf->p11 = p11 + kf->bias_walk * dt;
-
-    const float innovation_variance = kf->p00 + kf->accel_noise;
-    const float k0 = kf->p00 / innovation_variance;
-    const float k1 = kf->p10 / innovation_variance;
-    const float innovation = accel_angle_deg - kf->angle_deg;
-    kf->angle_deg += k0 * innovation;
-    kf->gyro_bias_dps += k1 * innovation;
-
-    const float updated_p00 = kf->p00;
-    const float updated_p01 = kf->p01;
-    kf->p00 -= k0 * updated_p00;
-    kf->p01 -= k0 * updated_p01;
-    kf->p10 -= k1 * updated_p00;
-    kf->p11 -= k1 * updated_p01;
+    kf->angle_deg += dt*(gyro_dps-kf->gyro_bias_dps);
+    const float a=kf->p00, b=kf->p01, c=kf->p10, d=kf->p11;
+    const float qb=kf->bias_walk;
+    /* gyro_noise is per-sample (deg/s)^2; bias_walk is (deg/s)^2/s. */
+    kf->p00=a-dt*(b+c)+dt*dt*d+kf->gyro_noise*dt*dt+qb*dt*dt*dt/3.0f;
+    kf->p01=b-dt*d-qb*dt*dt/2.0f;
+    kf->p10=c-dt*d-qb*dt*dt/2.0f;
+    kf->p11=d+qb*dt;
+    kf->innovation_variance=kf->p00+kf->accel_noise;
+    kf->gain_angle=kf->p00/kf->innovation_variance;
+    kf->gain_bias=kf->p10/kf->innovation_variance;
+    kf->innovation=accel_angle_deg-kf->angle_deg;
+    kf->angle_deg+=kf->gain_angle*kf->innovation;
+    kf->gyro_bias_dps+=kf->gain_bias*kf->innovation;
+    covariance_correct(&kf->p00,&kf->p01,&kf->p10,&kf->p11,
+                       kf->gain_angle,kf->gain_bias,kf->accel_noise);
 }
 
 /* 2-state constant-acceleration filter: state = [height, vertical speed]. */
@@ -957,18 +962,28 @@ static void altitude_kf_predict(altitude_kf_t *kf, float accel_up_mps2,
 }
 
 static void altitude_kf_baro_update(altitude_kf_t *kf, float height_m) {
-    const float innovation_variance = kf->p00 + kf->baro_noise;
-    const float k0 = kf->p00 / innovation_variance;
-    const float k1 = kf->p10 / innovation_variance;
-    const float innovation = height_m - kf->height_m;
-    const float p00 = kf->p00;
-    const float p01 = kf->p01;
-    kf->height_m += k0 * innovation;
-    kf->velocity_mps += k1 * innovation;
-    kf->p00 -= k0 * p00;
-    kf->p01 -= k0 * p01;
-    kf->p10 -= k1 * p00;
-    kf->p11 -= k1 * p01;
+    kf->innovation_variance=kf->p00+kf->baro_noise;
+    kf->gain_height=kf->p00/kf->innovation_variance;
+    kf->gain_velocity=kf->p10/kf->innovation_variance;
+    kf->innovation=height_m-kf->height_m;
+    kf->height_m+=kf->gain_height*kf->innovation;
+    kf->velocity_mps+=kf->gain_velocity*kf->innovation;
+    covariance_correct(&kf->p00,&kf->p01,&kf->p10,&kf->p11,
+                       kf->gain_height,kf->gain_velocity,kf->baro_noise);
+}
+
+/* Exactly one altitude PID: D uses commanded/measured vertical velocity. */
+static float altitude_pid_update(float reference, float height, float v_cmd,
+                                  float velocity, float dt) {
+    const float error=reference-height;
+    const float candidate=clampf(altitude_pid.integrator+error*dt,
+        -altitude_pid.integrator_limit,altitude_pid.integrator_limit);
+    const float raw=altitude_pid.kp*error+altitude_pid.ki*candidate
+                    +altitude_pid.kd*(v_cmd-velocity);
+    const float output=clampf(raw,-altitude_pid.output_limit,altitude_pid.output_limit);
+    if (raw==output || (raw>output && error<0.0f) || (raw<output && error>0.0f))
+        altitude_pid.integrator=candidate;
+    return output;
 }
 
 static bool sample_is_healthy(const sensor_sample_t *s) {
@@ -1006,7 +1021,8 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
         && isfinite(s->vertical_acceleration_mps2)) {
         altitude_kf_predict(&altitude_estimator,
                             s->vertical_acceleration_mps2, dt);
-        altitude_kf_baro_update(&altitude_estimator, s->barometer_height_m);
+        if (s->barometer_updated)
+            altitude_kf_baro_update(&altitude_estimator, s->barometer_height_m);
     }
 
     if (cmd == NULL || !cmd->valid || !isfinite(cmd->roll_deg) || !isfinite(cmd->pitch_deg)
@@ -1041,36 +1057,84 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
 
     if (!altitude_reference_initialized) {
         altitude_hold_reference_m = altitude_estimator.height_m;
-        pid_reset(&vertical_rate_pid);
+        pid_reset(&altitude_pid);
         altitude_reference_initialized = true;
     }
     const float pilot_vertical_speed = (throttle - 0.5f)
                                      * 2.0f * FC_MAX_VERTICAL_SPEED_MPS;
     altitude_hold_reference_m += pilot_vertical_speed * dt;
-    const float altitude_velocity_correction = clampf(
-        altitude_position_to_rate
-            * (altitude_hold_reference_m - altitude_estimator.height_m),
-        -FC_MAX_VERTICAL_SPEED_MPS, FC_MAX_VERTICAL_SPEED_MPS);
-    const float vertical_speed_setpoint = clampf(
-        pilot_vertical_speed + altitude_velocity_correction,
-        -FC_MAX_VERTICAL_SPEED_MPS, FC_MAX_VERTICAL_SPEED_MPS);
-    const float collective_correction = pid_update(&vertical_rate_pid,
-        vertical_speed_setpoint, altitude_estimator.velocity_mps, dt);
-    const float collective = clampf(FC_HOVER_THROTTLE_PLACEHOLDER
-                                    + collective_correction, 0.0f, 1.0f);
+    altitude_hold_reference_m=clampf(altitude_hold_reference_m,
+        altitude_estimator.height_m-2.0f,altitude_estimator.height_m+2.0f);
+    const float collective_correction=altitude_pid_update(altitude_hold_reference_m,
+        altitude_estimator.height_m,pilot_vertical_speed,altitude_estimator.velocity_mps,dt);
+    const float tilt_factor=fmaxf(0.5f,cosf(roll_estimator.angle_deg*FC_DEG_TO_RAD)
+                                     *cosf(pitch_estimator.angle_deg*FC_DEG_TO_RAD));
+    const float collective=clampf((hover_collective+collective_correction)/tilt_factor,0.0f,1.0f);
 
     /* Provisional X-frame math in logical order FL, FR, RR, RL. The result is
        for simulation only until motor order, spin directions, and frame axes
        are verified. No PWM/DShot/ESC driver consumes these values. */
-    out.motor[0] = clampf(collective + roll + pitch - yaw, 0.0f, 1.0f);
-    out.motor[1] = clampf(collective - roll + pitch + yaw, 0.0f, 1.0f);
-    out.motor[2] = clampf(collective - roll - pitch - yaw, 0.0f, 1.0f);
-    out.motor[3] = clampf(collective + roll - pitch + yaw, 0.0f, 1.0f);
+    out.motor[0] = clampf(collective + roll - pitch - yaw, 0.0f, 1.0f);
+    out.motor[1] = clampf(collective - roll - pitch + yaw, 0.0f, 1.0f);
+    out.motor[2] = clampf(collective - roll + pitch - yaw, 0.0f, 1.0f);
+    out.motor[3] = clampf(collective + roll + pitch + yaw, 0.0f, 1.0f);
 
     /* There is deliberately no hardware arming/output path in this scaffold. */
     out.armed = false;
     return out;
 }
+
+#ifdef QCOPTER_HOST_TEST
+/* Host-only ABI: same C control equations, no physical ESC/arming path. */
+#ifdef QCOPTER_SITL_DLL
+#define QC_SIM_EXPORT __declspec(dllexport)
+#else
+#define QC_SIM_EXPORT
+#endif
+QC_SIM_EXPORT void qc_sitl_reset(float hover, float height, const float *gains) {
+    roll_estimator=(angle_kf_t){.p00=1.0f,.p11=0.01f,
+        .gyro_noise=0.04f,.bias_walk=0.0001f,.accel_noise=4.0f};
+    pitch_estimator=roll_estimator;
+    altitude_estimator=(altitude_kf_t){.height_m=height,.p00=0.04f,.p11=0.1f,
+        .accel_noise=1.5f,.baro_noise=0.0025f};
+    pid_t *loops[6]={&roll_angle_pid,&roll_rate_pid,&pitch_angle_pid,
+                     &pitch_rate_pid,&yaw_rate_pid,&altitude_pid};
+    for(unsigned i=0;i<6u;++i) {
+        if(gains!=NULL) {
+            loops[i]->kp=gains[3u*i]; loops[i]->ki=gains[3u*i+1u];
+            loops[i]->kd=gains[3u*i+2u];
+        }
+        pid_reset(loops[i]);
+    }
+    hover_collective=clampf(hover,0.05f,0.85f);
+    altitude_reference_initialized=false;
+}
+
+QC_SIM_EXPORT void qc_sitl_step(const float *input, const float *command,
+                                float dt, unsigned flags, float *motors,
+                                float *diagnostics) {
+    const sensor_sample_t s={
+        .accel_x_g=input[0],.accel_y_g=input[1],.accel_z_g=input[2],
+        .gyro_x_dps=input[3],.gyro_y_dps=input[4],.gyro_z_dps=input[5],
+        .vertical_acceleration_mps2=input[6],.barometer_height_m=input[7],
+        .barometer_updated=input[8]>0.5f,.imu_valid=(flags&1u)!=0u,
+        .imu_calibrated=(flags&1u)!=0u,.barometer_valid=(flags&2u)!=0u};
+    const pilot_command_t c={.roll_deg=command[0],.pitch_deg=command[1],
+        .yaw_rate_dps=command[2],.throttle=command[3],.valid=(flags&4u)!=0u};
+    const control_output_t out=flight_control_step(&s,&c,dt);
+    for(unsigned i=0;i<4u;++i) motors[i]=out.motor[i];
+    const float d[16]={roll_estimator.angle_deg,pitch_estimator.angle_deg,
+        altitude_estimator.height_m,altitude_estimator.velocity_mps,
+        roll_estimator.gain_angle,roll_estimator.gain_bias,
+        altitude_estimator.gain_height,altitude_estimator.gain_velocity,
+        sqrtf(fmaxf(0.0f,roll_estimator.p00)),
+        sqrtf(fmaxf(0.0f,altitude_estimator.p00)),
+        roll_estimator.innovation,altitude_estimator.innovation,
+        altitude_hold_reference_m,(float)out.armed,(float)out.sensor_fault,
+        roll_estimator.innovation_variance};
+    for(unsigned i=0;i<16u;++i) diagnostics[i]=d[i];
+}
+#endif
 
 #ifndef QCOPTER_HOST_TEST
 typedef struct {

@@ -19,7 +19,7 @@ static sensor_sample_t level_sensor(void) {
         .gyro_x_dps = 0.0f, .gyro_y_dps = 0.0f, .gyro_z_dps = 0.0f,
         .vertical_acceleration_mps2 = 0.0f,
         .barometer_height_m = 0.0f,
-        .imu_valid = true, .imu_calibrated = true, .barometer_valid = true
+        .imu_valid = true, .imu_calibrated = true, .barometer_valid = true, .barometer_updated = true
     };
     return s;
 }
@@ -483,7 +483,68 @@ static int write_kalman_mc(const char *path, unsigned trials) {
     return 0;
 }
 
+static void test_matrix_covariance_and_pitch_sign(void) {
+    altitude_kf_t k={.p00=2.0f,.p01=.3f,.p10=.3f,.p11=1.0f,
+                     .accel_noise=1.5f,.baro_noise=.0025f};
+    altitude_kf_predict(&k,2.0f,.02f);
+    const double p00=2+2*.02*.3+.02*.02+pow(.02,4)*2.25/4;
+    const double p01=.3+.02+pow(.02,3)*2.25/2;
+    const double p11=1+.02*.02*2.25;
+    CHECK(fabs(k.p00-p00)<1e-6 && fabs(k.p01-p01)<1e-6);
+    CHECK(fabs(k.p11-p11)<1e-6 && k.p01==k.p10);
+    const double gain=p00/(p00+.0025);
+    altitude_kf_baro_update(&k,.1f);
+    CHECK(fabs(k.gain_height-gain)<1e-6);
+    CHECK(k.p00>0 && k.p11>0 && k.p00*k.p11-k.p01*k.p10>=0);
+    // Independent full Joseph product check for H=[1,0].
+    float a=2,b=.3f,c=.3f,d=1;
+    covariance_correct(&a,&b,&c,&d,.8f,.2f,.1f);
+    CHECK(fabsf(a-.144f)<1e-6f && fabsf(b+.004f)<1e-6f);
+    CHECK(fabsf(d-.964f)<1e-6f && b==c);
+    const float gains[18]={3,0,0,.00118477f,.00789846f,0,3,0,0,
+        .00118477f,.00789846f,0,.0076795f,.0170656f,0,.2205f,.09f,.175f};
+    qc_sitl_reset(.49f,0,gains);
+    sensor_sample_t s=level_sensor();pilot_command_t cmd=neutral_command();cmd.pitch_deg=5;
+    const control_output_t o=flight_control_step(&s,&cmd,FC_LOOP_DT);
+    CHECK(o.motor[2]+o.motor[3]>o.motor[0]+o.motor[1]);
+    CHECK(!o.armed);
+    puts("matrix prediction, Joseph product, PSD covariance and FLU pitch mixer checks passed");
+}
+
+static int write_altitude_mc(const char *path) {
+    enum {TRIALS=500,STEPS=2500,STRIDE=10,POINTS=250};
+    double sum[POINTS]={0},sq[POINTS]={0},sigma[POINTS]={0};
+    unsigned covered[POINTS]={0};
+    srand(2352);
+    for(unsigned trial=0;trial<TRIALS;trial++) {
+        altitude_kf_t k={.height_m=1.5f,.p00=.04f,.p11=.1f,.accel_noise=1.5f,.baro_noise=.0025f};
+        float h=1.5f+.2f*gaussian_noise(),v=sqrtf(.1f)*gaussian_noise();
+        for(unsigned step=0;step<STEPS;step++) {
+            const float noise=1.5f*gaussian_noise();
+            h+=v*FC_LOOP_DT+.5f*noise*FC_LOOP_DT*FC_LOOP_DT;v+=noise*FC_LOOP_DT;
+            altitude_kf_predict(&k,0,FC_LOOP_DT);
+            if(step%10==0) {
+                altitude_kf_baro_update(&k,h+.05f*gaussian_noise());
+                const unsigned i=step/STRIDE;const double e=k.height_m-h;
+                sum[i]+=e;sq[i]+=e*e;sigma[i]+=sqrt(k.p00);
+                if(fabs(e)<=2*sqrt(k.p00))covered[i]++;
+            }
+            CHECK(k.p00>0 && k.p11>0 && k.p00*k.p11-k.p01*k.p10>-1e-10f);
+        }
+    }
+    FILE*f=fopen(path,"w");if(!f)return 2;
+    fprintf(f,"time_s,mean_error_m,empirical_std_m,kalman_std_m,coverage_2sigma\n");
+    for(unsigned i=0;i<POINTS;i++) {
+        double mean=sum[i]/TRIALS;
+        fprintf(f,"%.3f,%.8f,%.8f,%.8f,%.6f\n",(i*STRIDE+1)*FC_LOOP_DT,
+            mean,sqrt(fmax(0,(sq[i]-TRIALS*mean*mean)/(TRIALS-1))),sigma[i]/TRIALS,(double)covered[i]/TRIALS);
+    }
+    fclose(f);puts("altitude C Monte Carlo passed: 500 trials x 2500 steps, seed=2352; matched Gaussian model, barometer 50Hz");
+    return 0;
+}
+
 int main(int argc, char **argv) {
+    if(argc==3 && strcmp(argv[1],"--altitude-mc")==0)return write_altitude_mc(argv[2]);
     if (argc == 3 && strcmp(argv[1], "--trace") == 0) {
         return write_trace(argv[2]);
     }
@@ -506,6 +567,7 @@ int main(int argc, char **argv) {
     test_magnetometer_3d_fit_and_planar_rejection();
     test_bmp280_factory_compensation_and_ground_reference();
     test_lidar_voltage_current_reference_regression();
+    test_matrix_covariance_and_pitch_sign();
     puts("flight-controller host tests passed (math only; no hardware I/O)");
     return 0;
 }
