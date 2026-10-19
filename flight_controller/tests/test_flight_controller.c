@@ -1,7 +1,6 @@
 /* Host tests include the production C implementation without changing its math. */
 #define QCOPTER_HOST_TEST
 #include "../flight_controller.c"
-#include "../battery_monitor.c"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,7 +19,7 @@ static sensor_sample_t level_sensor(void) {
         .gyro_x_dps = 0.0f, .gyro_y_dps = 0.0f, .gyro_z_dps = 0.0f,
         .vertical_acceleration_mps2 = 0.0f,
         .barometer_height_m = 0.0f,
-        .imu_valid = true, .barometer_valid = true
+        .imu_valid = true, .imu_calibrated = true, .barometer_valid = true
     };
     return s;
 }
@@ -222,6 +221,146 @@ static void test_battery_monitor_filter_soc_and_actions(void) {
           == BATTERY_ACTION_SENSOR_FAULT);
 }
 
+static void test_imu_calibration_known_bias_gain_and_motion_rejection(void) {
+    imu_calibration_t calibration = {0};
+    cal_stats3_t faces[6] = {0};
+    const float bias[3] = {0.03f, -0.02f, 0.04f};
+    const float gain[3] = {0.98f, 1.03f, 0.97f};
+    const float gyro_bias[3] = {0.7f, -0.4f, 0.12f};
+    for (unsigned face = 0; face < 6u; ++face) {
+        for (unsigned n = 0; n < 100u; ++n) {
+            float raw[3];
+            const float noise = n % 2u ? 0.001f : -0.001f;
+            for (unsigned axis = 0; axis < 3u; ++axis) {
+                const float truth = axis == face/2u ? (face%2u ? -1.0f : 1.0f) : 0.0f;
+                raw[axis] = truth/gain[axis] + bias[axis] + noise;
+            }
+            CHECK(imu_accel_face_add(faces, face, raw, true));
+        }
+    }
+    CHECK(!imu_accel_cal_finish(faces, &calibration, false));
+    CHECK(imu_accel_cal_finish(faces, &calibration, true));
+    for (unsigned axis = 0; axis < 3u; ++axis) {
+        CHECK(fabsf(calibration.accel_bias_g[axis] - bias[axis]) < 1e-6f);
+        CHECK(fabsf(calibration.accel_gain[axis] - gain[axis]) < 1e-6f);
+    }
+    imu_stationary_cal_t stationary = {0};
+    const float accel[3] = {bias[0], bias[1], 1.0f/gain[2] + bias[2]};
+    CHECK(!imu_stationary_cal_add(&stationary, accel, gyro_bias, false));
+    for (unsigned n = 0; n < 500u; ++n) {
+        const float noise = n%2u ? 0.02f : -0.02f;
+        const float gyro[3] = {gyro_bias[0]+noise, gyro_bias[1]+noise, gyro_bias[2]+noise};
+        CHECK(imu_stationary_cal_add(&stationary, accel, gyro, true));
+    }
+    CHECK(imu_gyro_cal_finish(&stationary, &calibration, true));
+    float corrected_accel[3], corrected_gyro[3];
+    CHECK(imu_cal_apply(&calibration, accel, gyro_bias, corrected_accel, corrected_gyro));
+    CHECK(fabsf(corrected_accel[2] - 1.0f) < 1e-6f);
+    CHECK(fabsf(corrected_accel[0]) < 1e-6f && fabsf(corrected_accel[1]) < 1e-6f);
+    for (unsigned axis = 0; axis < 3u; ++axis) {
+        CHECK(fabsf(corrected_gyro[axis]) < 1e-6f);
+        CHECK(calibration.gyro_variance_dps2[axis] > 0.0003f);
+    }
+    imu_stationary_cal_t moving = {0};
+    for (unsigned n = 0; n < 500u; ++n) {
+        const float gyro[3] = {n%2u ? 1.0f : -1.0f, 0.0f, 0.0f};
+        CHECK(imu_stationary_cal_add(&moving, accel, gyro, true));
+    }
+    CHECK(!imu_gyro_cal_finish(&moving, &calibration, true));
+    cal_stats3_t bad_faces[6] = {0};
+    CHECK(!imu_accel_cal_finish(bad_faces, &calibration, true));
+    sensor_sample_t sample = level_sensor();
+    sample.imu_calibrated = false;
+    sample.accel_x_g = accel[0]; sample.accel_y_g = accel[1]; sample.accel_z_g = accel[2];
+    sample.gyro_x_dps = gyro_bias[0]; sample.gyro_y_dps = gyro_bias[1]; sample.gyro_z_dps = gyro_bias[2];
+    CHECK(!sample_is_healthy(&sample));
+    CHECK(sensor_sample_apply_imu_calibration(&sample, &calibration));
+    CHECK(sample_is_healthy(&sample));
+    CHECK(!sensor_sample_apply_imu_calibration(&sample, &calibration));
+    printf("IMU calibration: injected accel bias/gain and gyro bias recovered; moving capture rejected. gyro sigma=%.6f deg/s\n",
+           sqrtf(calibration.gyro_variance_dps2[0]));
+}
+
+static void test_magnetometer_3d_fit_and_planar_rejection(void) {
+    mag_sweep_cal_t sweep = {0}, planar = {0};
+    mag_calibration_t calibration = {0};
+    for (unsigned lat = 0; lat <= 20u; ++lat) {
+        const float phi = -1.57079632679f + 3.14159265359f*(float)lat/20.0f;
+        for (unsigned lon = 0; lon < 24u; ++lon) {
+            const float theta = 6.28318530718f*(float)lon/24.0f;
+            const float field[3] = {8.0f + 48.0f*cosf(phi)*cosf(theta),
+                                   -12.0f + 32.0f*cosf(phi)*sinf(theta),
+                                   4.0f + 44.0f*sinf(phi)};
+            CHECK(mag_cal_add(&sweep, field, true));
+        }
+    }
+    CHECK(!mag_cal_finish(&sweep, &calibration, false, true));
+    CHECK(mag_cal_finish(&sweep, &calibration, true, true));
+    CHECK(fabsf(calibration.offset_ut[0] - 8.0f) < 0.001f);
+    CHECK(fabsf(calibration.offset_ut[1] + 12.0f) < 0.001f);
+    CHECK(fabsf(calibration.offset_ut[2] - 4.0f) < 0.001f);
+    for (unsigned n = 0; n < 400u; ++n) {
+        const float angle = 6.28318530718f*(float)n/400.0f;
+        const float x = 40.0f*cosf(angle), y = 40.0f*sinf(angle);
+        const float field[3] = {x + 8.0f, y - 12.0f, x*0.5f+y*0.3f+4.0f};
+        CHECK(mag_cal_add(&planar, field, true));
+    }
+    CHECK(!mag_cal_finish(&planar, &calibration, true, true));
+    const float raw[3] = {56.0f, -12.0f, 4.0f};
+    float corrected[3];
+    CHECK(mag_cal_apply(&calibration, raw, corrected));
+    CHECK(fabsf(corrected[0] - 41.333333f) < 0.001f);
+    printf("Magnetometer: known offsets recovered from 504 sphere samples; tilted planar sweep rejected.\n");
+}
+
+static void test_bmp280_factory_compensation_and_ground_reference(void) {
+    const uint16_t coefficients[12] = {27504u, (uint16_t)26435, (uint16_t)-1000,
+        36477u, (uint16_t)-10685, 3024u, 2855u, 140u, (uint16_t)-7,
+        15500u, (uint16_t)-14600, 6000u};
+    uint8_t bytes[24];
+    for (unsigned i = 0; i < 12u; ++i) qcopter_put_u16(bytes + 2u*i, coefficients[i]);
+    bmp280_trim_t trim;
+    CHECK(bmp280_trim_decode(bytes, sizeof(bytes), &trim));
+    double temperature, pressure;
+    CHECK(bmp280_compensate(&trim, 519888u, 415148u, &temperature, &pressure));
+    CHECK(fabs(temperature - 25.08247793) < 0.00001);
+    CHECK(fabs(pressure - 100653.26678) < 0.01);
+    CHECK(!bmp280_compensate(&trim, 0x80000u, 415148u, &temperature, &pressure));
+    baro_reference_cal_t reference = {0};
+    baro_calibration_t calibration = {0};
+    CHECK(!baro_reference_add(&reference, 100000.0, false));
+    for (unsigned i = 0; i < 100u; ++i)
+        CHECK(baro_reference_add(&reference, 100000.0 + (i%2u ? 1.0 : -1.0), true));
+    CHECK(!baro_reference_finish(&reference, &calibration, 0.1, true));
+    CHECK(baro_reference_finish(&reference, &calibration, 2.0, true));
+    double height, sigma;
+    const double pressure_at_10m = 100000.0*pow(1.0-10.0/44330.0, 1.0/0.190294957);
+    CHECK(baro_relative_height(&calibration, pressure_at_10m, &height, &sigma));
+    CHECK(fabs(height - 10.0) < 1e-7 && sigma > 0.0 && sigma < 0.2);
+    printf("BMP280 reference: T=%.6f C P=%.6f Pa; synthetic ground-reference height=%.6f m sigma=%.6f m\n",
+           temperature, pressure, height, sigma);
+}
+
+static void test_lidar_voltage_current_reference_regression(void) {
+    linear_cal_fit_t fit = {0}, no_span = {0};
+    linear_cal_t calibration = {0};
+    for (unsigned i = 0; i < 10u; ++i) {
+        const double x = (double)i/3.0;
+        const double reference = 4.0*x + 0.02 + (i%2u ? 0.001 : -0.001);
+        CHECK(linear_cal_add(&fit, x, reference, true));
+        CHECK(linear_cal_add(&no_span, 2.0, reference, true));
+    }
+    CHECK(!linear_cal_finish(&no_span, &calibration, 0.01, true));
+    CHECK(!linear_cal_finish(&fit, &calibration, 0.0001, true));
+    CHECK(linear_cal_finish(&fit, &calibration, 0.01, true));
+    double corrected;
+    CHECK(linear_cal_apply(&calibration, 2.0, &corrected));
+    CHECK(fabs(corrected - 8.02) < 0.001);
+    CHECK(!linear_cal_add(&fit, NAN, 1.0, true));
+    printf("Reference regression: gain=%.8f offset=%.8f residual sigma=%.8f; zero-span and noisy fits rejected.\n",
+           calibration.gain, calibration.offset, calibration.residual_sigma);
+}
+
 /* Deterministic 5-second sensor-input trace for plots; this is not a plant model. */
 static int write_trace(const char *path) {
     FILE *file = fopen(path, "w");
@@ -363,6 +502,10 @@ int main(int argc, char **argv) {
     test_pid_limits_and_anti_windup();
     test_estimator_and_mixer_remain_finite();
     test_battery_monitor_filter_soc_and_actions();
+    test_imu_calibration_known_bias_gain_and_motion_rejection();
+    test_magnetometer_3d_fit_and_planar_rejection();
+    test_bmp280_factory_compensation_and_ground_reference();
+    test_lidar_voltage_current_reference_regression();
     puts("flight-controller host tests passed (math only; no hardware I/O)");
     return 0;
 }

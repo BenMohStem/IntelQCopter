@@ -4,6 +4,8 @@ This is a fresh rerun captured while organizing the project. Logs preserve the c
 
 ## Results
 
+- [`sensor-calibration-host-tests.log`](sensor-calibration-host-tests.log): the two embedded protocol sections match; calibration checks pass for known IMU offset/gain recovery, stationary gyro noise, moving-capture rejection, 3D magnetic offset recovery/planar rejection, BMP280 factory reference compensation, pressure-noise propagation, and linear reference-fit residual rejection. All inputs are synthetic or numerical reference vectors, with no hardware capture.
+- [`single-file-rp2350-build.log`](single-file-rp2350-build.log) and [`single-file-handler-rp2040-build.log`](single-file-handler-rp2040-build.log): Pico SDK builds pass with exactly one application C source per embedded target. Battery monitoring and sensor calibration now reside in `flight_controller.c`; the handheld source is `handler_controller.c`.
 - [`input-protocol-host-tests.log`](input-protocol-host-tests.log): host checks passed for flight math plus command-frame encode/decode, CRC corruption rejection, range checks, sequence rollover/replay rejection, setpoint scaling, 150 ms command timeout, and controller-state reset on faults.
 - [`controller-rp2040-build.log`](controller-rp2040-build.log): RP2040 Pico controller image built with ADC mux scanning and button GPIO setup. No controller board was flashed.
 - [`flight-rp2350-build.log`](flight-rp2350-build.log): RP2350 Pico 2 image rebuilt with the 500 Hz scheduler and two-core radio queue. No flight board was flashed.

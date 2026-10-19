@@ -29,7 +29,7 @@ The control design target is a 500 Hz attitude loop: roll and pitch use angle se
 |---|---|---|
 | RP2350 firmware | Builds for Pico 2 / ARM-S | No physical board or sensor drivers yet |
 | RP2040 firmware | Builds for Pico; scans six muxed analog inputs, debounces six buttons, emits protocol frames over USB for debug | Requires the proposed 74HC4051 mux and confirmed wiring; no LoRa transmit or screen code yet |
-| Flight math | Host checks pass for PID math, packet CRC/sequence/watchdog; 500-trial C Kalman Monte Carlo recorded | Not closed-loop aircraft stability or tuned gains; receiver and sensor drivers are not connected |
+| Flight math | Host checks pass for PID math, packet CRC/sequence/watchdog; 500-trial C Kalman Monte Carlo recorded | Not closed-loop aircraft stability or tuned gains; receiver and sensor drivers are not connected || Sensor calibration | Host checks recover injected IMU/magnetic errors, reject bad captures, verify BMP280 compensation and reference-fit uncertainty | Software calculations only; physical capture, drivers, guided UI, and flash storage are not implemented |
 | Battery monitor | Host checks cover voltage/SOC Kalman math, 20% SOC landing request, alarms, and input faults | No drivers, coulomb-count current sensor, calibrated OCV curve, or landing-action integration are connected |
 | RP2350 emulator | 1,000,000 instruction steps complete | Emulator reports unsupported peripherals; not timing or I/O validation |
 | PCB | Editable KiCad logic-carrier draft; power/current-sensor/BMS interfaces added | DRC: 0 geometry violations; 76 pads unrouted, not manufacturable |
@@ -48,7 +48,7 @@ The mass and inertia density plots use the assumed priors documented below:
 
 ![Provisional inertia probability densities for roll, pitch, and yaw axes](artifacts/visualizations/inertia-density.svg)
 
-The [controller code walkthrough](docs/reading-the-code.md) explains each section of the RP2350 C file and the RP2040 placeholder. The [documentation index](docs/README.md) links PCB, uncertainty, simulator, code, and evidence notes.
+The [controller code walkthrough](docs/reading-the-code.md) explains each section of the RP2350 C file and the RP2040 input scanner. The [documentation index](docs/README.md) links PCB, uncertainty, simulator, code, and evidence notes.
 
 ## Architecture
 
@@ -104,6 +104,12 @@ The host Monte Carlo invokes the same C roll-angle Kalman update used by the fir
 
 In the current seeded roll run, empirical final error σ was 0.1031° while Kalman `sqrt(P00)` was 0.1374°; predicted ±1σ/±2σ coverage was 81.2%/99.8%. That covariance is conservative under the test's assumptions. Full metrics and the generated distribution plots are in the uncertainty report. This does not prove vehicle stability. Angular-velocity/yaw and altitude covariance checks, sensor dropout and bias runs, real sensor logs, and a calibrated rigid-body/actuator simulation remain future work.
 
+## Firmware source layout and calibration
+
+Each embedded subproject has one application C source: `flight_controller/flight_controller.c` and `handler_controller/handler_controller.c`. The flight source contains battery monitoring, sensor calibration, packet validation, estimators, and control. The handheld source contains input sampling and packet generation. The wire-protocol section is embedded in both files and checked for equality by the host test script. Pico SDK remains an external dependency. Host tests and build tools stay separate; ROS 2 keeps its own package structure.
+
+Calibration math now covers stationary gyro bias/noise, six-face accelerometer offset/gain, a basic magnetometer offset/diagonal scale fit, BMP280 factory compensation and ground reference/noise, and linear reference fits for lidar/voltage/current. No physical calibration has been recorded or saved to flash; I²C acquisition remains unimplemented. See [sensor calibration](docs/sensor-calibration.md).
+
 ## Build and reproduce
 
 Requirements: Raspberry Pi Pico SDK 2.3.0, ARM embedded toolchain, CMake, and Ninja. The current workstation setup expects the SDK under `C:\WinLibs\pico-sdk`; set `PICO_SDK_PATH` on another machine.
@@ -126,7 +132,7 @@ These checks are software evidence only. The emulator does not model an RP2350 w
 
 ```text
 flight_controller/                 RP2350 C firmware and host tests
-controller/                        RP2040 handheld-controller placeholder
+handler_controller/               RP2040 firmware: handler_controller.c
 hardware/flight_controller_pcb/    KiCad logic-carrier draft, pin map, BOM
 sim/model/qcopter_f450.scad        Parametric visual frame model
 sim/isaac/assets/qcopter.urdf      Provisional ROS/robotics description
