@@ -1,0 +1,21 @@
+\documentclass[11pt,a4paper]{report}
+\usepackage[margin=25mm]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm,booktabs,longtable,graphicx,hyperref,xcolor}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\dd}{\mathrm{d}}
+\title{IntelQcopter: Mathematical Model, Six Control Loops, State Estimation and Navigation\\Detailed derivations and reproducible simulation evidence}
+\author{IntelQcopter project}
+\date{20 October 2026}
+\begin{document}
+\hypersetup{pageanchor=false}
+\maketitle
+\hypersetup{pageanchor=true}
+\pagenumbering{roman}
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+\input{derivations}
+\input{results}
+\end{document}

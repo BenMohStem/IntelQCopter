@@ -1,0 +1,68 @@
+Traceback (most recent call last):
+  File "C:\IsaacSim\app\exts\isaacsim.ros2.core\jazzy\rclpy\numpy\_core\__init__.py", line 24, in <module>
+    from . import multiarray
+  File "C:\IsaacSim\app\exts\isaacsim.ros2.core\jazzy\rclpy\numpy\_core\multiarray.py", line 11, in <module>
+    from . import _multiarray_umath, overrides
+ImportError: DLL load failed while importing _multiarray_umath: The specified module could not be found.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Mohamed\Desktop\Work\QCopter\sim\ros2_probe.py", line 20, in <module>
+    node = rclpy.create_node('qcopter_runtime_probe')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\IsaacSim\app\exts\isaacsim.ros2.core\jazzy\rclpy\rclpy\__init__.py", line 184, in create_node
+    return Node(
+           ^^^^^
+  File "C:\IsaacSim\app\exts\isaacsim.ros2.core\jazzy\rclpy\rclpy\node.py", line 241, in __init__
+    self._parameter_service = ParameterService(self)
+                              ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\IsaacSim\app\exts\isaacsim.ros2.core\jazzy\rclpy\rclpy\parameter_service.py", line 35, in __init__
+    node.create_service(
+  File "C:\IsaacSim\app\exts\isaacsim.ros2.core\jazzy\rclpy\rclpy\node.py", line 1728, in create_service
+    check_is_valid_srv_type(srv_type)
+  File "C:\IsaacSim\app\exts\isaacsim.ros2.core\jazzy\rclpy\rclpy\type_support.py", line 51, in check_is_valid_srv_type
+    check_for_type_support(srv_type)
+  File "C:\IsaacSim\app\exts\isaacsim.ros2.core\jazzy\rclpy\rclpy\type_support.py", line 29, in check_for_type_support
+    msg_or_srv_type.__class__.__import_type_support__()
+  File "C:\IsaacSim\app\exts\isaacsim.ros2.core\jazzy\rclpy\rcl_interfaces\srv\_describe_parameters.py", line 527, in __import_type_support__
+    _describe_parameters.Metaclass_DescribeParameters_Event.__import_type_support__()
+  File "C:\IsaacSim\app\exts\isaacsim.ros2.core\jazzy\rclpy\rcl_interfaces\srv\_describe_parameters.py", line 341, in __import_type_support__
+    from service_msgs.msg import ServiceEventInfo
+  File "C:\IsaacSim\app\exts\isaacsim.ros2.core\jazzy\rclpy\service_msgs\msg\__init__.py", line 1, in <module>
+    from service_msgs.msg._service_event_info import ServiceEventInfo  # noqa: F401
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\IsaacSim\app\exts\isaacsim.ros2.core\jazzy\rclpy\service_msgs\msg\_service_event_info.py", line 18, in <module>
+    import numpy  # noqa: E402, I100
+    ^^^^^^^^^^^^
+  File "C:\IsaacSim\app\exts\isaacsim.ros2.core\jazzy\rclpy\numpy\__init__.py", line 109, in <module>
+    from numpy.__config__ import show_config
+  File "C:\IsaacSim\app\exts\isaacsim.ros2.core\jazzy\rclpy\numpy\__config__.py", line 4, in <module>
+    from numpy._core._multiarray_umath import (
+  File "C:\IsaacSim\app\exts\isaacsim.ros2.core\jazzy\rclpy\numpy\_core\__init__.py", line 85, in <module>
+    raise ImportError(msg) from exc
+ImportError: 
+
+IMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!
+
+Importing the numpy C-extensions failed. This error can happen for
+many reasons, often due to issues with your setup or how NumPy was
+installed.
+
+We have compiled some common reasons and troubleshooting tips at:
+
+    https://numpy.org/devdocs/user/troubleshooting-importerror.html
+
+Please note and check the following:
+
+  * The Python version is: Python 3.12 from "C:\IsaacSim\app\kit\python\python.exe"
+  * The NumPy version is: "2.5.1"
+
+and make sure that they are the versions you expect.
+
+Please carefully study the information and documentation linked above.
+This is unlikely to be a NumPy issue but will be caused by a bad install
+or environment on your machine.
+
+Original error was: DLL load failed while importing _multiarray_umath: The specified module could not be found.
+

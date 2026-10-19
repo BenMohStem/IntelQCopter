@@ -1,5 +1,15 @@
 # Test evidence index
 
+## New model and autonomy evidence — 20 October 2026
+
+[Video/graphs viewer](../simulation/2026-10-20/index.html) · [Data index](../simulation/2026-10-20/README.md) · [Mathematical PDF](../../docs/modelisation/main.pdf).
+
+The [dated logs](2026-10-20/) record six CPU route runs, C matrix/mixer checks,
+two 500-trial Kalman experiments, physical timestep refinement, actual ROS 2
+DDS communication with the C flight core, GPU YOLO and CPU ONNX inference,
+USD scene validation and Pico2 compilation. Both failed Isaac launches are
+retained. No Isaac physics/render run succeeded; the video is labelled CPU.
+
 All committed results are software checks or synthetic models. None prove a stable aircraft, working sensor/radio hardware, real-time 500 Hz deadlines, or flight readiness.
 
 ## Original recorded run

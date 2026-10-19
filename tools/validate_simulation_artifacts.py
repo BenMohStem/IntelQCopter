@@ -30,7 +30,7 @@ def main():
       'note':'These checks validate saved evidence, not physical flight or Isaac execution.'}
     (OUT/'delivery-validation.json').write_text(json.dumps(report,indent=2),encoding='utf-8')
     files=[p for p in OUT.rglob('*') if p.is_file() and p.name!='sha256-manifest.json']
-    files.extend(p for p in (ROOT/'docs/modelisation').glob('*') if p.suffix in ['.tex','.pdf'])
+    files.extend(p for p in (ROOT/'docs/modelisation').rglob('*') if p.suffix in ['.tex','.pdf','.png'])
     manifest={p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(files)}
     (OUT/'sha256-manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
     print(json.dumps(report),flush=True)

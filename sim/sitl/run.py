@@ -74,6 +74,13 @@ def run_case(fc,nav,nominal,out,name,scale=1.0,mass_scale=1.0,thrust_scale=1.0,s
         sensor=np.r_[specific,np.rad2deg(omega)+rng.normal(0,p['gyro_sigma_dps'],3),vertical,baro,float(baro_new)].astype(np.float32)
         fc.qc_sitl_step(sensor,command,dt,7,motors,diag)
         saturation+=int(np.any((motors<.001)|(motors>.999)))
+        # One timestamp convention: truth, measurement/update and newly issued
+        # commands at interval start t. Do not mix post-step position with
+        # pre-step attitude in the same trace row.
+        if step%5==0:
+            sample_clearance=min(np.hypot(pos[0]-o[0],pos[1]-o[1])-o[2]-p['robot_collision_radius_m'] for o in p['obstacles_x_y_radius_m'])
+            rows.append([t,*pos,*vel,math.degrees(roll),math.degrees(pitch),math.degrees(yaw),
+                         *command,*motors,*diag,sample_clearance])
         h=dt/substeps
         for substep in range(substeps):
             motor+=(1-np.exp(-h/p['thrust_time_constant_s']))*(motors-motor)
@@ -90,9 +97,6 @@ def run_case(fc,nav,nominal,out,name,scale=1.0,mass_scale=1.0,thrust_scale=1.0,s
             q=quat_multiply(q,dq);q/=np.linalg.norm(q)
         clearance=min(np.hypot(pos[0]-o[0],pos[1]-o[1])-o[2]-p['robot_collision_radius_m'] for o in p['obstacles_x_y_radius_m'])
         minimum_clearance=min(minimum_clearance,float(clearance))
-        if step%5==0:
-            rows.append([t,*pos,*vel,math.degrees(roll),math.degrees(pitch),math.degrees(yaw),
-                         *command,*motors,*diag,clearance])
         reached_dwell=reached_dwell+1 if navout[5] else 0
         if reached_dwell>int(1/dt):break
         if not np.all(np.isfinite(pos)) or pos[2]<.15 or np.linalg.norm(pos)>50 or abs(roll)>1 or abs(pitch)>1:
@@ -107,7 +111,7 @@ def run_case(fc,nav,nominal,out,name,scale=1.0,mass_scale=1.0,thrust_scale=1.0,s
     final=float(np.linalg.norm(pos-goal));rmse=float(np.sqrt(np.mean((data[:,3]-goal[2])**2)))
     result={'name':name,'seed':seed,'gain_scale':scale,'mass_scale':mass_scale,'thrust_scale':thrust_scale,
             'success':bool(not failed and minimum_clearance>0 and final<.3 and reached_dwell>0),
-            'duration_s':float(t),'final_position_error_m':final,'height_rmse_m':rmse,
+            'duration_s':float((step+1)*dt),'final_position_error_m':final,'height_rmse_m':rmse,
             'minimum_surface_clearance_m':minimum_clearance,'saturation_fraction':saturation/(step+1),
             'cpu_wall_s':time.perf_counter()-start,'physics_substeps':substeps,'gains':gains.tolist(),'hardware_outputs_enabled':False,
             'perception_mode':p['perception_mode']}

@@ -1,0 +1,65 @@
+{
+  "test": "actual GPU YOLO inference, not flight perception",
+  "weights": "Ultralytics YOLO11n",
+  "weights_sha256": "0ebbc80d4a7680d14987a577cd21342b65ecfd94632bd9a8da63ae6417644ee1",
+  "image_source": "https://raw.githubusercontent.com/ultralytics/assets/main/im/bus.jpg",
+  "image_sha256": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63",
+  "elapsed_warm_s": 0.02461840002797544,
+  "ultralytics_timing_ms": {
+    "preprocess": 3.194199991412461,
+    "inference": 9.84990003053099,
+    "postprocess": 1.6373000107705593
+  },
+  "detections": [
+    {
+      "class": "bus",
+      "confidence": 0.9402272701263428,
+      "xyxy": [
+        3.8199462890625,
+        229.35984802246094,
+        796.215087890625,
+        728.4130249023438
+      ]
+    },
+    {
+      "class": "person",
+      "confidence": 0.8881792426109314,
+      "xyxy": [
+        671.0230102539062,
+        394.8282470703125,
+        809.8097534179688,
+        878.7154541015625
+      ]
+    },
+    {
+      "class": "person",
+      "confidence": 0.8783189058303833,
+      "xyxy": [
+        47.408512115478516,
+        399.56854248046875,
+        239.3092041015625,
+        904.197998046875
+      ]
+    },
+    {
+      "class": "person",
+      "confidence": 0.8558123707771301,
+      "xyxy": [
+        223.06336975097656,
+        408.6883239746094,
+        344.4669494628906,
+        860.4415893554688
+      ]
+    },
+    {
+      "class": "person",
+      "confidence": 0.622164785861969,
+      "xyxy": [
+        0.021906137466430664,
+        556.0671997070312,
+        68.85385131835938,
+        872.3670654296875
+      ]
+    }
+  ]
+}

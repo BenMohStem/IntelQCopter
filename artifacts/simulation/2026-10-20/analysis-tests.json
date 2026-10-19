@@ -1,0 +1,202 @@
+{
+  "failure_checks": "stale, NaN, outside map, occupied goal, blocked map: passed",
+  "depth_geometry": "center projection, metric plane, invalid-depth rejection: passed",
+  "rotation_algebra": "orthogonality, determinant, nilpotent power, noncommutativity: passed",
+  "linear_roots_with_motor_lag": {
+    "roll-1": [
+      [
+        -7.9459828190956046,
+        18.22407114196932
+      ],
+      [
+        -7.9459828190956046,
+        -18.22407114196932
+      ],
+      [
+        -9.108034361808828,
+        0.0
+      ]
+    ],
+    "yaw-1": [
+      [
+        -14.47213498067661,
+        0.0
+      ],
+      [
+        -5.527871763618061,
+        0.0
+      ],
+      [
+        -4.99999325570533,
+        0.0
+      ]
+    ],
+    "altitude-1": [
+      [
+        -21.09506941598179,
+        0.0
+      ],
+      [
+        -1.539151928073886,
+        0.46002160138101944
+      ],
+      [
+        -1.539151928073886,
+        -0.46002160138101944
+      ],
+      [
+        -0.8266267278704513,
+        0.0
+      ]
+    ],
+    "roll-1.3": [
+      [
+        -6.945723663013592,
+        22.348222176405045
+      ],
+      [
+        -6.945723663013592,
+        -22.348222176405045
+      ],
+      [
+        -11.108552673972824,
+        0.0
+      ]
+    ],
+    "yaw-1.3": [
+      [
+        -9.948254504827354,
+        5.787104739288995
+      ],
+      [
+        -9.948254504827354,
+        -5.787104739288995
+      ],
+      [
+        -5.10349099034531,
+        0.0
+      ]
+    ],
+    "altitude-1.3": [
+      [
+        -19.690787870540923,
+        0.0
+      ],
+      [
+        -2.1105966045497055,
+        0.40009670361401484
+      ],
+      [
+        -2.1105966045497055,
+        -0.40009670361401484
+      ],
+      [
+        -1.088018920359689,
+        0.0
+      ]
+    ]
+  },
+  "refinements": [
+    {
+      "name": "refine-2",
+      "seed": 2350,
+      "gain_scale": 1.3,
+      "mass_scale": 1.0,
+      "thrust_scale": 1.0,
+      "success": true,
+      "duration_s": 21.502,
+      "final_position_error_m": 0.14162626905603184,
+      "height_rmse_m": 0.012005567805205656,
+      "minimum_surface_clearance_m": 0.30021032085296623,
+      "saturation_fraction": 0.0,
+      "cpu_wall_s": 2.914470799965784,
+      "physics_substeps": 2,
+      "gains": [
+        [
+          3.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.001540199387818575,
+          0.013348395004868507,
+          0.0
+        ],
+        [
+          3.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.001540199387818575,
+          0.013348395004868507,
+          0.0
+        ],
+        [
+          0.009983283467590809,
+          0.028840595856308937,
+          0.0
+        ],
+        [
+          0.37264499068260193,
+          0.19773000478744507,
+          0.22750000655651093
+        ]
+      ],
+      "hardware_outputs_enabled": false,
+      "perception_mode": "known static obstacle map and simulated local odometry; NOT YOLO perception",
+      "max_position_difference_from_2ms_m": 0.001729204830532875
+    },
+    {
+      "name": "refine-4",
+      "seed": 2350,
+      "gain_scale": 1.3,
+      "mass_scale": 1.0,
+      "thrust_scale": 1.0,
+      "success": true,
+      "duration_s": 21.502,
+      "final_position_error_m": 0.14161381710433352,
+      "height_rmse_m": 0.01201490248298899,
+      "minimum_surface_clearance_m": 0.3000225741186486,
+      "saturation_fraction": 0.0,
+      "cpu_wall_s": 4.6281718000536785,
+      "physics_substeps": 4,
+      "gains": [
+        [
+          3.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.001540199387818575,
+          0.013348395004868507,
+          0.0
+        ],
+        [
+          3.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.001540199387818575,
+          0.013348395004868507,
+          0.0
+        ],
+        [
+          0.009983283467590809,
+          0.028840595856308937,
+          0.0
+        ],
+        [
+          0.37264499068260193,
+          0.19773000478744507,
+          0.22750000655651093
+        ]
+      ],
+      "hardware_outputs_enabled": false,
+      "perception_mode": "known static obstacle map and simulated local odometry; NOT YOLO perception",
+      "max_position_difference_from_2ms_m": 0.0025954428957298634
+    }
+  ],
+  "refinement_note": "Control and noise sampling remain at 500Hz; only physical integration is subdivided."
+}

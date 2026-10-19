@@ -1,0 +1,160 @@
+00:48:03.918 [PPB] Unimplemented peripheral write via 0 to 0xed8c: 128
+00:48:03.922 [PPB] Unimplemented peripheral write via 1 to 0xed8c: 128
+00:48:03.923 [PPB] Unimplemented peripheral write via 0 to 0xedd4: 128
+00:48:03.923 [PPB] Unimplemented peripheral write via 1 to 0xedd4: 128
+00:48:03.924 [ACCESSCTRL_BASE] Unimplemented peripheral write to 0x8: 2899181569
+00:48:03.925 [CLOCKS_BASE] Unimplemented peripheral write to 0xac: 4294967295
+00:48:03.925 [CLOCKS_BASE] Unimplemented peripheral write to 0xb0: 4294967295
+00:48:03.925 [RESETS_BASE] Unimplemented peripheral read from 3000
+00:48:03.925 [RESETS_BASE] Unimplemented read from peripheral in the atomic operation region
+00:48:03.925 [RESETS_BASE] Unimplemented peripheral read from 3000
+00:48:03.926 [RESETS_BASE] Unimplemented read from peripheral in the atomic operation region
+00:48:03.933 [RESETS_BASE] Unimplemented peripheral read from 3000
+00:48:03.933 [RESETS_BASE] Unimplemented read from peripheral in the atomic operation region
+00:48:03.935 [XIP_QMI_BASE] Unimplemented peripheral write to 0x34: 67108864
+00:48:03.935 [XIP_QMI_BASE] Unimplemented peripheral write to 0x38: 67109888
+00:48:03.935 [XIP_QMI_BASE] Unimplemented peripheral write to 0x3c: 67110912
+00:48:03.935 [XIP_QMI_BASE] Unimplemented peripheral write to 0x40: 67111936
+00:48:03.935 [XIP_QMI_BASE] Unimplemented peripheral write to 0x44: 67108864
+00:48:03.935 [XIP_QMI_BASE] Unimplemented peripheral write to 0x48: 67109888
+00:48:03.935 [XIP_QMI_BASE] Unimplemented peripheral write to 0x4c: 67110912
+00:48:03.936 [XIP_QMI_BASE] Unimplemented peripheral write to 0x50: 67111936
+00:48:03.936 [IO_QSPI_BASE] Unimplemented peripheral write to 0x14: 0
+00:48:03.936 [IO_QSPI_BASE] Unimplemented peripheral write to 0x1c: 0
+00:48:03.936 [IO_QSPI_BASE] Unimplemented peripheral write to 0x24: 0
+00:48:03.936 [IO_QSPI_BASE] Unimplemented peripheral write to 0x2c: 0
+00:48:03.936 [IO_QSPI_BASE] Unimplemented peripheral write to 0x34: 0
+00:48:03.936 [IO_QSPI_BASE] Unimplemented peripheral write to 0x3c: 0
+00:48:03.936 [XIP_QMI_BASE] Unimplemented peripheral write to 0xc: 1610641932
+00:48:03.936 [XIP_QMI_BASE] Unimplemented peripheral write to 0x10: 4096
+00:48:03.936 [XIP_QMI_BASE] Unimplemented peripheral write to 0x14: 3
+00:48:03.936 [XIP_QMI_BASE] Unimplemented peripheral write to 0x20: 1610641932
+00:48:03.936 [XIP_QMI_BASE] Unimplemented peripheral write to 0x24: 4096
+00:48:03.936 [XIP_QMI_BASE] Unimplemented peripheral write to 0x28: 3
+00:48:03.937 [XIP_QMI_BASE] Unimplemented peripheral write to 0xc: 1610641923
+00:48:03.937 [XIP_QMI_BASE] Unimplemented peripheral write to 0x10: 299688
+00:48:03.937 [XIP_QMI_BASE] Unimplemented peripheral write to 0x14: 235
+00:48:03.937 [XIP_QMI_BASE] Unimplemented peripheral write to 0x20: 1610641923
+00:48:03.937 [XIP_QMI_BASE] Unimplemented peripheral write to 0x24: 299688
+00:48:03.937 [XIP_QMI_BASE] Unimplemented peripheral write to 0x28: 235
+00:48:03.947 [USB] Unimplemented peripheral read from 4c
+00:48:03.947 [CLOCKS_BASE] Unimplemented peripheral write to 0x84: 0
+00:48:03.947 [XOSC_BASE] Unimplemented peripheral write to 0x0: 2720
+00:48:03.947 [XOSC_BASE] Unimplemented peripheral write to 0xc: 282
+00:48:03.947 [XOSC_BASE] Unimplemented peripheral read from 0
+00:48:03.947 [XOSC_BASE] Unimplemented peripheral write to 0x0: -1
+00:48:03.947 [XOSC_BASE] Unimplemented peripheral read from 4
+00:48:03.948 [PLL_SYS_BASE] PLL write 1 to 0x0, foutpostdiv = 12000000
+00:48:03.948 [PLL_SYS_BASE] PLL write 125 to 0x8, foutpostdiv = 1500000000
+00:48:03.948 [PLL_SYS_BASE] Unimplemented peripheral write to 0x4: 0
+00:48:03.948 [PLL_SYS_BASE] PLL write 335872 to 0xc, foutpostdiv = 150000000
+00:48:03.948 [PLL_SYS_BASE] Unimplemented peripheral write to 0x4: 0
+00:48:03.948 [PLL_USB_BASE] Unimplemented peripheral read from 0
+00:48:03.948 [PLL_USB_BASE] Unimplemented peripheral read from 0
+00:48:03.948 [PLL_USB_BASE] Unimplemented peripheral write to 0x0: 1
+00:48:03.948 [PLL_USB_BASE] Unimplemented peripheral write to 0x8: 100
+00:48:03.948 [PLL_USB_BASE] Unimplemented peripheral read from 4
+00:48:03.948 [PLL_USB_BASE] Unimplemented peripheral write to 0x4: -34
+00:48:03.948 [PLL_USB_BASE] Unimplemented peripheral read from 0
+00:48:03.948 [PLL_USB_BASE] Unimplemented peripheral write to 0xc: 348160
+00:48:03.948 [PLL_USB_BASE] Unimplemented peripheral read from 4
+00:48:03.948 [PLL_USB_BASE] Unimplemented peripheral write to 0x4: -9
+00:48:03.948 [CLOCKS_BASE] Unimplemented peripheral read from 34
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral write to 0x34: 65536
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral read from 40
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral write to 0x40: 65536
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral read from 64
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral read from 60
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral write to 0x60: -2049
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral read from 60
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral read from 60
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral write to 0x60: -225
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral read from 60
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral write to 0x60: -1
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral write to 0x64: 65536
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral read from 70
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral read from 6c
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral write to 0x6c: -2049
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral read from 6c
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral read from 6c
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral write to 0x6c: -225
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral read from 6c
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral write to 0x6c: -1
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral write to 0x70: 65536
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral read from 4c
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral read from 48
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral write to 0x48: -2049
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral read from 48
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral read from 48
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral write to 0x48: -225
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral read from 48
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral write to 0x48: -1
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral write to 0x4c: 65536
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral read from 58
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral read from 54
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral write to 0x54: -2049
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral read from 54
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral read from 54
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral write to 0x54: -225
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral read from 54
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral write to 0x54: -1
+00:48:03.949 [CLOCKS_BASE] Unimplemented peripheral write to 0x58: 65536
+00:48:03.949 [TICKS_BASE] Unimplemented peripheral write to 0x4: 12
+00:48:03.949 [TICKS_BASE] Unimplemented peripheral write to 0x0: 1
+00:48:03.949 [TICKS_BASE] Unimplemented peripheral write to 0x10: 12
+00:48:03.949 [TICKS_BASE] Unimplemented peripheral write to 0xc: 1
+00:48:03.949 [TICKS_BASE] Unimplemented peripheral write to 0x1c: 12
+00:48:03.949 [TICKS_BASE] Unimplemented peripheral write to 0x18: 1
+00:48:03.949 [TICKS_BASE] Unimplemented peripheral write to 0x28: 12
+00:48:03.949 [TICKS_BASE] Unimplemented peripheral write to 0x24: 1
+00:48:03.949 [TICKS_BASE] Unimplemented peripheral write to 0x34: 12
+00:48:03.949 [TICKS_BASE] Unimplemented peripheral write to 0x30: 1
+00:48:03.949 [TICKS_BASE] Unimplemented peripheral write to 0x40: 12
+00:48:03.949 [TICKS_BASE] Unimplemented peripheral write to 0x3c: 1
+00:48:03.951 [PPB] Unimplemented peripheral readvia 0 from 0xe008
+00:48:03.951 [PPB] Unimplemented peripheral write via 0 to 0xe008: 4294967295
+00:48:03.951 [PPB] Unimplemented peripheral write via 0 to 0xe400: 2155905152
+00:48:03.951 [PPB] Unimplemented peripheral write via 0 to 0xe404: 2155905152
+00:48:03.951 [PPB] Unimplemented peripheral write via 0 to 0xe408: 2155905152
+00:48:03.951 [PPB] Unimplemented peripheral write via 0 to 0xe40c: 2155905152
+00:48:03.951 [PPB] Unimplemented peripheral write via 0 to 0xe410: 2155905152
+00:48:03.951 [PPB] Unimplemented peripheral write via 0 to 0xe414: 2155905152
+00:48:03.951 [PPB] Unimplemented peripheral write via 0 to 0xe418: 2155905152
+00:48:03.951 [PPB] Unimplemented peripheral write via 0 to 0xe41c: 2155905152
+00:48:03.951 [PPB] Unimplemented peripheral write via 0 to 0xe420: 2155905152
+00:48:03.951 [PPB] Unimplemented peripheral write via 0 to 0xe424: 2155905152
+00:48:03.951 [PPB] Unimplemented peripheral write via 0 to 0xe428: 2155905152
+00:48:03.951 [PPB] Unimplemented peripheral write via 0 to 0xe42c: 2155905152
+00:48:03.951 [PPB] Unimplemented peripheral write via 0 to 0xe430: 2155905152
+00:48:03.952 [USB] Unimplemented peripheral write to 0x78: 12
+00:48:03.953 [USB] Unimplemented peripheral write to 0x4c: 536870912
+00:48:03.953 [USB] Unimplemented peripheral read from 4c
+00:48:03.953 [USB] Unimplemented peripheral write to 0x4c: -1
+00:48:03.955 [PPB] Unimplemented peripheral readvia 1 from 0xe008
+00:48:03.955 [PPB] Unimplemented peripheral write via 1 to 0xe008: 4294967295
+00:48:03.955 [PPB] Unimplemented peripheral write via 1 to 0xe400: 2155905152
+00:48:03.955 [PPB] Unimplemented peripheral write via 1 to 0xe404: 2155905152
+00:48:03.955 [PPB] Unimplemented peripheral write via 1 to 0xe408: 2155905152
+00:48:03.955 [PPB] Unimplemented peripheral write via 1 to 0xe40c: 2155905152
+00:48:03.955 [PPB] Unimplemented peripheral write via 1 to 0xe410: 2155905152
+00:48:03.955 [PPB] Unimplemented peripheral write via 1 to 0xe414: 2155905152
+00:48:03.955 [PPB] Unimplemented peripheral write via 1 to 0xe418: 2155905152
+00:48:03.955 [PPB] Unimplemented peripheral write via 1 to 0xe41c: 2155905152
+00:48:03.955 [PPB] Unimplemented peripheral write via 1 to 0xe420: 2155905152
+00:48:03.955 [PPB] Unimplemented peripheral write via 1 to 0xe424: 2155905152
+00:48:03.955 [PPB] Unimplemented peripheral write via 1 to 0xe428: 2155905152
+00:48:03.955 [PPB] Unimplemented peripheral write via 1 to 0xe42c: 2155905152
+00:48:03.955 [PPB] Unimplemented peripheral write via 1 to 0xe430: 2155905152
+[RP2350JS] step=100000/1000000 simulated_cycles=127489 core0_pc=0x10001308 wall_ms=41
+[RP2350JS] step=200000/1000000 simulated_cycles=227749 core0_pc=0x10001308 wall_ms=47
+[RP2350JS] step=300000/1000000 simulated_cycles=328011 core0_pc=0x10001308 wall_ms=50
+[RP2350JS] step=400000/1000000 simulated_cycles=428011 core0_pc=0x10001308 wall_ms=52
+[RP2350JS] step=500000/1000000 simulated_cycles=528271 core0_pc=0x10001308 wall_ms=54
+[RP2350JS] step=600000/1000000 simulated_cycles=628533 core0_pc=0x10001308 wall_ms=56
+[RP2350JS] step=700000/1000000 simulated_cycles=728793 core0_pc=0x10001308 wall_ms=58
+[RP2350JS] step=800000/1000000 simulated_cycles=829055 core0_pc=0x10001308 wall_ms=60
+[RP2350JS] step=900000/1000000 simulated_cycles=929055 core0_pc=0x10001308 wall_ms=61
+[RP2350JS] step=1000000/1000000 simulated_cycles=1029315 core0_pc=0x10001308 wall_ms=63
+RP2350 ARM boot check passed: 1000000 steps, 1029315 simulated cycles.
+Core 0 PC: 0x10001308 (reset PC was 0x88).
+This checks instruction execution only; it does not validate timing, sensors, RF, or ESC outputs.

@@ -11,16 +11,16 @@ initialization. The remote Python server never became healthy. Original
 [launch](../../artifacts/test-runs/2026-10-20/isaac-launch.log),
 [second attempt](../../artifacts/test-runs/2026-10-20/isaac-d3d12-launch.log), and
 [health probe](../../artifacts/test-runs/2026-10-20/isaac-health.log) logs are retained.
-Adding the d3d12 option did not resolve the failure. This host is Windows10,
-RTX3050 Laptop4GB, driver555.99. No Isaac vehicle physics, camera capture, ROS
+Adding the d3d12 option did not resolve the failure. This host is Windows 10,
+RTX 3050 Laptop 4 GB, driver 555.99. No Isaac vehicle physics, camera capture, ROS
 bridge scene or recording succeeded here.
 
 ## New USD model
 
 Run `sim/isaac/build_stage.py` in the project environment to author
-[assets/qcopter_test.usda](assets/qcopter_test.usda). It has18prims: rigid body
-with assumed1.2kg mass and explicit diagonal inertia, red/white arms, four9047
-rotor discs, conservative0.34m collision envelope, ground, obstacles, light,
+[assets/qcopter_test.usda](assets/qcopter_test.usda). It has 18 prims: rigid body
+with assumed 1.2 kg mass and explicit diagonal inertia, red/white arms, four 9047
+rotor discs, conservative 0.34 m collision envelope, ground, obstacles, light,
 overview camera and gravity scene. Parameter source:
 [simulation_parameters.json](../model/simulation_parameters.json).
 

@@ -20,3 +20,10 @@ compile_commands.json
 
 # KiCad per-user editor state; keep board/project design files
 *.kicad_prl
+
+# LaTeX intermediates; the report PDF is intentionally versioned
+/docs/modelisation/*.log
+/docs/modelisation/*.aux
+/docs/modelisation/*.out
+/docs/modelisation/*.toc
+/docs/modelisation/*.synctex.gz

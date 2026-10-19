@@ -1,0 +1,1 @@
+{"all_six_route_cases_pass": true, "finite_trace": true, "hardware_armed_entire_trace": false, "maximum_selected_vs_dds_trace_difference": 0.0, "video_full_decode": "passed", "local_viewer_links_checked": 16, "pdf_size_bytes": 751510, "note": "These checks validate saved evidence, not physical flight or Isaac execution."}

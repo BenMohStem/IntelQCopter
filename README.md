@@ -19,9 +19,21 @@ RP2350 flight controller · RP2040 handheld controller · F450/Q450 airframe
 IntelQcopter is a C-first Pico SDK project for a custom quadcopter. The aircraft target is an RP2350; a separate RP2040 target is reserved for a two-joystick handheld controller. The chosen frame family is the 450 mm F450/Q450 X-frame with two red and two white arms.
 
 > [!IMPORTANT]
-> **Current stage: firmware scaffold and software math checks.** The RP2040 firmware now samples the proposed 2-stick/2-trigger/6-button input layout through an analog mux and produces CRC-protected command frames for USB debug. The LoRa and CC1101 drivers are not configured or transmitting. The RP2350 has a timed 500 Hz loop and command-frame parser/watchdog, but its radio receive function and I²C sensor acquisition are still stubs; ESC outputs remain disabled. No airframe physics simulation or flight test has run.
+> **Current stage: firmware scaffold plus executed CPU flight simulation.** The production C control equations now fly a provisional six-DOF model around two known obstacles; six scenarios and an actual ROS 2 DDS adapter route succeeded. YOLO GPU and OpenCV ONNX inference are separately recorded. Isaac Sim failed GPU startup, and its scene has only been parser-validated. Physical sensors/radio/ESC drivers remain unconnected; no hardware flight has run.
 
 The control design target is a 500 Hz attitude loop: roll and pitch use angle setpoints with inner gyro-rate loops, yaw is rate-controlled, and the default throttle command is vertical speed with center-stick altitude hold. The software scaffold now models that cascade around a **0.50 placeholder hover collective**; it is not tuned and it still leaves motor outputs disabled. LoRa is planned as the primary pilot link; CC1101 radios are optional auxiliary links. A ROS 2 companion may later provide camera/YOLO, lidar, and GPS setpoints while the RP2350 retains motor control and failsafe authority.
+
+### New modelling report and simulation
+
+[Mathematical PDF](docs/modelisation/main.pdf) · [Editable LaTeX](docs/modelisation/main.tex) · [Evidence viewer](artifacts/simulation/2026-10-20/index.html) · [Video](artifacts/simulation/2026-10-20/best-flight-cpu.mp4) · [Raw data and logs](artifacts/simulation/2026-10-20/README.md)
+
+![Original CPU flight model results](artifacts/simulation/2026-10-20/flight-results.png)
+
+The report derives the rigid-body model, matrix multiplication/exponentials,
+all six PID gains, both Kalman updates and covariance rules. The selected
+simulation uses a known static map and simulated odometry, with a 0.34m collision
+radius including 9047 propellers. It is a provisional 1.2kg complete-vehicle
+model. Video playback includes progressing graphs and is clearly labelled CPU.
 
 ### Current evidence
 
@@ -29,12 +41,15 @@ The control design target is a 500 Hz attitude loop: roll and pitch use angle se
 |---|---|---|
 | RP2350 firmware | Builds for Pico 2 / ARM-S | No physical board or sensor drivers yet |
 | RP2040 firmware | Builds for Pico; scans six muxed analog inputs, debounces six buttons, emits protocol frames over USB for debug | Requires the proposed 74HC4051 mux and confirmed wiring; no LoRa transmit or screen code yet |
-| Flight math | Host checks pass for PID math, packet CRC/sequence/watchdog; 500-trial C Kalman Monte Carlo recorded | Not closed-loop aircraft stability or tuned gains; receiver and sensor drivers are not connected || Sensor calibration | Host checks recover injected IMU/magnetic errors, reject bad captures, verify BMP280 compensation and reference-fit uncertainty | Software calculations only; physical capture, drivers, guided UI, and flash storage are not implemented |
+| Flight math | Six CPU route scenarios succeed with production C equations; independent covariance/mixer checks and two 500-trial Kalman experiments pass | Provisional model and gains; no physical airframe identification or hard-real-time proof |
+| Sensor calibration | Host checks recover injected IMU/magnetic errors, reject bad captures, verify BMP280 compensation and reference-fit uncertainty | Physical capture, drivers, guided UI, and flash storage are not implemented |
 | Battery monitor | Host checks cover voltage/SOC Kalman math, 20% SOC landing request, alarms, and input faults | No drivers, coulomb-count current sensor, calibrated OCV curve, or landing-action integration are connected |
 | RP2350 emulator | 1,000,000 instruction steps complete | Emulator reports unsupported peripherals; not timing or I/O validation |
 | PCB | Editable KiCad logic-carrier draft; power/current-sensor/BMS interfaces added | DRC: 0 geometry violations; 76 pads unrouted, not manufacturable |
 | CAD / URDF | Parametric F450 visual and XML-valid URDF | OpenSCAD rendering/physics calibration not verified |
-| Isaac Sim / ROS 2 | Isaac Sim files staged at `C:\IsaacSim\app`; URDF starter and ROS 2 planning notes | This Windows 10 / RTX 3050 4 GB PC is below simulator minimum; no vehicle sim or ROS 2 connection ran |
+| ROS 2 / autonomy | 10,751 DDS round trips complete a CPU route through the C flight core; common C++ A* core compiled; ROS C++ wrappers authored | Two same-process Python adapter nodes; ROS C++ wrappers unbuilt, no physical UART or live metric perception pipeline |
+| YOLO | Actual GPU YOLO11n and OpenCV ONNX bus/person detections recorded | Reference image only; detections are not driving the route |
+| Isaac Sim | Installed at `C:\IsaacSim\app`; USD scene authored and parser-validated | GPU initialization failed on this PC; no Isaac physics or rendering result |
 
 Open the [recorded logs and data index](artifacts/test-runs/README.md) for proof files and the limits of each check. The [interactive uncertainty dashboard](artifacts/visualizations/uncertainty-dashboard.html) plots actual saved Monte Carlo rows and replays its 5-second aggregate Kalman trace. It is a replayable chart, **not a vehicle simulation or video recording**. The original emulator log includes step-by-step progress and its unsupported-peripheral messages.
 

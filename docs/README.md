@@ -1,5 +1,9 @@
 # Documentation index
 
+- [Detailed mathematical PDF](modelisation/main.pdf) and [LaTeX source](modelisation/main.tex) — modelling, six PID gains, Kalman derivations and recorded simulation results.
+- [Simulation video, graphs and original data](../artifacts/simulation/2026-10-20/index.html) — CPU flight model and ROS DDS route; Isaac startup failure recorded separately.
+- [ROS C++ companion](../companion/README.md) — common planner, ROS interfaces and YOLO ONNX node; implementation and test boundaries.
+
 - [Sensor calibration](sensor-calibration.md) — implemented fits, capture procedure, uncertainty, and hardware gaps.
 - [Controller code walkthrough](reading-the-code.md) — explanation of the RP2350 flight scaffold, RP2040 input scanner, shared radio packet format, and current hardware gaps.
 - [Hand-controller input map](controller-inputs.md) — proposed pin map, Mode 2 stick semantics, buttons, and protocol details.

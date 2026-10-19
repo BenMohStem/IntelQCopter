@@ -1,0 +1,11 @@
+Single-file protocol consistency check passed.
+IMU calibration: injected accel bias/gain and gyro bias recovered; moving capture rejected. gyro sigma=0.020020 deg/s
+Magnetometer: known offsets recovered from 504 sphere samples; tilted planar sweep rejected.
+BMP280 reference: T=25.082478 C P=100653.266776 Pa; synthetic ground-reference height=10.000000 m sigma=0.085286 m
+Reference regression: gain=4.00018182 offset=0.01972727 residual sigma=0.00110096; zero-span and noisy fits rejected.
+matrix prediction, Joseph product, PSD covariance and FLU pitch mixer checks passed
+flight-controller host tests passed (math only; no hardware I/O)
+Kalman Monte Carlo passed: 500 trials x 2500 steps; production C filter; seed=2350.
+Assumed noise: gyro sigma=0.200 deg/s, accel-angle sigma=2.000 deg, bias walk sigma=0.0100 deg/s/sqrt(s).
+Initial priors: roll sigma=1.000 deg, gyro-bias sigma=0.100 deg/s; Gaussian simulated input.
+Wrote 251-sample distribution trace to artifacts\simulation\2026-10-20\angle-mc.csv.

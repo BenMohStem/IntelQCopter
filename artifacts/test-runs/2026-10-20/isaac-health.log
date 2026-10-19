@@ -1,0 +1,2 @@
+Error: Cannot connect to Isaac Sim at 127.0.0.1:8226
+Make sure Isaac Sim is running with isaacsim.code_editor.python_server enabled.

@@ -18,4 +18,12 @@ Run-Checked $python @('sim/yolo_onnx_test.py')
 Run-Checked $python @('sim/isaac/build_stage.py')
 if(-not $SkipVideo){Run-Checked $python @('sim/sitl/visualize.py')}
 Run-Checked $python @('tools/write_modelling_results.py')
+$tectonic=Join-Path $root 'build/tools/tectonic.exe'
+if(Test-Path $tectonic) {
+    $env:TECTONIC_CACHE_DIR=Join-Path $root 'build/tectonic-cache'
+    Run-Checked $tectonic @('-X','compile','--outdir','docs/modelisation','--outfmt','pdf','--keep-logs','docs/modelisation/main.tex')
+} else {
+    Write-Warning 'LaTeX sources were regenerated; PDF not rebuilt because build/tools/tectonic.exe is absent.'
+}
+Run-Checked $python @('tools/validate_simulation_artifacts.py')
 Write-Output 'Evidence runs complete. Isaac physics was not invoked; see its recorded startup failure.'
