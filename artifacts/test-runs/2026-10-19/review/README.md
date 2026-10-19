@@ -4,6 +4,11 @@ This is a fresh rerun captured while organizing the project. Logs preserve the c
 
 ## Results
 
+- [`input-protocol-host-tests.log`](input-protocol-host-tests.log): host checks passed for flight math plus command-frame encode/decode, CRC corruption rejection, range checks, sequence rollover/replay rejection, setpoint scaling, 150 ms command timeout, and controller-state reset on faults.
+- [`controller-rp2040-build.log`](controller-rp2040-build.log): RP2040 Pico controller image built with ADC mux scanning and button GPIO setup. No controller board was flashed.
+- [`flight-rp2350-build.log`](flight-rp2350-build.log): RP2350 Pico 2 image rebuilt with the 500 Hz scheduler and two-core radio queue. No flight board was flashed.
+- [`input-protocol-rp2350js.log`](input-protocol-rp2350js.log): RP2350JS executed one million instructions / 1,029,315 simulated cycles. Unsupported peripheral warnings remain; this is not I/O or timing validation.
+- The RP2040 controller currently prints CRC-protected command frames over USB debug at 10 Hz. The proposed analog pin map uses a 74HC4051 mux; no LoRa module or RF settings are enabled.
 - [`rp2350-build.log`](rp2350-build.log): Pico SDK 2.3.0, `pico2` / RP2350 ARM-S configuration completed. No firmware flashed.
 - [`battery-monitor-host-tests.log`](battery-monitor-host-tests.log): the added battery monitor code passed host checks for scalar pack-voltage filtering, SOC Kalman prediction/correction, SOC uncertainty reduction after a supplied rested-OCV observation, low voltage, critical-cell/BMS alerts, landed-disarm recommendation, and invalid sensor fail-safe.
 - [`control-mode-host-tests.log`](control-mode-host-tests.log): rerun after adding centered-stick vertical-speed commands, barometer fail-closed behavior, and the configurable 20% SOC landing request. Includes a fresh 500-trial Kalman Monte Carlo run.

@@ -11,19 +11,24 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdint.h>
+#include "../common/qcopter_protocol.h"
 
 #ifndef QCOPTER_HOST_TEST
 #include "pico/stdlib.h"
 #include "pico/multicore.h"
+#include "pico/util/queue.h"
 #endif
 
 #define FC_LOOP_HZ 500.0f
+#define FC_LOOP_PERIOD_US 2000u
 #define FC_LOOP_DT (1.0f / FC_LOOP_HZ)
 #define FC_MAX_CONTROL_DT 0.010f
 #define FC_RAD_TO_DEG 57.2957795f
 #define FC_DEG_TO_RAD 0.0174532925f
 #define FC_HOVER_THROTTLE_PLACEHOLDER 0.50f
 #define FC_MAX_VERTICAL_SPEED_MPS 2.0f
+#define FC_RADIO_TIMEOUT_US 150000u
+#define FC_SENSOR_LOOP_HZ 1000u
 
 typedef struct {
     float kp;
@@ -87,6 +92,45 @@ typedef struct {
     bool sensor_fault;
 } control_output_t;
 
+typedef struct {
+    pilot_command_t latest;
+    uint16_t last_sequence;
+    uint64_t last_received_us;
+    bool received;
+} pilot_link_state_t;
+
+static bool pilot_link_accept(pilot_link_state_t *link, const uint8_t *bytes,
+                              size_t length, uint64_t received_us) {
+    qcopter_command_frame_t frame;
+    if (link == NULL || !qcopter_decode_frame(bytes, length, &frame)) return false;
+    if (link->received
+        && !qcopter_sequence_is_newer(frame.sequence, link->last_sequence))
+        return false;
+    link->latest = (pilot_command_t){
+        .roll_deg = (float)frame.roll * 35.0f / QCOPTER_AXIS_SCALE,
+        .pitch_deg = (float)frame.pitch * 35.0f / QCOPTER_AXIS_SCALE,
+        .yaw_rate_dps = (float)frame.yaw_rate * 180.0f / QCOPTER_AXIS_SCALE,
+        .throttle = (float)frame.throttle / QCOPTER_THROTTLE_SCALE,
+        .valid = true,
+        .arm_request = false /* no arming gesture is defined or enabled yet */
+    };
+    link->last_sequence = frame.sequence;
+    link->last_received_us = received_us;
+    link->received = true;
+    return true;
+}
+
+static pilot_command_t pilot_link_current(const pilot_link_state_t *link,
+                                          uint64_t now_us) {
+    pilot_command_t command = {0};
+    if (link != NULL && link->received && now_us >= link->last_received_us
+        && now_us - link->last_received_us <= FC_RADIO_TIMEOUT_US)
+        command = link->latest;
+    else
+        command.valid = false;
+    return command;
+}
+
 static angle_kf_t roll_estimator = {
     .p00 = 1.0f, .p11 = 0.01f,
     .gyro_noise = 0.04f, .bias_walk = 0.0001f, .accel_noise = 4.0f
@@ -139,6 +183,16 @@ static void pid_reset(pid_t *pid) {
     pid->integrator = 0.0f;
     pid->previous_measurement = 0.0f;
     pid->initialized = false;
+}
+
+static void reset_control_state(void) {
+    pid_reset(&roll_angle_pid);
+    pid_reset(&pitch_angle_pid);
+    pid_reset(&roll_rate_pid);
+    pid_reset(&pitch_rate_pid);
+    pid_reset(&yaw_rate_pid);
+    pid_reset(&vertical_rate_pid);
+    altitude_reference_initialized = false;
 }
 
 /* Derivative is taken on the measurement to avoid setpoint kick. */
@@ -247,6 +301,7 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
                              .armed = false, .sensor_fault = false };
     if (!sample_is_healthy(s) || !isfinite(dt) || dt <= 0.0f
         || dt > FC_MAX_CONTROL_DT) {
+        reset_control_state();
         out.sensor_fault = true;
         return out;
     }
@@ -268,12 +323,14 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
 
     if (!cmd->valid || !isfinite(cmd->roll_deg) || !isfinite(cmd->pitch_deg)
         || !isfinite(cmd->yaw_rate_dps) || !isfinite(cmd->throttle)) {
+        reset_control_state();
         out.sensor_fault = true;
         return out;
     }
     /* The only implemented mode requires valid height/rate aiding. */
     if (!s->barometer_valid || !isfinite(s->barometer_height_m)
         || !isfinite(s->vertical_acceleration_mps2)) {
+        reset_control_state();
         out.sensor_fault = true;
         return out;
     }
@@ -328,10 +385,35 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
 }
 
 #ifndef QCOPTER_HOST_TEST
+typedef struct {
+    uint8_t bytes[QCOPTER_FRAME_SIZE];
+    size_t length;
+    uint64_t received_us;
+} radio_rx_item_t;
+
+static queue_t radio_rx_queue;
+
+/* Nonblocking placeholder: connect this to the selected LoRa module driver. */
+static bool radio_receive_frame(uint8_t *bytes, size_t capacity, size_t *length) {
+    (void)bytes;
+    (void)capacity;
+    (void)length;
+    return false;
+}
+
 static void slow_core(void) {
     for (;;) {
-        /* Reserved for nonblocking radio, barometer, magnetometer, and telemetry. */
-        sleep_ms(10);
+        /*
+         * Core 1 owns nonblocking radio and slower sensor acquisition.
+         * The radio stub returns no data until a module driver is selected.
+         */
+        radio_rx_item_t item = {0};
+        if (radio_receive_frame(item.bytes, sizeof(item.bytes), &item.length)
+            && item.length <= sizeof(item.bytes)) {
+            item.received_us = time_us_64();
+            (void)queue_try_add(&radio_rx_queue, &item);
+        }
+        sleep_ms(1u);
     }
 }
 #endif
@@ -339,18 +421,46 @@ static void slow_core(void) {
 #ifndef QCOPTER_HOST_TEST
 int main(void) {
     stdio_init_all();
+    queue_init(&radio_rx_queue, sizeof(radio_rx_item_t), 4u);
     multicore_launch_core1(slow_core);
     sleep_ms(1500);
-    puts("QCopter FC safe scaffold: outputs disabled; no sensors or ESCs configured.");
-    puts("Control and estimator core is not armed or connected to motor pins.");
+    puts("QCopter RP2350 FC: 500 Hz loop, radio/sensors/ESC outputs not connected.");
+    puts("Core 1 radio receive is a stub; outputs stay disarmed.");
 
-    const sensor_sample_t no_sensors = {0};
-    const pilot_command_t no_command = {0};
+    pilot_link_state_t pilot_link = {0};
+    uint64_t previous_us = time_us_64();
+    absolute_time_t next_cycle = delayed_by_us(get_absolute_time(),
+                                                FC_LOOP_PERIOD_US);
+    uint32_t loop_count = 0u;
+    uint32_t missed_deadlines = 0u;
     for (;;) {
-        const control_output_t status =
-            flight_control_step(&no_sensors, &no_command, FC_LOOP_DT);
+        sleep_until(next_cycle);
+        next_cycle = delayed_by_us(next_cycle, FC_LOOP_PERIOD_US);
+        const uint64_t now_us = time_us_64();
+        const uint64_t scheduled_us = to_us_since_boot(next_cycle)
+                                    - FC_LOOP_PERIOD_US;
+        if (now_us > scheduled_us + 100u) missed_deadlines++;
+        const float dt = (float)(now_us - previous_us) * 1e-6f;
+        previous_us = now_us;
+
+        radio_rx_item_t item;
+        while (queue_try_remove(&radio_rx_queue, &item))
+            (void)pilot_link_accept(&pilot_link, item.bytes, item.length,
+                                    item.received_us);
+
+        /* Sensor acquisition is not implemented: safe zero outputs by design. */
+        const sensor_sample_t no_sensors = {0};
+        const pilot_command_t command = pilot_link_current(&pilot_link, now_us);
+        const control_output_t status = flight_control_step(&no_sensors,
+                                                             &command, dt);
         (void)status;
-        sleep_ms(1000);
+        if (++loop_count == FC_LOOP_HZ) {
+            printf("fc_loop=500Hz target; missed=%lu; command=%s; motors=DISABLED\n",
+                   (unsigned long)missed_deadlines,
+                   command.valid ? "fresh" : "failsafe");
+            loop_count = 0u;
+            missed_deadlines = 0u;
+        }
     }
 }
 #endif

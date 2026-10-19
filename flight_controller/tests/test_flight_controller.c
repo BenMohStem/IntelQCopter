@@ -33,6 +33,41 @@ static pilot_command_t neutral_command(void) {
     return c;
 }
 
+static void test_radio_frame_codec_sequence_and_watchdog(void) {
+    qcopter_command_frame_t input = {
+        .sequence = 65535u, .roll = 5000, .pitch = -10000,
+        .yaw_rate = -10000, .throttle = 5000u, .lt = 0u, .rt = 1000u,
+        .buttons = QCOPTER_BUTTON_RB | QCOPTER_BUTTON_NORTH
+    };
+    uint8_t bytes[QCOPTER_FRAME_SIZE];
+    qcopter_command_frame_t decoded = {0};
+    CHECK(qcopter_encode_frame(&input, bytes));
+    CHECK(qcopter_decode_frame(bytes, sizeof(bytes), &decoded));
+    CHECK(decoded.sequence == input.sequence && decoded.roll == input.roll
+          && decoded.pitch == input.pitch && decoded.yaw_rate == input.yaw_rate
+          && decoded.throttle == input.throttle && decoded.buttons == input.buttons);
+
+    pilot_link_state_t link = {0};
+    CHECK(pilot_link_accept(&link, bytes, sizeof(bytes), 100000u));
+    pilot_command_t command = pilot_link_current(&link, 250000u);
+    CHECK(command.valid && fabsf(command.roll_deg - 17.5f) < 1e-5f);
+    CHECK(fabsf(command.pitch_deg + 35.0f) < 1e-5f);
+    CHECK(fabsf(command.yaw_rate_dps + 180.0f) < 1e-5f);
+    CHECK(fabsf(command.throttle - 0.5f) < 1e-5f);
+    CHECK(!command.arm_request);
+    CHECK(!pilot_link_current(&link, 250001u).valid);
+    CHECK(!pilot_link_accept(&link, bytes, sizeof(bytes), 260000u));
+
+    input.sequence = 0u; /* valid 16-bit sequence wrap */
+    CHECK(qcopter_encode_frame(&input, bytes));
+    CHECK(pilot_link_accept(&link, bytes, sizeof(bytes), 270000u));
+    bytes[9] ^= 0x40u;
+    CHECK(!qcopter_decode_frame(bytes, sizeof(bytes), &decoded));
+    input.buttons |= 0x8000u;
+    CHECK(!qcopter_encode_frame(&input, bytes));
+    CHECK(qcopter_sequence_is_newer(0u, 65535u));
+}
+
 static void test_centered_throttle_holds_and_stick_commands_vertical_rate(void) {
     sensor_sample_t s = level_sensor();
     pilot_command_t c = neutral_command();
@@ -69,8 +104,11 @@ static void test_bad_sensor_dt_and_command_fail_closed(void) {
     sensor_sample_t s = level_sensor();
     pilot_command_t c = neutral_command();
     s.imu_valid = false;
+    altitude_reference_initialized = true;
+    roll_rate_pid.integrator = 0.1f;
     control_output_t out = flight_control_step(&s, &c, FC_LOOP_DT);
     CHECK(out.sensor_fault && !out.armed);
+    CHECK(!altitude_reference_initialized && roll_rate_pid.integrator == 0.0f);
     for (unsigned i = 0; i < 4; ++i) CHECK(out.motor[i] == 0.0f);
 
     s = level_sensor();
@@ -319,6 +357,7 @@ int main(int argc, char **argv) {
         return 2;
     }
     test_neutral_output_stays_disarmed();
+    test_radio_frame_codec_sequence_and_watchdog();
     test_centered_throttle_holds_and_stick_commands_vertical_rate();
     test_bad_sensor_dt_and_command_fail_closed();
     test_pid_limits_and_anti_windup();

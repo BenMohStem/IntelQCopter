@@ -1,6 +1,7 @@
 # Documentation index
 
-- [Controller code walkthrough](reading-the-code.md) — execution-order explanation for the RP2350 flight scaffold and RP2040 placeholder.
+- [Controller code walkthrough](reading-the-code.md) — explanation of the RP2350 flight scaffold, RP2040 input scanner, shared radio packet format, and current hardware gaps.
+- [Hand-controller input map](controller-inputs.md) — proposed pin map, Mode 2 stick semantics, buttons, and protocol details.
 - [Uncertainty visualizations](../artifacts/visualizations/uncertainty-dashboard.html) — interactive replay and static SVG/PNG plots generated from the saved Monte Carlo CSVs.
 - [Mass and Kalman uncertainty report](model-uncertainty.md) — assumptions, distributions, metrics, and limitations.
 - [PCB notes](../hardware/flight_controller_pcb/README.md) — draft board state and unrouted nets.

@@ -19,7 +19,7 @@ RP2350 flight controller · RP2040 handheld controller · F450/Q450 airframe
 IntelQcopter is a C-first Pico SDK project for a custom quadcopter. The aircraft target is an RP2350; a separate RP2040 target is reserved for a two-joystick handheld controller. The chosen frame family is the 450 mm F450/Q450 X-frame with two red and two white arms.
 
 > [!IMPORTANT]
-> **Current stage: firmware scaffold and software math checks.** The hand controller has no joystick/display/radio implementation. The flight firmware has no I²C sensor drivers, radio receiver, arming state machine, or ESC signal output. No airframe physics simulation or flight test has run. The code keeps motor outputs disabled.
+> **Current stage: firmware scaffold and software math checks.** The RP2040 firmware now samples the proposed 2-stick/2-trigger/6-button input layout through an analog mux and produces CRC-protected command frames for USB debug. The LoRa and CC1101 drivers are not configured or transmitting. The RP2350 has a timed 500 Hz loop and command-frame parser/watchdog, but its radio receive function and I²C sensor acquisition are still stubs; ESC outputs remain disabled. No airframe physics simulation or flight test has run.
 
 The control design target is a 500 Hz attitude loop: roll and pitch use angle setpoints with inner gyro-rate loops, yaw is rate-controlled, and the default throttle command is vertical speed with center-stick altitude hold. The software scaffold now models that cascade around a **0.50 placeholder hover collective**; it is not tuned and it still leaves motor outputs disabled. LoRa is planned as the primary pilot link; CC1101 radios are optional auxiliary links. A ROS 2 companion may later provide camera/YOLO, lidar, and GPS setpoints while the RP2350 retains motor control and failsafe authority.
 
@@ -28,13 +28,13 @@ The control design target is a 500 Hz attitude loop: roll and pitch use angle se
 | Area | Result | What it does not prove |
 |---|---|---|
 | RP2350 firmware | Builds for Pico 2 / ARM-S | No physical board or sensor drivers yet |
-| RP2040 firmware | Builds for Pico | Handheld application is still a placeholder |
-| Flight math | Host checks pass; 500-trial C Kalman Monte Carlo recorded | Not closed-loop aircraft stability or tuned gains |
+| RP2040 firmware | Builds for Pico; scans six muxed analog inputs, debounces six buttons, emits protocol frames over USB for debug | Requires the proposed 74HC4051 mux and confirmed wiring; no LoRa transmit or screen code yet |
+| Flight math | Host checks pass for PID math, packet CRC/sequence/watchdog; 500-trial C Kalman Monte Carlo recorded | Not closed-loop aircraft stability or tuned gains; receiver and sensor drivers are not connected |
 | Battery monitor | Host checks cover voltage/SOC Kalman math, 20% SOC landing request, alarms, and input faults | No drivers, coulomb-count current sensor, calibrated OCV curve, or landing-action integration are connected |
 | RP2350 emulator | 1,000,000 instruction steps complete | Emulator reports unsupported peripherals; not timing or I/O validation |
 | PCB | Editable KiCad logic-carrier draft; power/current-sensor/BMS interfaces added | DRC: 0 geometry violations; 76 pads unrouted, not manufacturable |
 | CAD / URDF | Parametric F450 visual and XML-valid URDF | OpenSCAD rendering/physics calibration not verified |
-| Isaac Sim / ROS 2 | Isaac Sim 6.2.0 standalone files staged for all Windows accounts; URDF starter and ROS 2 planning notes | This Windows 10 / RTX 3050 4 GB PC is below simulator minimum; no vehicle sim or ROS 2 connection ran |
+| Isaac Sim / ROS 2 | Isaac Sim files staged at `C:\IsaacSim\app`; URDF starter and ROS 2 planning notes | This Windows 10 / RTX 3050 4 GB PC is below simulator minimum; no vehicle sim or ROS 2 connection ran |
 
 Open the [recorded logs and data index](artifacts/test-runs/README.md) for proof files and the limits of each check. The [interactive uncertainty dashboard](artifacts/visualizations/uncertainty-dashboard.html) plots actual saved Monte Carlo rows and replays its 5-second aggregate Kalman trace. It is a replayable chart, **not a vehicle simulation or video recording**. The original emulator log includes step-by-step progress and its unsupported-peripheral messages.
 

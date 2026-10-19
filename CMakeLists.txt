@@ -32,10 +32,10 @@ if(QCOPTER_TARGET STREQUAL "flight")
     add_executable(qcopter
         flight_controller/flight_controller.c
         flight_controller/battery_monitor.c)
-    target_link_libraries(qcopter pico_stdlib pico_multicore)
+    target_link_libraries(qcopter pico_stdlib pico_multicore pico_util)
 elseif(QCOPTER_TARGET STREQUAL "controller")
     add_executable(qcopter controller/controller.c)
-    target_link_libraries(qcopter pico_stdlib)
+    target_link_libraries(qcopter pico_stdlib hardware_adc hardware_gpio)
 else()
     message(FATAL_ERROR "QCOPTER_TARGET must be flight or controller")
 endif()
