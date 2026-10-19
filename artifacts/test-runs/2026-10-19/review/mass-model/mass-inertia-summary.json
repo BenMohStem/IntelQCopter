@@ -1,0 +1,108 @@
+{
+  "model": "F450 frame plus battery only; motors, ESCs, controller, sensors, payload excluded",
+  "seed": 2350,
+  "trials": 20000,
+  "priors": {
+    "F450 frame mass": {
+      "mean_kg": 0.282,
+      "sigma_kg": 0.0282,
+      "basis": "DJI manual value; 10% clone-variation sigma is an assumption"
+    },
+    "battery mass": {
+      "mean_kg": 0.15,
+      "sigma_kg": 0.015,
+      "basis": "user approximation; 10% sigma is an assumption"
+    },
+    "motor diagonal": {
+      "mean_m": 0.45,
+      "sigma_m": 0.005,
+      "basis": "F450 nominal; measurement tolerance is assumed"
+    },
+    "arm mass fraction": {
+      "mean": 0.55,
+      "sigma": 0.1,
+      "basis": "placeholder prior; truncate to [0.25, 0.85]"
+    },
+    "battery center xyz": {
+      "mean_m": [
+        -0.018,
+        0.0,
+        -0.008
+      ],
+      "sigma_m": [
+        0.01,
+        0.005,
+        0.005
+      ],
+      "basis": "provisional SCAD placement and assumed tolerances"
+    },
+    "battery box xyz": {
+      "mean_m": [
+        0.105,
+        0.038,
+        0.028
+      ],
+      "sigma_fraction": 0.1,
+      "basis": "provisional SCAD dimensions, not measured"
+    }
+  },
+  "assumptions": [
+    "Frame arms are four uniform slender diagonal rods; remaining frame mass is a point mass at the origin.",
+    "The covariance model is conditional on the stated Gaussian priors and is not a measured confidence interval.",
+    "Unmodeled aircraft components make this a known-subassembly lower bound, not takeoff mass or flight inertia.",
+    "No thrust, torque, stability margin, or flight time is inferred from KV/current rating without motor/prop data."
+  ],
+  "properties": {
+    "known_subassembly_mass_kg": {
+      "mean": 0.4314745004203713,
+      "standard_deviation": 0.03219560971655516,
+      "p2_5": 0.3695460084181052,
+      "median": 0.4312566793203618,
+      "p97_5": 0.49460180741038284
+    },
+    "cg_x_m": {
+      "mean": -0.006268472346675829,
+      "standard_deviation": 0.003540568357295658,
+      "p2_5": -0.013333620117903367,
+      "median": -0.006207509939905095,
+      "p97_5": 0.000524227466066715
+    },
+    "cg_y_m": {
+      "mean": 2.660044620562273e-06,
+      "standard_deviation": 0.001759568473269637,
+      "p2_5": -0.0034615442745625554,
+      "median": -4.438050146291804e-06,
+      "p97_5": 0.00349705356640833
+    },
+    "cg_z_m": {
+      "mean": -0.0027705657914958793,
+      "standard_deviation": 0.0017586974831267747,
+      "p2_5": -0.006262364510696361,
+      "median": -0.0027537654391158687,
+      "p97_5": 0.0006442992069940898
+    },
+    "Ixx_kg_m2": {
+      "mean": 0.001346659216269145,
+      "standard_deviation": 0.00027396873338411784,
+      "p2_5": 0.000843845792202414,
+      "median": 0.0013354617972914482,
+      "p97_5": 0.0019086677264965753
+    },
+    "Iyy_kg_m2": {
+      "mean": 0.0015064128770745375,
+      "standard_deviation": 0.0002798036437987662,
+      "p2_5": 0.0009891091003345525,
+      "median": 0.0014947139343185565,
+      "p97_5": 0.002082218653349735
+    },
+    "Izz_kg_m2": {
+      "mean": 0.0028160618798017743,
+      "standard_deviation": 0.0005509778827250251,
+      "p2_5": 0.0017973565468475106,
+      "median": 0.0027934683041504656,
+      "p97_5": 0.003950946492597664
+    }
+  },
+  "runtime_s": 0.5469031999818981,
+  "runtime_note": "Desktop Monte Carlo execution time; not RP2350 loop timing."
+}

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 620" role="img">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="48" y="48" font-family="Segoe UI,Arial,sans-serif" font-size="27" font-weight="700" fill="#172033">Provisional mass moment of inertia distributions</text>
+<text x="48" y="78" font-family="Segoe UI,Arial,sans-serif" font-size="15" fill="#52637a">Simplified frame-rod + battery-box model; incomplete airframe mass properties</text>
+<path d="M110.00,135 V485" stroke="#d7e0ea"/>
+<text x="110.0" y="509.0" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#52637a">0.31e-3</text>
+<path d="M110,485.00 H1040" stroke="#d7e0ea"/>
+<text x="98.0" y="490.0" text-anchor="end" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#52637a">0</text>
+<path d="M296.00,135 V485" stroke="#d7e0ea"/>
+<text x="296.0" y="509.0" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#52637a">1.40e-3</text>
+<path d="M110,415.00 H1040" stroke="#d7e0ea"/>
+<text x="98.0" y="420.0" text-anchor="end" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#52637a">3.2e+02</text>
+<path d="M482.00,135 V485" stroke="#d7e0ea"/>
+<text x="482.0" y="509.0" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#52637a">2.50e-3</text>
+<path d="M110,345.00 H1040" stroke="#d7e0ea"/>
+<text x="98.0" y="350.0" text-anchor="end" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#52637a">6.5e+02</text>
+<path d="M668.00,135 V485" stroke="#d7e0ea"/>
+<text x="668.0" y="509.0" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#52637a">3.60e-3</text>
+<path d="M110,275.00 H1040" stroke="#d7e0ea"/>
+<text x="98.0" y="280.0" text-anchor="end" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#52637a">9.7e+02</text>
+<path d="M854.00,135 V485" stroke="#d7e0ea"/>
+<text x="854.0" y="509.0" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#52637a">4.69e-3</text>
+<path d="M110,205.00 H1040" stroke="#d7e0ea"/>
+<text x="98.0" y="210.0" text-anchor="end" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#52637a">1.3e+03</text>
+<path d="M1040.00,135 V485" stroke="#d7e0ea"/>
+<text x="1040.0" y="509.0" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#52637a">5.79e-3</text>
+<path d="M110,135.00 H1040" stroke="#d7e0ea"/>
+<text x="98.0" y="140.0" text-anchor="end" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#52637a">1.6e+03</text>
+<path d="M144.44,483.85 L152.44,482.93 L160.43,479.03 L168.43,477.88 L176.43,470.08 L184.42,465.49 L192.42,449.42 L200.41,425.31 L208.41,407.64 L216.40,381.24 L224.40,349.78 L232.39,306.85 L240.39,270.81 L248.38,243.26 L256.38,204.70 L264.37,190.69 L272.37,172.56 L280.36,171.18 L288.36,166.82 L296.35,184.49 L304.35,214.34 L312.34,233.85 L320.34,254.05 L328.34,296.52 L336.33,329.12 L344.33,347.95 L352.32,376.18 L360.32,393.63 L368.31,420.95 L376.31,433.12 L384.30,446.66 L392.30,460.90 L400.29,468.01 L408.29,468.24 L416.28,474.90 L424.28,478.57 L432.27,480.87 L440.27,482.02 L448.26,482.93 L456.26,484.54 L464.25,483.85 L472.25,484.54 L480.24,485.00 L488.24,484.54 L496.24,484.77 L504.23,484.77 L512.23,485.00 L520.22,484.77" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M163.41,484.10 L171.61,484.33 L179.81,482.09 L188.02,479.63 L196.22,474.48 L204.42,469.56 L212.62,458.14 L220.82,438.45 L229.02,423.23 L237.22,397.49 L245.42,371.31 L253.62,330.57 L261.82,309.76 L270.03,267.91 L278.23,218.67 L286.43,205.24 L294.63,181.74 L302.83,182.41 L311.03,178.83 L319.23,178.61 L327.43,213.07 L335.63,217.55 L343.83,244.41 L352.04,283.35 L360.24,309.76 L368.44,344.45 L376.64,366.61 L384.84,384.29 L393.04,408.68 L401.24,425.91 L409.44,444.27 L417.64,455.46 L425.85,464.19 L434.05,468.66 L442.25,474.03 L450.45,476.50 L458.65,480.97 L466.85,481.87 L475.05,482.31 L483.25,483.66 L491.45,484.55 L499.65,484.55 L507.86,484.55 L516.06,484.55 L524.26,484.78 L532.46,484.78 L540.66,484.78 L548.86,484.78" fill="none" stroke="#db2777" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M247.46,484.43 L263.59,484.09 L279.72,483.18 L295.85,480.79 L311.98,479.20 L328.11,473.96 L344.24,470.21 L360.36,457.69 L376.49,447.11 L392.62,434.82 L408.75,419.11 L424.88,403.87 L441.01,382.36 L457.14,368.70 L473.27,343.90 L489.40,339.00 L505.53,333.20 L521.66,327.06 L537.79,327.74 L553.92,335.36 L570.05,349.93 L586.18,353.91 L602.31,371.89 L618.44,386.23 L634.57,403.98 L650.70,418.09 L666.83,429.47 L682.96,438.46 L699.09,450.07 L715.22,460.76 L731.35,463.61 L747.48,472.94 L763.61,477.15 L779.74,477.15 L795.87,479.65 L812.00,481.02 L828.13,483.18 L844.26,483.41 L860.39,484.20 L876.52,484.43 L892.65,484.89 L908.78,484.77 L924.91,484.77 L941.04,484.89 L957.17,484.66 L973.30,485.00 L989.43,485.00 L1005.56,484.89" fill="none" stroke="#0891b2" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="575.0" y="538.0" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="15" fill="#172033">Moment of inertia (kg·m²)</text>
+<text x="28" y="310.0" transform="rotate(-90 28 310.0)" text-anchor="middle" font-family="Segoe UI,Arial" font-size="15" fill="#172033">Probability density</text>
+<path d="M300.0,545 h34" stroke="#7c3aed" stroke-width="4"/>
+<text x="344.0" y="550.0" text-anchor="start" font-family="Segoe UI,Arial,sans-serif" font-size="15" fill="#172033">Ixx roll</text>
+<path d="M550.0,545 h34" stroke="#db2777" stroke-width="4"/>
+<text x="594.0" y="550.0" text-anchor="start" font-family="Segoe UI,Arial,sans-serif" font-size="15" fill="#172033">Iyy pitch</text>
+<path d="M800.0,545 h34" stroke="#0891b2" stroke-width="4"/>
+<text x="844.0" y="550.0" text-anchor="start" font-family="Segoe UI,Arial,sans-serif" font-size="15" fill="#172033">Izz yaw</text>
+<text x="550.0" y="600.0" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="14" fill="#52637a">Seed 2350 · 20,000 Monte Carlo draws · Gaussian/prior assumptions; not measured component distributions</text>
+</svg>

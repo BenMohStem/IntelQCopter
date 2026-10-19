@@ -1,0 +1,16 @@
+PICO_SDK_PATH is C:/WinLibs/pico-sdk
+Target board (PICO_BOARD) is 'pico'.
+Using board configuration from C:/WinLibs/pico-sdk/src/boards/include/boards/pico.h
+Pico Platform (PICO_PLATFORM) is 'rp2040'.
+Build type is Release
+TinyUSB available at C:/WinLibs/pico-sdk/lib/tinyusb/hw/bsp/rp2040; enabling build support for USB.
+BTstack available at C:/WinLibs/pico-sdk/lib/btstack
+cyw43-driver available at C:/WinLibs/pico-sdk/lib/cyw43-driver
+mbedtls available at C:/WinLibs/pico-sdk/lib/mbedtls
+lwIP available at C:/WinLibs/pico-sdk/lib/lwip
+C library type is newlib
+Using picotool from C:/WinLibs/pico-toolchain/picotool/2.3.0/picotool/picotool.exe
+-- Configuring done (0.5s)
+-- Generating done (0.2s)
+-- Build files have been written to: C:/Users/Mohamed/Desktop/Work/QCopter/build/controller-rp2040
+ninja: no work to do.

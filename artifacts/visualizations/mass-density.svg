@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 620" role="img">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="48" y="48" font-family="Segoe UI,Arial,sans-serif" font-size="27" font-weight="700" fill="#172033">Known-subassembly mass distribution</text>
+<text x="48" y="78" font-family="Segoe UI,Arial,sans-serif" font-size="15" fill="#52637a">F450 reference frame + approximate 150 g battery only; motors/electronics/payload excluded</text>
+<path d="M110.00,135 V485" stroke="#d7e0ea"/>
+<text x="110.0" y="509.0" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#52637a">0.30</text>
+<path d="M110,485.00 H1040" stroke="#d7e0ea"/>
+<text x="98.0" y="490.0" text-anchor="end" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#52637a">0</text>
+<path d="M296.00,135 V485" stroke="#d7e0ea"/>
+<text x="296.0" y="509.0" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#52637a">0.35</text>
+<path d="M110,415.00 H1040" stroke="#d7e0ea"/>
+<text x="98.0" y="420.0" text-anchor="end" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#52637a">2.9</text>
+<path d="M482.00,135 V485" stroke="#d7e0ea"/>
+<text x="482.0" y="509.0" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#52637a">0.40</text>
+<path d="M110,345.00 H1040" stroke="#d7e0ea"/>
+<text x="98.0" y="350.0" text-anchor="end" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#52637a">5.7</text>
+<path d="M668.00,135 V485" stroke="#d7e0ea"/>
+<text x="668.0" y="509.0" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#52637a">0.46</text>
+<path d="M110,275.00 H1040" stroke="#d7e0ea"/>
+<text x="98.0" y="280.0" text-anchor="end" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#52637a">8.6</text>
+<path d="M854.00,135 V485" stroke="#d7e0ea"/>
+<text x="854.0" y="509.0" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#52637a">0.51</text>
+<path d="M110,205.00 H1040" stroke="#d7e0ea"/>
+<text x="98.0" y="210.0" text-anchor="end" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#52637a">11</text>
+<path d="M1040.00,135 V485" stroke="#d7e0ea"/>
+<text x="1040.0" y="509.0" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#52637a">0.57</text>
+<path d="M110,135.00 H1040" stroke="#d7e0ea"/>
+<text x="98.0" y="140.0" text-anchor="end" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#52637a">14</text>
+<path d="M144.44,484.77 L162.77,485.00 L181.09,484.77 L199.41,483.86 L217.73,482.94 L236.05,482.94 L254.37,478.60 L272.70,476.78 L291.02,475.18 L309.34,469.70 L327.66,464.67 L345.98,455.76 L364.30,430.87 L382.62,411.22 L400.95,394.32 L419.27,376.50 L437.59,333.56 L455.91,312.09 L474.23,291.30 L492.55,253.16 L510.87,225.52 L529.20,209.99 L547.52,181.21 L565.84,166.82 L584.16,188.75 L602.48,203.59 L620.80,202.91 L639.13,243.57 L657.45,254.76 L675.77,287.88 L694.09,313.92 L712.41,348.41 L730.73,382.21 L749.05,401.63 L767.38,416.70 L785.70,436.12 L804.02,453.71 L822.34,458.05 L840.66,469.01 L858.98,476.32 L877.30,478.38 L895.63,480.66 L913.95,481.57 L932.27,484.09 L950.59,484.31 L968.91,484.77 L987.23,484.09 L1005.56,484.77" fill="none" stroke="#2563eb" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="575.0" y="538.0" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="15" fill="#172033">Combined mass (kg)</text>
+<text x="28" y="310.0" transform="rotate(-90 28 310.0)" text-anchor="middle" font-family="Segoe UI,Arial" font-size="15" fill="#172033">Probability density</text>
+<path d="M550.0,545 h34" stroke="#2563eb" stroke-width="4"/>
+<text x="594.0" y="550.0" text-anchor="start" font-family="Segoe UI,Arial,sans-serif" font-size="15" fill="#172033">Frame + battery</text>
+<text x="550.0" y="600.0" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="14" fill="#52637a">Seed 2350 · 20,000 Monte Carlo draws · Gaussian/prior assumptions; not measured component distributions</text>
+</svg>

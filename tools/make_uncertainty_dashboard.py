@@ -134,6 +134,33 @@ fragment = r'''<style>
 })();
 </script>'''
 fragment = fragment.replace("__LAST__", f"{float(kf[-1]['time_s']):.3f}").replace("__DATA__", payload)
+page = f'''<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QCopter recorded uncertainty results</title>
+  <style>
+    :root {{ color-scheme: light; --foreground:#172033; --muted-foreground:#64748b; --border:#cbd5e1;
+      --viz-series-1:#2563eb; --viz-series-2:#ea580c; --viz-series-3:#059669;
+      --viz-series-4:#7c3aed; --viz-series-5:#db2777; --viz-series-6:#0891b2; }}
+    * {{ box-sizing:border-box }} body {{ margin:0; background:#f1f5f9; color:var(--foreground); font:16px/1.5 system-ui,Segoe UI,sans-serif }}
+    main {{ max-width:1100px; margin:0 auto; padding:24px }} h1 {{ line-height:1.2 }}
+    .notice {{ border-left:5px solid #d97706; background:#fffbeb; padding:12px 16px }}
+    #qcopter-uncertainty {{ background:white; border:1px solid var(--border); border-radius:12px; padding:16px; overflow:hidden }}
+    #qcopter-uncertainty svg {{ background:white; min-height:190px }}
+    .viz-controls {{ display:flex; align-items:center; flex-wrap:wrap; gap:12px }}
+    .viz-controls button {{ padding:9px 16px; border:0; border-radius:7px; color:white; background:#1d4ed8; font:inherit; cursor:pointer }}
+    .viz-controls input {{ flex:1; min-width:180px }}
+    @media(max-width:600px) {{ main {{ padding:12px }} #qcopter-uncertainty {{ padding:10px }} }}
+  </style>
+</head>
+<body><main>
+  <h1>QCopter: recorded estimator and mass uncertainty</h1>
+  <p class="notice"><strong>Software-only evidence.</strong> The top chart replays aggregate results from 500 synthetic-noise trials of the production C roll Kalman filter. The lower charts show 20,000 assumed frame-plus-battery samples. No airframe, motors, sensors, or ESCs were simulated. Read the assumptions and limits in the evidence report.</p>
+  {fragment}
+</main></body></html>
+'''
 out_path.parent.mkdir(parents=True, exist_ok=True)
-out_path.write_text(fragment, encoding="utf-8", newline="\n")
+out_path.write_text(page, encoding="utf-8", newline="\n")
 print(f"Wrote {out_path} ({out_path.stat().st_size} bytes)")

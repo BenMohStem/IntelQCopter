@@ -13,12 +13,10 @@ compile_commands.json
 *.bin
 *.hex
 
-# Local-only coursework and TensorFlow workstation setup (not QCopter project content)
+# Local coursework (not QCopter project content)
+/Compte_rendu_TP1_SLM_LaTeX/
 /Compte_rendu_TP1_SLM_*.docx
 /render_original_latex/
-/docs/tensorflow-windows.md
-/requirements-tf210.txt
-/tools/setup_tf210.ps1
 
 # KiCad per-user editor state; keep board/project design files
 *.kicad_prl

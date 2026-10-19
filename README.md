@@ -18,6 +18,9 @@ RP2350 flight controller · RP2040 handheld controller · F450/Q450 airframe
 
 IntelQcopter is a C-first Pico SDK project for a custom quadcopter. The aircraft target is an RP2350; a separate RP2040 target is reserved for a two-joystick handheld controller. The chosen frame family is the 450 mm F450/Q450 X-frame with two red and two white arms.
 
+> [!IMPORTANT]
+> **Current stage: firmware scaffold and software math checks.** The hand controller has no joystick/display/radio implementation. The flight firmware has no I²C sensor drivers, radio receiver, arming state machine, or ESC signal output. No airframe physics simulation or flight test has run. The code keeps motor outputs disabled.
+
 The control design target is a 500 Hz attitude loop: roll and pitch use angle setpoints with inner gyro-rate loops, yaw is rate-controlled, and altitude hold is intended to use a barometer/vertical-state estimator. LoRa is planned as the primary pilot link; CC1101 radios are optional auxiliary links. A ROS 2 companion may later provide camera/YOLO, lidar, and GPS setpoints while the RP2350 retains motor control and failsafe authority.
 
 ### Current evidence
@@ -30,9 +33,21 @@ The control design target is a 500 Hz attitude loop: roll and pitch use angle se
 | RP2350 emulator | 1,000,000 instruction steps complete | Emulator reports unsupported peripherals; not timing or I/O validation |
 | PCB | KiCad geometry DRC reports zero violations | 65 connections unrouted; not manufacturable |
 | CAD / URDF | Parametric F450 visual and XML-valid URDF | OpenSCAD rendering/physics calibration not verified |
-| Isaac Sim / ROS 2 | Setup notes and scene starter exist | No runnable local vehicle simulation yet |
+| Isaac Sim / ROS 2 | URDF starter and ROS 2 planning notes exist | No runnable local vehicle simulation or ROS 2 connection |
 
-Raw test logs, seeded traces, Monte Carlo data, and limitations are in [`artifacts/test-runs/2026-10-19/`](artifacts/test-runs/2026-10-19/).
+Open the [recorded logs and data index](artifacts/test-runs/README.md) for proof files and the limits of each check. The [interactive uncertainty dashboard](artifacts/visualizations/uncertainty-dashboard.html) plots actual saved Monte Carlo rows and replays its 5-second aggregate Kalman trace. It is a replayable chart, **not a vehicle simulation or video recording**. The original emulator log includes step-by-step progress and its unsupported-peripheral messages.
+
+Recorded Kalman uncertainty from the seeded C test:
+
+![Empirical error standard deviation compared with the Kalman predicted standard deviation over the five-second synthetic test](artifacts/visualizations/kalman-uncertainty.png)
+
+The mass and inertia density plots use the assumed priors documented below:
+
+![Probability density for the F450 frame and approximate battery mass subtotal](artifacts/visualizations/mass-density.svg)
+
+![Provisional inertia probability densities for roll, pitch, and yaw axes](artifacts/visualizations/inertia-density.svg)
+
+The [controller code walkthrough](docs/reading-the-code.md) explains each section of the RP2350 C file and the RP2040 placeholder. The [documentation index](docs/README.md) links PCB, uncertainty, simulator, code, and evidence notes.
 
 ## Architecture
 
@@ -116,6 +131,8 @@ tools/                             Build, test, trace, and uncertainty tools
 artifacts/test-runs/               Reproducible logs, CSVs, and reports
 docs/                              Interfaces and development notes
 ```
+
+`build/` and `.venv-tests/` are local ignored working files, not source deliverables. `.venv-tests/` holds Zig for the host C checks. Pico SDK/toolchain live outside the project under `C:\WinLibs`. TensorFlow is unrelated to QCopter and its 1.5 GB `.venv-tf210` has been removed; there is no TensorFlow dependency in this project. Isaac Sim is not installed in this checkout.
 
 ## Development priorities
 
