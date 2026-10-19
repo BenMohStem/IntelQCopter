@@ -1,0 +1,24 @@
+# Local SDK builds, Python environments, and generated binaries
+/build/
+/.venv-*/
+/node_modules/
+__pycache__/
+*.py[cod]
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+compile_commands.json
+*.elf
+*.uf2
+*.bin
+*.hex
+
+# Local-only coursework and TensorFlow workstation setup (not QCopter project content)
+/Compte_rendu_TP1_SLM_*.docx
+/render_original_latex/
+/docs/tensorflow-windows.md
+/requirements-tf210.txt
+/tools/setup_tf210.ps1
+
+# KiCad per-user editor state; keep board/project design files
+*.kicad_prl
