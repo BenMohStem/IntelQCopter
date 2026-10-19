@@ -34,7 +34,7 @@ The control design target is a 500 Hz attitude loop: roll and pitch use angle se
 | RP2350 emulator | 1,000,000 instruction steps complete | Emulator reports unsupported peripherals; not timing or I/O validation |
 | PCB | Editable KiCad logic-carrier draft; power/current-sensor/BMS interfaces added | DRC: 0 geometry violations; 76 pads unrouted, not manufacturable |
 | CAD / URDF | Parametric F450 visual and XML-valid URDF | OpenSCAD rendering/physics calibration not verified |
-| Isaac Sim / ROS 2 | URDF starter and ROS 2 planning notes exist | No runnable local vehicle simulation or ROS 2 connection |
+| Isaac Sim / ROS 2 | Isaac Sim 6.2.0 standalone files staged for all Windows accounts; URDF starter and ROS 2 planning notes | This Windows 10 / RTX 3050 4 GB PC is below simulator minimum; no vehicle sim or ROS 2 connection ran |
 
 Open the [recorded logs and data index](artifacts/test-runs/README.md) for proof files and the limits of each check. The [interactive uncertainty dashboard](artifacts/visualizations/uncertainty-dashboard.html) plots actual saved Monte Carlo rows and replays its 5-second aggregate Kalman trace. It is a replayable chart, **not a vehicle simulation or video recording**. The original emulator log includes step-by-step progress and its unsupported-peripheral messages.
 

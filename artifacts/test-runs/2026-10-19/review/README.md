@@ -31,4 +31,4 @@ $env:RP2350JS_PROGRESS_EVERY = '100000'
 node sim\rp2350js\boot_check.cjs build\flight-rp2350\qcopter.hex 1000000
 ```
 
-The build/emulator and filter tests prove compilation/execution or calculation for the specific software path. They don't prove RP2350 real-time timing, hardware I²C/RF, ESC signaling, vehicle response, or flight safety. Isaac Sim did not run; see [`sim/isaac/README.md`](../../../../sim/isaac/README.md). Installation of the shared standalone Isaac Sim files is being attempted separately; this PC remains below the current OS/GPU requirements.
+The build/emulator and filter tests prove compilation/execution or calculation for the specific software path. They don't prove RP2350 real-time timing, hardware I²C/RF, ESC signaling, vehicle response, or flight safety. Isaac Sim's official 6.2.0 standalone files are checksum-verified and staged in the shared Windows Public folder, but the simulator did not run because this PC is below the supported OS/GPU minimum; see [`sim/isaac/README.md`](../../../../sim/isaac/README.md).
