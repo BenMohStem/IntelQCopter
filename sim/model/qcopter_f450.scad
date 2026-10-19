@@ -3,7 +3,7 @@
 $fn = 48;
 motor_diagonal = 450;
 motor_offset = motor_diagonal / 2 / sqrt(2);
-prop_diameter = 9.4 * 25.4; // DJI F450 manual: 9.4 x 5.0 inch (diameter x pitch)
+prop_diameter = 9.0 * 25.4; // User's 9047 prop: 9.0 in diameter x 4.7 in pitch
 arm_width = 22;
 arm_height = 8;
 plate_size = 110;

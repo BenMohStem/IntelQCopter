@@ -16,3 +16,5 @@ All committed results are software checks or synthetic models. None prove a stab
 ## Review rerun
 
 [`2026-10-19/review/`](2026-10-19/review/README.md) stores fresh build, host-test, emulator, uncertainty logs, and input/output data generated during the repository review. Each log names its command and outcome. The HTML uncertainty dashboard is [`../visualizations/uncertainty-dashboard.html`](../visualizations/uncertainty-dashboard.html); it replays the recorded aggregate Kalman trace and plots the mass/inertia distributions. It is a data visualization, not a video capture or vehicle simulation.
+
+The review folder now also includes the battery-monitor host test log and a fresh PCB DRC report after moving the external BMS header inward.

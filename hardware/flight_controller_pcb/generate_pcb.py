@@ -94,6 +94,9 @@ ESC_FR = "ESC_FR_SIG"
 ESC_RR = "ESC_RR_SIG"
 ESC_RL = "ESC_RL_SIG"
 VBAT_ADC = "VBAT_ADC"
+IBAT_SIGNAL = "IBAT_SIGNAL"
+IBAT_ADC = "IBAT_ADC"
+BMS_ALERT = "BMS_ALERT"
 
 # Pico 2 side A is physical pins 1-20, top to bottom with USB at the top.
 left_pico = {
@@ -107,7 +110,7 @@ left_pico = {
 # Pico 2 side B is physical pins 40-21, top to bottom.
 right_pico = {
     1: "VBUS_USB", 2: V5, 3: GND, 4: "3V3_EN", 5: V3,
-    6: "ADC_VREF", 7: GND, 8: "GPIO_SPARE_28", 9: "GPIO_SPARE_27",
+    6: "ADC_VREF", 7: BMS_ALERT, 8: GND, 9: IBAT_ADC,
     10: VBAT_ADC, 11: "RP2350_RUN", 12: "GPIO_SPARE_22", 13: GND,
     14: CC2_CS, 15: CC1_CS, 16: MOSI, 17: SCK, 18: GND,
     19: LORA_CS, 20: MISO,
@@ -159,6 +162,23 @@ add_footprint("R2", "27k battery divider", res_lib,
 add_footprint("C1", "100n ADC filter", cap_lib,
               "C_0805_2012Metric", 65, 9, 90, {"1": VBAT_ADC, "2": GND})
 
+# Flight current is sensed in a separately rated PDB/Hall sensor; only the
+# bounded 0-3.3 V analog signal reaches this logic PCB. R3/C2 filter that signal.
+add_footprint("J16", "3V3 current sensor output only", header_lib, pin3,
+              87, 12, 90, {"1": V3, "2": GND, "3": IBAT_SIGNAL})
+add_footprint("R3", "1k current ADC series filter", res_lib,
+              "R_0805_2012Metric", 72, 12, 90,
+              {"1": IBAT_SIGNAL, "2": IBAT_ADC})
+add_footprint("C2", "100n current ADC filter", cap_lib,
+              "C_0805_2012Metric", 78, 12, 90,
+              {"1": IBAT_ADC, "2": GND})
+
+# External 3S cell-monitor/protection module connection. It reads balance taps
+# on its own board and reports telemetry/ALERT here; this carrier has no pack FET.
+add_footprint("J17", "External 3S monitor I2C/ALERT (not power path)",
+              header_lib, "PinHeader_1x05_P2.54mm_Vertical", 78, 68, 90,
+              {"1": V3, "2": GND, "3": SDA, "4": SCL, "5": BMS_ALERT})
+
 sensor_pads = {"1": V3, "2": GND, "3": SDA, "4": SCL}
 for ref, value, y in (
     ("J5", "MPU6050 I2C", 20),
@@ -197,6 +217,8 @@ for ref, value, y, signal in (
 add_label("QCOPTER FC - DRAFT", 26, 5, size=1.2)
 add_label("PICO2", 39, 73, size=1.0)
 add_label("3S LOGIC ONLY", 52, 5, size=0.8)
+add_label("CURRENT SIGNAL", 76, 5, size=0.8)
+add_label("CELL MONITOR I2C", 78, 59, size=0.8)
 
 pcbnew.SaveBoard(str(OUTPUT), board)
 print(f"Wrote {OUTPUT}")

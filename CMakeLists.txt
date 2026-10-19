@@ -29,7 +29,9 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 pico_sdk_init()
 
 if(QCOPTER_TARGET STREQUAL "flight")
-    add_executable(qcopter flight_controller/flight_controller.c)
+    add_executable(qcopter
+        flight_controller/flight_controller.c
+        flight_controller/battery_monitor.c)
     target_link_libraries(qcopter pico_stdlib pico_multicore)
 elseif(QCOPTER_TARGET STREQUAL "controller")
     add_executable(qcopter controller/controller.c)

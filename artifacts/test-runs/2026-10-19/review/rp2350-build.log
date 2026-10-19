@@ -10,7 +10,8 @@ cyw43-driver available at C:/WinLibs/pico-sdk/lib/cyw43-driver
 mbedtls available at C:/WinLibs/pico-sdk/lib/mbedtls
 lwIP available at C:/WinLibs/pico-sdk/lib/lwip
 C library type is newlib
--- Configuring done (0.5s)
--- Generating done (0.2s)
+-- Configuring done (2.6s)
+-- Generating done (0.3s)
 -- Build files have been written to: C:/Users/Mohamed/Desktop/Work/QCopter/build/flight-rp2350
-ninja: no work to do.
+[1/2] Building C object CMakeFiles/qcopter.dir/flight_controller/battery_monitor.c.obj
+[2/2] Linking CXX executable qcopter.elf

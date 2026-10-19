@@ -29,10 +29,10 @@ Pico2 physical pin,RP2350 GPIO,Signal / net,Connected item,Notes
 28,GND,GND,ground,Common signal ground
 29,GP22,GPIO_SPARE,expansion,Not allocated
 30,RUN,RP2350_RUN,reset/debug,Board switch circuitry TBD
-31,GP26,VBAT_ADC,3S battery divider 100k:27k,Max nominal divider output about 2.68 V at 12.6 V pack
-32,GP27,GPIO_SPARE,expansion,Not allocated
-33,GP28,GPIO_SPARE,expansion,Not allocated
-34,GND,GND,ground,Common signal ground
+31,GP26 / ADC0,VBAT_ADC,3S pack divider 100k:27k,Pack voltage only; max nominal divider output about 2.68 V at 12.6 V
+32,GP27 / ADC1,IBAT_ADC,external 3V3 current-sensor output,External sensor must be in separately rated PDB and output 0-3.3 V maximum
+33,AGND,GND,analog ground,Official Pico 2 pin 33 is AGND; connect to the common ground plane
+34,GP28 / ADC2,BMS_ALERT,external 3S monitor alert input,Pin assignment corrected from the earlier draft; add a defined pull-up/down per monitor datasheet
 35,ADC_VREF,ADC_VREF,Pico 2 module,Do not drive externally
 36,3V3_OUT,+3V3,Pico 2 module,Observe module current limit
 37,3V3_EN,3V3_EN,Pico 2 module,Leave unconnected in draft

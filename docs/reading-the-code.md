@@ -17,6 +17,12 @@ Open the linked source and follow these sections from top to bottom.
 9. **Safety boundary (lines 309–317).** Motor order and signs are expressly provisional. Every call leaves `armed=false`; there is no PWM, DShot, arming state machine, or ESC driver. Treat these outputs as test math only.
 10. **RP2350 entry point (lines 319–343).** Core 1 is reserved for slow work, but currently only sleeps. Core 0 prints that outputs are disabled and repeatedly calls the math function with empty sensor/command records. That deliberate empty input fails the IMU check and cannot arm or fly.
 
+## Battery monitoring ([`battery_monitor.c`](../flight_controller/battery_monitor.c))
+
+The battery module is hardware-independent and is linked into the RP2350 image, but sensor drivers do not feed it yet. Its scalar Kalman filter smooths total pack voltage and keeps a voltage standard deviation. Its SOC Kalman filter predicts charge using measured current (coulomb counting), then optionally corrects using a pack-specific *rested* open-circuit-voltage-to-SOC observation. That lookup and resting detector are not implemented because the exact pack has not been identified. It reports SOC standard deviation to show uncertainty instead of presenting a falsely precise percentage. Under load, total pack voltage is not used as an SOC observation.
+
+The module can request a controlled landing on a configured low-pack/low-cell/current warning or external BMS alert; it recommends disarming only when the caller says the aircraft is landed. Invalid or stale samples return a sensor-fault action. It cannot disconnect the battery or replace hardware cell protection. Configuration thresholds are deliberately caller-provided and have no flight-ready defaults.
+
 ## Hand controller ([`controller.c`](../controller/controller.c))
 
 There are five executable lines of behavior: include standard output and Pico SDK headers; initialize USB/UART stdio; wait 1.5 seconds for a terminal; print that inputs and radio are unconfigured; then spin doing nothing. **No joystick, screen, button, LoRa, or CC1101 code exists yet.** This file is a buildable RP2040 placeholder, not an implemented transmitter.

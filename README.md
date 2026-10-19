@@ -30,8 +30,9 @@ The control design target is a 500 Hz attitude loop: roll and pitch use angle se
 | RP2350 firmware | Builds for Pico 2 / ARM-S | No physical board or sensor drivers yet |
 | RP2040 firmware | Builds for Pico | Handheld application is still a placeholder |
 | Flight math | Host checks pass; 500-trial C Kalman Monte Carlo recorded | Not closed-loop aircraft stability or tuned gains |
+| Battery monitor | Host checks cover voltage/SOC Kalman math, alarms, and input faults | No drivers, calibrated OCV curve, thresholds, or cell monitor are connected |
 | RP2350 emulator | 1,000,000 instruction steps complete | Emulator reports unsupported peripherals; not timing or I/O validation |
-| PCB | KiCad geometry DRC reports zero violations | 65 connections unrouted; not manufacturable |
+| PCB | Editable KiCad logic-carrier draft; power/current-sensor/BMS interfaces added | DRC: 0 geometry violations; 76 pads unrouted, not manufacturable |
 | CAD / URDF | Parametric F450 visual and XML-valid URDF | OpenSCAD rendering/physics calibration not verified |
 | Isaac Sim / ROS 2 | URDF starter and ROS 2 planning notes exist | No runnable local vehicle simulation or ROS 2 connection |
 
@@ -77,14 +78,17 @@ The fast loop must never wait on RF, display, ROS 2, or slow sensors. Actual acq
 | Frame | F450/Q450, nominal 450 mm motor diagonal | User confirmed frame family; clone dimensions need measurement |
 | Frame mass | 282 g reference value | DJI manual specification; clone/landing gear may differ |
 | Battery | 3S, 4200 mAh, about 150 g | Battery mass is provisional, per user |
+| Battery discharge label | 120C (user supplied) | Manufacturer and continuous-vs-burst meaning not verified; does not establish motor current |
+| Battery monitor | Pack-voltage Kalman filter + coulomb-count SOC; BMS cell-alert inputs are supported | No sensor is connected; external current/cell-monitor hardware and calibrated limits are still needed |
 | Motors | 1400 KV | Propeller, motor model, thrust curve, and current curve unknown |
+| Propellers | 9047 (9.0-inch diameter × 4.7-inch pitch) | User supplied; manufacturer, material, rotation pairs, and motor-current compatibility need confirmation |
 | ESCs | 40 A each | Current rating only; protocol and actual behavior unknown |
 | Flight MCU | RP2350 Pico 2 module for initial build | Final PCB/module selection still to confirm |
 | Sensors | MPU6050 + HMC5883L + BMP280 on I²C | Board breakouts and addresses must be checked; magnetometer variants exist |
 | Radio | LoRa primary; up to two CC1101 auxiliary | Exact modules, band, antenna, packet protocol, and regional compliance open |
 | Aircraft mass | Not measured | Motors, ESCs, controller, wiring, GPS/lidar/camera, and mounting hardware remain uncounted |
 
-DJI lists the F450 diagonal wheelbase as 450 mm and frame weight as 282 g. The manual’s 9.4 × 5.0 inch propeller notation means 9.4-inch diameter by 5-inch pitch; it is not a 5-inch propeller. Those are reference-frame specifications, not validated recommendations for the project’s 1400 KV motors and 3S pack. [DJI F450 User Manual](https://dl.djicdn.com/downloads/flamewheel/en/F450_User_Manual_v2.2_en.pdf)
+DJI lists the F450 diagonal wheelbase as 450 mm and frame weight as 282 g. Its stock propeller notation is 9.4 × 5.0 inch (diameter × pitch); this project uses the user's selected 9047 (9 × 4.7 inch) propeller size instead. That prop/motor combination has **not** been electrically validated for the 1400 KV motors and 3S pack. [DJI F450 User Manual](https://dl.djicdn.com/downloads/flamewheel/en/F450_User_Manual_v2.2_en.pdf)
 
 ## Mass-property uncertainty — preliminary only
 

@@ -1,6 +1,7 @@
 /* Host tests include the production C implementation without changing its math. */
 #define QCOPTER_HOST_TEST
 #include "../flight_controller.c"
+#include "../battery_monitor.c"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -92,6 +93,59 @@ static void test_estimator_and_mixer_remain_finite(void) {
     CHECK(isfinite(roll_estimator.angle_deg));
     CHECK(isfinite(pitch_estimator.angle_deg));
     CHECK(isfinite(altitude_estimator.height_m));
+}
+
+static void test_battery_monitor_filter_soc_and_actions(void) {
+    battery_status_t status;
+    battery_monitor_init(&status, 100.0f);
+    const battery_config_t cfg = {
+        .capacity_ah = 4.2f, .initial_soc_percent = 100.0f,
+        .low_cell_voltage_v = 3.6f, .critical_cell_voltage_v = 3.3f,
+        .low_pack_voltage_v = 10.8f, .maximum_discharge_current_a = 80.0f,
+        .voltage_measurement_variance_v2 = 0.04f,
+        .voltage_process_variance_v2 = 0.001f,
+        .initial_soc_variance_percent2 = 25.0f,
+        .soc_process_variance_percent2_per_s = 0.01f,
+        .soc_measurement_variance_percent2 = 4.0f,
+        .maximum_sample_dt_s = 0.1f
+    };
+    battery_sample_t sample = {
+        .pack_voltage_v = 12.0f, .pack_current_a = 4.2f,
+        .minimum_cell_voltage_v = 4.0f, .pack_voltage_valid = true,
+        .pack_current_valid = true, .cell_voltage_valid = true
+    };
+    CHECK(battery_monitor_update(&status, &sample, &cfg, 0.1f)
+          == BATTERY_ACTION_NORMAL);
+    CHECK(status.voltage_filter_initialized && status.soc_initialized);
+    CHECK(status.filtered_pack_voltage_v == sample.pack_voltage_v);
+    CHECK(status.estimated_soc_percent < 100.0f);
+    const float sigma_before_correction = status.estimated_soc_sigma_percent;
+    sample.rested_soc_observation_valid = true;
+    sample.rested_soc_observation_percent = 80.0f;
+    battery_monitor_update(&status, &sample, &cfg, 0.1f);
+    CHECK(status.estimated_soc_percent < 90.0f);
+    CHECK(status.estimated_soc_sigma_percent < sigma_before_correction);
+    sample.rested_soc_observation_valid = false;
+    sample.pack_voltage_v = 10.0f;
+    for (unsigned i = 0; i < 20; ++i)
+        battery_monitor_update(&status, &sample, &cfg, 0.1f);
+    CHECK(status.action == BATTERY_ACTION_LAND);
+    sample.pack_voltage_v = 12.0f;
+    sample.minimum_cell_voltage_v = 3.2f;
+    CHECK(battery_monitor_update(&status, &sample, &cfg, 0.1f)
+          == BATTERY_ACTION_LAND);
+    sample.aircraft_landed = true;
+    CHECK(battery_monitor_update(&status, &sample, &cfg, 0.1f)
+          == BATTERY_ACTION_LANDED_DISARM);
+    sample.aircraft_landed = false;
+    sample.minimum_cell_voltage_v = 4.0f;
+    sample.bms_alert = true;
+    CHECK(battery_monitor_update(&status, &sample, &cfg, 0.1f)
+          == BATTERY_ACTION_LAND);
+    sample.bms_alert = false;
+    sample.pack_current_valid = false;
+    CHECK(battery_monitor_update(&status, &sample, &cfg, 0.1f)
+          == BATTERY_ACTION_SENSOR_FAULT);
 }
 
 /* Deterministic 5-second sensor-input trace for plots; this is not a plant model. */
@@ -232,6 +286,7 @@ int main(int argc, char **argv) {
     test_bad_sensor_dt_and_command_fail_closed();
     test_pid_limits_and_anti_windup();
     test_estimator_and_mixer_remain_finite();
+    test_battery_monitor_filter_soc_and_actions();
     puts("flight-controller host tests passed (math only; no hardware I/O)");
     return 0;
 }
