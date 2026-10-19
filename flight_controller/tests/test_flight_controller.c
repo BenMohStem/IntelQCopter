@@ -28,10 +28,29 @@ static sensor_sample_t level_sensor(void) {
 static pilot_command_t neutral_command(void) {
     pilot_command_t c = {
         .roll_deg = 0.0f, .pitch_deg = 0.0f, .yaw_rate_dps = 0.0f,
-        .throttle = 0.4f, .valid = true, .arm_request = false,
-        .altitude_hold = false
+        .throttle = 0.5f, .valid = true, .arm_request = false
     };
     return c;
+}
+
+static void test_centered_throttle_holds_and_stick_commands_vertical_rate(void) {
+    sensor_sample_t s = level_sensor();
+    pilot_command_t c = neutral_command();
+    for (unsigned i = 0; i < 20; ++i)
+        (void)flight_control_step(&s, &c, FC_LOOP_DT);
+    const float neutral_collective = flight_control_step(&s, &c, FC_LOOP_DT).motor[0];
+    CHECK(fabsf(neutral_collective - FC_HOVER_THROTTLE_PLACEHOLDER) < 1e-5f);
+
+    c.throttle = 0.75f;
+    control_output_t climb = {0};
+    for (unsigned i = 0; i < 20; ++i) climb = flight_control_step(&s, &c, FC_LOOP_DT);
+    CHECK(climb.motor[0] > neutral_collective);
+
+    c.throttle = 0.25f;
+    control_output_t descend = {0};
+    for (unsigned i = 0; i < 20; ++i) descend = flight_control_step(&s, &c, FC_LOOP_DT);
+    CHECK(descend.motor[0] < neutral_collective);
+    CHECK(!climb.armed && !descend.armed);
 }
 
 static void test_neutral_output_stays_disarmed(void) {
@@ -58,6 +77,13 @@ static void test_bad_sensor_dt_and_command_fail_closed(void) {
     out = flight_control_step(&s, &c, 0.02f);
     CHECK(out.sensor_fault && !out.armed);
 
+    s = level_sensor();
+    s.barometer_valid = false;
+    out = flight_control_step(&s, &c, FC_LOOP_DT);
+    CHECK(out.sensor_fault && !out.armed);
+    for (unsigned i = 0; i < 4; ++i) CHECK(out.motor[i] == 0.0f);
+
+    s = level_sensor();
     c.valid = false;
     out = flight_control_step(&s, &c, FC_LOOP_DT);
     CHECK(out.sensor_fault && !out.armed);
@@ -100,6 +126,7 @@ static void test_battery_monitor_filter_soc_and_actions(void) {
     battery_monitor_init(&status, 100.0f);
     const battery_config_t cfg = {
         .capacity_ah = 4.2f, .initial_soc_percent = 100.0f,
+        .low_soc_percent = 20.0f,
         .low_cell_voltage_v = 3.6f, .critical_cell_voltage_v = 3.3f,
         .low_pack_voltage_v = 10.8f, .maximum_discharge_current_a = 80.0f,
         .voltage_measurement_variance_v2 = 0.04f,
@@ -125,6 +152,15 @@ static void test_battery_monitor_filter_soc_and_actions(void) {
     battery_monitor_update(&status, &sample, &cfg, 0.1f);
     CHECK(status.estimated_soc_percent < 90.0f);
     CHECK(status.estimated_soc_sigma_percent < sigma_before_correction);
+    /* A SOC threshold requests landing in flight and disarm only once landed. */
+    status.estimated_soc_percent = 20.0f;
+    sample.rested_soc_observation_valid = false;
+    CHECK(battery_monitor_update(&status, &sample, &cfg, 0.1f)
+          == BATTERY_ACTION_LAND);
+    sample.aircraft_landed = true;
+    CHECK(battery_monitor_update(&status, &sample, &cfg, 0.1f)
+          == BATTERY_ACTION_LANDED_DISARM);
+    sample.aircraft_landed = false;
     sample.rested_soc_observation_valid = false;
     sample.pack_voltage_v = 10.0f;
     for (unsigned i = 0; i < 20; ++i)
@@ -283,6 +319,7 @@ int main(int argc, char **argv) {
         return 2;
     }
     test_neutral_output_stays_disarmed();
+    test_centered_throttle_holds_and_stick_commands_vertical_rate();
     test_bad_sensor_dt_and_command_fail_closed();
     test_pid_limits_and_anti_windup();
     test_estimator_and_mixer_remain_finite();

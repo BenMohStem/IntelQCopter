@@ -12,6 +12,8 @@ static bool config_is_valid(const battery_config_t *c) {
     return c != NULL && positive_finite(c->capacity_ah)
         && isfinite(c->initial_soc_percent)
         && c->initial_soc_percent >= 0.0f && c->initial_soc_percent <= 100.0f
+        && isfinite(c->low_soc_percent)
+        && c->low_soc_percent >= 0.0f && c->low_soc_percent <= 100.0f
         && positive_finite(c->critical_cell_voltage_v)
         && c->low_cell_voltage_v >= c->critical_cell_voltage_v
         && positive_finite(c->low_cell_voltage_v)
@@ -115,7 +117,8 @@ battery_action_t battery_monitor_update(battery_status_t *status,
             && sample->minimum_cell_voltage_v <= config->critical_cell_voltage_v)) {
         status->action = sample->aircraft_landed
             ? BATTERY_ACTION_LANDED_DISARM : BATTERY_ACTION_LAND;
-    } else if (status->filtered_pack_voltage_v <= config->low_pack_voltage_v
+    } else if (status->estimated_soc_percent <= config->low_soc_percent
+        || status->filtered_pack_voltage_v <= config->low_pack_voltage_v
         || (sample->cell_voltage_valid
             && sample->minimum_cell_voltage_v <= config->low_cell_voltage_v)
         || sample->pack_current_a > config->maximum_discharge_current_a) {

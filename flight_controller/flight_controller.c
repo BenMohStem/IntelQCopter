@@ -22,6 +22,8 @@
 #define FC_MAX_CONTROL_DT 0.010f
 #define FC_RAD_TO_DEG 57.2957795f
 #define FC_DEG_TO_RAD 0.0174532925f
+#define FC_HOVER_THROTTLE_PLACEHOLDER 0.50f
+#define FC_MAX_VERTICAL_SPEED_MPS 2.0f
 
 typedef struct {
     float kp;
@@ -61,10 +63,9 @@ typedef struct {
     float roll_deg;
     float pitch_deg;
     float yaw_rate_dps;
-    float throttle;
+    float throttle; /* [0,1], center requests zero vertical speed */
     bool valid;
     bool arm_request;
-    bool altitude_hold;
 } pilot_command_t;
 
 typedef struct {
@@ -120,12 +121,13 @@ static pid_t yaw_rate_pid = {
     .kp = 0.006f, .ki = 0.001f, .kd = 0.0001f,
     .integrator_limit = 0.25f, .output_limit = 0.35f
 };
-static pid_t altitude_pid = {
-    .kp = 0.5f, .ki = 0.0f, .kd = 0.0f,
+static pid_t vertical_rate_pid = {
+    .kp = 0.08f, .ki = 0.0f, .kd = 0.0f,
     .integrator_limit = 0.0f, .output_limit = 0.2f
 };
 static float altitude_hold_reference_m;
-static bool altitude_hold_was_enabled;
+static const float altitude_position_to_rate = 0.6f; /* placeholder */
+static bool altitude_reference_initialized;
 
 static float clampf(float value, float low, float high) {
     if (value < low) return low;
@@ -269,6 +271,12 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
         out.sensor_fault = true;
         return out;
     }
+    /* The only implemented mode requires valid height/rate aiding. */
+    if (!s->barometer_valid || !isfinite(s->barometer_height_m)
+        || !isfinite(s->vertical_acceleration_mps2)) {
+        out.sensor_fault = true;
+        return out;
+    }
 
     /* Bound pilot inputs before they enter the control math. */
     const float roll_setpoint = clampf(cmd->roll_deg, -35.0f, 35.0f);
@@ -286,22 +294,25 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
     const float yaw = pid_update(&yaw_rate_pid, yaw_rate_setpoint,
                                  s->gyro_z_dps, dt);
 
-    float collective = throttle;
-    if (cmd->altitude_hold && s->barometer_valid
-        && isfinite(s->barometer_height_m)
-        && isfinite(s->vertical_acceleration_mps2)) {
-        if (!altitude_hold_was_enabled) {
-            altitude_hold_reference_m = altitude_estimator.height_m;
-            pid_reset(&altitude_pid);
-        }
-        altitude_hold_was_enabled = true;
-        const float altitude_correction = pid_update(&altitude_pid,
-            altitude_hold_reference_m, altitude_estimator.height_m, dt);
-        collective = clampf(throttle + altitude_correction, 0.0f, 1.0f);
-    } else {
-        altitude_hold_was_enabled = false;
-        pid_reset(&altitude_pid);
+    if (!altitude_reference_initialized) {
+        altitude_hold_reference_m = altitude_estimator.height_m;
+        pid_reset(&vertical_rate_pid);
+        altitude_reference_initialized = true;
     }
+    const float pilot_vertical_speed = (throttle - 0.5f)
+                                     * 2.0f * FC_MAX_VERTICAL_SPEED_MPS;
+    altitude_hold_reference_m += pilot_vertical_speed * dt;
+    const float altitude_velocity_correction = clampf(
+        altitude_position_to_rate
+            * (altitude_hold_reference_m - altitude_estimator.height_m),
+        -FC_MAX_VERTICAL_SPEED_MPS, FC_MAX_VERTICAL_SPEED_MPS);
+    const float vertical_speed_setpoint = clampf(
+        pilot_vertical_speed + altitude_velocity_correction,
+        -FC_MAX_VERTICAL_SPEED_MPS, FC_MAX_VERTICAL_SPEED_MPS);
+    const float collective_correction = pid_update(&vertical_rate_pid,
+        vertical_speed_setpoint, altitude_estimator.velocity_mps, dt);
+    const float collective = clampf(FC_HOVER_THROTTLE_PLACEHOLDER
+                                    + collective_correction, 0.0f, 1.0f);
 
     /* Provisional X-frame math in logical order FL, FR, RR, RL. The result is
        for simulation only until motor order, spin directions, and frame axes

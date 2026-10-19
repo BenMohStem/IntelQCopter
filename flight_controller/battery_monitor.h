@@ -27,6 +27,7 @@ typedef struct {
 typedef struct {
     float capacity_ah;
     float initial_soc_percent;  /* initialize from verified fully charged pack */
+    float low_soc_percent;      /* request landing at/below this estimate */
     float low_cell_voltage_v;
     float critical_cell_voltage_v;
     float low_pack_voltage_v;

@@ -21,7 +21,7 @@ IntelQcopter is a C-first Pico SDK project for a custom quadcopter. The aircraft
 > [!IMPORTANT]
 > **Current stage: firmware scaffold and software math checks.** The hand controller has no joystick/display/radio implementation. The flight firmware has no I²C sensor drivers, radio receiver, arming state machine, or ESC signal output. No airframe physics simulation or flight test has run. The code keeps motor outputs disabled.
 
-The control design target is a 500 Hz attitude loop: roll and pitch use angle setpoints with inner gyro-rate loops, yaw is rate-controlled, and altitude hold is intended to use a barometer/vertical-state estimator. LoRa is planned as the primary pilot link; CC1101 radios are optional auxiliary links. A ROS 2 companion may later provide camera/YOLO, lidar, and GPS setpoints while the RP2350 retains motor control and failsafe authority.
+The control design target is a 500 Hz attitude loop: roll and pitch use angle setpoints with inner gyro-rate loops, yaw is rate-controlled, and the default throttle command is vertical speed with center-stick altitude hold. The software scaffold now models that cascade around a **0.50 placeholder hover collective**; it is not tuned and it still leaves motor outputs disabled. LoRa is planned as the primary pilot link; CC1101 radios are optional auxiliary links. A ROS 2 companion may later provide camera/YOLO, lidar, and GPS setpoints while the RP2350 retains motor control and failsafe authority.
 
 ### Current evidence
 
@@ -30,7 +30,7 @@ The control design target is a 500 Hz attitude loop: roll and pitch use angle se
 | RP2350 firmware | Builds for Pico 2 / ARM-S | No physical board or sensor drivers yet |
 | RP2040 firmware | Builds for Pico | Handheld application is still a placeholder |
 | Flight math | Host checks pass; 500-trial C Kalman Monte Carlo recorded | Not closed-loop aircraft stability or tuned gains |
-| Battery monitor | Host checks cover voltage/SOC Kalman math, alarms, and input faults | No drivers, calibrated OCV curve, thresholds, or cell monitor are connected |
+| Battery monitor | Host checks cover voltage/SOC Kalman math, 20% SOC landing request, alarms, and input faults | No drivers, coulomb-count current sensor, calibrated OCV curve, or landing-action integration are connected |
 | RP2350 emulator | 1,000,000 instruction steps complete | Emulator reports unsupported peripherals; not timing or I/O validation |
 | PCB | Editable KiCad logic-carrier draft; power/current-sensor/BMS interfaces added | DRC: 0 geometry violations; 76 pads unrouted, not manufacturable |
 | CAD / URDF | Parametric F450 visual and XML-valid URDF | OpenSCAD rendering/physics calibration not verified |

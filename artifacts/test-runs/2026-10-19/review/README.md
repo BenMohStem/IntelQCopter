@@ -6,6 +6,8 @@ This is a fresh rerun captured while organizing the project. Logs preserve the c
 
 - [`rp2350-build.log`](rp2350-build.log): Pico SDK 2.3.0, `pico2` / RP2350 ARM-S configuration completed. No firmware flashed.
 - [`battery-monitor-host-tests.log`](battery-monitor-host-tests.log): the added battery monitor code passed host checks for scalar pack-voltage filtering, SOC Kalman prediction/correction, SOC uncertainty reduction after a supplied rested-OCV observation, low voltage, critical-cell/BMS alerts, landed-disarm recommendation, and invalid sensor fail-safe.
+- [`control-mode-host-tests.log`](control-mode-host-tests.log): rerun after adding centered-stick vertical-speed commands, barometer fail-closed behavior, and the configurable 20% SOC landing request. Includes a fresh 500-trial Kalman Monte Carlo run.
+- [`control-mode-rp2350-build.log`](control-mode-rp2350-build.log): RP2350 Pico 2 firmware target built successfully; no board was flashed.
 - [`pcb-drc.log`](pcb-drc.log): KiCad geometry DRC result is zero geometry violations and 76 unconnected pads. The board is electrically unrouted and cannot be fabricated.
 - [`isaacsim-install-record.md`](isaacsim-install-record.md): records the checksum-verified official package, shared extraction path, setup result, and why no simulator launch was attempted.
 - [`rp2040-build.log`](rp2040-build.log): `pico` / RP2040 configuration completed. No firmware flashed.
@@ -13,7 +15,7 @@ This is a fresh rerun captured while organizing the project. Logs preserve the c
 - [`kalman-roll-monte-carlo.csv`](kalman-roll-monte-carlo.csv): at 5.0 s, empirical error σ = 0.103118°, predicted Kalman σ = 0.137386°, mean error = -0.004643°, RMSE = 0.103119°, ±1σ coverage = 81.2%, ±2σ coverage = 99.8%.
 - [`mass-monte-carlo.log`](mass-monte-carlo.log) and [`mass-model/`](mass-model/): 20,000 seeded draws. Frame plus approximate battery subtotal = 431.47 g mean, 32.20 g standard deviation, 369.55–494.60 g central 95% interval. Motors, ESCs, electronics, wiring, and payload are excluded. Many geometric/mass uncertainties are assumed priors, not measured uncertainty.
 - [`rp2350js-boot.log`](rp2350js-boot.log): emulator executed 1,000,000 instruction steps (1,024,880 emulator cycles). Its warnings about unsupported peripherals and its final scope limitation are preserved in the log.
-- [`flight-control-trace.csv`](flight-control-trace.csv): 2,500 synthetic 500 Hz math samples. This trace uses constant roll and throttle inputs, has equal normalized mixer values, and stays disarmed. It has **no vehicle dynamics**; it is not useful as a stability result.
+- [`flight-control-trace.csv`](flight-control-trace.csv): 2,500 synthetic 500 Hz math samples, with scripted roll and a centered-stick climb/descent request. The mixer remains disarmed and contains only controller math. It has **no vehicle dynamics**; it is not a stability result.
 - [`../visualizations/uncertainty-dashboard.html`](../../../visualizations/uncertainty-dashboard.html): standalone browser dashboard built from the review CSVs. Its play button replays aggregate Kalman error/covariance statistics over time; mass and inertia plots show the sampled distributions.
 - [`kalman-uncertainty.png`](../../../visualizations/kalman-uncertainty.png): static graph exported from the same 251 recorded time bins for direct preview. The reproducible vector plot is [`kalman-uncertainty.svg`](../../../visualizations/kalman-uncertainty.svg).
 
