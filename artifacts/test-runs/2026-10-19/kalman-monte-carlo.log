@@ -1,0 +1,5 @@
+flight-controller host tests passed (math only; no hardware I/O)
+Kalman Monte Carlo passed: 500 trials x 2500 steps; production C filter; seed=2350.
+Assumed noise: gyro sigma=0.200 deg/s, accel-angle sigma=2.000 deg, bias walk sigma=0.0100 deg/s/sqrt(s).
+Initial priors: roll sigma=1.000 deg, gyro-bias sigma=0.100 deg/s; Gaussian simulated input.
+Wrote 251-sample distribution trace to artifacts\test-runs\2026-10-19\kalman-roll-monte-carlo.csv.
