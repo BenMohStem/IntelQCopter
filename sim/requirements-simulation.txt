@@ -1,0 +1,13 @@
+# Project Python 3.10 environment. Does not install a system CUDA toolkit.
+numpy==1.26.4
+matplotlib==3.10.9
+torch==2.2.0
+torchvision==0.17.0
+ultralytics==8.4.182
+imageio-ffmpeg==0.6.0
+opencv-python==4.11.0.86
+onnx==1.17.0
+usd-core==26.8
+requests==2.34.2
+nvidia-ml-py==13.615.71
+# Bundled ROS Python 3.12 separately uses build/ros_python/numpy==2.2.6.

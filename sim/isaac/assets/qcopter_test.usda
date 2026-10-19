@@ -1,0 +1,173 @@
+#usda 1.0
+(
+    customLayerData = {
+        string controller = "External flight/ROS/force adapters not yet connected to this stage"
+        string status = "ASSUMED model, USD parser validated; not run in Isaac"
+    }
+    defaultPrim = "World"
+    metersPerUnit = 1
+    timeCodesPerSecond = 500
+    upAxis = "Z"
+)
+
+def Xform "World"
+{
+    def PhysicsScene "Physics"
+    {
+        vector3f physics:gravityDirection = (0, 0, -1)
+        float physics:gravityMagnitude = 9.80665
+    }
+
+    def DomeLight "Light"
+    {
+        float inputs:intensity = 700
+    }
+
+    def Cube "Ground" (
+        prepend apiSchemas = ["PhysicsCollisionAPI"]
+    )
+    {
+        color3f[] primvars:displayColor = [(0.2, 0.25, 0.3)]
+        double size = 1
+        float3 xformOp:scale = (20, 12, 0.2)
+        double3 xformOp:translate = (4, 0, -0.1)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+    }
+
+    def Xform "Drone" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0)
+        float3 physics:diagonalInertia = (0.012, 0.012, 0.022)
+        float physics:mass = 1.2
+        quatf physics:principalAxes = (1, 0, 0, 0)
+        bool physics:rigidBodyEnabled = 1
+        quatf xformOp:orient = (1, 0, 0, 0)
+        double3 xformOp:translate = (0, 0, 1.5)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+
+        def Cube "Body"
+        {
+            color3f[] primvars:displayColor = [(0.1, 0.1, 0.12)]
+            double size = 1
+            float3 xformOp:scale = (0.12, 0.1, 0.035)
+            double3 xformOp:translate = (0, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "ArmFL"
+        {
+            color3f[] primvars:displayColor = [(0.8, 0.03, 0.03)]
+            double size = 1
+            float xformOp:rotateZ = 45
+            float3 xformOp:scale = (0.225, 0.025, 0.02)
+            double3 xformOp:translate = (0.07954951288348659, 0.07954951288348659, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+        }
+
+        def Cylinder "RotorFL"
+        {
+            double height = 0.003
+            color3f[] primvars:displayColor = [(0.05, 0.05, 0.05)]
+            double radius = 0.1143
+            double3 xformOp:translate = (0.15909902576697318, 0.15909902576697318, 0.035)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cube "ArmFR"
+        {
+            color3f[] primvars:displayColor = [(0.8, 0.03, 0.03)]
+            double size = 1
+            float xformOp:rotateZ = -45
+            float3 xformOp:scale = (0.225, 0.025, 0.02)
+            double3 xformOp:translate = (0.07954951288348659, -0.07954951288348659, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+        }
+
+        def Cylinder "RotorFR"
+        {
+            double height = 0.003
+            color3f[] primvars:displayColor = [(0.05, 0.05, 0.05)]
+            double radius = 0.1143
+            double3 xformOp:translate = (0.15909902576697318, -0.15909902576697318, 0.035)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cube "ArmRR"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.9, 0.85)]
+            double size = 1
+            float xformOp:rotateZ = -135
+            float3 xformOp:scale = (0.225, 0.025, 0.02)
+            double3 xformOp:translate = (-0.07954951288348659, -0.07954951288348659, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+        }
+
+        def Cylinder "RotorRR"
+        {
+            double height = 0.003
+            color3f[] primvars:displayColor = [(0.05, 0.05, 0.05)]
+            double radius = 0.1143
+            double3 xformOp:translate = (-0.15909902576697318, -0.15909902576697318, 0.035)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cube "ArmRL"
+        {
+            color3f[] primvars:displayColor = [(0.9, 0.9, 0.85)]
+            double size = 1
+            float xformOp:rotateZ = 135
+            float3 xformOp:scale = (0.225, 0.025, 0.02)
+            double3 xformOp:translate = (-0.07954951288348659, 0.07954951288348659, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZ", "xformOp:scale"]
+        }
+
+        def Cylinder "RotorRL"
+        {
+            double height = 0.003
+            color3f[] primvars:displayColor = [(0.05, 0.05, 0.05)]
+            double radius = 0.1143
+            double3 xformOp:translate = (-0.15909902576697318, 0.15909902576697318, 0.035)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+        }
+
+        def Cylinder "CollisionEnvelope" (
+            prepend apiSchemas = ["PhysicsCollisionAPI"]
+        )
+        {
+            double height = 0.08
+            uniform token purpose = "guide"
+            double radius = 0.34
+        }
+    }
+
+    def Cylinder "Obstacle0" (
+        prepend apiSchemas = ["PhysicsCollisionAPI"]
+    )
+    {
+        double height = 3
+        color3f[] primvars:displayColor = [(0.3, 0.4, 0.5)]
+        double radius = 0.65
+        double3 xformOp:translate = (3, 0, 1.5)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Cylinder "Obstacle1" (
+        prepend apiSchemas = ["PhysicsCollisionAPI"]
+    )
+    {
+        double height = 3
+        color3f[] primvars:displayColor = [(0.3, 0.4, 0.5)]
+        double radius = 0.65
+        double3 xformOp:translate = (5.5, -0.8, 1.5)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    def Camera "Overview"
+    {
+        matrix4d xformOp:transform = ( (0.894427190999916, 0.447213595499958, 0, 0), (-0.26024001945294223, 0.5204800389058845, 0.8132500607904445, -0), (0.363696483726654, -0.727392967453308, 0.5819143739626464, 0), (9, -10, 9, 1.0000000000000002) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+    }
+}
+

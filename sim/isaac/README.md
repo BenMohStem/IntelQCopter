@@ -1,27 +1,45 @@
-# Isaac Sim status and scene starter
+# Isaac Sim: model prepared, execution blocked
 
-## Actual status on this workstation
+## Installation and launch result
 
-**Isaac Sim files are installed for all Windows accounts, but no Isaac Sim aircraft simulation has run.** The official Windows standalone 6.2.0 package is extracted at `C:\Users\Public\Documents\IsaacSim\app`; the archive MD5 matched NVIDIA's published checksum. Its package `VERSION` reads `6.2.0-rc.14+release.52805.02189a84.gl`. A shared install note is at `C:\Users\Public\Documents\IsaacSim\README-ALL-USERS.txt`.
+The shared standalone installation is at **C:\IsaacSim\app**, moved from Public
+Documents as requested. It is separate from the older project Python environment
+used for CPU/YOLO tests. The standalone package identifies as 6.2.0-rc.14.
 
-The simulator has **not** been launched on this PC. Isaac Sim 6.2.0's current minimum lists Windows 11, GeForce RTX 4080, 16 GB VRAM, 32 GB RAM, and 50 GB SSD. This workstation is Windows 10 with an RTX 3050 Laptop GPU and 4 GB VRAM, so installation only stages the files; it does not make this PC a supported or usable simulator host. See NVIDIA's [system requirements](https://docs.isaacsim.omniverse.nvidia.com/6.2.0/installation/requirements.html) and [standalone workstation install instructions](https://docs.isaacsim.omniverse.nvidia.com/6.2.0/installation/install_workstation.html). The QCopter project does not need TensorFlow, and its TensorFlow virtual environment has been removed.
+Two launches on 20 October 2026 failed physical GPU enumeration and GPU Foundation
+initialization. The remote Python server never became healthy. Original
+[launch](../../artifacts/test-runs/2026-10-20/isaac-launch.log),
+[second attempt](../../artifacts/test-runs/2026-10-20/isaac-d3d12-launch.log), and
+[health probe](../../artifacts/test-runs/2026-10-20/isaac-health.log) logs are retained.
+Adding the d3d12 option did not resolve the failure. This host is Windows10,
+RTX3050 Laptop4GB, driver555.99. No Isaac vehicle physics, camera capture, ROS
+bridge scene or recording succeeded here.
 
-The available artifacts are a starter URDF at [`assets/qcopter.urdf`](assets/qcopter.urdf), a parametric visual CAD model at [`../model/qcopter_f450.scad`](../model/qcopter_f450.scad), and scenario/interface planning files. They are **not** an Isaac Sim stage, calibrated multirotor dynamics model, or physics-simulation result. The URDF's mass and inertia are placeholders. It has no rotor thrust dynamics, sensor simulation, or connection to the RP2350 firmware.
+## New USD model
 
-Hardware limits and simulator release requirements change over time. Before running this installation, check the official requirements again. If this PC cannot run a supported version, Gazebo is a more practical local route; the URDF still needs inertial/rotor/sensor models for meaningful flight tests.
+Run `sim/isaac/build_stage.py` in the project environment to author
+[assets/qcopter_test.usda](assets/qcopter_test.usda). It has18prims: rigid body
+with assumed1.2kg mass and explicit diagonal inertia, red/white arms, four9047
+rotor discs, conservative0.34m collision envelope, ground, obstacles, light,
+overview camera and gravity scene. Parameter source:
+[simulation_parameters.json](../model/simulation_parameters.json).
 
-## What has actually been tested
+[USD validation](../../artifacts/test-runs/2026-10-20/usd-validation.json) confirms
+successful parser reopening and mass/scene attributes. It does not establish
+PhysX stepping, contact correctness, sensor rendering or a flight-force adapter.
+The older URDF remains a separate visual starter with older placeholders; it is
+not the parameter source for this USD or the CPU tests.
 
-- The URDF parses as XML. This only verifies file syntax.
-- The RP2350 emulator runs the firmware image for a fixed instruction count. It does not execute or validate an Isaac Sim scene.
-- The C Kalman test is a seeded synthetic sensor/attitude math experiment. It is not vehicle physics or HIL.
+## Working baseline and remaining integration
 
-See the [evidence index](../../artifacts/test-runs/README.md) for original logs, CSVs, and limitations. No vehicle-simulation video is included because no vehicle physics simulation has completed.
+The [CPU simulation](../sitl/run.py) uses the production C flight equations,
+common C++ planner and documented six-DOF plant. Two bundled ROS2 Jazzy Python
+adapter nodes separately complete the route through actual UDP DDS.
+[Video, graphs and data](../../artifacts/simulation/2026-10-20/README.md) explicitly
+label that engine and its assumptions.
 
-## Next scene work
-
-1. Measure the real frame, motor locations, components, and assembled mass.
-2. Replace placeholder URDF inertias with measured mass properties.
-3. Add four motor/propeller thrust and torque models, actuator limits, and a documented coordinate convention.
-4. Add sensor models with measured rates, noise, bias, and dropout.
-5. Connect the model to a simulator-supported flight-control interface, then validate one behavior at a time and preserve the simulator's raw output, version, scene, and playback capture.
+On a working Isaac host, first pass renderer/server health, explicitly select
+PhysX (this package also contains Newton), open the USD and verify mass, contact
+and frames. Force/torque actuator adaptation, sensor sampling, ROS clock/topics
+and real camera capture still need implementation/testing in that live environment.
+This source does not claim those adapters are connected.
