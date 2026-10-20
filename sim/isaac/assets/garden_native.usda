@@ -27,6 +27,13 @@ def Xform "World"
         float inputs:intensity = 700
     }
 
+    def DistantLight "Sun"
+    {
+        float inputs:intensity = 1500
+        float3 xformOp:rotateXYZ = (-30, 20, 45)
+        uniform token[] xformOpOrder = ["xformOp:rotateXYZ"]
+    }
+
     def Xform "ground"
     {
         float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -960,7 +967,7 @@ def Xform "World"
     }
 
     def Xform "drone" (
-        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "PhysxContactReportAPI"]
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "PhysxContactReportAPI", "PhysxRigidBodyAPI"]
     )
     {
         point3f physics:centerOfMass = (0, 0, 0)
@@ -968,6 +975,9 @@ def Xform "World"
         float physics:mass = 1.2
         quatf physics:principalAxes = (1, 0, 0, 0)
         custom float physxContactReport:threshold = 0
+        custom float physxRigidBody:maxDepenetrationVelocity = 0.5
+        custom int physxRigidBody:solverPositionIterationCount = 16
+        custom int physxRigidBody:solverVelocityIterationCount = 4
         float3 xformOp:rotateXYZ = (0, 0, 0)
         double3 xformOp:translate = (0, 0, 0.082)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ"]

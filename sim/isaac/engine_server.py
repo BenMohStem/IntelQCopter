@@ -25,7 +25,13 @@ async def main():
             '/World/ground/body/collision','/World/panel0/body/collision','/World/panel1/body/collision'])
         settings=carb.settings.get_settings();settings.set('/app/player/playSimulations',False)
         settings.set('/app/useFabricSceneDelegate',False)
-        settings.set('/rtx/rendermode','MinimalRendering');settings.set('/rtx/minimal/mode',3)
+        render_mode=os.environ.get('QCOPTER_ISAAC_RENDER_MODE','MinimalRendering')
+        settings.set('/rtx/rendermode',render_mode);settings.set('/rtx/minimal/mode',3)
+        # Let the unpowered vehicle settle before the virtual spool request.
+        # An initial impact must not become part of sensor-filter initialization.
+        for _ in range(250):SM.step()
+        mass=float(body.get_masses()[0]);physics_dt=SM.get_physics_dt()
+        if abs(mass-1.2)>.001 or abs(physics_dt-.002)>1e-8:raise RuntimeError(f'Unexpected native mass/dt: {mass}, {physics_dt}')
         products=[];annotators={}
         for topic,path,size in [('/drone/rgb','/World/drone/body/rgb',(320,240)),('/overview/rgb','/World/overview/camera/camera',(640,360))]:
             product=rep.create.render_product(path,size);products.append(product)
@@ -42,8 +48,10 @@ async def main():
             matrix=contact.get_contact_force_matrix(.002)
             names=['ground','panel0','panel1'];contacts=[('drone',names[i]) for i in range(3) if np.linalg.norm(matrix[0,i])>.01]
             return {'position':transform[:3].tolist(),'quaternion':transform[3:].tolist(),
-                    'velocity':velocity[:3].tolist(),'omega':velocity[3:].tolist(),'contacts':contacts}
-        initial=state();print('ISAAC native engine ready',initial,flush=True)
+                    'velocity':velocity[:3].tolist(),'omega':velocity[3:].tolist(),'contacts':contacts,
+                    'render_mode':render_mode,'native_mass_kg':mass,'native_dt_s':physics_dt}
+        initial=state();initial.update(native_mass_kg=mass,native_dt_s=physics_dt,render_mode=render_mode)
+        print('ISAAC native engine ready',initial,flush=True)
         (OUT/'engine-ready.json').write_text(json.dumps(initial,indent=2))
         listener=Listener(('127.0.0.1',9251),authkey=b'intelqcopter-local-engine')
         # Run physics RPCs synchronously on Kit's main thread. Yield only for
@@ -72,7 +80,7 @@ async def main():
                     if image.ndim!=3:raise RuntimeError('Isaac RGB buffer became empty')
                     client.send((image.shape[1],image.shape[0],np.ascontiguousarray(image[:,:,:3]).tobytes()));continue
                 client.send(state())
-        (OUT/'engine-complete.json').write_text(json.dumps({'controlled_steps':count,'native_physics':'PhysX CPU','native_cameras':'Isaac MinimalRendering','physical_arming':False},indent=2))
+        (OUT/'engine-complete.json').write_text(json.dumps({'controlled_steps':count,'native_physics':'PhysX CPU','native_cameras':render_mode,'physical_arming':False,'native_mass_kg':mass,'native_dt_s':physics_dt},indent=2))
     except Exception as error:
         import traceback
         traceback.print_exc();(OUT/'engine-error.txt').write_text(repr(error));print('ISAAC_ENGINE_ERROR',repr(error),flush=True)

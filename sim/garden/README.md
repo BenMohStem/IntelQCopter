@@ -24,7 +24,9 @@ mounting is still open. One forward ray cannot measure an entire flight corridor
 The 1.2 kg mass, inertia, 6 N/motor thrust and 40 ms motor lag are assumptions.
 The video executes production C flight loops and the shared C++ mission/planner;
 the Python ROS adapters pass control and lidar updates through actual DDS.
-The ROS-specific C++ nodes remain unbuilt. No physical arming/ESC output occurs.
+The ROS-specific C++ nodes now build and pass separate integration checks; this
+recorded flight still uses the shared core and Python DDS adapters. No physical
+arming/ESC output occurs.
 
 ## Reproduce locally
 
@@ -38,12 +40,12 @@ Use the existing project environments; no TensorFlow is required.
 
 Training uses 180 synthetic training images and 40 validation images. Runtime
 weights are under ignored build/panel-training/rgb-panel/weights/best.pt.
-For the actual ROS round trip, start sim/ros2_garden_bridge.py with the bundled
-Isaac Python 3.12, run the mission with --ros --ros-selection, then publish points
+For the actual ROS round trip, start sim/ros2_garden_bridge.py with native Jazzy
+Python through tools/ros2_windows.cmd, run the mission with --ros --ros-selection, then publish points
 using sim/ros2_select_mission.py while selection is pending (30 s timeout):
 
 ```powershell
-& C:/IsaacSim/app/kit/python/python.exe sim/ros2_select_mission.py --points 0 0 .082 8 0 .082 1.25
+& C:/WinLibs/pixi/pixi.exe run --manifest-path C:/dev/pixi.toml cmd /c tools\ros2_windows.cmd python sim/ros2_select_mission.py --points 0 0 .082 8 0 .082 1.25
 ```
 
 Start the bridge in a hidden process with separate stdout/stderr logs; it handles

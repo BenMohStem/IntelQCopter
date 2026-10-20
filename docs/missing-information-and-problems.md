@@ -25,7 +25,8 @@
 - The shared C++ mission/nav core and production C loops run together. A bundled
   ROS2 selector can send explicit start/finish points; control and lidar updates
   pass through actual DDS adapter nodes. These adapters do not validate the
-  unbuilt ROS C++ node wrappers or a physical serial bridge.
+  physical serial bridge. ROS C++ wrappers now build and pass a separate recorded
+  image/mission DDS integration test, but are not yet the complete flight path.
 - The handheld has tested shaping/filtering/slew, signed trigger endpoints and
   one-shot takeoff/land request gestures. RT enables a climb/collective boost;
   centered vertical stick still holds height. Physical arming stays disabled.
@@ -58,14 +59,17 @@
 - RT boost is functional in simulation but can worsen settling/navigation timing.
   It is inhibited during simulated approach/landing; coordinated physical pilot/
   companion authority and power-limit integration remain unfinished.
-- ROS C++ node sources are present; the shared C++ navigation core is compiled,
-  but the ROS wrappers have not been built in a complete ROS development install.
-- Isaac startup fails GPU enumeration on Windows10/RTX3050-4GB/driver555.99.
-  No successful Isaac physics, rendering or flight adapter exists on this PC.
+- Native Jazzy and the project ROS C++ nodes now build. The Gazebo flight uses
+  Python DDS adapters around production C and the shared C++ mission core; a full
+  ROS C++ wrapper flight and physical companion/serial integration remain pending.
+- Isaac Sim was removed at the user's request. Historical successful native
+  PhysX/RGB flight evidence remains; the current workflow uses Gazebo.
 - GPS/sensor-loss recovery, companion authority, landed detection, low-battery
   landing and dropout behaviour require explicit state-machine tests. Cutting
   motors at an airborne SOC threshold is not a landing strategy.
-- Git history exists locally, but no remote is configured. Nothing is pushed yet.
+- Git origin is the public BenMohStem/IntelQCopter repository. Setup changes and
+  original evidence are committed/pushed as separate steps; downloaded environments
+  and model weights are excluded.
 
 ## Work sequence
 
@@ -81,5 +85,5 @@
    them with real perception/localization and validate again.
 
 The evidence directory distinguishes measured simulation output, source-only ROS
-work, physical unknowns and blocked Isaac execution. USTHB is the intended test
+work, physical unknowns and historical Isaac execution. USTHB is the intended test
 site; the current scene must not be described as a surveyed campus digital twin.

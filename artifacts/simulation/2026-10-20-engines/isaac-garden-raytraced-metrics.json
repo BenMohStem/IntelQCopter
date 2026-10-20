@@ -1,0 +1,17 @@
+{
+  "cruise_height_rmse_m": 0.01976727618558487,
+  "height_estimation_rmse_m": 0.0039907808706558575,
+  "minimum_applied_motor_headroom": 0.34496802401333826,
+  "maximum_abs_roll_deg": 3.116868959062011,
+  "maximum_abs_pitch_deg": 4.766537446848905,
+  "rows": 1835,
+  "phases_recorded": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "default_mission_rejected": true,
+  "default_commands_inactive": true,
+  "enabled_fresh_mission_accepted": true,
+  "enabled_request_reason": "Simulation mission accepted; no physical arming",
+  "active_commands_received": 40,
+  "semantic_messages": 42,
+  "detected_panel_messages": 42,
+  "processed_metric_messages": 42,
+  "ranged_panel_messages": 42,
+  "source_image": "artifacts\\simulation\\2026-10-20-engines\\gazebo-garden-ros-camera-6s.png",
+  "scope": "Recorded native RGB input and synthetic pose; DDS C++ node integration, not a flight or distance-accuracy proof",
+  "passed": true
+}

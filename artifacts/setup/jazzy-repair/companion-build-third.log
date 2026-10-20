@@ -1,0 +1,79 @@
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x86_x64'
+Starting >>> cv_bridge
+ninja: no work to do.
+-- Install configuration: "Release"
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/lib/cv_bridge.lib
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/bin/cv_bridge.dll
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/include/cv_bridge/cv_bridge/cv_bridge_export.h
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/include/cv_bridge
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/include/cv_bridge/cv_bridge
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/include/cv_bridge/cv_bridge/cv_bridge.hpp
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/include/cv_bridge/cv_bridge/cv_mat_sensor_msgs_image_type_adapter.hpp
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/include/cv_bridge/cv_bridge/rgb_colors.hpp
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/include/cv_bridge/cv_bridge/visibility_control.h
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/lib/cv_bridge.lib
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/bin/cv_bridge.dll
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/ament_index/resource_index/package_run_dependencies/cv_bridge
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/ament_index/resource_index/parent_prefix_path/cv_bridge
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/cv_bridge/environment/ament_prefix_path.bat
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/cv_bridge/environment/ament_prefix_path.dsv
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/cv_bridge/environment/path.bat
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/cv_bridge/environment/path.dsv
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/cv_bridge/local_setup.bat
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/cv_bridge/local_setup.dsv
+-- Installing: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/cv_bridge/package.dsv
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/ament_index/resource_index/packages/cv_bridge
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/cv_bridge/cmake/export_cv_bridgeExport.cmake
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/cv_bridge/cmake/export_cv_bridgeExport-release.cmake
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/cv_bridge/cmake/cv_bridge-extras.cmake
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/cv_bridge/cmake/ament_cmake_export_dependencies-extras.cmake
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/cv_bridge/cmake/ament_cmake_export_targets-extras.cmake
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/cv_bridge/cmake/cv_bridgeConfig.cmake
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/cv_bridge/cmake/cv_bridgeConfig-version.cmake
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/cv_bridge/package.xml
+Finished <<< cv_bridge [0.77s]
+Starting >>> qcopter_description
+ninja: no work to do.
+-- Install configuration: "Release"
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/qcopter_description/urdf
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/qcopter_description/urdf/f450.urdf
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/qcopter_description/urdf/mass-properties.json
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/qcopter_description/launch
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/qcopter_description/launch/view.launch.py
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/qcopter_description/rviz
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/qcopter_description/rviz/f450.rviz
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/ament_index/resource_index/package_run_dependencies/qcopter_description
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/ament_index/resource_index/parent_prefix_path/qcopter_description
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/qcopter_description/environment/ament_prefix_path.bat
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/qcopter_description/environment/ament_prefix_path.dsv
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/qcopter_description/environment/path.bat
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/qcopter_description/environment/path.dsv
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/qcopter_description/local_setup.bat
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/qcopter_description/local_setup.dsv
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/qcopter_description/package.dsv
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/ament_index/resource_index/packages/qcopter_description
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/qcopter_description/cmake/qcopter_descriptionConfig.cmake
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/qcopter_description/cmake/qcopter_descriptionConfig-version.cmake
+-- Up-to-date: C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2-install/share/qcopter_description/package.xml
+Finished <<< qcopter_description [0.59s]
+Starting >>> qcopter_autonomy
+[1/12] Linking CXX shared library navigation_core.dll
+[2/12] Building CXX object CMakeFiles\navigator_node.dir\src\navigator_node.cpp.obj
+[3/12] Building CXX object CMakeFiles\mission_node.dir\src\mission_node.cpp.obj
+[4/12] C:\Windows\system32\cmd.exe /C "cd /D C:\Users\Mohamed\Desktop\Work\QCopter\build\ros2\qcopter_autonomy && C:\dev\.pixi\envs\default\Library\bin\cmake.exe -E copy_directory C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2/qcopter_autonomy/rosidl_generator_py/qcopter_autonomy C:/Users/Mohamed/Desktop/Work/QCopter/build/ros2/qcopter_autonomy/ament_cmake_python/qcopter_autonomy/qcopter_autonomy"
+[5/12] Linking CXX executable navigator_node.exe
+FAILED: [code=4294967295] navigator_node.exe 
+C:\Windows\system32\cmd.exe /C "cd . && C:\dev\.pixi\envs\default\Library\bin\cmake.exe -E vs_link_exe --intdir=CMakeFiles\navigator_node.dir --rc=C:\PROGRA~2\WI3CF2~1\10\bin\100261~1.0\x86\rc.exe --mt=C:\PROGRA~2\WI3CF2~1\10\bin\100261~1.0\x86\mt.exe --manifests  -- C:\PROGRA~1\MIB055~1\18\COMMUN~1\VC\Tools\MSVC\1451~1.362\bin\Hostx86\x64\link.exe /nologo @CMakeFiles\navigator_node.rsp  /out:navigator_node.exe /implib:navigator_node.lib /pdb:navigator_node.pdb /version:0.0 /machine:x64 /INCREMENTAL:NO /subsystem:console  && cd ."
+LINK: command "C:\PROGRA~1\MIB055~1\18\COMMUN~1\VC\Tools\MSVC\1451~1.362\bin\Hostx86\x64\link.exe /nologo @CMakeFiles\navigator_node.rsp /out:navigator_node.exe /implib:navigator_node.lib /pdb:navigator_node.pdb /version:0.0 /machine:x64 /INCREMENTAL:NO /subsystem:console /MANIFEST:EMBED,ID=1" failed (exit code 1181) with the following output:
+LINK : fatal error LNK1181: cannot open input file 'navigation_core.lib'
+[6/12] Linking C shared module rosidl_generator_py\qcopter_autonomy\qcopter_autonomy_s__rosidl_typesupport_c.pyd
+[7/12] Building CXX object CMakeFiles\panel_pose_node.dir\src\panel_pose_node.cpp.obj
+ninja: build stopped: subcommand failed.
+Failed   <<< qcopter_autonomy [28.5s, exited with code 4294967295]
+
+Summary: 2 packages finished [30.2s]
+  1 package failed: qcopter_autonomy

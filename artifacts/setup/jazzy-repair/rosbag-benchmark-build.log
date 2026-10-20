@@ -1,0 +1,600 @@
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x86_x64'
+not found: "C:\dev\jazzy\install\share/rosbag2_performance_benchmarking_msgs/local_setup.bat" 
+Starting >>> rosbag2_performance_benchmarking_msgs
+-- The C compiler identification is MSVC 19.51.36260.0
+-- The CXX compiler identification is MSVC 19.51.36260.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.51.36231/bin/Hostx86/x64/cl.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.51.36231/bin/Hostx86/x64/cl.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found ament_cmake: 2.5.6 (C:/dev/jazzy/install/share/ament_cmake/cmake)
+-- Found Python3: C:/dev/.pixi/envs/default/python.exe (found version "3.12.3") found components: Interpreter 
+-- Found rosidl_default_generators: 1.6.1 (C:/dev/jazzy/install/share/rosidl_default_generators/cmake)
+-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+-- Found rosidl_adapter: 4.6.9 (C:/dev/jazzy/install/share/rosidl_adapter/cmake)
+-- Found ament_cmake_ros: 0.12.2 (C:/dev/jazzy/install/share/ament_cmake_ros/cmake)
+-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+-- Found python_cmake_module: 0.11.1 (C:/dev/jazzy/install/share/python_cmake_module/cmake)
+-- Found PythonExtra: C:/dev/.pixi/envs/default/python.exe  
+-- Found Python3: C:/dev/.pixi/envs/default/python.exe (found version "3.12.3") found components: Interpreter Development NumPy Development.Module Development.Embed 
+-- Found Python3: C:/dev/.pixi/envs/default/python.exe (found version "3.12.3") found components: Interpreter 
+-- Configuring done (18.0s)
+CMake Warning in CMakeLists.txt:
+  The object file directory
+
+    C:/dev/b/rosbag2_performance_benchmarking_msgs/CMakeFiles/rosbag2_performance_benchmarking_msgs__rosidl_generator_c.dir/./
+
+  has 122 characters.  The maximum full path to an object file is 180
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    735bcfb07e67c0bf9215b3de503da1dd/byte_array__type_support.c.obj
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+
+CMake Warning in CMakeLists.txt:
+  The object file directory
+
+    C:/dev/b/rosbag2_performance_benchmarking_msgs/CMakeFiles/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_fastrtps_c.dir/./
+
+  has 133 characters.  The maximum full path to an object file is 180
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    805cdfdda324946528c71257d31d005b/byte_array__type_support_c.cpp.obj
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+
+CMake Warning in CMakeLists.txt:
+  The object file directory
+
+    C:/dev/b/rosbag2_performance_benchmarking_msgs/CMakeFiles/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_introspection_c.dir/./
+
+  has 138 characters.  The maximum full path to an object file is 180
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    e8ee5040264c0890557c3a586fbe7585/byte_array__type_support.c.obj
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+
+CMake Warning in CMakeLists.txt:
+  The object file directory
+
+    C:/dev/b/rosbag2_performance_benchmarking_msgs/CMakeFiles/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_c.dir/./
+
+  has 124 characters.  The maximum full path to an object file is 180
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    41c777b95c90e49860fb42abe8265de6/byte_array__type_support.cpp.obj
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+
+CMake Warning in CMakeLists.txt:
+  The object file directory
+
+    C:/dev/b/rosbag2_performance_benchmarking_msgs/CMakeFiles/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_fastrtps_cpp.dir/./
+
+  has 135 characters.  The maximum full path to an object file is 180
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    8b7bceb094b7fdc061a2092eaed034ca/byte_array__type_support.cpp.obj
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+
+CMake Warning in CMakeLists.txt:
+  The object file directory
+
+    C:/dev/b/rosbag2_performance_benchmarking_msgs/CMakeFiles/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_introspection_cpp.dir/./
+
+  has 140 characters.  The maximum full path to an object file is 180
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    bcae7176df8b60f7ad824b96c7d97698/byte_array__type_support.cpp.obj
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+
+CMake Warning in CMakeLists.txt:
+  The object file directory
+
+    C:/dev/b/rosbag2_performance_benchmarking_msgs/CMakeFiles/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_cpp.dir/./
+
+  has 126 characters.  The maximum full path to an object file is 180
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    509cbc2452f0021ab4ba5edc8459824a/byte_array__type_support.cpp.obj
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+
+CMake Warning in CMakeLists.txt:
+  The object file directory
+
+    C:/dev/b/rosbag2_performance_benchmarking_msgs/CMakeFiles/rosbag2_performance_benchmarking_msgs_s__rosidl_typesupport_fastrtps_c.dir/./
+
+  has 135 characters.  The maximum full path to an object file is 180
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    2d3c5cb92dbe29a6b0c85089fcc2845e/_rosbag2_performance_benchmarking_msgs_s.ep.rosidl_typesupport_fastrtps_c.c.obj
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+
+CMake Warning in CMakeLists.txt:
+  The object file directory
+
+    C:/dev/b/rosbag2_performance_benchmarking_msgs/CMakeFiles/rosbag2_performance_benchmarking_msgs_s__rosidl_typesupport_introspection_c.dir/./
+
+  has 140 characters.  The maximum full path to an object file is 180
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    2d3c5cb92dbe29a6b0c85089fcc2845e/_rosbag2_performance_benchmarking_msgs_s.ep.rosidl_typesupport_introspection_c.c.obj
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+
+CMake Warning in CMakeLists.txt:
+  The object file directory
+
+    C:/dev/b/rosbag2_performance_benchmarking_msgs/CMakeFiles/rosbag2_performance_benchmarking_msgs_s__rosidl_typesupport_c.dir/./
+
+  has 126 characters.  The maximum full path to an object file is 180
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    2d3c5cb92dbe29a6b0c85089fcc2845e/_rosbag2_performance_benchmarking_msgs_s.ep.rosidl_typesupport_c.c.obj
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+
+-- Generating done (0.2s)
+-- Build files have been written to: C:/dev/b/rosbag2_performance_benchmarking_msgs
+[1/37] C:\Windows\system32\cmd.exe /C "cd /D C:\dev\b\rosbag2_performance_benchmarking_msgs && C:\dev\.pixi\envs\default\Library\bin\cmake.exe -E copy_directory C:/dev/b/rosbag2_performance_benchmarking_msgs/rosidl_generator_py/rosbag2_performance_benchmarking_msgs C:/dev/b/rosbag2_performance_benchmarking_msgs/ament_cmake_python/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs"
+[2/37] Generating type hashes for ROS interfaces
+[3/37] Generating Rust code for ROS interfaces
+[4/37] C:\Windows\system32\cmd.exe /C "cd /D C:\dev\b\rosbag2_performance_benchmarking_msgs\ament_cmake_python\rosbag2_performance_benchmarking_msgs && C:\dev\.pixi\envs\default\python.exe setup.py egg_info"
+running egg_info
+creating rosbag2_performance_benchmarking_msgs.egg-info
+writing rosbag2_performance_benchmarking_msgs.egg-info\PKG-INFO
+writing dependency_links to rosbag2_performance_benchmarking_msgs.egg-info\dependency_links.txt
+writing top-level names to rosbag2_performance_benchmarking_msgs.egg-info\top_level.txt
+writing manifest file 'rosbag2_performance_benchmarking_msgs.egg-info\SOURCES.txt'
+reading manifest file 'rosbag2_performance_benchmarking_msgs.egg-info\SOURCES.txt'
+writing manifest file 'rosbag2_performance_benchmarking_msgs.egg-info\SOURCES.txt'
+[5/37] Generating C code for ROS interfaces
+[6/37] Generating C++ code for ROS interfaces
+[7/37] Building C object CMakeFiles\rosbag2_performance_benchmarking_msgs__rosidl_generator_c.dir\735bcfb07e67c0bf9215b3de503da1dd\byte_array__description.c.obj
+[8/37] Building C object CMakeFiles\rosbag2_performance_benchmarking_msgs__rosidl_generator_c.dir\735bcfb07e67c0bf9215b3de503da1dd\byte_array__functions.c.obj
+[9/37] Building C object CMakeFiles\rosbag2_performance_benchmarking_msgs__rosidl_generator_c.dir\735bcfb07e67c0bf9215b3de503da1dd\byte_array__type_support.c.obj
+[10/37] Linking C shared library rosbag2_performance_benchmarking_msgs__rosidl_generator_c.dll
+[11/37] Generating C type support dispatch for ROS interfaces
+[12/37] Generating C introspection for ROS interfaces
+[13/37] Generating C type support for eProsima Fast-RTPS
+[14/37] Building C object CMakeFiles\rosbag2_performance_benchmarking_msgs__rosidl_typesupport_introspection_c.dir\e8ee5040264c0890557c3a586fbe7585\byte_array__type_support.c.obj
+[15/37] Building CXX object CMakeFiles\rosbag2_performance_benchmarking_msgs__rosidl_typesupport_c.dir\41c777b95c90e49860fb42abe8265de6\byte_array__type_support.cpp.obj
+[16/37] Linking C shared library rosbag2_performance_benchmarking_msgs__rosidl_typesupport_introspection_c.dll
+[17/37] Linking CXX shared library rosbag2_performance_benchmarking_msgs__rosidl_typesupport_c.dll
+[18/37] Generating C++ type support dispatch for ROS interfaces
+[19/37] Generating C++ introspection for ROS interfaces
+[20/37] Building CXX object CMakeFiles\rosbag2_performance_benchmarking_msgs__rosidl_typesupport_fastrtps_c.dir\805cdfdda324946528c71257d31d005b\byte_array__type_support_c.cpp.obj
+cl : Command line warning D9025 : overriding '/W3' with '/W4'
+[21/37] Generating C++ type support for eProsima Fast-RTPS
+[22/37] Linking CXX shared library rosbag2_performance_benchmarking_msgs__rosidl_typesupport_fastrtps_c.dll
+[23/37] Building CXX object CMakeFiles\rosbag2_performance_benchmarking_msgs__rosidl_typesupport_cpp.dir\509cbc2452f0021ab4ba5edc8459824a\byte_array__type_support.cpp.obj
+[24/37] Building CXX object CMakeFiles\rosbag2_performance_benchmarking_msgs__rosidl_typesupport_introspection_cpp.dir\bcae7176df8b60f7ad824b96c7d97698\byte_array__type_support.cpp.obj
+[25/37] Linking CXX shared library rosbag2_performance_benchmarking_msgs__rosidl_typesupport_cpp.dll
+[26/37] Linking CXX shared library rosbag2_performance_benchmarking_msgs__rosidl_typesupport_introspection_cpp.dll
+[27/37] Building CXX object CMakeFiles\rosbag2_performance_benchmarking_msgs__rosidl_typesupport_fastrtps_cpp.dir\8b7bceb094b7fdc061a2092eaed034ca\byte_array__type_support.cpp.obj
+cl : Command line warning D9025 : overriding '/W3' with '/W4'
+[28/37] Linking CXX shared library rosbag2_performance_benchmarking_msgs__rosidl_typesupport_fastrtps_cpp.dll
+[29/37] Generating Python code for ROS interfaces
+[30/37] Building C object CMakeFiles\rosbag2_performance_benchmarking_msgs_s__rosidl_typesupport_fastrtps_c.dir\2d3c5cb92dbe29a6b0c85089fcc2845e\_rosbag2_performance_benchmarking_msgs_s.ep.rosidl_typesupport_fastrtps_c.c.obj
+[31/37] Building C object CMakeFiles\rosbag2_performance_benchmarking_msgs__rosidl_generator_py.dir\2d3c5cb92dbe29a6b0c85089fcc2845e\msg\_byte_array_s.c.obj
+[32/37] Building C object CMakeFiles\rosbag2_performance_benchmarking_msgs_s__rosidl_typesupport_c.dir\2d3c5cb92dbe29a6b0c85089fcc2845e\_rosbag2_performance_benchmarking_msgs_s.ep.rosidl_typesupport_c.c.obj
+[33/37] Building C object CMakeFiles\rosbag2_performance_benchmarking_msgs_s__rosidl_typesupport_introspection_c.dir\2d3c5cb92dbe29a6b0c85089fcc2845e\_rosbag2_performance_benchmarking_msgs_s.ep.rosidl_typesupport_introspection_c.c.obj
+[34/37] Linking C shared library rosbag2_performance_benchmarking_msgs__rosidl_generator_py.dll
+[35/37] Linking C shared module rosidl_generator_py\rosbag2_performance_benchmarking_msgs\rosbag2_performance_benchmarking_msgs_s__rosidl_typesupport_fastrtps_c.pyd
+[36/37] Linking C shared module rosidl_generator_py\rosbag2_performance_benchmarking_msgs\rosbag2_performance_benchmarking_msgs_s__rosidl_typesupport_introspection_c.pyd
+[37/37] Linking C shared module rosidl_generator_py\rosbag2_performance_benchmarking_msgs\rosbag2_performance_benchmarking_msgs_s__rosidl_typesupport_c.pyd
+-- Install configuration: "Release"
+-- Installing: C:/dev/jazzy/install/share/ament_index/resource_index/rosidl_interfaces/rosbag2_performance_benchmarking_msgs
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/msg/ByteArray.json
+-- Installing: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs
+-- Installing: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg
+-- Installing: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/byte_array.h
+-- Installing: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/detail
+-- Installing: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/detail/byte_array__description.c
+-- Installing: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/detail/byte_array__functions.c
+-- Installing: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/detail/byte_array__functions.h
+-- Installing: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/detail/byte_array__struct.h
+-- Installing: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/detail/byte_array__type_support.c
+-- Installing: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/detail/byte_array__type_support.h
+-- Installing: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/rosidl_generator_c__visibility_control.h
+-- Installing: C:/dev/jazzy/install/lib/rosbag2_performance_benchmarking_msgs__rosidl_generator_c.lib
+-- Installing: C:/dev/jazzy/install/bin/rosbag2_performance_benchmarking_msgs__rosidl_generator_c.dll
+-- Up-to-date: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs
+-- Up-to-date: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg
+-- Up-to-date: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/detail
+-- Installing: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/detail/byte_array__rosidl_typesupport_fastrtps_c.h
+-- Installing: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/rosidl_typesupport_fastrtps_c__visibility_control.h
+-- Installing: C:/dev/jazzy/install/lib/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_fastrtps_c.lib
+-- Installing: C:/dev/jazzy/install/bin/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_fastrtps_c.dll
+-- Up-to-date: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs
+-- Up-to-date: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg
+-- Up-to-date: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/detail
+-- Installing: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/detail/byte_array__rosidl_typesupport_introspection_c.h
+-- Installing: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/detail/byte_array__type_support.c
+-- Installing: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/rosidl_typesupport_introspection_c__visibility_control.h
+-- Installing: C:/dev/jazzy/install/lib/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_introspection_c.lib
+-- Installing: C:/dev/jazzy/install/bin/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_introspection_c.dll
+-- Installing: C:/dev/jazzy/install/lib/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_c.lib
+-- Installing: C:/dev/jazzy/install/bin/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_c.dll
+-- Up-to-date: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs
+-- Up-to-date: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg
+-- Installing: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/byte_array.hpp
+-- Up-to-date: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/detail
+-- Installing: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/detail/byte_array__builder.hpp
+-- Installing: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/detail/byte_array__struct.hpp
+-- Installing: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/detail/byte_array__traits.hpp
+-- Installing: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/detail/byte_array__type_support.hpp
+-- Installing: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/rosidl_generator_cpp__visibility_control.hpp
+-- Up-to-date: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs
+-- Up-to-date: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg
+-- Up-to-date: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/detail
+-- Installing: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/detail/byte_array__rosidl_typesupport_fastrtps_cpp.hpp
+-- Installing: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/detail/dds_fastrtps
+-- Installing: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/rosidl_typesupport_fastrtps_cpp__visibility_control.h
+-- Installing: C:/dev/jazzy/install/lib/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_fastrtps_cpp.lib
+-- Installing: C:/dev/jazzy/install/bin/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_fastrtps_cpp.dll
+-- Up-to-date: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs
+-- Up-to-date: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg
+-- Up-to-date: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/detail
+-- Installing: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/detail/byte_array__rosidl_typesupport_introspection_cpp.hpp
+-- Installing: C:/dev/jazzy/install/include/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs/msg/detail/byte_array__type_support.cpp
+-- Installing: C:/dev/jazzy/install/lib/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_introspection_cpp.lib
+-- Installing: C:/dev/jazzy/install/bin/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_introspection_cpp.dll
+-- Installing: C:/dev/jazzy/install/lib/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_cpp.lib
+-- Installing: C:/dev/jazzy/install/bin/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_cpp.dll
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/environment/pythonpath.bat
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/environment/pythonpath.dsv
+-- Installing: C:/dev/jazzy/install/Lib/site-packages/rosbag2_performance_benchmarking_msgs-0.26.11-py3.12.egg-info
+-- Installing: C:/dev/jazzy/install/Lib/site-packages/rosbag2_performance_benchmarking_msgs-0.26.11-py3.12.egg-info/dependency_links.txt
+-- Installing: C:/dev/jazzy/install/Lib/site-packages/rosbag2_performance_benchmarking_msgs-0.26.11-py3.12.egg-info/PKG-INFO
+-- Installing: C:/dev/jazzy/install/Lib/site-packages/rosbag2_performance_benchmarking_msgs-0.26.11-py3.12.egg-info/SOURCES.txt
+-- Installing: C:/dev/jazzy/install/Lib/site-packages/rosbag2_performance_benchmarking_msgs-0.26.11-py3.12.egg-info/top_level.txt
+-- Installing: C:/dev/jazzy/install/Lib/site-packages/rosbag2_performance_benchmarking_msgs
+-- Installing: C:/dev/jazzy/install/Lib/site-packages/rosbag2_performance_benchmarking_msgs/msg
+-- Installing: C:/dev/jazzy/install/Lib/site-packages/rosbag2_performance_benchmarking_msgs/msg/_byte_array.py
+-- Installing: C:/dev/jazzy/install/Lib/site-packages/rosbag2_performance_benchmarking_msgs/msg/_byte_array_s.c
+-- Installing: C:/dev/jazzy/install/Lib/site-packages/rosbag2_performance_benchmarking_msgs/msg/__init__.py
+-- Installing: C:/dev/jazzy/install/Lib/site-packages/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs_s__rosidl_typesupport_c.pyd
+-- Installing: C:/dev/jazzy/install/Lib/site-packages/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs_s__rosidl_typesupport_fastrtps_c.pyd
+-- Installing: C:/dev/jazzy/install/Lib/site-packages/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs_s__rosidl_typesupport_introspection_c.pyd
+-- Installing: C:/dev/jazzy/install/Lib/site-packages/rosbag2_performance_benchmarking_msgs/_rosbag2_performance_benchmarking_msgs_s.ep.rosidl_typesupport_c.c
+-- Installing: C:/dev/jazzy/install/Lib/site-packages/rosbag2_performance_benchmarking_msgs/_rosbag2_performance_benchmarking_msgs_s.ep.rosidl_typesupport_fastrtps_c.c
+-- Installing: C:/dev/jazzy/install/Lib/site-packages/rosbag2_performance_benchmarking_msgs/_rosbag2_performance_benchmarking_msgs_s.ep.rosidl_typesupport_introspection_c.c
+-- Installing: C:/dev/jazzy/install/Lib/site-packages/rosbag2_performance_benchmarking_msgs/__init__.py
+Listing 'C:/dev/jazzy/install/Lib/site-packages/rosbag2_performance_benchmarking_msgs'...
+Compiling 'C:/dev/jazzy/install/Lib/site-packages/rosbag2_performance_benchmarking_msgs\\__init__.py'...
+Listing 'C:/dev/jazzy/install/Lib/site-packages/rosbag2_performance_benchmarking_msgs\\msg'...
+Compiling 'C:/dev/jazzy/install/Lib/site-packages/rosbag2_performance_benchmarking_msgs\\msg\\__init__.py'...
+Compiling 'C:/dev/jazzy/install/Lib/site-packages/rosbag2_performance_benchmarking_msgs\\msg\\_byte_array.py'...
+-- Up-to-date: C:/dev/jazzy/install/Lib/site-packages/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs_s__rosidl_typesupport_fastrtps_c.pyd
+-- Up-to-date: C:/dev/jazzy/install/Lib/site-packages/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs_s__rosidl_typesupport_introspection_c.pyd
+-- Up-to-date: C:/dev/jazzy/install/Lib/site-packages/rosbag2_performance_benchmarking_msgs/rosbag2_performance_benchmarking_msgs_s__rosidl_typesupport_c.pyd
+-- Installing: C:/dev/jazzy/install/lib/rosbag2_performance_benchmarking_msgs__rosidl_generator_py.lib
+-- Installing: C:/dev/jazzy/install/bin/rosbag2_performance_benchmarking_msgs__rosidl_generator_py.dll
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/rust
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/rust/build.rs
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/rust/Cargo.toml
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/rust/src
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/rust/src/lib.rs
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/rust/src/msg
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/rust/src/msg/rmw.rs
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/rust/src/msg.rs
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/msg/ByteArray.idl
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/msg/ByteArray.msg
+-- Installing: C:/dev/jazzy/install/share/ament_index/resource_index/package_run_dependencies/rosbag2_performance_benchmarking_msgs
+-- Installing: C:/dev/jazzy/install/share/ament_index/resource_index/parent_prefix_path/rosbag2_performance_benchmarking_msgs
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/environment/ament_prefix_path.bat
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/environment/ament_prefix_path.dsv
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/environment/path.bat
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/environment/path.dsv
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/local_setup.bat
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/local_setup.dsv
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/package.dsv
+-- Installing: C:/dev/jazzy/install/share/ament_index/resource_index/packages/rosbag2_performance_benchmarking_msgs
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake/export_rosbag2_performance_benchmarking_msgs__rosidl_generator_cExport.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake/export_rosbag2_performance_benchmarking_msgs__rosidl_generator_cExport-release.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake/export_rosbag2_performance_benchmarking_msgs__rosidl_typesupport_fastrtps_cExport.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake/export_rosbag2_performance_benchmarking_msgs__rosidl_typesupport_fastrtps_cExport-release.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_introspection_cExport.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_introspection_cExport-release.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_cExport.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_cExport-release.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake/export_rosbag2_performance_benchmarking_msgs__rosidl_generator_cppExport.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake/export_rosbag2_performance_benchmarking_msgs__rosidl_typesupport_fastrtps_cppExport.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake/export_rosbag2_performance_benchmarking_msgs__rosidl_typesupport_fastrtps_cppExport-release.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_introspection_cppExport.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_introspection_cppExport-release.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_cppExport.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_cppExport-release.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake/export_rosbag2_performance_benchmarking_msgs__rosidl_generator_pyExport.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake/export_rosbag2_performance_benchmarking_msgs__rosidl_generator_pyExport-release.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake/rosidl_cmake-extras.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake/ament_cmake_export_include_directories-extras.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake/ament_cmake_export_libraries-extras.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake/ament_cmake_export_targets-extras.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake/rosidl_cmake_export_typesupport_targets-extras.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake/ament_cmake_export_dependencies-extras.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake/rosidl_cmake_export_typesupport_libraries-extras.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake/rosidl_cmake_aggregate_target-extras.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake/rosbag2_performance_benchmarking_msgsConfig.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake/rosbag2_performance_benchmarking_msgsConfig-version.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/package.xml
+--- stderr: rosbag2_performance_benchmarking_msgs
+CMake Warning in CMakeLists.txt:
+  The object file directory
+
+    C:/dev/b/rosbag2_performance_benchmarking_msgs/CMakeFiles/rosbag2_performance_benchmarking_msgs__rosidl_generator_c.dir/./
+
+  has 122 characters.  The maximum full path to an object file is 180
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    735bcfb07e67c0bf9215b3de503da1dd/byte_array__type_support.c.obj
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+
+CMake Warning in CMakeLists.txt:
+  The object file directory
+
+    C:/dev/b/rosbag2_performance_benchmarking_msgs/CMakeFiles/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_fastrtps_c.dir/./
+
+  has 133 characters.  The maximum full path to an object file is 180
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    805cdfdda324946528c71257d31d005b/byte_array__type_support_c.cpp.obj
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+
+CMake Warning in CMakeLists.txt:
+  The object file directory
+
+    C:/dev/b/rosbag2_performance_benchmarking_msgs/CMakeFiles/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_introspection_c.dir/./
+
+  has 138 characters.  The maximum full path to an object file is 180
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    e8ee5040264c0890557c3a586fbe7585/byte_array__type_support.c.obj
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+
+CMake Warning in CMakeLists.txt:
+  The object file directory
+
+    C:/dev/b/rosbag2_performance_benchmarking_msgs/CMakeFiles/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_c.dir/./
+
+  has 124 characters.  The maximum full path to an object file is 180
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    41c777b95c90e49860fb42abe8265de6/byte_array__type_support.cpp.obj
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+
+CMake Warning in CMakeLists.txt:
+  The object file directory
+
+    C:/dev/b/rosbag2_performance_benchmarking_msgs/CMakeFiles/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_fastrtps_cpp.dir/./
+
+  has 135 characters.  The maximum full path to an object file is 180
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    8b7bceb094b7fdc061a2092eaed034ca/byte_array__type_support.cpp.obj
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+
+CMake Warning in CMakeLists.txt:
+  The object file directory
+
+    C:/dev/b/rosbag2_performance_benchmarking_msgs/CMakeFiles/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_introspection_cpp.dir/./
+
+  has 140 characters.  The maximum full path to an object file is 180
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    bcae7176df8b60f7ad824b96c7d97698/byte_array__type_support.cpp.obj
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+
+CMake Warning in CMakeLists.txt:
+  The object file directory
+
+    C:/dev/b/rosbag2_performance_benchmarking_msgs/CMakeFiles/rosbag2_performance_benchmarking_msgs__rosidl_typesupport_cpp.dir/./
+
+  has 126 characters.  The maximum full path to an object file is 180
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    509cbc2452f0021ab4ba5edc8459824a/byte_array__type_support.cpp.obj
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+
+CMake Warning in CMakeLists.txt:
+  The object file directory
+
+    C:/dev/b/rosbag2_performance_benchmarking_msgs/CMakeFiles/rosbag2_performance_benchmarking_msgs_s__rosidl_typesupport_fastrtps_c.dir/./
+
+  has 135 characters.  The maximum full path to an object file is 180
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    2d3c5cb92dbe29a6b0c85089fcc2845e/_rosbag2_performance_benchmarking_msgs_s.ep.rosidl_typesupport_fastrtps_c.c.obj
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+
+CMake Warning in CMakeLists.txt:
+  The object file directory
+
+    C:/dev/b/rosbag2_performance_benchmarking_msgs/CMakeFiles/rosbag2_performance_benchmarking_msgs_s__rosidl_typesupport_introspection_c.dir/./
+
+  has 140 characters.  The maximum full path to an object file is 180
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    2d3c5cb92dbe29a6b0c85089fcc2845e/_rosbag2_performance_benchmarking_msgs_s.ep.rosidl_typesupport_introspection_c.c.obj
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+
+CMake Warning in CMakeLists.txt:
+  The object file directory
+
+    C:/dev/b/rosbag2_performance_benchmarking_msgs/CMakeFiles/rosbag2_performance_benchmarking_msgs_s__rosidl_typesupport_c.dir/./
+
+  has 126 characters.  The maximum full path to an object file is 180
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    2d3c5cb92dbe29a6b0c85089fcc2845e/_rosbag2_performance_benchmarking_msgs_s.ep.rosidl_typesupport_c.c.obj
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+
+---
+Finished <<< rosbag2_performance_benchmarking_msgs [36.8s]
+Starting >>> rosbag2_performance_benchmarking
+-- The C compiler identification is MSVC 19.51.36260.0
+-- The CXX compiler identification is MSVC 19.51.36260.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.51.36231/bin/Hostx86/x64/cl.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.51.36231/bin/Hostx86/x64/cl.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found ament_cmake: 2.5.6 (C:/dev/jazzy/install/share/ament_cmake/cmake)
+-- Found Python3: C:/dev/.pixi/envs/default/python.exe (found version "3.12.3") found components: Interpreter 
+-- Found rclcpp: 28.1.22 (C:/dev/jazzy/install/share/rclcpp/cmake)
+-- Found rosidl_generator_c: 4.6.9 (C:/dev/jazzy/install/share/rosidl_generator_c/cmake)
+-- Found rosidl_generator_cpp: 4.6.9 (C:/dev/jazzy/install/share/rosidl_generator_cpp/cmake)
+-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+-- Found rmw_implementation_cmake: 7.3.4 (C:/dev/jazzy/install/share/rmw_implementation_cmake/cmake)
+-- Found rmw_fastrtps_cpp: 8.4.4 (C:/dev/jazzy/install/share/rmw_fastrtps_cpp/cmake)
+-- Found OpenSSL: C:/dev/.pixi/envs/default/Library/lib/libcrypto.lib (found version "3.3.2")  
+-- Found FastRTPS: C:/dev/jazzy/install/include (Required is at least version "2.13") 
+-- Using RMW implementation 'rmw_fastrtps_cpp' as default
+-- Found rosbag2_compression: 0.26.11 (C:/dev/jazzy/install/share/rosbag2_compression/cmake)
+-- Setting yaml-cpp_DIR to: 'C:/dev/jazzy/install/share/yaml_cpp_vendor/cmake/../../../opt/yaml_cpp_vendor/CMake'
+-- Found rosbag2_performance_benchmarking_msgs: 0.26.11 (C:/dev/jazzy/install/share/rosbag2_performance_benchmarking_msgs/cmake)
+-- Found sensor_msgs: 5.3.8 (C:/dev/jazzy/install/share/sensor_msgs/cmake)
+-- Configuring done (8.8s)
+-- Generating done (0.2s)
+-- Build files have been written to: C:/dev/b/rosbag2_performance_benchmarking
+[1/13] Building CXX object CMakeFiles\writer_benchmark.dir\src\result_utils.cpp.obj
+Defining YAML_CPP_API for DLL import
+[2/13] Building CXX object CMakeFiles\writer_benchmark.dir\src\config_utils.cpp.obj
+Defining YAML_CPP_API for DLL import
+[3/13] Building CXX object CMakeFiles\writer_benchmark.dir\src\msg_utils\helpers.cpp.obj
+[4/13] Building CXX object CMakeFiles\benchmark_publishers.dir\src\msg_utils\helpers.cpp.obj
+[5/13] Building CXX object CMakeFiles\writer_benchmark.dir\src\writer_benchmark.cpp.obj
+Defining YAML_CPP_API for DLL import
+[6/13] Linking CXX executable writer_benchmark.exe
+[7/13] Building CXX object CMakeFiles\benchmark_publishers.dir\src\config_utils.cpp.obj
+Defining YAML_CPP_API for DLL import
+[8/13] Building CXX object CMakeFiles\results_writer.dir\src\result_utils.cpp.obj
+Defining YAML_CPP_API for DLL import
+[9/13] Building CXX object CMakeFiles\results_writer.dir\src\results_writer.cpp.obj
+Defining YAML_CPP_API for DLL import
+[10/13] Building CXX object CMakeFiles\results_writer.dir\src\config_utils.cpp.obj
+Defining YAML_CPP_API for DLL import
+[11/13] Linking CXX executable results_writer.exe
+[12/13] Building CXX object CMakeFiles\benchmark_publishers.dir\src\benchmark_publishers.cpp.obj
+Defining YAML_CPP_API for DLL import
+[13/13] Linking CXX executable benchmark_publishers.exe
+-- Install configuration: "Release"
+-- Installing: C:/dev/jazzy/install/lib/rosbag2_performance_benchmarking/writer_benchmark.exe
+-- Installing: C:/dev/jazzy/install/lib/rosbag2_performance_benchmarking/benchmark_publishers.exe
+-- Installing: C:/dev/jazzy/install/lib/rosbag2_performance_benchmarking/results_writer.exe
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/launch
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/launch/benchmark_launch.py
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/config
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/config/benchmarks
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/config/benchmarks/default_benchmark_producers.yaml
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/config/benchmarks/default_no_transport.yaml
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/config/benchmarks/dispatch_latency.yaml
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/config/benchmarks/test
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/config/benchmarks/test/test_benchmark_producers.yaml
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/config/benchmarks/test/test_no_transport.yaml
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/config/producers
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/config/producers/100MBs_raw.yaml
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/config/producers/200MBs_raw.yaml
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/config/producers/300MBs_raw.yaml
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/config/producers/automotive.yaml
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/config/producers/many_small_1000hz.yaml
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/config/producers/many_small_200hz.yaml
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/config/producers/many_small_400hz.yaml
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/config/producers/many_small_600hz.yaml
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/config/producers/many_small_800hz.yaml
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/config/producers/mixed_110Mbs.yaml
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/config/producers/mixed_110Mbs_low_pubs_count.yaml
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/config/storage
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/config/storage/storage_optimized.yaml
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/config/storage/storage_resilient.yaml
+-- Installing: C:/dev/jazzy/install/share/ament_index/resource_index/package_run_dependencies/rosbag2_performance_benchmarking
+-- Installing: C:/dev/jazzy/install/share/ament_index/resource_index/parent_prefix_path/rosbag2_performance_benchmarking
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/environment/ament_prefix_path.bat
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/environment/ament_prefix_path.dsv
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/environment/path.bat
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/environment/path.dsv
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/local_setup.bat
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/local_setup.dsv
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/package.dsv
+-- Installing: C:/dev/jazzy/install/share/ament_index/resource_index/packages/rosbag2_performance_benchmarking
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/cmake/rosbag2_performance_benchmarkingConfig.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/cmake/rosbag2_performance_benchmarkingConfig-version.cmake
+-- Installing: C:/dev/jazzy/install/share/rosbag2_performance_benchmarking/package.xml
+Finished <<< rosbag2_performance_benchmarking [44.2s]
+
+Summary: 2 packages finished [1min 31s]
+  1 package had stderr output: rosbag2_performance_benchmarking_msgs

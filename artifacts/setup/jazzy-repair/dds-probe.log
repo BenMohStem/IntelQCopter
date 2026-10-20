@@ -1,0 +1,3 @@
+not found: "C:\dev\jazzy\install\share/rviz_ogre_vendor/local_setup.bat" 
+not found: "C:\dev\jazzy\install\share/rosbag2_performance_benchmarking_msgs/local_setup.bat" 
+{'middleware': 'rmw_fastrtps_cpp', 'received': [3.25, 3.25, 3.25, 3.25, 3.25]}

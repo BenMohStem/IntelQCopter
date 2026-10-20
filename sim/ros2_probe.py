@@ -1,10 +1,10 @@
-"""Probe bundled ROS 2 independently of the Isaac renderer."""
+"""Probe native Jazzy independently of any simulator."""
 import os
 import sys
 from pathlib import Path
 
-prefix = Path(os.environ.get('QCOPTER_ROS_PREFIX', r'C:\IsaacSim\app\exts\isaacsim.ros2.core\jazzy'))
-os.environ['PATH'] = str(prefix / 'lib') + os.pathsep + os.environ['PATH']
+prefix = Path(os.environ.get('QCOPTER_ROS_PREFIX', r'C:\dev\jazzy\install'))
+os.environ['PATH'] = str(prefix / 'bin') + os.pathsep + os.environ['PATH']
 os.environ['AMENT_PREFIX_PATH'] = str(prefix)
 os.environ.setdefault('RMW_IMPLEMENTATION', 'rmw_fastrtps_cpp')
 os.environ.setdefault('ROS_DOMAIN_ID', '64')
@@ -12,12 +12,9 @@ os.environ['FASTRTPS_DEFAULT_PROFILES_FILE'] = str(Path(__file__).with_name('fas
 log_dir = Path(__file__).resolve().parents[1] / 'artifacts/test-runs/2026-10-20/ros-logs'
 log_dir.mkdir(parents=True, exist_ok=True)
 os.environ['ROS_LOG_DIR'] = str(log_dir)
-sys.path.insert(0, str(prefix / 'rclpy'))
-runtime = Path(__file__).resolve().parents[1] / 'build/ros_python'
-sys.path.insert(0, str(runtime))
-dll_handle = os.add_dll_directory(str(prefix / 'lib'))
-dll_handles = [os.add_dll_directory(str(p)) for p in (prefix/'rclpy').glob('*.libs')]
-dll_handles += [os.add_dll_directory(str(p)) for p in runtime.glob('*.libs')]
+sys.path.insert(0, str(prefix / 'Lib/site-packages'))
+dll_handles = [os.add_dll_directory(str(p)) for p in
+               (prefix / 'bin', Path(sys.prefix) / 'Library/bin') if p.is_dir()]
 
 if __name__ == '__main__':
     import time

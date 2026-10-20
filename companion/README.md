@@ -1,9 +1,15 @@
 # ROS 2 companion: Pi / Jetson C++ sources
 
 The ROS package is ros2_ws/src/qcopter_autonomy. Its portable C++ mission and A*
-navigation core is compiled and tested. The ROS C++ wrappers have **not** been
-built: this PC has runtime DDS/Python bindings, without ROS development headers.
-Real DDS adapter nodes were exercised separately; see the garden evidence.
+navigation core is compiled and tested. The actual ROS C++ mission, navigator,
+YOLO and panel-distance executables now build against standalone Jazzy in
+`C:\dev\jazzy`. Separate DDS integration tests exercise YOLO/PnP, inactive defaults,
+fresh-pose mission acceptance and active setpoints. The full recorded flight uses
+the shared C++ core plus Python DDS adapters around production C; it does not yet
+exercise the ROS C++ wrappers as the flight's complete control path.
+
+See [Windows setup](../docs/windows-jazzy-setup.md) and
+[companion deployment](../docs/companion-computer-setup.md).
 
 ## Current garden route
 

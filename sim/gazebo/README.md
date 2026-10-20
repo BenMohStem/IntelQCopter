@@ -25,8 +25,9 @@ The final `*-summary.json` and last log line identify the actual engine.
 - The contact topic must be inside `<contact><topic>`, as required by the installed
   Contact system. Contact timestamps expire after 20 ms because Gazebo publishes
   positive contacts only. Failed earlier topic trials are retained.
-- Full ROS C++ wrappers remain unbuilt. `--ros` tests the actual DDS Python
-  adapters around the compiled production C core, with separate transport logs.
+- ROS C++ wrappers build and pass a separate recorded-image DDS integration test.
+  `--ros` in this flight adapter still uses Python DDS adapters around the compiled
+  production C core, with separate transport logs.
 
 ## Run
 
@@ -38,12 +39,19 @@ From the repository root, in separate terminals:
 & .venv-isaacsim/Scripts/python.exe sim/gazebo/run_mission.py --name gazebo-local --video
 ```
 
-For DDS, also start `C:/IsaacSim/app/kit/python/python.exe -u
-sim/engines/ros_bridge.py --engine gazebo`, then add `--ros` to the mission command.
+For the complete recorded DDS run use:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools/run_native_garden.ps1
+```
+
+This uses the user's standalone Jazzy installation at `C:\dev\jazzy` through
+`C:\dev\pixi.toml`. Isaac Sim is removed and is not a dependency. The Python
+environment named `.venv-isaacsim` contains Torch/OpenCV/YOLO, not the Isaac app.
 The bridge handles one run. Do not probe engine TCP ports with a generic socket
 checker: their authenticated single-client listener treats it as a connection.
 Wait for the `live engine ready` log message. Use unique run names to retain trials.
 
 `probe.py` checks real gravity/contact and `camera_probe.py` saves actual sensor
 images. Camera visibility uses a small body plus red/white arms; the larger
-collision envelope stays invisible. Both engines derive geometry from garden.sdf.
+collision envelope stays invisible. Historical Isaac source/recordings are retained.

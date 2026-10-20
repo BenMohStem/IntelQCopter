@@ -1,4 +1,4 @@
-param([ValidateSet('dx12','vulkan')][string]$Backend='dx12',[int]$TimeoutSeconds=600,[string]$RunName='dx12-render',[string]$Script='sim/isaac/retry_probe.py')
+param([ValidateSet('dx12','vulkan')][string]$Backend='dx12',[int]$TimeoutSeconds=600,[string]$RunName='dx12-render',[string]$Script='sim/isaac/retry_probe.py',[ValidateSet('MinimalRendering','RaytracedLighting')][string]$RenderMode='MinimalRendering')
 $ErrorActionPreference='Stop'
 $taskRepo=Split-Path -Parent $PSScriptRoot
 $taskOut=Join-Path $taskRepo "artifacts/test-runs/2026-10-20-isaac-retry/$RunName"
@@ -7,13 +7,14 @@ $taskIsaac='C:\IsaacSim\app'
 $taskArgs=@("`"$taskIsaac\apps\isaacsim.exp.base.kit`"",'--no-window',
  '--/app/settings/persistent=false','--/renderer/multiGpu/enabled=false',
  '--/renderer/activeGpu=0','--/app/renderer/resolution/width=320','--/app/renderer/resolution/height=240',
- '--/rtx/rendermode=MinimalRendering','--/rtx/minimal/mode=3','--/rtx/post/aa/op=0',
+ "--/rtx/rendermode=$RenderMode",'--/rtx/minimal/mode=3','--/rtx/post/aa/op=0',
  "--/log/file=`"$taskOut\$Backend-kit.log`"",'--exec',"`"$taskRepo\$Script`"")
 if($Backend -eq 'dx12'){$taskArgs+='--/app/vulkan=false';$taskArgs+='--d3d12'}
 else{$taskArgs+='--/app/vulkan=true';$taskArgs+='--vulkan'}
 $taskArgs | Set-Content (Join-Path $taskOut "$Backend-arguments.txt")
 $env:OMNI_KIT_ACCEPT_EULA='YES' # Accepted by the user earlier in this chat.
 $env:QCOPTER_ISAAC_PROBE_DIR=$taskOut
+$env:QCOPTER_ISAAC_RENDER_MODE=$RenderMode
 $taskProcess=Start-Process -FilePath "$taskIsaac\kit\kit.exe" -ArgumentList $taskArgs -WorkingDirectory $taskIsaac -WindowStyle Hidden -PassThru -RedirectStandardOutput "$taskOut\$Backend-stdout.log" -RedirectStandardError "$taskOut\$Backend-stderr.log"
 $taskProcess.Id | Set-Content (Join-Path $taskOut "$Backend-pid.txt")
 if(-not $taskProcess.WaitForExit($TimeoutSeconds*1000)){

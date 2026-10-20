@@ -1,0 +1,10 @@
+C:\Users\Mohamed\Desktop\Work\QCopter\sim\gazebo\garden.sdf
+Process did not become ready: 
+C:\Users\Mohamed\Desktop\Work\QCopter\artifacts\test-runs\native-local\jazzy-migration-gazebo-ros.log
+At C:\Users\Mohamed\Desktop\Work\QCopter\tools\run_native_garden.ps1:18 char:55
++ ... Get-Date) -gt $deadline){throw "Process did not become ready: $path"}
++                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Process did not...-gazebo-ros.log:String) [], RuntimeException
+    + FullyQualifiedErrorId : Process did not become ready: C:\Users\Mohamed\Desktop\Work\QCopter\artifacts\test-runs\ 
+   native-local\jazzy-migration-gazebo-ros.log
+ 

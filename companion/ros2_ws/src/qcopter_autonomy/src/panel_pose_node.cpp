@@ -21,10 +21,10 @@ class PanelPoseNode:public rclcpp::Node {
     if(!declare_parameter<bool>("known_fixture_model_confirmed",false))
       throw std::invalid_argument("Confirm known-size panel model and use its trained detector");
     pub_=create_publisher<qcopter_autonomy::msg::MetricObstacles>("perception/metric_obstacles",10);
-    rgb_=create_subscription<sensor_msgs::msg::Image>("camera/image",rclcpp::SensorDataQoS(),[this](auto m){image_=m;});
-    intrinsics_=create_subscription<sensor_msgs::msg::CameraInfo>("camera/camera_info",10,[this](auto m){camera_=m;});
-    odom_=create_subscription<nav_msgs::msg::Odometry>("odometry",10,[this](auto m){pose_=m;});
-    detections_=create_subscription<qcopter_autonomy::msg::SemanticDetections>("perception/semantics",10,[this](auto m){process(m);});
+    rgb_=create_subscription<sensor_msgs::msg::Image>("camera/image",rclcpp::SensorDataQoS(),[this](sensor_msgs::msg::Image::ConstSharedPtr m){image_=m;});
+    intrinsics_=create_subscription<sensor_msgs::msg::CameraInfo>("camera/camera_info",10,[this](sensor_msgs::msg::CameraInfo::ConstSharedPtr m){camera_=m;});
+    odom_=create_subscription<nav_msgs::msg::Odometry>("odometry",10,[this](nav_msgs::msg::Odometry::ConstSharedPtr m){pose_=m;});
+    detections_=create_subscription<qcopter_autonomy::msg::SemanticDetections>("perception/semantics",10,[this](qcopter_autonomy::msg::SemanticDetections::ConstSharedPtr m){process(m);});
   }
  private:
   void process(const qcopter_autonomy::msg::SemanticDetections::ConstSharedPtr&m){

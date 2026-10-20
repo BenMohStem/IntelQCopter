@@ -1,0 +1,23 @@
+{
+  "robot_state_publisher_running": true,
+  "rviz_running": true,
+  "received_fixed_transforms": {
+    "arm_fl": "base_link",
+    "arm_fr": "base_link",
+    "arm_rl": "base_link",
+    "arm_rr": "base_link",
+    "battery": "base_link",
+    "chassis": "base_link",
+    "motor_fl": "base_link",
+    "motor_fr": "base_link",
+    "motor_rl": "base_link",
+    "motor_rr": "base_link",
+    "propeller_fl": "base_link",
+    "propeller_fr": "base_link",
+    "propeller_rl": "base_link",
+    "propeller_rr": "base_link"
+  },
+  "OpenGL_initialized": true,
+  "scope": "Actual RViz process/logs and static TF; no screenshot or interactive GUI inspection claimed",
+  "passed": true
+}

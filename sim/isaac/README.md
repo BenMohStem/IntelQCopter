@@ -1,4 +1,10 @@
-# Isaac Sim: model prepared, execution blocked
+# Isaac Sim — historical source, application removed
+
+The user requested discontinuing Isaac Sim on 20 October 2026. The standalone
+application at `C:\IsaacSim` was removed and current launchers use Gazebo with
+standalone Jazzy. These files and original recordings are retained for provenance.
+Later DirectX/PhysX garden flights did succeed before removal; the earlier failure
+notes below are chronological diagnostics, not the final status.
 
 ## DirectX 12 retry — 20 October 2026
 

@@ -1,0 +1,13 @@
+{
+  "transport": "Two Python ROS2 DDS adapter nodes + localhost TCP IPC to Python3.10 renderer",
+  "requests": 19676,
+  "operation_counts": {
+    "1": 1,
+    "2": 18000,
+    "3": 1675
+  },
+  "median_ms": 1.1707500088959932,
+  "p99_ms": 2.4450749915558845,
+  "max_ms": 13.452299986965954,
+  "scope": "Actual C reset, control and lidar fusion through DDS; not ROS C++ wrapper/hardware/real-time proof"
+}

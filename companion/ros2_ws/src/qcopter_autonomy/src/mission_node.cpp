@@ -16,14 +16,14 @@ class MissionNode:public rclcpp::Node {
     // Defaults inactive. This is mission setpoint authority, never physical arming.
     enabled_=declare_parameter<bool>("enable_simulation_missions",false);
     publisher_=create_publisher<qcopter_autonomy::msg::AutonomySetpoint>("autonomy/setpoint",10);
-    odom_=create_subscription<nav_msgs::msg::Odometry>("odometry",10,[this](auto m){
+    odom_=create_subscription<nav_msgs::msg::Odometry>("odometry",10,[this](nav_msgs::msg::Odometry::ConstSharedPtr m){
       if((m->header.frame_id!="map"&&m->header.frame_id!="odom")||m->child_frame_id!=m->header.frame_id)return;
       if(have_state_ && (m->header.frame_id!=frame_ || rclcpp::Time(m->header.stamp)<=odom_time_))return;
       const auto&q=m->pose.pose.orientation;const auto&p=m->pose.pose.position;const auto&v=m->twist.twist.linear;
       state_={p.x,p.y,p.z,v.x,v.y,v.z,std::atan2(2*(q.w*q.z+q.x*q.y),1-2*(q.y*q.y+q.z*q.z))};
       odom_time_=m->header.stamp;frame_=m->header.frame_id;have_state_=true;
     });
-    obstacles_=create_subscription<qcopter_autonomy::msg::MetricObstacles>("perception/metric_obstacles",10,[this](auto m){
+    obstacles_=create_subscription<qcopter_autonomy::msg::MetricObstacles>("perception/metric_obstacles",10,[this](qcopter_autonomy::msg::MetricObstacles::ConstSharedPtr m){
       if(!have_state_||m->header.frame_id!=frame_||m->centers.size()!=m->radii_m.size()||!m->image_processed)return;
       const double age=(now()-rclcpp::Time(m->header.stamp)).seconds();if(age<0||age>.5)return;
       for(size_t i=0;i<m->centers.size();i++) {
@@ -35,15 +35,15 @@ class MissionNode:public rclcpp::Node {
       }
       perception_time_=m->header.stamp;replan_=true;
     });
-    contact_=create_subscription<std_msgs::msg::Bool>("simulation/ground_contact",10,[this](auto m){contact_state_=m->data;contact_time_=now();});
-    request_=create_service<qcopter_autonomy::srv::RequestMission>("mission/request",[this](auto req,auto res){
+    contact_=create_subscription<std_msgs::msg::Bool>("simulation/ground_contact",10,[this](std_msgs::msg::Bool::ConstSharedPtr m){contact_state_=m->data;contact_time_=now();});
+    request_=create_service<qcopter_autonomy::srv::RequestMission>("mission/request",[this](qcopter_autonomy::srv::RequestMission::Request::SharedPtr req,qcopter_autonomy::srv::RequestMission::Response::SharedPtr res){
       const auto&a=req->start;const auto&b=req->finish;
       bool fresh=have_state_&&(now()-odom_time_).seconds()>=0&&(now()-odom_time_).seconds()<.25;
       res->accepted=enabled_&&fresh&&mission_.request(state_,{a.x,a.y,a.z},{b.x,b.y,b.z},req->cruise_height_m);
       res->reason=res->accepted?"Simulation mission accepted; no physical arming":"Inactive, stale pose, busy, invalid points, or start differs from actual pose";
       if(res->accepted){finish_={b.x,b.y,req->cruise_height_m};replan_=true;}
     });
-    land_=create_service<std_srvs::srv::Trigger>("mission/land",[this](auto,auto response){
+    land_=create_service<std_srvs::srv::Trigger>("mission/land",[this](std_srvs::srv::Trigger::Request::SharedPtr,std_srvs::srv::Trigger::Response::SharedPtr response){
       response->success=enabled_&&have_state_&&(now()-odom_time_).seconds()>=0&&(now()-odom_time_).seconds()<.25;
       if(response->success)mission_.request_land(state_);
       response->message=response->success?"Land at current horizontal position; not a motor-cut command":"No fresh authorized simulation pose";

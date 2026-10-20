@@ -1,0 +1,104 @@
+[
+  {
+    "path": "C:\\dev\\jazzy\\src\\ament\\google_benchmark_vendor\\thread_safety_attributes.patch",
+    "crlf": 17,
+    "before_sha256": "9c9836c1f41d1518a5d383938912f0d7650b2645d8a190735ba29f6e1d661b19",
+    "after_sha256": "1b142cc072325cccedc5cfe78ed08a0e993822fbfd3df7849f5b4972e2eb56b9"
+  },
+  {
+    "path": "C:\\dev\\jazzy\\src\\ament\\uncrustify_vendor\\patches\\0001-Simplify-installation-for-ROS-2-needs.patch",
+    "crlf": 51,
+    "before_sha256": "8927fd1859fcd7ff09b563fcd7dad0a2ace0dae2b5ed9b43564b027bd000c81f",
+    "after_sha256": "8f92a7d8e3dfa4b64b22cd958ea1cd0f374568ed7e0ee9c4dc18474215d32e55"
+  },
+  {
+    "path": "C:\\dev\\jazzy\\src\\eProsima\\Fast-DDS\\build_qnx\\qnx_patches\\asio_qnx.patch",
+    "crlf": 71,
+    "before_sha256": "dfa44ba8a04c00a626b497b23cb16ba937d2fbd13e5028bb31d4b7f7f85d1351",
+    "after_sha256": "5220a22636a07e32dc9daaf8a8413d343150ac987693f5d9bc831f22a2e4a4af"
+  },
+  {
+    "path": "C:\\dev\\jazzy\\src\\eProsima\\Fast-DDS\\build_qnx\\qnx_patches\\fastcdr_qnx.patch",
+    "crlf": 15,
+    "before_sha256": "82e1249c1243566efcc9d11550b1913d57120b5f399e58348e3d371bf42102e3",
+    "after_sha256": "3cf26846ab6130238f677abf7191d069db36d54b1f51c419d9b37ae37ad6f853"
+  },
+  {
+    "path": "C:\\dev\\jazzy\\src\\eProsima\\Fast-DDS\\build_qnx\\qnx_patches\\googletest_qnx.patch",
+    "crlf": 60,
+    "before_sha256": "7f9266c75c19284a01b5c4129fba06a43e69a7fdc91d27f6cc69b8d8eb1e447a",
+    "after_sha256": "d8169a802285ebbeeeaf997d9d5eb52ac7c8a2f35691be8a516e6bf9f48bbab3"
+  },
+  {
+    "path": "C:\\dev\\jazzy\\src\\eProsima\\Fast-DDS\\build_qnx\\qnx_patches\\tinyxml2_qnx.patch",
+    "crlf": 22,
+    "before_sha256": "89ad41d5abb7ba66576c945a710b1c4b961d01ba17f755b8f15b35072b0449b9",
+    "after_sha256": "2c69b24ac53f3847955844943da106544710b3966d87654b5064b4c78261768f"
+  },
+  {
+    "path": "C:\\dev\\jazzy\\src\\gazebo-release\\gz_cmake_vendor\\patches\\0001-fix-pkg-config-dir.patch",
+    "crlf": 39,
+    "before_sha256": "f4d10b7ef4a8f410e8a8e4696f0dbb575fd3d8aa2152ab2cacbe724620ff94b9",
+    "after_sha256": "5ffb8562c978ebb607c6f1b66fa14e9ed07ed7a61346d4ef97f376bf13386338"
+  },
+  {
+    "path": "C:\\dev\\jazzy\\src\\ros2\\orocos_kdl_vendor\\orocos_kdl_vendor\\patches\\windows-cmake-3.29-rebuild.patch",
+    "crlf": 26,
+    "before_sha256": "285856c94422da9bfbfc9a0ee1aa7df1ba2cd31c7e9eb8e5efe960f362214a50",
+    "after_sha256": "d137a62b946ab66df4b86e10c5e34bf1fe53bb534b78c61e5938f53d8ec889b2"
+  },
+  {
+    "path": "C:\\dev\\jazzy\\src\\ros2\\orocos_kdl_vendor\\python_orocos_kdl_vendor\\patches\\0001-fix-windows-debug.patch",
+    "crlf": 20,
+    "before_sha256": "b2a175a7921102dbf1e205799879830d19bb3bb6c068aeed013c74567832661c",
+    "after_sha256": "49ed5059e32679a4a1dc818508cf5740ea0e7a6643b4b3389e95b91029c18b1f"
+  },
+  {
+    "path": "C:\\dev\\jazzy\\src\\ros2\\pybind11_vendor\\patches\\0001-pybind11-2.11.1-fix-windows-debug.patch",
+    "crlf": 74,
+    "before_sha256": "1c8210f3af5a6be833651ea060f6a562b6da864b309140e0d552801dce7e1265",
+    "after_sha256": "0452cb96d9011cfca4c68ecf5e5cfc2dd3846fd70e558c825f8b7b35a99e3227"
+  },
+  {
+    "path": "C:\\dev\\jazzy\\src\\ros2\\rosbag2\\mcap_vendor\\patches\\0001-fix-gcc15.patch",
+    "crlf": 12,
+    "before_sha256": "87ff05887c0ba218c4b1ff4ce70e62d721f352ecde9d148e37f5efe6b07ad981",
+    "after_sha256": "c5746b2ffa0b207231f8ba9556118bc96f4776e53ba5c37ddbbc27f6cd5a3115"
+  },
+  {
+    "path": "C:\\dev\\jazzy\\src\\ros2\\rosbag2\\sqlite3_vendor\\patches\\0001-add-cmakelists.patch",
+    "crlf": 16,
+    "before_sha256": "49ee9fab313836e6da8e421d4ed6bfcf81872b8b33fd61c0a1d55853b60099ea",
+    "after_sha256": "69e9eda8e4af774d9369425f5618271c3ea1afb8a4866548f3f56dec4cedae4e"
+  },
+  {
+    "path": "C:\\dev\\jazzy\\src\\ros2\\rviz\\rviz_ogre_vendor\\patches\\0001-pragma.patch",
+    "crlf": 1849,
+    "before_sha256": "9721cee2bc81366bd3c6596de270ebe886fb0388cf4b082c1b8f32be4ca3a717",
+    "after_sha256": "177ebead7a667e80f38736f6d57d3ed7ede09a39711da638fd73c6266f7b70d1"
+  },
+  {
+    "path": "C:\\dev\\jazzy\\src\\ros2\\rviz\\rviz_ogre_vendor\\patches\\0002-relocatable.patch",
+    "crlf": 24,
+    "before_sha256": "b02471e3737d04062aee9105bdb215d963fa220e9327cc9db9155f49285f0f12",
+    "after_sha256": "bd55285965288ba736faec36647407535b92a13be55186211437cc556cce5cbb"
+  },
+  {
+    "path": "C:\\dev\\jazzy\\src\\ros2\\rviz\\rviz_ogre_vendor\\patches\\0003-c4267.patch",
+    "crlf": 23,
+    "before_sha256": "3dabcaf1e8699e9e31b0dd2958a2db31a2d6f7d3402121cddbf23552f275be9c",
+    "after_sha256": "2e52525fcf582ccc118806f5a2de3f66260dd93e37207359b51b4c1151b66f93"
+  },
+  {
+    "path": "C:\\dev\\jazzy\\src\\ros2\\rviz\\rviz_ogre_vendor\\patches\\0004-featuresummary-rename.patch",
+    "crlf": 14,
+    "before_sha256": "3e44b49888dd87369aa91fe4ca790b4158dad64ca943e108e7b7e953e0ef452a",
+    "after_sha256": "d6f5708bce537bc93c77a88b063b0b85e4270b5c82d7df9db51306ec9937cb1a"
+  },
+  {
+    "path": "C:\\dev\\jazzy\\src\\ros2\\rviz\\rviz_ogre_vendor\\patches\\0005-mangle-library-names-used-by-rviz.patch",
+    "crlf": 59,
+    "before_sha256": "6703671d4b8589a07f67fda9a64012ffc2844dbec9ac70425de169a2fd0826df",
+    "after_sha256": "9017815ea4c4456b8b7968b436b751d5f911be41a6aec1e349e415b9d9b04b3c"
+  }
+]

@@ -14,3 +14,7 @@ artifacts/** -text
 *.py text eol=lf
 *.usda text eol=lf
 *.sdf text eol=lf
+*.md text eol=lf
+*.cmd text eol=crlf
+# Evidence is retained byte-for-byte, including reports and original logs.
+artifacts/** -text

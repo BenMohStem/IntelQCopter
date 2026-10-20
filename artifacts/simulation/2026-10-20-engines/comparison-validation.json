@@ -1,0 +1,7 @@
+{
+  "both_native_runs_pass": true,
+  "both_DDS": true,
+  "combined_video_decode_exit": 0,
+  "comparison_alignment": "simulated time; shorter run holds final frame",
+  "physical_arming": false
+}

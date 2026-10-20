@@ -19,7 +19,16 @@ RP2350 flight controller · RP2040 handheld controller · F450/Q450 airframe
 IntelQcopter is a C-first Pico SDK project for a custom quadcopter. The aircraft target is an RP2350; a separate RP2040 target is reserved for a two-joystick handheld controller. The chosen frame family is the 450 mm F450/Q450 X-frame with two red and two white arms.
 
 > [!IMPORTANT]
-> **Current stage: executed 3D garden simulation with production C control, common C++ mission/navigation, RGB YOLO/PnP and actual ROS 2 DDS adapters.** Takeoff through landing is recorded. The airframe model is assumed; hardware drivers/arming and ROS C++ builds remain unfinished. Isaac Sim is installed but fails GPU startup on this PC.
+> **Current stage: native Gazebo garden flight through standalone ROS 2 Jazzy DDS, with recorded takeoff through landing.** The ROS C++ mission, YOLO and panel-distance nodes now build and pass a separate DDS integration test. Physical drivers/arming remain unfinished. Isaac Sim was removed at the user's request; earlier recordings are historical evidence.
+
+### Windows Jazzy setup and newest proof
+
+[Setup, repairs and commands](docs/windows-jazzy-setup.md) · [Fresh Gazebo video](artifacts/simulation/2026-10-20-engines/jazzy-migration-v4-gazebo.mp4) · [Graphs](artifacts/simulation/2026-10-20-engines/jazzy-migration-v4-gazebo-graphs.png) · [Original setup logs](artifacts/setup/jazzy-repair) · [F450 URDF](companion/ros2_ws/src/qcopter_description/urdf/f450.urdf)
+
+The newest flight retains the assumed **1.2 kg** baseline: 35.998 simulated seconds,
+2.12 cm landing error, 0.560 m evaluated minimum panel clearance, 1.97 cm cruise
+height RMSE. The separate component URDF estimates **0.740 kg** and has not been
+used to retune the flight baseline. Neither mass is a measured takeoff mass.
 
 The control design target is a 500 Hz attitude loop: roll and pitch use angle setpoints with inner gyro-rate loops, yaw is rate-controlled, and the default throttle command is vertical speed with center-stick altitude hold. The software scaffold now models that cascade around a **0.50 placeholder hover collective**; it is not tuned and it still leaves motor outputs disabled. LoRa is planned as the primary pilot link; CC1101 radios are optional auxiliary links. A ROS 2 companion may later provide camera/YOLO, lidar, and GPS setpoints while the RP2350 retains motor control and failsafe authority.
 
@@ -53,10 +62,11 @@ the generic matrix lessons and retains earlier experiments as historical results
 | Battery monitor | Host checks cover voltage/SOC Kalman math, 20% SOC landing request, alarms, and input faults | No drivers, coulomb-count current sensor, calibrated OCV curve, or landing-action integration are connected |
 | RP2350 emulator | 1,000,000 instruction steps complete | Emulator reports unsupported peripherals; not timing or I/O validation |
 | PCB | Editable KiCad logic-carrier draft; power/current-sensor/BMS interfaces added | DRC: 0 geometry violations; 76 pads unrouted, not manufacturable |
-| CAD / URDF | Parametric F450 visual and XML-valid URDF | OpenSCAD rendering/physics calibration not verified |
-| ROS 2 / autonomy | 19,378 DDS requests execute the final garden mission; common C++ mission/A* core compiled; ROS C++ wrappers authored | Two same-process Python adapter nodes; ROS C++ wrappers unbuilt, no physical UART, real VIO or general unknown-obstacle solution |
+| CAD / URDF | Component F450 URDF independently loaded/rendered; masses, COM and inertia calculated; RViz receives 14 transforms | Provisional 740 g model, no measured mass/inertia or exact manufacturer mesh |
+| ROS 2 / autonomy | Standalone Jazzy DDS flight; compiled ROS C++ YOLO/PnP/mission integration passes separately | Recorded flight uses Python DDS adapters; full ROS C++ wrapper flight, physical UART and real localization pending |
 | YOLO | GPU YOLO reference tests plus a trained synthetic panel detector and RGB PnP route | New custom panel detector drives the garden route; synthetic training and known-size panels only |
-| Isaac Sim | Installed at `C:\IsaacSim\app`; USD scene authored and parser-validated | GPU initialization failed on this PC; no Isaac physics or rendering result |
+| Gazebo / RViz | Native Gazebo 10.5 flight recorded; native RViz OpenGL 4.6 startup/TF check passes | Experimental Windows Gazebo support; assumed vehicle/fixture model |
+| Isaac Sim | Removed at user's request; previous successful native flight recordings retained | Historical evidence only; no current application dependency |
 
 Open the [recorded logs and data index](artifacts/test-runs/README.md) for proof files and the limits of each check. The [interactive uncertainty dashboard](artifacts/visualizations/uncertainty-dashboard.html) plots actual saved Monte Carlo rows and replays its 5-second aggregate Kalman trace. It is a replayable chart, **not a vehicle simulation or video recording**. The original emulator log includes step-by-step progress and its unsupported-peripheral messages.
 

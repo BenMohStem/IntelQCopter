@@ -15,4 +15,4 @@ scipy==1.15.3
 Pillow==12.3.0
 polars==1.35.1
 polars-runtime-32==1.35.1
-# Bundled ROS Python 3.12 separately uses build/ros_python/numpy==2.2.6.
+# Native ROS Python 3.12 and NumPy are supplied by C:/dev/pixi.toml separately.

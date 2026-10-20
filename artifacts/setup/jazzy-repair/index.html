@@ -1,0 +1,22 @@
+<!doctype html><html lang="en"><meta charset="utf-8">
+<title>IntelQcopter — standalone Jazzy and Gazebo proof</title>
+<style>body{font:17px system-ui;max-width:1100px;margin:40px auto;padding:0 22px;background:#111923;color:#e8edf5}a{color:#8dcaff}video,img{max-width:100%;border-radius:10px}section{background:#1c2938;padding:22px;margin:22px 0;border-radius:12px}code{color:#a9e6ca}li{margin:.6em 0}</style>
+<h1>IntelQcopter · Jazzy + Gazebo</h1><p>Executed on Windows 10 · 20 October 2026. Isaac Sim application removed.</p>
+<section><h2>Fresh native Gazebo flight</h2><p>35.998 simulated seconds · 2.12 cm landing error · 0.560 m evaluated minimum panel clearance · no collision.</p>
+<video controls preload="metadata" poster="../../simulation/2026-10-20-engines/jazzy-migration-v4-gazebo-preview.png" src="../../simulation/2026-10-20-engines/jazzy-migration-v4-gazebo.mp4"></video>
+<p>Recorded simulation time, not a real-time desktop screen capture. Concurrent builds: 60.619 seconds wall time.</p>
+<p><a href="../../simulation/2026-10-20-engines/jazzy-migration-v4-gazebo-summary.json">Raw summary</a> · <a href="../../simulation/2026-10-20-engines/jazzy-migration-v4-gazebo.csv">CSV</a> · <a href="../../simulation/2026-10-20-engines/jazzy-migration-v4-gazebo-transport.json">Actual DDS latency</a> · <a href="../../simulation/2026-10-20-engines/jazzy-migration-v4-gazebo-validation.json">Source/contact/video checks</a></p>
+<img src="../../simulation/2026-10-20-engines/jazzy-migration-v4-gazebo-graphs.png" alt="Original flight, filter and covariance graphs"></section>
+<section><h2>Actual software checks</h2><ul>
+<li>Native Jazzy DDS: <a href="dds-probe.log">five received messages</a>.</li>
+<li>RViz: <a href="rviz/rviz2.log">OpenGL 4.6 original log</a>; <a href="rviz/result.json">14 component transforms and running-process checks</a>.</li>
+<li>Compiled ROS C++: <a href="cpp-integration-194037/result.json">42 detected/ranged frame messages, default rejection, accepted enabled mission, 40 active setpoints</a>.</li>
+<li><a href="rebuild-third.log">Successful RViz build</a> · <a href="companion-build-final.log">Successful companion build</a> · <a href="rosbag-benchmark-build.log">Repaired rosbag benchmark build</a>.</li>
+<li><a href="isaac-uninstall.json">Isaac uninstall receipt</a> · <a href="patch-normalization.json">Patch repair hashes</a> · <a href="original-user-build.log">Original supplied build log</a>.</li></ul></section>
+<section><h2>Component URDF</h2><img src="f450-urdf-preview.png" alt="Independent render of the original provisional F450 URDF">
+<p>Original approximate geometry, not a downloaded manufacturer CAD model. 9047 props, four orange motors, battery, two red/two white arms. All component masses provisional; estimated sum 740 g. The flight above uses the separate 1.2 kg baseline.</p>
+<p><a href="f450-urdf-validation.json">Independent URDF load/mass check</a> · <a href="../../../docs/f450-model-sources.md">Model assumptions and F450 CAD references</a></p></section>
+<section><h2>Run it</h2><p><code>powershell -ExecutionPolicy Bypass -File tools/run_native_garden.ps1</code></p>
+<p>Double-click <code>tools/view_f450_windows.cmd</code> for RViz.</p>
+<p><a href="../../../docs/windows-jazzy-setup.md">Setup, repairs and reproducible commands</a> · <a href="../../../docs/companion-computer-setup.md">Pi/Jetson deployment plan</a></p>
+<p>Known-size panel course, simulated local pose, analytical downward ray. C++ ROS wrappers were tested separately from the flight. Physical motor arming remains disabled. Real companion/camera/UART integration is pending.</p></section></html>

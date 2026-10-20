@@ -17,7 +17,7 @@ class NavigationNode : public rclcpp::Node {
     if(map.size()%3) throw std::invalid_argument("obstacles must be x,y,r triplets");
     for(size_t i=0;i<map.size();i+=3) obstacles_.push_back({map[i],map[i+1],map[i+2]});
     pub_=create_publisher<qcopter_autonomy::msg::AutonomySetpoint>("autonomy/setpoint",10);
-    odom_=create_subscription<nav_msgs::msg::Odometry>("odometry",10,[this](auto m){
+    odom_=create_subscription<nav_msgs::msg::Odometry>("odometry",10,[this](nav_msgs::msg::Odometry::ConstSharedPtr m){
       if(m->header.frame_id!="map" && m->header.frame_id!="odom") return;
       if(m->child_frame_id!=m->header.frame_id) return; // require explicit world-twist adapter
       if(have_state_ && m->header.frame_id==frame_ && rclcpp::Time(m->header.stamp)<=stamp_) return;
@@ -28,7 +28,7 @@ class NavigationNode : public rclcpp::Node {
       state_={p.x,p.y,p.z,v.x,v.y,v.z,std::atan2(2*(q.w*q.z+q.x*q.y),1-2*(q.y*q.y+q.z*q.z))};
       stamp_=m->header.stamp;frame_=m->header.frame_id;have_state_=true;
     });
-    goal_=create_subscription<geometry_msgs::msg::PoseStamped>("goal",10,[this](auto m){
+    goal_=create_subscription<geometry_msgs::msg::PoseStamped>("goal",10,[this](geometry_msgs::msg::PoseStamped::ConstSharedPtr m){
       if(!have_state_ || m->header.frame_id!=frame_) return;
       const auto &p=m->pose.position; planned_=navigator_.plan(state_,{p.x,p.y,p.z},obstacles_);
     });

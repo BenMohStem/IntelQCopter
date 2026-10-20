@@ -14,9 +14,13 @@ def build():
     scene=UsdPhysics.Scene.Define(stage,'/World/Physics');scene.CreateGravityDirectionAttr((0,0,-1));scene.CreateGravityMagnitudeAttr(9.80665)
     # Author vendor schema tokens without importing Isaac into the standalone
     # USD authoring environment. Isaac resolves them when it loads the stage.
-    def schema(prim,name):prim.SetMetadata('apiSchemas',Sdf.TokenListOp.Create(prependedItems=[*prim.GetAppliedSchemas(),name]))
+    def schema(prim,name):
+        op=prim.GetMetadata('apiSchemas');items=[] if op is None else [*op.prependedItems,*op.explicitItems,*op.addedItems]
+        prim.SetMetadata('apiSchemas',Sdf.TokenListOp.Create(prependedItems=list(dict.fromkeys([*items,name]))))
     schema(scene.GetPrim(),'PhysxSceneAPI');scene.GetPrim().CreateAttribute('physxScene:enableGPUDynamics',Sdf.ValueTypeNames.Bool).Set(False)
     UsdLux.DomeLight.Define(stage,'/World/Light').CreateIntensityAttr(700)
+    sun=UsdLux.DistantLight.Define(stage,'/World/Sun');sun.CreateIntensityAttr(1500)
+    UsdGeom.Xformable(sun).AddRotateXYZOp().Set(Gf.Vec3f(-30,20,45))
     materials={}
     def material(color):
         key=tuple(color)
@@ -39,6 +43,10 @@ def build():
             mass.CreateDiagonalInertiaAttr(Gf.Vec3f(*[float(inertial.findtext('inertia/'+key)) for key in ['ixx','iyy','izz']]))
             mass.CreateCenterOfMassAttr(Gf.Vec3f(0));mass.CreatePrincipalAxesAttr(Gf.Quatf(1))
             schema(parent.GetPrim(),'PhysxContactReportAPI');parent.GetPrim().CreateAttribute('physxContactReport:threshold',Sdf.ValueTypeNames.Float).Set(0)
+            schema(parent.GetPrim(),'PhysxRigidBodyAPI')
+            parent.GetPrim().CreateAttribute('physxRigidBody:solverPositionIterationCount',Sdf.ValueTypeNames.Int).Set(16)
+            parent.GetPrim().CreateAttribute('physxRigidBody:solverVelocityIterationCount',Sdf.ValueTypeNames.Int).Set(4)
+            parent.GetPrim().CreateAttribute('physxRigidBody:maxDepenetrationVelocity',Sdf.ValueTypeNames.Float).Set(.5)
         for link in model.findall('link'):
             link_path=path+'/'+link.get('name');UsdGeom.Xform.Define(stage,link_path)
             for item in [*link.findall('visual'),*link.findall('collision')]:
