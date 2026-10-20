@@ -1,4 +1,4 @@
-param([ValidateSet('dx12','vulkan')][string]$Backend='dx12',[int]$TimeoutSeconds=600,[string]$RunName='dx12-render')
+param([ValidateSet('dx12','vulkan')][string]$Backend='dx12',[int]$TimeoutSeconds=600,[string]$RunName='dx12-render',[string]$Script='sim/isaac/retry_probe.py')
 $ErrorActionPreference='Stop'
 $taskRepo=Split-Path -Parent $PSScriptRoot
 $taskOut=Join-Path $taskRepo "artifacts/test-runs/2026-10-20-isaac-retry/$RunName"
@@ -7,7 +7,8 @@ $taskIsaac='C:\IsaacSim\app'
 $taskArgs=@("`"$taskIsaac\apps\isaacsim.exp.base.kit`"",'--no-window',
  '--/app/settings/persistent=false','--/renderer/multiGpu/enabled=false',
  '--/renderer/activeGpu=0','--/app/renderer/resolution/width=320','--/app/renderer/resolution/height=240',
- "--/log/file=`"$taskOut\$Backend-kit.log`"",'--exec',"`"$taskRepo\sim\isaac\retry_probe.py`"")
+ '--/rtx/rendermode=MinimalRendering','--/rtx/minimal/mode=3','--/rtx/post/aa/op=0',
+ "--/log/file=`"$taskOut\$Backend-kit.log`"",'--exec',"`"$taskRepo\$Script`"")
 if($Backend -eq 'dx12'){$taskArgs+='--/app/vulkan=false';$taskArgs+='--d3d12'}
 else{$taskArgs+='--/app/vulkan=true';$taskArgs+='--vulkan'}
 $taskArgs | Set-Content (Join-Path $taskOut "$Backend-arguments.txt")

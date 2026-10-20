@@ -30,12 +30,25 @@ async def probe():
         if not cameras:
             raise RuntimeError('USD has no camera')
         product = rep.create.render_product(cameras[0], (320, 240))
+        product.hydra_texture.set_updates_enabled(True)
         rgb = rep.AnnotatorRegistry.get_annotator('rgb')
         rgb.attach([product])
         # A paused stage needs explicit Replicator capture; app ticks alone can
         # leave its render product unpopulated.
-        for _ in range(3):
+        from isaacsim.core.rendering_manager import RenderingManager
+        # Seed Fabric time and let the asynchronous shader/render-product setup
+        # finish; very fast app ticks alone can precede the first GPU result.
+        for _ in range(60):
+            await RenderingManager.render_async()
+            await asyncio.sleep(.05)
+        for _ in range(6):
             await rep.orchestrator.step_async(rt_subframes=4,delta_time=0.0)
+            await rep.orchestrator.wait_until_complete_async()
+            if getattr(rgb.get_data(),'size',0):
+                break
+            for _ in range(30):
+                await RenderingManager.render_async()
+                await asyncio.sleep(.05)
         data = rgb.get_data()
         result['rgb_shape'] = list(getattr(data, 'shape', []))
         if tuple(result['rgb_shape'][:2]) != (240, 320) or data.size == 0:
