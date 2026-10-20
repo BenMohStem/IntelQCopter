@@ -19,21 +19,28 @@ RP2350 flight controller · RP2040 handheld controller · F450/Q450 airframe
 IntelQcopter is a C-first Pico SDK project for a custom quadcopter. The aircraft target is an RP2350; a separate RP2040 target is reserved for a two-joystick handheld controller. The chosen frame family is the 450 mm F450/Q450 X-frame with two red and two white arms.
 
 > [!IMPORTANT]
-> **Current stage: firmware scaffold plus executed CPU flight simulation.** The production C control equations now fly a provisional six-DOF model around two known obstacles; six scenarios and an actual ROS 2 DDS adapter route succeeded. YOLO GPU and OpenCV ONNX inference are separately recorded. Isaac Sim failed GPU startup, and its scene has only been parser-validated. Physical sensors/radio/ESC drivers remain unconnected; no hardware flight has run.
+> **Current stage: executed 3D garden simulation with production C control, common C++ mission/navigation, RGB YOLO/PnP and actual ROS 2 DDS adapters.** Takeoff through landing is recorded. The airframe model is assumed; hardware drivers/arming and ROS C++ builds remain unfinished. Isaac Sim is installed but fails GPU startup on this PC.
 
 The control design target is a 500 Hz attitude loop: roll and pitch use angle setpoints with inner gyro-rate loops, yaw is rate-controlled, and the default throttle command is vertical speed with center-stick altitude hold. The software scaffold now models that cascade around a **0.50 placeholder hover collective**; it is not tuned and it still leaves motor outputs disabled. LoRa is planned as the primary pilot link; CC1101 radios are optional auxiliary links. A ROS 2 companion may later provide camera/YOLO, lidar, and GPS setpoints while the RP2350 retains motor control and failsafe authority.
 
-### New modelling report and simulation
+### New mathematical report and 3D garden evidence
 
-[Mathematical PDF](docs/modelisation/main.pdf) · [Editable LaTeX](docs/modelisation/main.tex) · [Evidence viewer](artifacts/simulation/2026-10-20/index.html) · [Video](artifacts/simulation/2026-10-20/best-flight-cpu.mp4) · [Raw data and logs](artifacts/simulation/2026-10-20/README.md)
+[47-page mathematical PDF](docs/modelisation/main.pdf) · [Editable LaTeX](docs/modelisation/main.tex) · [Garden evidence viewer](artifacts/simulation/2026-10-20-missions/index.html) · [Original video](artifacts/simulation/2026-10-20-missions/garden-final.mp4) · [Current problems](docs/missing-information-and-problems.md)
 
-![Original CPU flight model results](artifacts/simulation/2026-10-20/flight-results.png)
+![Recorded 3D garden experiment](artifacts/simulation/2026-10-20-missions/garden-final-preview.png)
 
-The report derives the rigid-body model, matrix multiplication/exponentials,
-all six PID gains, both Kalman updates and covariance rules. The selected
-simulation uses a known static map and simulated odometry, with a 0.34m collision
-radius including 9047 propellers. It is a provisional 1.2kg complete-vehicle
-model. Video playback includes progressing graphs and is clearly labelled CPU.
+The final 35.448 s simulated mission landed 8.14 mm from the selected finish, with
+0.490 m evaluated minimum panel clearance and 17.9 mm cruise-height RMSE.
+These are simulation results using an assumed 1.2 kg model, simulated odometry
+and ground contact. Actual RGB YOLO plus known-size panel PnP supplies obstacle
+observations; only one of two panels was mapped. This is controlled-fixture
+avoidance, not arbitrary unknown-obstacle autonomy. The renderer is PyBullet,
+not Isaac Sim. Windows DDS transport is measured, not hard-real-time certified.
+
+The paper derives differential equations, full transfer functions, all six PID
+gains, stability conditions, sampled feedback and both Kalman filters. It removes
+the generic matrix lessons and retains earlier experiments as historical results.
+[Earlier evidence](artifacts/simulation/2026-10-20/index.html) remains available.
 
 ### Current evidence
 
@@ -47,8 +54,8 @@ model. Video playback includes progressing graphs and is clearly labelled CPU.
 | RP2350 emulator | 1,000,000 instruction steps complete | Emulator reports unsupported peripherals; not timing or I/O validation |
 | PCB | Editable KiCad logic-carrier draft; power/current-sensor/BMS interfaces added | DRC: 0 geometry violations; 76 pads unrouted, not manufacturable |
 | CAD / URDF | Parametric F450 visual and XML-valid URDF | OpenSCAD rendering/physics calibration not verified |
-| ROS 2 / autonomy | 10,751 DDS round trips complete a CPU route through the C flight core; common C++ A* core compiled; ROS C++ wrappers authored | Two same-process Python adapter nodes; ROS C++ wrappers unbuilt, no physical UART or live metric perception pipeline |
-| YOLO | Actual GPU YOLO11n and OpenCV ONNX bus/person detections recorded | Reference image only; detections are not driving the route |
+| ROS 2 / autonomy | 19,378 DDS requests execute the final garden mission; common C++ mission/A* core compiled; ROS C++ wrappers authored | Two same-process Python adapter nodes; ROS C++ wrappers unbuilt, no physical UART, real VIO or general unknown-obstacle solution |
+| YOLO | GPU YOLO reference tests plus a trained synthetic panel detector and RGB PnP route | New custom panel detector drives the garden route; synthetic training and known-size panels only |
 | Isaac Sim | Installed at `C:\IsaacSim\app`; USD scene authored and parser-validated | GPU initialization failed on this PC; no Isaac physics or rendering result |
 
 Open the [recorded logs and data index](artifacts/test-runs/README.md) for proof files and the limits of each check. The [interactive uncertainty dashboard](artifacts/visualizations/uncertainty-dashboard.html) plots actual saved Monte Carlo rows and replays its 5-second aggregate Kalman trace. It is a replayable chart, **not a vehicle simulation or video recording**. The original emulator log includes step-by-step progress and its unsupported-peripheral messages.

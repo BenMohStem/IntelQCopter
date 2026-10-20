@@ -1,5 +1,18 @@
 # Test evidence index
 
+## Ground-to-ground garden evidence — latest
+
+[3D video and graphs](../simulation/2026-10-20-missions/index.html) ·
+[Current limitations](../../docs/missing-information-and-problems.md) ·
+[Original logs](2026-10-20-missions/).
+
+The final run executes C control and common C++ mission/navigation, actual RGB
+YOLO/known-size PnP and ROS DDS adapters through landing and actuator wind-down.
+The original failed landing trial is retained. This is PyBullet, with assumed
+airframe parameters and simulated localization/contact; not Isaac or real flight.
+ROS C++ wrappers remain unbuilt. The new million-instruction emulator boot log
+is instruction-execution evidence only, with unsupported peripherals declared.
+
 ## New model and autonomy evidence — 20 October 2026
 
 [Video/graphs viewer](../simulation/2026-10-20/index.html) · [Data index](../simulation/2026-10-20/README.md) · [Mathematical PDF](../../docs/modelisation/main.pdf).

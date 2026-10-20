@@ -1,0 +1,48 @@
+[
+  {
+    "time_s": 0.0,
+    "event": "new RGB-derived obstacle",
+    "position": [
+      3.3392190201709724,
+      -0.004768283490794682,
+      0.9475757828576704
+    ]
+  },
+  {
+    "time_s": 0.0,
+    "phase": "spool"
+  },
+  {
+    "time_s": 0.9500000000000001,
+    "phase": "takeoff"
+  },
+  {
+    "time_s": 2.85,
+    "phase": "hover"
+  },
+  {
+    "time_s": 4.05,
+    "phase": "navigate"
+  },
+  {
+    "time_s": 6.4,
+    "event": "new RGB-derived obstacle",
+    "position": [
+      6.034064826706087,
+      -1.132759277207112,
+      0.9188671943827398
+    ]
+  },
+  {
+    "time_s": 37.65,
+    "phase": "approach"
+  },
+  {
+    "time_s": 50.050000000000004,
+    "phase": "land"
+  },
+  {
+    "time_s": 57.300000000000004,
+    "phase": "landed"
+  }
+]

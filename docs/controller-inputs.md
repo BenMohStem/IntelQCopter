@@ -21,7 +21,24 @@ Check the selected RP2040 board's pinout before wiring; do not connect the mux o
 
 This uses the common Mode 2 layout: left X commands yaw rate, left Y commands vertical speed, right X commands roll angle, and right Y commands pitch angle. Stick centers are sampled once at startup, so power up with both sticks centered and both triggers released. A 4% dead band suppresses center noise. Move left Y upward for climb and downward for descent, subject to the analog wiring sign; confirm this on the printed USB frames before connecting any radio.
 
-LT and RT are encoded as 0–1000 analog values. LB/RB and the four additional buttons are encoded as six separate bits. None of these buttons currently arms, disarms, or changes flight mode. The flight firmware hardcodes `arm_request=false` and has no arming state machine.
+Input processing also applies cubic expo 0.25, a 35 ms low-pass filter and a
+3/s slew limit, with rejected invalid ADC values/time steps. Trigger endpoints
+support either wiring direction; full-range capture and persistent calibration
+remain unfinished (startup currently assumes ADC rails).
+
+RT progressively raises the permitted vertical speed from 2 to 3 m/s and the
+collective ceiling from 0.65 to 0.80. Boost ramps up over 250 ms and releases over
+100 ms. A centered vertical stick still holds height: RT alone is not a thrust
+kick or acrobatic mode. The allocator preserves motor torque ratios and adjusts
+collective to leave correction authority; finite motor limits still apply.
+
+RB + north held 1 s requests takeoff; LB + south held 1 s requests landing. Both
+require centered sticks and released RT, and fire once per hold. For now these
+requests appear in USB debug logs; the physical radio/companion request bridge is
+not connected. LT is reserved. LT/RT use 0–1000 analog values. LB/RB and the four additional buttons are encoded as six separate bits. Arming means explicitly allowing the flight controller to drive motors. It is
+separate from requesting takeoff: an armed motor can spin while still on the
+ground. Physical arming remains disabled as requested. None of these buttons
+currently enables physical motors or changes the flight mode. The flight firmware hardcodes `arm_request=false` and has no arming state machine.
 
 ## Packet and failsafe
 

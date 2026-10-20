@@ -1,0 +1,492 @@
+\chapter{Constructing the flight model step by step}
+\section{Start from a free-body diagram, not a guessed transfer function}
+Our first modelling choice is a system boundary: the complete flying aircraft,
+including battery, frame, motors, electronics and propellers. Its total mass is
+$m=\sum_i m_i$, and its centre of mass is
+$r_C=\sum_i m_i r_i/m$. Choosing the body origin at $r_C$ removes the extra
+moment caused by expressing angular momentum about an accelerating offset point.
+Neither a battery mass nor a frame mass is the complete $m$ in Newton's law.
+
+Choose a local world frame with upward unit vector $e_3$ and a forward-left-up
+body frame. Let the four thrust forces be $T_i e_3$ in body coordinates.
+There are three categories of external force: rotated rotor thrust, weight,
+and aerodynamic/disturbance force. Internal frame forces cancel when summing
+over the system boundary. Thus the force balance is constructed as
+\begin{align}
+\sum f_W&=\underbrace{R e_3(T_1+T_2+T_3+T_4)}_{\text{rotors}}
+ -\underbrace{mg e_3}_{\text{weight}}
+ -\underbrace{d_vv_W}_{\text{linear drag}}+f_w,\\
+\dot p_W&=v_W,\qquad m\dot v_W=\sum f_W.
+\end{align}
+Dividing by $m$ produces acceleration, not velocity. Integrating acceleration
+once gives velocity and a second time gives position. This is why a translational
+position transfer function has two low-frequency integrations before damping,
+control or other dynamics are introduced.
+
+For each motor at $r_i=(x_i,y_i,0)$, the torque about the centre of mass is
+$(y_iT_i,-x_iT_i,0)$. Add rotor drag-reaction torques with alternating signs.
+The sum is the allocation equation derived in the mechanics chapter. Newton's
+angular counterpart is $J\dot\omega+\omega\times J\omega=\tau$. We keep the
+cross term in the nonlinear plant and explicitly neglect its second-order
+perturbation when constructing the hover linear model.
+
+\section{Write the nonlinear differential equations before linearizing}
+Write $T=\sum T_i$ and use the third column of $R$. The translational equations
+are, component by component,
+\begin{align}
+m\ddot x&=T(c_\psi s_\theta c_\phi+s_\psi s_\phi)-d_v\dot x+f_{wx},\\
+m\ddot y&=T(s_\psi s_\theta c_\phi-c_\psi s_\phi)-d_v\dot y+f_{wy},\\
+m\ddot h&=Tc_\theta c_\phi-mg-d_v\dot h+f_{wz}.
+\end{align}
+For diagonal inertia,
+\begin{align}
+\dot p&=[\tau_x+(J_y-J_z)qr]/J_x,\\
+\dot q&=[\tau_y+(J_z-J_x)rp]/J_y,\\
+\dot r&=[\tau_z+(J_x-J_y)pq]/J_z.
+\end{align}
+These six acceleration equations need kinematics as well: $\dot p_W=v_W$
+and quaternion attitude propagation. The state is position, velocity, attitude
+and angular velocity; four additional motor-lag states make the actuator
+dynamics explicit. Quaternion norm is constrained to one, so four quaternion
+coordinates represent three independent orientation degrees of freedom.
+
+\section{Find the hover equilibrium by substitution}
+An equilibrium has zero time derivatives. Choose $v_0=0$, $\omega_0=0$,
+$\phi_0=\theta_0=0$ and any fixed heading $\psi_0$. Substitution in the
+vertical equation gives $0=T_0-mg$, so $T_0=mg$. Zero torque with a symmetric
+allocation gives $T_{i0}=mg/4$. If normalized desired thrust satisfies
+$T_i=T_{\max}u_i$, then
+\begin{equation}
+u_{i0}=c_0=\frac{mg}{4T_{\max}}.
+\end{equation}
+For $m=1.2$ kg and $T_{\max}=6$ N, each motor must supply $2.941995$ N and
+$c_0=0.4903325$. This is a model calculation, not an identified ESC duty cycle.
+The thrust-to-weight ratio of this assumed model is $24/11.76798\simeq2.0394$.
+It is not evidence that the real 1400KV/9047 combination has that reserve.
+
+\section{Linearize by explicitly retaining first-order terms}
+Define perturbations $\delta T=T-T_0$, $\delta\phi=\phi-\phi_0$ and so on.
+The first-order Taylor expansion of $\sin\epsilon$ is $\epsilon$; that of
+$\cos\epsilon$ is $1$. Products such as $\delta T\delta\theta$ contain two
+small perturbations and are second order. At heading zero,
+\begin{align}
+(T_0+\delta T)\sin\delta\theta\cos\delta\phi
+ &\simeq T_0\delta\theta,\\
+-(T_0+\delta T)\sin\delta\phi&\simeq-T_0\delta\phi,\\
+(T_0+\delta T)\cos\delta\theta\cos\delta\phi-mg&\simeq\delta T.
+\end{align}
+Using $T_0/m=g$, define $\gamma=d_v/m=0.1$ s$^{-1}$ and obtain
+\begin{align}
+\delta\ddot x+\gamma\,\delta\dot x&=g\,\delta\theta+f_{wx}/m,\\
+\delta\ddot y+\gamma\,\delta\dot y&=-g\,\delta\phi+f_{wy}/m,\\
+\delta\ddot h+\gamma\,\delta\dot h&=\delta T/m+f_{wz}/m.
+\end{align}
+Here $\gamma$ is the damping coefficient and $\delta x$ denotes a perturbation.
+Below we omit the perturbation prefix to keep the equations legible. At a nonzero heading, rotate the two
+horizontal acceleration equations by the heading angle. This is a local
+linearization, not a claim that Euler coordinates work globally.
+
+The body-rate products $qr,rp,pq$ vanish to first order about zero rates.
+Near level attitude $\dot\phi\simeq p$, $\dot\theta\simeq q$, $\dot\psi\simeq r$.
+Thus $J_x\ddot\phi=\tau_x$, $J_y\ddot\theta=\tau_y$ and
+$J_z\dot r=\tau_z$. There is intentionally no yaw-angle feedback requirement.
+
+\section{Build each open-loop transfer function from the differential equation}
+A transfer function describes a linear input/output relation with zero initial
+perturbations. For $\dot y=f$, the unilateral Laplace transform is
+$sY(s)-y(0)=F(s)$. For $\ddot y$, it is
+$s^2Y(s)-sy(0)-\dot y(0)$. Setting the initial perturbations to zero removes
+those initial-condition terms; it does not mean the actual aircraft has no
+initial state. Initial-condition responses must be added separately.
+
+From $J_x\ddot\phi=\tau_x$, first transform to
+$J_xs^2\Phi=\mathcal{T}_x$, then divide both sides by $J_xs^2\mathcal{T}_x$:
+\begin{equation}
+\frac{\Phi(s)}{\mathcal{T}_x(s)}=\frac{1}{J_xs^2},\quad
+\frac{P(s)}{\mathcal{T}_x(s)}=\frac{1}{J_xs}.
+\end{equation}
+Use the allocation $\tau_x=4aT_{\max}u_\phi$ and the motor lag
+$\tau_m\dot u_{\rm act}+u_{\rm act}=u_{\rm cmd}$.
+Transforming the latter gives
+$(\tau_ms+1)U_{\rm act}=U_{\rm cmd}$. Therefore the cascade is
+\begin{equation}
+G_{p}(s)=\frac{P_d(s)}{U_\phi(s)}=
+\frac{b_x}{s(\tau_ms+1)},\qquad
+G_{\phi}(s)=\frac{\Phi_d(s)}{U_\phi(s)}=
+\frac{b_x}{s^2(\tau_ms+1)},
+\end{equation}
+where $b_x=(4aT_{\max}/J_x)(180/\pi)$ because the controller uses degrees.
+Pitch has $b_y$ instead; yaw rate has $b_\psi=4\kappa T_{\max}(180/\pi)/J_z$.
+The rate plant is second order with lag and the angle plant third order.
+Without actuator lag these reduce to first and second order respectively.
+
+For altitude, $\ddot h+\gamma\dot h=b_hu_{\rm act}$ with
+$b_h=4T_{\max}/m=20$ m/s$^2$/command. Transforming each derivative gives
+\begin{equation}
+G_h(s)=\frac{H(s)}{U_h(s)}=
+\frac{b_h}{s(s+\gamma)(\tau_ms+1)}.
+\end{equation}
+This retains drag and actuator lag. The often-used double integrator $b_h/s^2$
+is obtained only after explicitly neglecting both. Horizontal position from
+small angle is $X/\Theta=g/[s(s+\gamma)]$ and
+$Y/\Phi=-g/[s(s+\gamma)]$ in radians. Degree-valued angle inputs require an
+additional factor $\pi/180$.
+
+\section{Relate normalized thrust to a possible rotor-speed model}
+A better identified actuator could use $T=k_T\Omega^2$ and
+$Q=k_Q\Omega^2$. Around nonzero hover speed $\Omega_0$, expand
+\begin{equation}
+k_T(\Omega_0+\Delta\Omega)^2
+=k_T\Omega_0^2+2k_T\Omega_0\Delta\Omega+k_T(\Delta\Omega)^2.
+\end{equation}
+Discarding the quadratic perturbation gives
+$\Delta T=2k_T\Omega_0\Delta\Omega$. A first-order identified command-to-speed
+gain $k_\Omega/(\tau_\Omega s+1)$ then yields
+$\Delta T/\Delta u=2k_T\Omega_0k_\Omega/(\tau_\Omega s+1)$.
+The current normalized-thrust model replaces that unknown product with
+$T_{\max}$. KV alone supplies none of $k_T,k_Q,k_\Omega,\tau_\Omega$ under
+load. A higher-order model is useful only when its extra parameters are measured.
+
+\chapter{Closed-loop transfer functions and stability calculations}
+\section{Rate PI: derive the denominator without skipping the feedback algebra}
+Let $G=b/[s(\tau_ms+1)]$, $C=K_p+K_i/s$ and $e=r_c-r$.
+Then $r=GCe=GC(r_c-r)$. Move the feedback term to the left:
+$(1+GC)r=GC r_c$. Divide by $1+GC$ and clear denominators:
+\begin{equation}
+T_r(s)=\frac{r}{r_c}=
+\frac{b(K_ps+K_i)}{\tau_ms^3+s^2+bK_ps+bK_i}.
+\end{equation}
+The numerator zero at $s=-K_i/K_p$ changes the step response; denominator
+poles alone do not completely describe overshoot. With $\tau_m=0$, matching
+$s^2+2\zeta\omega_ns+\omega_n^2$ gives $K_p=2\zeta\omega_n/b$ and
+$K_i=\omega_n^2/b$. This is an initial design followed by checking the cubic,
+not an exact second-order description of the complete plant.
+
+\section{Roll/pitch angle cascade: retain the inner loop dynamics}
+Let $k_a=3$ s$^{-1}$ and $p_c=k_a(\phi_c-\phi)$. Since $p=s\phi$,
+\begin{align}
+\phi&=\frac{T_r}{s}k_a(\phi_c-\phi),\\
+\left(1+\frac{k_aT_r}{s}\right)\phi&=\frac{k_aT_r}{s}\phi_c,\\
+T_\phi(s)&=\frac{k_aT_r}{s+k_aT_r}.
+\end{align}
+Substitute the rate-loop numerator and denominator and collect powers:
+\begin{equation}
+\boxed{T_\phi(s)=\frac{bk_a(K_ps+K_i)}{
+\tau_ms^4+s^3+bK_ps^2+b(K_i+k_aK_p)s+bk_aK_i}.}
+\end{equation}
+Pitch is identical only under the assumed $J_x=J_y$. This fourth-order
+expression is more complete than replacing the inner rate loop by unity.
+The ideal outer approximation $k_a/(s+k_a)$ is justified only well below the
+inner closed-loop bandwidth, away from saturation and estimator error.
+
+\section{Altitude PID and the distinction between height and velocity requests}
+At fixed equilibrium, $e_h=h_c-h$, $\dot I_h=e_h$ and
+$u=K_pe_h+K_iI_h+K_d(v_c-v)$, where the internally integrated target satisfies
+$\dot h_c=v_c$. For differentiable consistent references,
+$V_c=sH_c$, $V=sH$ and $I_h=(H_c-H)/s$, so
+\begin{equation}
+U=(K_p+K_i/s+K_ds)(H_c-H).
+\end{equation}
+Combine this with $G_h$ above and multiply the characteristic equation by
+$s^2(s+\gamma)(\tau_ms+1)$:
+\begin{align}
+D_h(s)&=s^2(s+\gamma)(\tau_ms+1)
++b_h(K_ds^2+K_ps+K_i)\\
+&=\tau_ms^4+(1+\gamma\tau_m)s^3
++(\gamma+b_hK_d)s^2+b_hK_ps+b_hK_i,\\
+\boxed{T_h(s)}&=\boxed{\frac{b_h(K_ds^2+K_ps+K_i)}{D_h(s)}}.
+\end{align}
+The transfer from commanded vertical velocity to height is $T_h(s)/s$;
+the transfer to vertical velocity is $T_h(s)$, with zero initial perturbations.
+A discontinuous height step accompanied by an impulsive derivative reference
+is not the actual stick interface. The mission generates bounded $v_c$; the
+height target integrates it. If one instead steps $h_c$ while forcing $v_c=0$,
+the numerator is $b_h(K_ps+K_i)$: the denominator is the same, but the reference
+response differs. This prevents applying a textbook PID step response to the
+wrong command interface.
+
+When lag is neglected but drag retained, matching
+$(s+p_h)(s^2+2\zeta_h\omega_hs+\omega_h^2)$ gives
+\begin{align}
+K_d&=(2\zeta_h\omega_h+p_h-\gamma)/b_h,\\
+K_p&=(\omega_h^2+2p_h\zeta_h\omega_h)/b_h,\\
+K_i&=p_h\omega_h^2/b_h.
+\end{align}
+The existing baseline was designed with $\gamma=0$, giving $K_d=0.175$.
+Including the assumed drag gives $K_d=0.170$. The selected $\lambda=1.3$
+candidate similarly gives $0.2275$ versus $0.2225$. These differences are shown
+as model alternatives; gains are not silently changed without a new route test.
+
+\section{What second-order parameters actually mean}
+For a complex pair $s_{1,2}=-\sigma\pm j\omega_d$ with $\sigma>0$,
+$\omega_n=\sqrt{\sigma^2+\omega_d^2}$ and $\zeta=\sigma/\omega_n$.
+For the ideal normalized second-order low-pass without zeros,
+\begin{equation}
+M_p=e^{-\pi\zeta/\sqrt{1-\zeta^2}},\quad
+t_p=\pi/\omega_d,\quad t_{s,2\%}\simeq4/(\zeta\omega_n).
+\end{equation}
+These follow from the decaying sinusoidal homogeneous response and its extrema;
+the settling approximation bounds its exponential envelope approximately.
+For example the ideal rate design $\zeta=0.9$, $\omega_n=12$ has
+$\omega_d=5.2307$ rad/s and envelope settling about $0.3704$ s. Its ideal
+no-zero overshoot is about $0.152\%$. The actual PI closed loop has a zero,
+and actuator lag adds another pole. Therefore these figures describe the
+chosen target polynomial, not a guaranteed measured aircraft step response.
+The companion numerical analysis computes actual step responses for the
+complete local transfer functions, including their zeros.
+
+\section{Routh--Hurwitz: construct and evaluate the stability conditions}
+For $a_3s^3+a_2s^2+a_1s+a_0$ with $a_3>0$, the Routh first column is
+\begin{equation}
+a_3,\quad a_2,\quad\frac{a_2a_1-a_3a_0}{a_2},\quad a_0.
+\end{equation}
+All entries must be strictly positive for strict left-half-plane roots, assuming
+no degenerate zero rows. Applying this to the rate loop gives positive gains
+and $K_p>\tau_mK_i$. Substituting the pole-matched PI gives
+$\omega_n<2\zeta/\tau_m$. For $\tau_m=0.04$ s the bound is 45 rad/s;
+the selected rate frequency 15.6 rad/s meets this local cubic condition.
+
+For $a_4s^4+a_3s^3+a_2s^2+a_1s+a_0$, construct
+\begin{equation}
+\begin{array}{c|ccc}
+s^4&a_4&a_2&a_0\\s^3&a_3&a_1&0\\
+s^2&\Delta_2/a_3&a_0&0\\
+s^1&\Delta_3/\Delta_2&0&0\\s^0&a_0&0&0
+\end{array},
+\end{equation}
+where $\Delta_2=a_3a_2-a_4a_1$ and
+$\Delta_3=a_1\Delta_2-a_3^2a_0$. With $a_4,a_3,a_0>0$, strict stability
+requires $\Delta_2>0$ and $\Delta_3>0$. Positive polynomial coefficients alone
+are insufficient. Substitution for the full angle cascade gives
+\begin{align}
+\Delta_2&=bK_p-\tau_mb(K_i+k_aK_p),\\
+\Delta_3&=b(K_i+k_aK_p)\Delta_2-bk_aK_i.
+\end{align}
+For altitude use $a_3=1+\gamma\tau_m$, $a_2=\gamma+b_hK_d$,
+$a_1=b_hK_p$ and $a_0=b_hK_i$. The executable analysis reports each
+determinant, every pole and the actual step metrics for both gain sets.
+These strict tests apply to the local unsaturated models. Ground contact,
+mode transitions and a changing camera map are not a single LTI system.
+
+\section{A continuous parameter-interval proof for the conservative candidate}
+The grid finds counterexamples. For $\lambda=0.7$ we can additionally prove
+local Routh inequalities over a continuous box. Assume
+$b\in[0.65b_0,1.35b_0]$, $\tau\in[0.02,0.09]$ s, and for height
+$\gamma\in[0.08,0.13]$ s$^{-1}$. These are assumed ranges, not measured
+confidence intervals for the real aircraft.
+
+For the angle cascade define $u=K_i+k_aK_p>0$ and
+$A(\tau)=K_p-\tau u$. Since $u>0$, $A$ decreases with $\tau$, so
+$A\geq A_{\min}=K_p-\tau_{\max}u$. The determinants become
+\begin{equation}
+\Delta_2=bA,\qquad\Delta_3=b[buA-k_aK_i].
+\end{equation}
+If $A_{\min}>0$, multiplication by positive $b,u$ preserves inequalities.
+It is therefore sufficient to check
+\begin{equation}
+A_{\min}>0,\qquad b_{\min}uA_{\min}-k_aK_i>0.
+\end{equation}
+The numerical lower bounds are $0.000257095$ and $0.00776085$ approximately.
+All coefficients and Routh first-column entries are consequently positive
+throughout that continuous box for this decoupled angle model. Yaw requires
+$K_p-\tau_{\max}K_i>0$, with lower bound $0.00462303$.
+
+For height, expand the determinant without skipping terms:
+\begin{align}
+\Delta_2&=(1+\gamma\tau)(\gamma+bK_d)-\tau bK_p\\
+&=\gamma+\gamma^2\tau+bK_d+b\gamma\tau K_d-b\tau K_p.
+\end{align}
+Since the discarded $\gamma^2\tau$ and $b\gamma\tau K_d$ terms are nonnegative,
+and $K_d-\tau_{\max}K_p>0$ for this candidate,
+\begin{equation}
+\Delta_2\geq\gamma_{\min}+b_{\min}(K_d-\tau_{\max}K_p)
+ =D_{2,\rm lb}>0.
+\end{equation}
+The next determinant obeys
+\begin{align}
+\Delta_3&=b\left[K_p\Delta_2-K_i(1+\gamma\tau)^2\right]\\
+&\geq b\left[K_pD_{2,\rm lb}-K_i(1+\gamma_{\max}\tau_{\max})^2\right].
+\end{align}
+Here $D_{2,\rm lb}\simeq1.5460874$ and the final bracket is approximately
+$0.1354504>0$. This proves strict local height-loop stability over the specified
+continuous box. It excludes saturation, nonlinear coupling, estimator dynamics,
+contacts, delays and companion guidance. Those exclusions are part of the theorem.
+
+The fast candidate also has an analytic counterexample. For $\lambda=1.3$,
+$K_i/K_p=8.6667$ s$^{-1}$. The necessary angle condition $A>0$ implies
+$k_a<1/\tau-K_i/K_p$. At $\tau=0.09$ s the right side is
+$2.4444$ s$^{-1}$, below the chosen $k_a=3$. Thus this Routh condition fails
+regardless of positive plant gain at that lag. Nominal success at 0.04 s
+does not establish stability at 0.09 s.
+
+\section{The horizontal position loop is sixth order}
+The companion generates $a_c=k_x(x_c-x)-k_v\dot x$ and $\theta_c=a_c/g$
+in radians. Use $X/\Theta=g/[s(s+\gamma)]$ and the complete angle cascade
+$T_\theta=N_\theta/D_\theta$. Substitution gives
+\begin{align}
+X&=\frac{T_\theta}{s(s+\gamma)}[k_xX_c-(k_x+k_vs)X],\\
+\big[s(s+\gamma)D_\theta+(k_vs+k_x)N_\theta\big]X&=k_xN_\theta X_c,\\
+\boxed{\frac{X}{X_c}}&=\boxed{\frac{k_xN_\theta}
+ {s(s+\gamma)D_\theta+(k_vs+k_x)N_\theta}}.
+\end{align}
+This denominator is sixth order. Navigation uses $k_x=1.8$ s$^{-2}$,
+$k_v=1.8$ s$^{-1}$; approach/landing uses $k_x=1.2$ and the same $k_v$.
+The lateral-roll sign cancels with its guidance-conversion sign, giving the
+same local scalar polynomial under the symmetric model. This is upstream
+guidance; there are still exactly six flight-controller PID objects.
+
+For $D_x=d_6s^6+d_5s^5+\cdots+d_0$, the specific Hurwitz array is
+\begin{equation}
+\mathcal H=\begin{bmatrix}
+d_5&d_3&d_1&0&0&0\\d_6&d_4&d_2&d_0&0&0\\
+0&d_5&d_3&d_1&0&0\\0&d_6&d_4&d_2&d_0&0\\
+0&0&d_5&d_3&d_1&0\\0&0&d_6&d_4&d_2&d_0
+\end{bmatrix}.
+\end{equation}
+For $d_6>0$ all six leading principal determinants must be positive. The
+executable analysis reports every determinant and pole for each candidate.
+Speed limits, changing waypoints and camera-map updates remain nonlinear
+effects beyond this local calculation.
+
+\section{Discrete-time stability at the real control interval}
+Keep the physical state $x_p=[\phi,p,u_{\rm act}]^{\mathsf T}$ and integral
+state $I$. During one held command, obtain the exact linear plant update
+$x_{p,k+1}=A_dx_{p,k}+B_du_k$ by solving the linear ODE over 2 ms.
+The software uses the current error in its candidate integral:
+\begin{align}
+e_k&=k_a(\phi_{c,k}-\phi_k)-p_k,\\
+I_{k+1}&=I_k+\Delta e_k,\\
+u_k&=K_pe_k+K_iI_{k+1}=(K_p+K_i\Delta)e_k+K_iI_k.
+\end{align}
+Let $C_e=[-k_a,-1,0]$. At zero reference the combined update is therefore
+\begin{equation}
+\begin{bmatrix}x_{p,k+1}\\I_{k+1}\end{bmatrix}=
+\begin{bmatrix}
+A_d+B_d(K_p+K_i\Delta)C_e&B_dK_i\\
+\Delta C_e&1
+\end{bmatrix}
+\begin{bmatrix}x_{p,k}\\I_k\end{bmatrix}.
+\end{equation}
+This explicitly includes the integration ordering used in C. Strict sampled
+stability requires every eigenvalue $z_i$ to satisfy $|z_i|<1$. Yaw uses the
+same construction without the angle state; altitude uses $C_e=[-1,0,0]$
+and velocity feedback $-K_dv$. Estimator dynamics, computation delay and
+allocation limits are additional effects not present in this particular test.
+The numerical analysis also repeats it with one control sample of input delay
+and reports the resulting spectral radius rather than asserting timing safety.
+
+\section{Include the 20 Hz companion with the 500 Hz flight loop}
+For one horizontal axis use physical state
+$x_p=[\theta_d,p_d,u_{\rm act},x,v]^{\mathsf T}$. Its hover plant is
+\begin{equation}
+\dot x_p=\begin{bmatrix}
+0&1&0&0&0\\0&0&b_x&0&0\\0&0&-1/\tau_m&0&0\\
+0&0&0&0&1\\g\pi/180&0&0&0&-\gamma
+\end{bmatrix}x_p+
+\begin{bmatrix}0\\0\\1/\tau_m\\0\\0\end{bmatrix}u.
+\end{equation}
+The $g\pi/180$ entry explicitly converts the degree-valued angle into the
+radian-valued small-angle force law. Obtain $A_d,B_d$ for one held 2 ms
+command, append the PI integral, and apply the same current-error integral
+ordering as above. With $k=K_p+K_i\Delta$, $C_e=[-k_a,-1,0,0,0]$,
+\begin{equation}
+F=\begin{bmatrix}A_d+B_dkC_e&B_dK_i\\\Delta C_e&1\end{bmatrix},\qquad
+G=\begin{bmatrix}B_dkk_a\\\Delta k_a\end{bmatrix}.
+\end{equation}
+Thus $x_{k+1}=Fx_k+G\theta_c$ for the six-state augmented system.
+The companion holds $\theta_c=C_gx_k$ for $N=25$ flight updates, where
+\begin{equation}
+C_g=-\frac{180}{\pi g}[0,0,0,k_x,k_v,0].
+\end{equation}
+Substitute the recurrence a second time:
+$x_{k+2}=F^2x_k+(F+I)G\theta_c$. A third substitution gives
+$F^3x_k+(F^2+F+I)G\theta_c$. Continuing the same physical recurrence for
+25 held steps gives
+\begin{equation}
+x_{k+N}=F^Nx_k+\left(\sum_{j=0}^{N-1}F^jG\right)C_gx_k=Mx_k.
+\end{equation}
+The numerical analysis checks every eigenvalue of $M$. With one complete
+guidance-period delay, append the old held command and check
+\begin{equation}
+M_{\rm delayed}=\begin{bmatrix}
+F^N&\sum_{j=0}^{N-1}F^jG\\C_g&0
+\end{bmatrix}.
+\end{equation}
+This is an explicit 500 Hz/20 Hz sampled-system calculation. It still assumes
+exact state feedback, linear hover dynamics and scheduled updates. It is not
+a proof for the Kalman estimator, delayed perception, saturation, or Windows
+meeting every real-time deadline.
+
+\section{Frequency-domain margins and uncertainty}
+For the rate loop, open-loop $L_r=C G=b(K_ps+K_i)/[s^2(\tau_ms+1)]$.
+At the gain crossover $|L(j\omega_c)|=1$, phase margin is
+$180^\circ+\arg L(j\omega_c)$. At a $-180^\circ$ phase crossover,
+gain margin is $1/|L(j\omega_\pi)|$. These are frequency-domain local robustness
+measures, not obstacle-clearance margins. A pure delay adds phase
+$-\omega T_d$; the rough additional-delay allowance from a positive phase
+margin is $T_d\simeq\mathrm{PM}_{\rm rad}/\omega_c$ for the crossing being
+considered. Multiple crossovers and unstable open-loop cases need care.
+
+Plant uncertainty enters directly: $b_x\propto aT_{\max}/J_x$ and
+$b_h\propto T_{\max}/m$. The executable analysis varies these gains and
+$\tau_m$ over a declared finite grid and counts stable/unstable cases for the
+complete characteristic polynomials. A grid with no failures is evidence
+only at those points; it is not a continuous robust-stability proof. Battery
+sag, thrust asymmetry, flexible arms and estimator bias remain unmodelled
+physical risks until measured. Time-domain runs then test saturation, takeoff,
+landing and perception-driven commands beyond the linear analysis.
+
+\chapter{Companion missions, boost and actuator authority}
+\section{Keep one flight-control mode; move mission sequencing upstream}
+The flight core still receives roll/pitch angles, yaw rate and centered
+vertical-speed throttle. The companion selects mission phases: ground,
+spool-up in simulation, takeoff, hover, navigate, approach/hold, descent and
+landed. A mission phase does not introduce a new flight PID. The companion
+converts a requested height into bounded vertical speed; the existing altitude
+PID integrates that speed into its internal target. Start and finish points
+are explicit local coordinates. The start must agree with the measured launch
+position; selecting it must never teleport the aircraft state.
+
+Ground contact supplies an upward normal reaction that balances weight before
+lift-off. At $T_z>mg$ that unilateral reaction vanishes and upward acceleration
+begins. Landing is the reverse transition with low descent speed and contact
+confirmation; simply forcing a trajectory through $h=0$ is not a contact model.
+The 3D simulator handles contact; real landed detection remains a separate
+sensor/state-machine problem. A simulation-only motor gate cannot be presented
+as an implemented physical arming system.
+
+\section{What arming and RT boost mean}
+Arming is a deliberate permission to produce physical motor outputs. It is not
+the same as compiling a control function or connecting a battery. Physical
+arming stays disabled as requested. Takeoff/landing button gestures are mission
+requests; a future authorized safety supervisor must accept them before motors
+can be enabled. The simulated actuator gate is explicitly isolated from hardware.
+
+RT is already present in the radio frame as a normalized trigger. Its proposed
+boost increases the maximum commanded vertical speed from 2 to 3 m/s and the
+nominal collective ceiling from 0.65 to 0.80 as RT moves from zero to one.
+The internal boost allowance rises over at least 0.25 s and decays over at least
+0.10 s for a full-scale change. RT alone does not command a climb at centered
+vertical stick. The companion simulation inhibits boost during approach/landing.
+Roll/pitch leveling and yaw-rate control remain active. It is not acrobatic
+rate mode and not an unconditional full-throttle override. The boost ceiling
+has less correction reserve than normal mode; maximum climb requires measured
+thrust/energy reserve and later hardware tuning.
+
+\section{Prove the motor-headroom allocation interval}
+Let desired motor values before clipping be $u_i=c+d_i$, where $d_i$ are the
+four differential roll/pitch/yaw corrections. For each motor to satisfy
+$0\leq u_i\leq1$, rearrange to $-d_i\leq c\leq1-d_i$.
+Intersect all four intervals:
+\begin{equation}
+-\min_i d_i\leq c\leq1-\max_i d_i.
+\end{equation}
+This interval exists exactly when $\max d_i-\min d_i\leq1$. If the requested
+differential span exceeds one, uniformly scale all $d_i$ by
+$\alpha=1/(\max d_i-\min d_i)$; otherwise $\alpha=1$. Clamp collective to
+the resulting feasible interval and calculate $u_i=c+\alpha d_i$.
+This preserves differential-command ratios, unlike clipping each motor
+independently. It cannot create missing thrust or guarantee full simultaneous
+torque authority. A future allocator should feed allocation residuals back into
+anti-windup; the current PID anti-windup covers each loop's own output limit,
+not the complete coupled allocation constraint.

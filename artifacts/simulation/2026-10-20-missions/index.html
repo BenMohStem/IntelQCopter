@@ -1,0 +1,20 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>IntelQcopter | Garden evidence</title>
+<style>body{font:17px system-ui;background:#101722;color:#e6edf5;max-width:1150px;margin:40px auto;padding:20px}a{color:#65d9ee}video,img{width:100%;border-radius:12px}section{background:#1b2635;padding:24px;margin:24px 0;border-radius:12px}h1{font-size:38px}.stats{display:flex;gap:25px;flex-wrap:wrap}.stats b{font-size:28px;color:#7be5ce}li{margin:10px 0}</style>
+<h1>IntelQcopter · ground to ground</h1><p>Original 3D garden recording · 20 October 2026</p>
+<p><strong>PyBullet, not Isaac Sim.</strong> Production C flight loops + common C++ mission/navigation + actual RGB YOLO/PnP + ROS 2 DDS adapters.</p>
+<section class="stats"><div><b>35.448 s</b><br>simulated mission</div><div><b>8.14 mm</b><br>finish XY error</div><div><b>0.490 m</b><br>panel clearance</div><div><b>17.9 mm</b><br>cruise height RMSE</div></section>
+<video controls preload="metadata" poster="garden-final-preview.png" src="garden-final.mp4"></video>
+<p>Takeoff → hover → navigation → approach → descent → contact → virtual actuator wind-down. Video includes the actual camera detections and progressing graphs.</p>
+<section><h2>Interpret the result</h2><p>Assumed 1.2 kg airframe; simulated odometry and ground contact. Blue panels have known size. Only one of two panels was mapped; successful travel does not prove complete detection. No true obstacle map/depth enters navigation. Physical motor arming is disabled. ROS C++ wrappers remain unbuilt; the actual DDS test uses Python adapters and compiled common cores. Windows latency exceeds 2 ms in some requests.</p></section>
+<img src="garden-final-graphs.png" alt="Recorded height, path, uncertainty, actuator and attitude data">
+<section><h2>Original measurements and proofs</h2><ul>
+<li><a href="garden-final.csv">Flight CSV</a> · <a href="garden-final-summary.json">Summary and source hashes</a> · <a href="garden-final-metrics.json">Derived metrics</a></li>
+<li><a href="garden-final-events.json">Mission events</a> · <a href="garden-final-observations.json">Accepted range observations</a></li>
+<li><a href="garden-ros2-transport.json">Actual DDS transport</a> · <a href="ros-selected-points.json">ROS selected points</a></li>
+<li><a href="../../test-runs/2026-10-20-missions/garden-final.log">Simulation log</a> · <a href="../../test-runs/2026-10-20-missions/delivered-ros2-bridge.log">DDS log</a> · <a href="../../test-runs/2026-10-20-missions/handler-tests.log">Handheld checks</a></li>
+<li><a href="initial-landing-drift-summary.json">Retained failed landing trial</a> · <a href="panel-model-card.md">Detector training limits</a> · <a href="panel-training-results.csv">Training measurements</a></li>
+<li><a href="../../../docs/modelisation/main.pdf">47-page mathematical paper</a> · <a href="mathematical-report-source.zip">Complete LaTeX source</a></li>
+<li><a href="linear-analysis.json">Transfer-function / Routh / sampled analysis</a> · <a href="../../../docs/missing-information-and-problems.md">Missing information and current problems</a></li>
+<li><a href="validation.json">Delivery validation</a> · <a href="sha256-manifest.json">SHA256 manifest</a></li></ul></section>
+<img src="linear-step-responses.png" alt="Local linear step response comparisons">
+<p>The conservative 0.7 gain scale passes the stated continuous-interval local Routh bounds and 675 grid checks. This excludes saturation, estimator error and contact, and does not establish global nonlinear or real-flight stability.</p></html>

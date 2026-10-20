@@ -1,0 +1,11 @@
+{
+  "projection_tests": "passed",
+  "range_errors_m": [
+    0.007367609746804948,
+    0.015065519823640017,
+    0.0018820274847235474,
+    0.031652568364379796
+  ],
+  "scale_ambiguity": "20% assumed fixture size error produces20% inferred scale error",
+  "operating_domain": "known-size blue rectangular fixture; not arbitrary unknown obstacles"
+}

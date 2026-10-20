@@ -1,0 +1,14 @@
+{
+  "start": [
+    0.0,
+    0.0,
+    0.082
+  ],
+  "finish": [
+    8.0,
+    0.0,
+    0.082
+  ],
+  "cruise_height_m": 1.25,
+  "source": "actual ROS2 mission_selection topic; no arming"
+}

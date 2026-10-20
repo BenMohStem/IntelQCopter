@@ -46,7 +46,7 @@ UDP and invoke that C library. The C++ planner is compiled as a shared library.
 The ROS-specific C++ wrapper requires a full ROS development environment and
 has not been compiled here.
 \item YOLO11n inference is tested independently on an official reference image.
-The successful route uses a known static obstacle map and simulated local
+The original airborne baseline route uses a known static obstacle map and simulated local
 odometry, not YOLO-generated obstacle ranges.
 \item Isaac Sim launch attempts failed before a healthy simulation server was
 available: physical-device enumeration/GPU initialization failed. There is no
@@ -56,44 +56,7 @@ video is an original visualization of logged CPU simulation data.
 camera flight pipeline is exercised by the tests in this report.
 \end{enumerate}
 
-\chapter{Linear algebra from definitions}
-\section{Products, dimensions and ordering}
-For $A\in\R^{m\times n}$ and $B\in\R^{n\times p}$, their product is the
-matrix $C\in\R^{m\times p}$ defined entry by entry by
-\begin{equation}C_{ij}=\sum_{k=1}^n A_{ik}B_{kj}.\end{equation}
-Thus the inner dimensions must agree. Each entry is the dot product of one
-row of $A$ with one column of $B$. For example,
-\begin{align}
-\begin{bmatrix}1&\Delta\\0&1\end{bmatrix}
-\begin{bmatrix}a&b\\c&d\end{bmatrix}
-&=\begin{bmatrix}a+\Delta c&b+\Delta d\\c&d\end{bmatrix},\\
-\begin{bmatrix}a+\Delta c&b+\Delta d\\c&d\end{bmatrix}
-\begin{bmatrix}1&0\\\Delta&1\end{bmatrix}
-&=\begin{bmatrix}a+\Delta(b+c)+\Delta^2d&b+\Delta d\\c+\Delta d&d\end{bmatrix}.
-\end{align}
-The last expression is $FPF^{\mathsf T}$, and is the altitude covariance
-prediction before process noise. The order follows from the random-vector
-transformation; it cannot be rearranged arbitrarily.
-
-To prove associativity rather than assume it, expand
-\begin{align}
-[(AB)C]_{ij}
- &=\sum_\ell\left(\sum_k A_{ik}B_{k\ell}\right)C_{\ell j}\\
- &=\sum_k A_{ik}\left(\sum_\ell B_{k\ell}C_{\ell j}\right)
- =[A(BC)]_{ij}.
-\end{align}
-Finite sums can be reordered, so the equality holds for every entry. In
-contrast, commutativity fails. For
-\begin{equation}
-A=\begin{bmatrix}0&1\\0&0\end{bmatrix},\qquad
-B=\begin{bmatrix}0&0\\1&0\end{bmatrix},
-\end{equation}
-$AB=\operatorname{diag}(1,0)$ while $BA=\operatorname{diag}(0,1)$.
-The transpose rule also follows entrywise:
-$(AB)^{\mathsf T}_{ij}=\sum_k A_{jk}B_{ki}
-=\sum_k(B^{\mathsf T})_{ik}(A^{\mathsf T})_{kj}$, hence
-$(AB)^{\mathsf T}=B^{\mathsf T}A^{\mathsf T}$.
-
+\chapter{Stochastic modelling foundations}
 \section{Covariance and its transformation}
 Let $x$ have mean $\mu$ and covariance
 $P=\E[(x-\mu)(x-\mu)^{\mathsf T}]$. For $y=Ax+b$,
@@ -115,39 +78,17 @@ conditions are $P_{00}\geq0$, $P_{11}\geq0$ and
 $P_{00}P_{11}-P_{01}^2\geq0$. Covariance units vary by entry; for height and
 speed, $P_{00}$ is m$^2$, $P_{01}$ is m$^2$/s and $P_{11}$ is m$^2$/s$^2$.
 
-\section{Matrix powers and exponentials}
-Define $A^0=I$ and $A^{k+1}=A^kA$. For a constant square matrix,
-\begin{equation}e^{At}=\sum_{k=0}^{\infty}\frac{A^k t^k}{k!}.\end{equation}
-The series converges absolutely: a submultiplicative norm bounds it by
-$\sum_k\|A\|^k|t|^k/k!=e^{\|A\||t|}$. Termwise differentiation gives
-$\frac{\dd}{\dd t}e^{At}=Ae^{At}$ and $e^{A0}=I$. Therefore
-$x(t)=e^{At}x(0)$ solves $\dot x=Ax$.
-
-The identity $e^{A(s+t)}=e^{As}e^{At}$ holds for one constant $A$ because
-its powers commute. The binomial theorem and absolutely convergent Cauchy
-product establish it. The stronger-looking identity
-$e^{A+B}=e^Ae^B$ requires $AB=BA$. Expanding both sides to second order
-exposes the problem: the left contains $(AB+BA)/2$, while the right
-contains $AB$. Their difference is $(AB-BA)/2$ at that order.
-
-For the altitude kinematics,
+\section{Height kinematics from direct time integration}
+If acceleration $a_k$ is constant during one interval, integrate $\dot v=a_k$
+from $0$ to $t$ to obtain $v(t)=v_k+a_kt$. Integrate $\dot h=v(t)$ from zero
+to $\Delta$: $h_{k+1}=h_k+v_k\Delta+a_k\Delta^2/2$, while
+$v_{k+1}=v_k+a_k\Delta$. Thus the altitude state update uses
 \begin{equation}
-A=\begin{bmatrix}0&1\\0&0\end{bmatrix},\quad
-A^2=\begin{bmatrix}0&0\\0&0\end{bmatrix},\quad
-F=e^{A\Delta}=I+A\Delta=\begin{bmatrix}1&\Delta\\0&1\end{bmatrix}.
+F=\begin{bmatrix}1&\Delta\\0&1\end{bmatrix},\qquad
+G=\begin{bmatrix}\Delta^2/2\\\Delta\end{bmatrix}.
 \end{equation}
-Every power from $A^2$ onward vanishes; this truncation is exact. With
-$B=[0\ 1]^{\mathsf T}$ and a constant input acceleration over one interval,
-\begin{align}
-x_{k+1}&=Fx_k+Gu_k,\\
-G&=\int_0^\Delta e^{A\tau}B\,\dd\tau
-=\int_0^\Delta\begin{bmatrix}\tau\\1\end{bmatrix}\dd\tau
-=\begin{bmatrix}\Delta^2/2\\\Delta\end{bmatrix}.
-\end{align}
-The integral follows from variation of constants: differentiate
-$e^{-At}x(t)$, integrate, then multiply by $e^{At}$. If $A(t)$ varies with
-time and does not commute at different instants, a single exponential of
-its integral is not generally valid.
+These are the particular physical kinematic equations; no general matrix
+multiplication or matrix-exponential tutorial is included.
 
 \section{Two distinct process-noise conventions}
 For one independent acceleration error $\eta_k$ held constant for an entire
@@ -261,9 +202,9 @@ T=4T_{\max}c,\quad\tau_x=4aT_{\max}u_\phi,\quad
 \tau_y=4aT_{\max}u_\theta,\quad\tau_z=4\kappa T_{\max}u_\psi.
 \end{equation}
 For example, positive pitch must increase rear thrust and decrease front
-thrust. A host regression test now checks this sign. Each output is clamped to
-$[0,1]$ independently. This simple allocator does not preserve all requested
-torques under saturation. No tested nominal run reaches that limit.
+thrust. A host regression test now checks this sign. The original allocator clipped outputs independently; the current implementation
+scales infeasible differential spans and shifts collective into a feasible interval,
+as derived in the boost/authority chapter. Saturation still limits physical authority.
 
 Motor lag is represented by $\tau_m\dot u_i^{\rm actual}+u_i^{\rm actual}=u_i$.
 For constant commanded $u_i$ over $\Delta$, solve the scalar differential
@@ -292,6 +233,7 @@ This preserves rotational geometry for the held angular velocity, but the
 entire plant integrator is not an exact solution of coupled nonlinear motion.
 Timestep refinement and empirical identification are separate requirements.
 
+\input{flight_dynamics_tutorial}
 \chapter{Exactly six feedback controllers}
 \section{Signals and units}
 The six objects in the C file are roll angle, roll rate, pitch angle, pitch

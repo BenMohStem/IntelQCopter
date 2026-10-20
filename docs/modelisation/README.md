@@ -1,18 +1,20 @@
-# Mathematical report
+# Mathematical report — 47 pages
 
-Open `main.pdf` to read the compiled 30-page report, or open this directory
-in the LaTeX editor. Main source: `main.tex`; derivations: `derivations.tex`;
-data-derived numerical results: `results.tex`. The three figures in `images/`
-are byte-for-byte copies of the original recorded evidence graphs.
+Read main.pdf. The report now derives the actual force/torque differential
+equations, hover linearization, actuator lag, second-order approximations, full
+third/fourth-order feedback models and sixth-order horizontal guidance model.
+It derives PID coefficients, Routh/Hurwitz conditions, sampled/multirate models,
+Kalman prediction/correction/covariance and parameter uncertainty step by step.
+The generic matrix multiplication/exponential lessons have been removed.
 
-The source is self-contained in this directory. Compile with Tectonic or a
-LaTeX distribution supporting XeLaTeX and standard amsmath packages. The built-in
-editor preview could not launch its protected WindowsApps compiler on this PC;
-a workspace copy of the same Tectonic executable successfully compiled it.
+main.tex includes derivations.tex (and flight_dynamics_tutorial.tex), historical
+results.tex, then mission_results.tex for the new experiments. Earlier numerical
+results remain explicitly historical. The current conservative provisional gain
+scale is 0.7. All airframe parameters are assumed pending measurement.
 
-`tools/write_modelling_results.py` regenerates the results chapter and copies
-figures from actual saved simulation reports. It does not fabricate numbers.
-The source describes exactly six PID objects, their degree-based units, baseline
-and selected provisional gain sets, time-varying Kalman gains, expanded matrix
-products/exponentials, uncertainty statistics, numerical refinement and the
-unvalidated parts of the hardware/autonomy/Isaac pipeline.
+Regenerate numerical chapters with tools/write_modelling_results.py and
+tools/write_mission_report.py. They read saved evidence, not fabricated values.
+Compile with Tectonic/XeLaTeX. The compiled report was checked for layout and
+compiler warnings. Five saved evidence figures are included in images/.
+The complete editable source bundle is:
+../../artifacts/simulation/2026-10-20-missions/mathematical-report-source.zip

@@ -1,0 +1,24 @@
+{
+  "source_hashes_match": {
+    "flight_controller/flight_controller.c": true,
+    "companion/ros2_ws/src/qcopter_autonomy/src/mission.cpp": true,
+    "companion/ros2_ws/src/qcopter_autonomy/src/navigation.cpp": true,
+    "companion/perception/panel_pose.py": true,
+    "sim/garden/world.py": true,
+    "sim/garden/run_mission.py": true,
+    "sim/ros2_garden_bridge.py": true
+  },
+  "all_trace_values_finite": true,
+  "rows": 1773,
+  "success": true,
+  "physical_arming_disabled": true,
+  "final_ground_contact": true,
+  "virtual_motors_stopped": true,
+  "all_mission_phases_recorded": true,
+  "every_physical_arm_sample_zero": true,
+  "video_full_decode_exit": 0,
+  "video_decode_errors": "",
+  "pdf_pages": 47,
+  "pdf_visual_review": "All-page contact sheet inspected; detailed source/math and compiler diagnostics checked.",
+  "scope": "Controlled known-size fixtures and assumed model; not real flight or Isaac."
+}

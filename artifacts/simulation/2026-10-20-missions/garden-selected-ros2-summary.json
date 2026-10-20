@@ -1,0 +1,66 @@
+{
+  "name": "garden-selected-ros2",
+  "seed": 2455,
+  "layout": 1,
+  "success": true,
+  "duration_s": 32.2,
+  "final_xy_error_m": 0.007923473407250806,
+  "maximum_height_m": 1.2566354743580932,
+  "minimum_panel_clearance_m": 0.36121400601604087,
+  "collision": false,
+  "final_phase": "landed",
+  "rendered_yolo_frames": 162,
+  "valid_range_observations": 39,
+  "downward_lidar_updates": 1514,
+  "replans": 76,
+  "observed_panels": 1,
+  "wall_s": 33.59463459998369,
+  "method": "PyBullet + production C + C++ mission/nav + actual trained YOLO RGB inference + known-size planar PnP; downward ray lidar; simulated odometry",
+  "no_depth_or_true_obstacle_map_to_planner": true,
+  "model": {
+    "status": "ASSUMED complete-vehicle simulation model; not measured hardware",
+    "mass_kg": 1.2,
+    "inertia_kg_m2": [
+      0.012,
+      0.012,
+      0.022
+    ],
+    "motor_diagonal_m": 0.45,
+    "maximum_thrust_per_motor_n": 6.0,
+    "reaction_torque_per_thrust_m": 0.015,
+    "thrust_time_constant_s": 0.04,
+    "linear_drag_ns_per_m": 0.12,
+    "gravity_mps2": 9.80665,
+    "physics_dt_s": 0.002,
+    "barometer_hz": 50,
+    "barometer_sigma_m": 0.05,
+    "gyro_sigma_dps": 0.2,
+    "accel_sigma_g": 0.005,
+    "seed": 2350,
+    "start_m": [
+      0.0,
+      -0.20000000298023224,
+      0.0820000022649765
+    ],
+    "goal_m": [
+      8.0,
+      0.25,
+      0.0820000022649765
+    ],
+    "robot_collision_radius_m": 0.34,
+    "perception_mode": "single RGB YOLO + known-size panel PnP, downward 1D lidar and simulated local odometry",
+    "hardware_known": {
+      "frame": "F450/Q450",
+      "battery": "3S 4200mAh 120C; mass ~150g unverified",
+      "motor": "1400KV exact model unknown",
+      "propeller": "9047"
+    }
+  },
+  "hardware_armed": false,
+  "weights_sha256": "f5295557192e89d805b2d9c2b7cc07359604ab864672ae66fcc54ffa19f74b4e",
+  "simulated_image_dropout": false,
+  "RT_boost": 0,
+  "actual_ROS2_DDS_control": true,
+  "mission_points_selected_via_ROS2": true,
+  "cruise_height_m": 1.25
+}

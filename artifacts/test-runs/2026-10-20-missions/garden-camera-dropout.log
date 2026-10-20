@@ -1,0 +1,9 @@
+pybullet build time: Oct 20 2026 11:40:51
+garden-camera-dropout 0.0 spool
+garden-camera-dropout 0.95 takeoff
+garden-camera-dropout 4.2 hover
+garden-camera-dropout 5.4 navigate
+garden-camera-dropout 24.4 approach
+garden-camera-dropout 25.6 land
+garden-camera-dropout 32.75 landed
+{"name": "garden-camera-dropout", "seed": 2453, "layout": 2, "success": true, "duration_s": 32.75, "final_xy_error_m": 0.025446821672236514, "maximum_height_m": 1.2590020165345992, "minimum_panel_clearance_m": 0.7019098111252366, "collision": false, "final_phase": "landed", "rendered_yolo_frames": 160, "valid_range_observations": 37, "downward_lidar_updates": 1548, "replans": 77, "observed_panels": 1, "wall_s": 6.902051400044002, "method": "PyBullet + production C + C++ mission/nav + actual trained YOLO RGB inference + known-size planar PnP; downward ray lidar; simulated odometry", "no_depth_or_true_obstacle_map_to_planner": true, "model": {"status": "ASSUMED complete-vehicle simulation model; not measured hardware", "mass_kg": 1.2, "inertia_kg_m2": [0.012, 0.012, 0.022], "motor_diagonal_m": 0.45, "maximum_thrust_per_motor_n": 6.0, "reaction_torque_per_thrust_m": 0.015, "thrust_time_constant_s": 0.04, "linear_drag_ns_per_m": 0.12, "gravity_mps2": 9.80665, "physics_dt_s": 0.002, "barometer_hz": 50, "barometer_sigma_m": 0.05, "gyro_sigma_dps": 0.2, "accel_sigma_g": 0.005, "seed": 2350, "start_m": [0, 0, 0.082], "goal_m": [8, 0, 0.082], "robot_collision_radius_m": 0.34, "perception_mode": "single RGB YOLO + known-size panel PnP, downward 1D lidar and simulated local odometry", "hardware_known": {"frame": "F450/Q450", "battery": "3S 4200mAh 120C; mass ~150g unverified", "motor": "1400KV exact model unknown", "propeller": "9047"}}, "hardware_armed": false, "weights_sha256": "f5295557192e89d805b2d9c2b7cc07359604ab864672ae66fcc54ffa19f74b4e", "simulated_image_dropout": true, "RT_boost": 0, "actual_ROS2_DDS_control": false}

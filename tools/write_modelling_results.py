@@ -20,9 +20,10 @@ def main():
 \section{Six PID gain tables}
 These values are read from the saved simulation summary. Order is
 roll angle, roll rate, pitch angle, pitch rate, yaw rate, altitude. All
-angular interfaces here are degree-based. The boot C defaults are the
-$\lambda=1$ table; the selected video explicitly loads the $\lambda=1.3$
-table through the host reset API. Neither table is authorized for physical flight.
+angular interfaces here are degree-based. The original baseline used $\lambda=1$ and its selected airborne video loaded
+$\lambda=1.3$ through the host API. The new conservative default is
+$\lambda=0.7$, reported in the later mission chapter. These historical tables
+are retained for comparison; none is a measured physical flight tune.
 '''
     for label,case in [('Baseline',next(r for r in s['results'] if r['name']=='nominal-1.0')),('Selected simulation',best)]:
         text+='\n\\subsection{'+label+'}\n'
