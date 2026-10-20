@@ -1,0 +1,18 @@
+{
+  "source": "C:/Users/Mohamed/Desktop/Work/Drone",
+  "source_commit": "7bd54c1",
+  "copied_from": "Inspected working files, including pre-existing uncommitted edits; source_commit is only the repository baseline",
+  "status": "Unmodified reference snapshot; excluded from build; not a validated flight implementation",
+  "files": [
+    {
+      "file": "src/main.cpp",
+      "sha256": "d15124a9811eb94baeaa1a6aed6b896e8f70431321688807f4021a1f8bf2cf3e",
+      "bytes": 8796
+    },
+    {
+      "file": "platformio.ini",
+      "sha256": "8d9f114ed5a7866d82f55edc722302f8c37947e3d99cba61d0fcecd23b76a5ae",
+      "bytes": 767
+    }
+  ]
+}

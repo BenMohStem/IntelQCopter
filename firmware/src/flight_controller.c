@@ -1,0 +1,1145 @@
+/* IntelQCopter ESP32 branch: single-file C control, estimators and calibration.
+ * Derived from main at 3803437. Platform I/O is a minimal C++ library adapter.
+ * Physical arming/output is disabled. No scenario gains are certified for flight.
+ */
+#include <stdbool.h>
+#include <stdint.h>
+#include <stddef.h>
+#include <math.h>
+#include <string.h>
+#include <stdio.h>
+#include "fc_api.h"
+_Static_assert(sizeof(float)==4, "NVS schema requires a 32-bit float");
+static uint16_t qcopter_get_u16(const uint8_t *p) {
+    return (uint16_t)p[0]|(uint16_t)((uint16_t)p[1]<<8);
+}
+/* Battery monitoring: types and implementation stay in this subproject file. */
+#include <stdbool.h>
+
+typedef enum {
+    BATTERY_ACTION_NORMAL = 0,
+    BATTERY_ACTION_WARN,
+    BATTERY_ACTION_DISARM,
+    BATTERY_ACTION_CONFIGURATION_FAULT,
+    BATTERY_ACTION_SENSOR_FAULT
+} battery_action_t;
+
+typedef struct {
+    float pack_voltage_v;
+    float pack_current_a;       /* positive means battery discharging */
+    float minimum_cell_voltage_v;
+    float rested_soc_observation_percent; /* from pack-specific rested OCV curve */
+    bool pack_voltage_valid;
+    bool pack_current_valid;
+    bool cell_voltage_valid;
+    bool rested_soc_observation_valid;
+    bool bms_alert;
+    bool aircraft_landed;
+} battery_sample_t;
+
+typedef struct {
+    float capacity_ah;
+    float initial_soc_percent;  /* initialize from verified fully charged pack */
+    float low_cell_voltage_v;
+    float critical_cell_voltage_v;
+    float low_pack_voltage_v;
+    float maximum_discharge_current_a;
+    float voltage_measurement_variance_v2;
+    float voltage_process_variance_v2;
+    float initial_soc_variance_percent2;
+    float soc_process_variance_percent2_per_s;
+    float soc_measurement_variance_percent2;
+    float maximum_sample_dt_s;
+} battery_config_t;
+
+typedef struct {
+    float filtered_pack_voltage_v;
+    float pack_voltage_sigma_v;
+    float estimated_soc_percent; /* coulomb count, initialized by caller */
+    float estimated_soc_sigma_percent;
+    battery_action_t action;
+    bool voltage_filter_initialized;
+    bool soc_initialized;
+    bool soc_filter_initialized;
+    bool sensor_fault;
+} battery_status_t;
+
+/* User-selected policy: warning at 35%, immediate latched disarm at 20%.
+ * No automatic landing. Only a deliberate disarmed reset starts a new pack/session.
+ * These flags do not create sensor data or enable a physical ESC output driver. */
+#define BATTERY_SOC_WARNING_PERCENT 35.0f
+#define BATTERY_SOC_DISARM_PERCENT 20.0f
+static bool battery_warning_active;
+static bool battery_disarm_latched;
+
+bool battery_policy_reset(bool disarmed) {
+    if (!disarmed) return false;
+    battery_warning_active = false;
+    battery_disarm_latched = false;
+    return true;
+}
+
+static void battery_apply_soc_policy(float soc_percent) {
+    battery_warning_active = soc_percent <= BATTERY_SOC_WARNING_PERCENT;
+    if (soc_percent <= BATTERY_SOC_DISARM_PERCENT) battery_disarm_latched = true;
+}
+
+void battery_monitor_init(battery_status_t *status, float initial_soc_percent);
+battery_action_t battery_monitor_update(battery_status_t *status,
+                                        const battery_sample_t *sample,
+                                        const battery_config_t *config,
+                                        float dt_s);
+/* Configurable battery telemetry / warning logic. No hardware cut-off path. */
+
+
+#include <math.h>
+#include <stddef.h>
+
+static bool positive_finite(float value) {
+    return isfinite(value) && value > 0.0f;
+}
+
+static bool config_is_valid(const battery_config_t *c) {
+    return c != NULL && positive_finite(c->capacity_ah)
+        && isfinite(c->initial_soc_percent)
+        && c->initial_soc_percent >= 0.0f && c->initial_soc_percent <= 100.0f
+        && positive_finite(c->critical_cell_voltage_v)
+        && c->low_cell_voltage_v >= c->critical_cell_voltage_v
+        && positive_finite(c->low_cell_voltage_v)
+        && positive_finite(c->low_pack_voltage_v)
+        && positive_finite(c->maximum_discharge_current_a)
+        && positive_finite(c->voltage_measurement_variance_v2)
+        && c->voltage_process_variance_v2 >= 0.0f
+        && isfinite(c->voltage_process_variance_v2)
+        && positive_finite(c->initial_soc_variance_percent2)
+        && c->soc_process_variance_percent2_per_s >= 0.0f
+        && isfinite(c->soc_process_variance_percent2_per_s)
+        && positive_finite(c->soc_measurement_variance_percent2)
+        && positive_finite(c->maximum_sample_dt_s);
+}
+
+void battery_monitor_init(battery_status_t *status, float initial_soc_percent) {
+    if (status == NULL) return;
+    *status = (battery_status_t){0};
+    if (isfinite(initial_soc_percent)
+        && initial_soc_percent >= 0.0f && initial_soc_percent <= 100.0f) {
+        status->estimated_soc_percent = initial_soc_percent;
+        status->soc_initialized = true;
+    }
+}
+
+battery_action_t battery_monitor_update(battery_status_t *status,
+                                        const battery_sample_t *sample,
+                                        const battery_config_t *config,
+                                        float dt_s) {
+    if (status == NULL) return BATTERY_ACTION_CONFIGURATION_FAULT;
+    status->sensor_fault = false;
+    if (!config_is_valid(config)) {
+        status->action = BATTERY_ACTION_CONFIGURATION_FAULT;
+        return status->action;
+    }
+    if (sample == NULL || !isfinite(dt_s) || dt_s <= 0.0f
+        || dt_s > config->maximum_sample_dt_s
+        || !sample->pack_voltage_valid || !sample->pack_current_valid
+        || !isfinite(sample->pack_voltage_v) || sample->pack_voltage_v <= 0.0f
+        || !isfinite(sample->pack_current_a)
+        || (sample->cell_voltage_valid
+            && (!isfinite(sample->minimum_cell_voltage_v)
+                || sample->minimum_cell_voltage_v <= 0.0f))
+        || (sample->rested_soc_observation_valid
+            && (!isfinite(sample->rested_soc_observation_percent)
+                || sample->rested_soc_observation_percent < 0.0f
+                || sample->rested_soc_observation_percent > 100.0f))) {
+        status->sensor_fault = true;
+        status->action = BATTERY_ACTION_SENSOR_FAULT;
+        return status->action;
+    }
+
+    /* Scalar Kalman estimate of noisy total pack voltage; covariance in V^2. */
+    if (!status->voltage_filter_initialized) {
+        status->filtered_pack_voltage_v = sample->pack_voltage_v;
+        status->pack_voltage_sigma_v =
+            sqrtf(config->voltage_measurement_variance_v2);
+        status->voltage_filter_initialized = true;
+    } else {
+        float p = status->pack_voltage_sigma_v * status->pack_voltage_sigma_v;
+        p += config->voltage_process_variance_v2;
+        const float gain = p / (p + config->voltage_measurement_variance_v2);
+        status->filtered_pack_voltage_v += gain
+            * (sample->pack_voltage_v - status->filtered_pack_voltage_v);
+        p *= 1.0f - gain;
+        status->pack_voltage_sigma_v = sqrtf(fmaxf(p, 0.0f));
+    }
+
+    /* SOC Kalman predict: coulomb count is the process model. */
+    if (!status->soc_initialized) {
+        status->estimated_soc_percent = config->initial_soc_percent;
+        status->soc_initialized = true;
+    }
+    if (!status->soc_filter_initialized) {
+        status->estimated_soc_sigma_percent =
+            sqrtf(config->initial_soc_variance_percent2);
+        status->soc_filter_initialized = true;
+    }
+    status->estimated_soc_percent -= sample->pack_current_a * dt_s
+        / (config->capacity_ah * 3600.0f) * 100.0f;
+    float soc_variance = status->estimated_soc_sigma_percent
+                       * status->estimated_soc_sigma_percent
+                       + config->soc_process_variance_percent2_per_s * dt_s;
+    /* Optional correction comes only from a separately calibrated, rested-pack
+       OCV-to-SOC table. Loaded pack voltage is not a valid SOC measurement. */
+    if (sample->rested_soc_observation_valid) {
+        const float gain = soc_variance
+            / (soc_variance + config->soc_measurement_variance_percent2);
+        status->estimated_soc_percent += gain
+            * (sample->rested_soc_observation_percent
+               - status->estimated_soc_percent);
+        soc_variance *= 1.0f - gain;
+    }
+    status->estimated_soc_percent = fminf(100.0f,
+        fmaxf(0.0f, status->estimated_soc_percent));
+    status->estimated_soc_sigma_percent = sqrtf(fmaxf(soc_variance, 0.0f));
+
+    battery_apply_soc_policy(status->estimated_soc_percent);
+    /* Optional external critical alerts also latch disarm. Ordinary voltage/current
+       warnings notify; there is intentionally no landing action in this policy. */
+    if (sample->bms_alert
+        || (sample->cell_voltage_valid
+            && sample->minimum_cell_voltage_v <= config->critical_cell_voltage_v)) {
+        battery_disarm_latched = true;
+    }
+    if (status->filtered_pack_voltage_v <= config->low_pack_voltage_v
+        || (sample->cell_voltage_valid
+            && sample->minimum_cell_voltage_v <= config->low_cell_voltage_v)
+        || sample->pack_current_a > config->maximum_discharge_current_a) {
+        battery_warning_active = true;
+    }
+    status->action = battery_disarm_latched ? BATTERY_ACTION_DISARM
+                   : battery_warning_active ? BATTERY_ACTION_WARN : BATTERY_ACTION_NORMAL;
+    return status->action;
+}
+
+#define FC_LOOP_HZ 500.0f
+#define FC_LOOP_PERIOD_US 2000u
+#define FC_LOOP_DT (1.0f / FC_LOOP_HZ)
+#define FC_MAX_CONTROL_DT 0.010f
+#define FC_RAD_TO_DEG 57.2957795f
+#define FC_DEG_TO_RAD 0.0174532925f
+#define FC_HOVER_THROTTLE_PLACEHOLDER 0.50f
+#define FC_MAX_VERTICAL_SPEED_MPS 2.0f
+
+/* SENSOR CALIBRATION -------------------------------------------------------
+ * Physical units after sensor factory conversion: g, deg/s, microtesla, Pa.
+ * These collectors accept fresh samples only while disarmed. Results live in
+ * RAM while collecting; the ESP32 platform persists versioned NVS records.
+ * Temperature modelling and physical calibration validation remain unfinished. No synthetic fixture is installed as a flight calibration.
+ */
+typedef struct {
+    uint32_t n;
+    double mean[3], m2[3];
+} cal_stats3_t;
+
+typedef struct {
+    float accel_bias_g[3], accel_gain[3];
+    float accel_bias_variance_g2[3], accel_gain_variance[3];
+    float gyro_bias_dps[3], gyro_variance_dps2[3];
+    float gyro_bias_variance_dps2[3];
+    uint32_t gyro_samples;
+    bool accel_valid, gyro_valid;
+} imu_calibration_t;
+
+typedef struct { cal_stats3_t accel, gyro; } imu_stationary_cal_t;
+
+static bool cal_vector_finite(const float v[3]) {
+    return v != NULL && isfinite(v[0]) && isfinite(v[1]) && isfinite(v[2]);
+}
+
+static void cal_stats3_add(cal_stats3_t *s, const float v[3]) {
+    s->n++;
+    for (unsigned i = 0; i < 3; ++i) {
+        const double delta = v[i] - s->mean[i];
+        s->mean[i] += delta / s->n;
+        s->m2[i] += delta * (v[i] - s->mean[i]);
+    }
+}
+
+static double cal_variance(const cal_stats3_t *s, unsigned axis) {
+    return s->n > 1u ? s->m2[axis] / (s->n - 1u) : INFINITY;
+}
+
+bool imu_stationary_cal_add(imu_stationary_cal_t *s, const float accel_g[3],
+                            const float gyro_dps[3], bool disarmed) {
+    if (s == NULL || !disarmed || !cal_vector_finite(accel_g)
+        || !cal_vector_finite(gyro_dps) || s->accel.n == UINT32_MAX
+        || s->gyro.n == UINT32_MAX) return false;
+    const float norm2 = accel_g[0]*accel_g[0] + accel_g[1]*accel_g[1]
+                      + accel_g[2]*accel_g[2];
+    if (norm2 < 0.64f || norm2 > 1.44f) return false;
+    for (unsigned i = 0; i < 3; ++i)
+        if (fabsf(gyro_dps[i]) > 10.0f) return false;
+    cal_stats3_add(&s->accel, accel_g);
+    cal_stats3_add(&s->gyro, gyro_dps);
+    return true;
+}
+
+bool imu_gyro_cal_finish(const imu_stationary_cal_t *s, imu_calibration_t *out,
+                         bool disarmed) {
+    if (s == NULL || out == NULL || !disarmed || s->gyro.n < 500u
+        || s->accel.n != s->gyro.n) return false;
+    double norm2 = 0.0;
+    for (unsigned i = 0; i < 3; ++i) {
+        norm2 += s->accel.mean[i] * s->accel.mean[i];
+        if (!isfinite(s->gyro.mean[i]) || fabs(s->gyro.mean[i]) > 5.0
+            || !isfinite(cal_variance(&s->accel, i))
+            || !isfinite(cal_variance(&s->gyro, i))
+            || cal_variance(&s->accel, i) < 0.0
+            || cal_variance(&s->gyro, i) < 0.0
+            || cal_variance(&s->accel, i) > 0.0004
+            || cal_variance(&s->gyro, i) > 0.01) return false;
+    }
+    if (!isfinite(norm2) || norm2 < 0.81 || norm2 > 1.21) return false;
+    for (unsigned i = 0; i < 3; ++i) {
+        out->gyro_bias_dps[i] = (float)s->gyro.mean[i];
+        out->gyro_variance_dps2[i] = (float)cal_variance(&s->gyro, i);
+        out->gyro_bias_variance_dps2[i] = out->gyro_variance_dps2[i] / s->gyro.n;
+    }
+    out->gyro_samples = s->gyro.n;
+    out->gyro_valid = true;
+    return true;
+}
+
+/* Six poses in sensor axes: +X, -X, +Y, -Y, +Z, -Z (specific force). */
+bool imu_accel_face_add(cal_stats3_t faces[6], unsigned face,
+                        const float accel_g[3], bool disarmed) {
+    if (faces == NULL || face >= 6u || !disarmed
+        || !cal_vector_finite(accel_g) || faces[face].n == UINT32_MAX)
+        return false;
+    cal_stats3_add(&faces[face], accel_g);
+    return true;
+}
+
+bool imu_accel_cal_finish(const cal_stats3_t faces[6], imu_calibration_t *out,
+                          bool disarmed) {
+    if (faces == NULL || out == NULL || !disarmed) return false;
+    float bias[3], gain[3];
+    for (unsigned face = 0; face < 6u; ++face) {
+        if (faces[face].n < 100u) return false;
+        for (unsigned axis = 0; axis < 3u; ++axis) {
+            if (!isfinite(faces[face].mean[axis])
+                || !isfinite(cal_variance(&faces[face], axis))
+                || cal_variance(&faces[face], axis) < 0.0
+                || cal_variance(&faces[face], axis) > 0.0004) return false;
+            if (axis != face / 2u && fabs(faces[face].mean[axis]) > 0.25)
+                return false;
+        }
+    }
+    for (unsigned axis = 0; axis < 3u; ++axis) {
+        const double pos = faces[axis * 2u].mean[axis];
+        const double neg = faces[axis * 2u + 1u].mean[axis];
+        const double span = pos - neg;
+        if (pos < 0.7 || neg > -0.7 || span < 1.5 || span > 2.5)
+            return false;
+        bias[axis] = (float)((pos + neg) * 0.5);
+        gain[axis] = (float)(2.0 / span);
+        if (fabsf(bias[axis]) > 0.25f) return false;
+    }
+    for (unsigned i = 0; i < 3u; ++i) {
+        out->accel_bias_g[i] = bias[i];
+        out->accel_gain[i] = gain[i];
+        const cal_stats3_t *pos = &faces[2u*i], *neg = &faces[2u*i+1u];
+        const double mean_variance = cal_variance(pos, i)/pos->n
+                                   + cal_variance(neg, i)/neg->n;
+        const double span = pos->mean[i] - neg->mean[i];
+        out->accel_bias_variance_g2[i] = (float)(0.25 * mean_variance);
+        out->accel_gain_variance[i] = (float)(4.0 * mean_variance / pow(span, 4.0));
+    }
+    out->accel_valid = true;
+    return true;
+}
+
+bool imu_cal_apply(const imu_calibration_t *c, const float accel_g[3],
+                    const float gyro_dps[3], float corrected_accel_g[3],
+                    float corrected_gyro_dps[3]) {
+    if (c == NULL || !c->accel_valid || !c->gyro_valid
+        || !cal_vector_finite(accel_g) || !cal_vector_finite(gyro_dps)
+        || corrected_accel_g == NULL || corrected_gyro_dps == NULL)
+        return false;
+    float a[3], g[3];
+    for (unsigned i = 0; i < 3u; ++i) {
+        if (!isfinite(c->accel_gain[i]) || c->accel_gain[i] <= 0.0f
+            || !isfinite(c->accel_bias_g[i]) || !isfinite(c->gyro_bias_dps[i]))
+            return false;
+        a[i] = (accel_g[i] - c->accel_bias_g[i]) * c->accel_gain[i];
+        g[i] = gyro_dps[i] - c->gyro_bias_dps[i];
+        if (!isfinite(a[i]) || !isfinite(g[i])) return false;
+    }
+    for (unsigned i = 0; i < 3u; ++i) {
+        corrected_accel_g[i] = a[i];
+        corrected_gyro_dps[i] = g[i];
+    }
+    return true;
+}
+
+typedef struct {
+    cal_stats3_t stats;
+    float minimum_ut[3], maximum_ut[3];
+    double cross_m2[3]; /* xy, xz, yz: reject a rotation confined to a plane */
+} mag_sweep_cal_t;
+
+typedef struct { float offset_ut[3], gain[3]; bool valid; } mag_calibration_t;
+
+bool mag_cal_add(mag_sweep_cal_t *s, const float field_ut[3], bool disarmed) {
+    if (s == NULL || !disarmed || !cal_vector_finite(field_ut)
+        || s->stats.n == UINT32_MAX) return false;
+    double delta[3];
+    for (unsigned i = 0; i < 3u; ++i) {
+        if (fabsf(field_ut[i]) > 1000.0f) return false;
+        delta[i] = field_ut[i] - s->stats.mean[i];
+    }
+    for (unsigned i = 0; i < 3u; ++i) {
+        if (s->stats.n == 0u || field_ut[i] < s->minimum_ut[i])
+            s->minimum_ut[i] = field_ut[i];
+        if (s->stats.n == 0u || field_ut[i] > s->maximum_ut[i])
+            s->maximum_ut[i] = field_ut[i];
+    }
+    cal_stats3_add(&s->stats, field_ut);
+    s->cross_m2[0] += delta[0] * (field_ut[1] - s->stats.mean[1]);
+    s->cross_m2[1] += delta[0] * (field_ut[2] - s->stats.mean[2]);
+    s->cross_m2[2] += delta[1] * (field_ut[2] - s->stats.mean[2]);
+    return true;
+}
+
+/* Min/max hard-iron + diagonal scale fit, NOT a full soft-iron matrix fit. */
+bool mag_cal_finish(const mag_sweep_cal_t *s, mag_calibration_t *out,
+                     bool full_rotation_confirmed, bool disarmed) {
+    if (s == NULL || out == NULL || !disarmed || !full_rotation_confirmed
+        || s->stats.n < 300u) return false;
+    double radius[3], mean_radius = 0.0;
+    for (unsigned i = 0; i < 3u; ++i) {
+        radius[i] = (s->maximum_ut[i] - s->minimum_ut[i]) * 0.5;
+        if (!isfinite(radius[i]) || radius[i] < 5.0 || radius[i] > 100.0
+            || !isfinite(s->stats.m2[i]) || s->stats.m2[i] <= 0.0)
+            return false;
+        mean_radius += radius[i] / 3.0;
+    }
+    const double xy = s->cross_m2[0] / sqrt(s->stats.m2[0]*s->stats.m2[1]);
+    const double xz = s->cross_m2[1] / sqrt(s->stats.m2[0]*s->stats.m2[2]);
+    const double yz = s->cross_m2[2] / sqrt(s->stats.m2[1]*s->stats.m2[2]);
+    const double coverage = 1.0 + 2.0*xy*xz*yz - xy*xy - xz*xz - yz*yz;
+    if (!isfinite(coverage) || coverage < 0.05) return false;
+    for (unsigned i = 0; i < 3u; ++i)
+        if (mean_radius / radius[i] < 0.5 || mean_radius / radius[i] > 2.0)
+            return false;
+    for (unsigned i = 0; i < 3u; ++i) {
+        out->offset_ut[i] = (s->maximum_ut[i] + s->minimum_ut[i]) * 0.5f;
+        out->gain[i] = (float)(mean_radius / radius[i]);
+    }
+    out->valid = true;
+    return true;
+}
+
+bool mag_cal_apply(const mag_calibration_t *c, const float raw_ut[3],
+                    float corrected_ut[3]) {
+    if (c == NULL || !c->valid || !cal_vector_finite(raw_ut)
+        || corrected_ut == NULL) return false;
+    float corrected[3];
+    for (unsigned i = 0; i < 3u; ++i) {
+        if (!isfinite(c->offset_ut[i]) || !isfinite(c->gain[i])
+            || c->gain[i] <= 0.0f) return false;
+        corrected[i] = (raw_ut[i] - c->offset_ut[i]) * c->gain[i];
+        if (!isfinite(corrected[i])) return false;
+    }
+    for (unsigned i = 0; i < 3u; ++i) corrected_ut[i] = corrected[i];
+    return true;
+}
+
+/* BMP280 OTP coefficients are factory calibration, separate from ground zero.
+ * Compensation equations: Bosch BMP280 datasheet, section 3.11.3.
+ */
+typedef struct {
+    uint16_t t1, p1;
+    int16_t t2, t3, p2, p3, p4, p5, p6, p7, p8, p9;
+} bmp280_trim_t;
+
+bool bmp280_trim_decode(const uint8_t *bytes, size_t length, bmp280_trim_t *out) {
+    if (bytes == NULL || out == NULL || length != 24u) return false;
+    const bmp280_trim_t t = {
+        .t1 = qcopter_get_u16(bytes), .t2 = (int16_t)qcopter_get_u16(bytes + 2),
+        .t3 = (int16_t)qcopter_get_u16(bytes + 4), .p1 = qcopter_get_u16(bytes + 6),
+        .p2 = (int16_t)qcopter_get_u16(bytes + 8), .p3 = (int16_t)qcopter_get_u16(bytes + 10),
+        .p4 = (int16_t)qcopter_get_u16(bytes + 12), .p5 = (int16_t)qcopter_get_u16(bytes + 14),
+        .p6 = (int16_t)qcopter_get_u16(bytes + 16), .p7 = (int16_t)qcopter_get_u16(bytes + 18),
+        .p8 = (int16_t)qcopter_get_u16(bytes + 20), .p9 = (int16_t)qcopter_get_u16(bytes + 22)
+    };
+    if (t.t1 == 0u || t.t1 == 0xFFFFu || t.p1 == 0u || t.p1 == 0xFFFFu)
+        return false;
+    *out = t;
+    return true;
+}
+
+bool bmp280_compensate(const bmp280_trim_t *t, uint32_t raw_temperature,
+                        uint32_t raw_pressure, double *temperature_c,
+                        double *pressure_pa) {
+    if (t == NULL || temperature_c == NULL || pressure_pa == NULL
+        || t->t1 == 0u || t->p1 == 0u || raw_temperature > 0xFFFFFu
+        || raw_pressure > 0xFFFFFu || raw_temperature == 0x80000u
+        || raw_pressure == 0x80000u) return false;
+    const double dt = raw_temperature / 131072.0 - t->t1 / 8192.0;
+    const double fine = (raw_temperature / 16384.0 - t->t1 / 1024.0) * t->t2
+                      + dt * dt * t->t3;
+    const double temp = fine / 5120.0;
+    double v1 = fine / 2.0 - 64000.0;
+    double v2 = v1*v1*t->p6/32768.0 + v1*t->p5*2.0;
+    v2 = v2/4.0 + t->p4*65536.0;
+    v1 = (t->p3*v1*v1/524288.0 + t->p2*v1)/524288.0;
+    v1 = (1.0 + v1/32768.0) * t->p1;
+    if (!isfinite(v1) || fabs(v1) < 1e-12) return false;
+    double pressure = (1048576.0 - raw_pressure - v2/4096.0) * 6250.0 / v1;
+    v1 = t->p9*pressure*pressure/2147483648.0;
+    v2 = pressure*t->p8/32768.0;
+    pressure += (v1 + v2 + t->p7)/16.0;
+    if (!isfinite(temp) || !isfinite(pressure) || temp < -40.0 || temp > 85.0
+        || pressure < 30000.0 || pressure > 110000.0) return false;
+    *temperature_c = temp;
+    *pressure_pa = pressure;
+    return true;
+}
+
+typedef struct { uint32_t n; double mean_pa, m2_pa2; } baro_reference_cal_t;
+typedef struct {
+    double ground_pressure_pa, reference_variance_pa2, measurement_variance_pa2;
+    bool valid;
+} baro_calibration_t;
+
+bool baro_reference_add(baro_reference_cal_t *s, double compensated_pa,
+                         bool disarmed) {
+    if (s == NULL || !disarmed || !isfinite(compensated_pa)
+        || compensated_pa < 30000.0 || compensated_pa > 110000.0
+        || s->n == UINT32_MAX) return false;
+    const double delta = compensated_pa - s->mean_pa;
+    s->n++;
+    s->mean_pa += delta / s->n;
+    s->m2_pa2 += delta * (compensated_pa - s->mean_pa);
+    return true;
+}
+
+bool baro_reference_finish(const baro_reference_cal_t *s, baro_calibration_t *out,
+                            double maximum_sigma_pa, bool disarmed) {
+    if (s == NULL || out == NULL || !disarmed || s->n < 100u
+        || !isfinite(maximum_sigma_pa) || maximum_sigma_pa <= 0.0
+        || !isfinite(s->mean_pa) || s->mean_pa < 30000.0
+        || s->mean_pa > 110000.0) return false;
+    const double variance = s->m2_pa2 / (s->n - 1u);
+    if (!isfinite(variance) || variance < 0.0
+        || variance > maximum_sigma_pa * maximum_sigma_pa) return false;
+    *out = (baro_calibration_t){s->mean_pa, variance / s->n, variance, true};
+    return true;
+}
+
+bool baro_relative_height(const baro_calibration_t *c, double compensated_pa,
+                           double *height_m, double *sigma_m) {
+    if (c == NULL || !c->valid || height_m == NULL || sigma_m == NULL
+        || !isfinite(compensated_pa) || compensated_pa < 30000.0
+        || compensated_pa > 110000.0 || !isfinite(c->ground_pressure_pa)
+        || c->ground_pressure_pa < 30000.0 || c->ground_pressure_pa > 110000.0
+        || !isfinite(c->reference_variance_pa2) || c->reference_variance_pa2 < 0.0
+        || !isfinite(c->measurement_variance_pa2) || c->measurement_variance_pa2 < 0.0)
+        return false;
+    const double exponent = 0.190294957;
+    const double ratio = compensated_pa / c->ground_pressure_pa;
+    const double derivative = 44330.0 * exponent * pow(ratio, exponent - 1.0);
+    const double dp = -derivative / c->ground_pressure_pa;
+    const double dp0 = derivative * compensated_pa
+                      / (c->ground_pressure_pa * c->ground_pressure_pa);
+    *height_m = 44330.0 * (1.0 - pow(ratio, exponent));
+    *sigma_m = sqrt(dp*dp*c->measurement_variance_pa2
+                    + dp0*dp0*c->reference_variance_pa2);
+    return isfinite(*height_m) && isfinite(*sigma_m);
+}
+
+/* Reference-pair regression for battery volts, current zero/gain, or lidar.
+ * Example: input ADC volts, reference trusted multimeter volts / measured amps.
+ * For lidar, reference a measured target distance; terrain is not a reference.
+ */
+typedef struct { uint32_t n; double x, y, xx, yy, xy; } linear_cal_fit_t;
+typedef struct { double gain, offset, residual_sigma; bool valid; } linear_cal_t;
+
+bool linear_cal_add(linear_cal_fit_t *s, double input, double reference,
+                      bool disarmed) {
+    if (s == NULL || !disarmed || !isfinite(input) || !isfinite(reference)
+        || fabs(input) > 1e9 || fabs(reference) > 1e9 || s->n == UINT32_MAX)
+        return false;
+    const double dx = input - s->x, dy = reference - s->y;
+    s->n++;
+    s->x += dx / s->n;
+    s->y += dy / s->n;
+    s->xx += dx * (input - s->x);
+    s->yy += dy * (reference - s->y);
+    s->xy += dx * (reference - s->y);
+    return true;
+}
+
+bool linear_cal_finish(const linear_cal_fit_t *s, linear_cal_t *out,
+                         double maximum_residual_sigma, bool disarmed) {
+    if (s == NULL || out == NULL || !disarmed || s->n < 3u
+        || !isfinite(s->xx) || !isfinite(s->yy) || !isfinite(s->xy)
+        || !isfinite(s->x) || !isfinite(s->y) || s->yy < 0.0 || s->xx <= 1e-8
+        || !isfinite(maximum_residual_sigma) || maximum_residual_sigma <= 0.0)
+        return false;
+    const double gain = s->xy / s->xx, offset = s->y - gain * s->x;
+    const double residual = sqrt(fmax(0.0, s->yy - gain*s->xy) / (s->n - 2u));
+    if (!isfinite(gain) || fabs(gain) < 1e-12 || !isfinite(offset)
+        || !isfinite(residual) || residual > maximum_residual_sigma)
+        return false;
+    *out = (linear_cal_t){gain, offset, residual, true};
+    return true;
+}
+
+bool linear_cal_apply(const linear_cal_t *c, double raw, double *corrected) {
+    if (c == NULL || !c->valid || corrected == NULL || !isfinite(raw)
+        || !isfinite(c->gain) || !isfinite(c->offset)) return false;
+    const double value = c->gain * raw + c->offset;
+    if (!isfinite(value)) return false;
+    *corrected = value;
+    return true;
+}
+
+typedef struct {
+    float kp;
+    float ki;
+    float kd;
+    float integrator;
+    float previous_measurement;
+    float integrator_limit;
+    float output_limit;
+    bool initialized;
+} fc_pid_t;
+
+typedef struct {
+    float angle_deg;
+    float gyro_bias_dps;
+    float p00;
+    float p01;
+    float p10;
+    float p11;
+    float gyro_noise;
+    float bias_walk;
+    float accel_noise;
+    float gain_angle, gain_bias, innovation, innovation_variance;
+} angle_kf_t;
+
+typedef struct {
+    float height_m;
+    float velocity_mps;
+    float p00;
+    float p01;
+    float p10;
+    float p11;
+    float accel_noise;
+    float baro_noise;
+    float gain_height, gain_velocity, innovation, innovation_variance;
+} altitude_kf_t;
+
+typedef struct {
+    float roll_deg;
+    float pitch_deg;
+    float yaw_rate_dps;
+    float throttle; /* [0,1], center requests zero vertical speed */
+    float boost;    /* RT [0,1]: extra climb/collective allowance, same flight mode */
+    bool valid;
+    bool arm_request;
+} pilot_command_t;
+
+typedef struct {
+    float accel_x_g;
+    float accel_y_g;
+    float accel_z_g;
+    float gyro_x_dps;
+    float gyro_y_dps;
+    float gyro_z_dps;
+    float vertical_acceleration_mps2; /* gravity compensated, world-up positive */
+    float barometer_height_m;
+    bool imu_valid;
+    bool imu_calibrated; /* scaled + offset/gain corrected before control */
+    bool barometer_valid;
+    bool barometer_updated; /* apply each independent pressure sample once */
+} sensor_sample_t;
+
+bool sensor_sample_apply_imu_calibration(sensor_sample_t *s,
+                                          const imu_calibration_t *cal) {
+    if (s == NULL || !s->imu_valid || s->imu_calibrated) return false;
+    const float accel[3] = {s->accel_x_g, s->accel_y_g, s->accel_z_g};
+    const float gyro[3] = {s->gyro_x_dps, s->gyro_y_dps, s->gyro_z_dps};
+    float a[3], g[3];
+    if (!imu_cal_apply(cal, accel, gyro, a, g)) return false;
+    s->accel_x_g = a[0]; s->accel_y_g = a[1]; s->accel_z_g = a[2];
+    s->gyro_x_dps = g[0]; s->gyro_y_dps = g[1]; s->gyro_z_dps = g[2];
+    s->imu_calibrated = true;
+    /* Derive world-up acceleration AFTER this correction and frame rotation. */
+    return true;
+}
+
+typedef struct {
+    float motor[4]; /* normalized math result only; no ESC output is connected */
+    bool armed;
+    bool sensor_fault;
+} control_output_t;
+
+static angle_kf_t roll_estimator = {
+    .p00 = 1.0f, .p11 = 0.01f,
+    .gyro_noise = 0.04f, .bias_walk = 0.0001f, .accel_noise = 4.0f
+};
+static angle_kf_t pitch_estimator = {
+    .p00 = 1.0f, .p11 = 0.01f,
+    .gyro_noise = 0.04f, .bias_walk = 0.0001f, .accel_noise = 4.0f
+};
+static altitude_kf_t altitude_estimator = {
+    .p00 = 1.0f, .p11 = 1.0f,
+    .accel_noise = 1.5f, .baro_noise = 2.0f
+};
+
+/* Gains are placeholders for simulation/bench tuning, not flight values. */
+static fc_pid_t roll_angle_pid = {
+    .kp = 3.0f, .ki = 0.0f, .kd = 0.0f,
+    .integrator_limit = 0.0f, .output_limit = 180.0f
+};
+static fc_pid_t pitch_angle_pid = {
+    .kp = 3.0f, .ki = 0.0f, .kd = 0.0f,
+    .integrator_limit = 0.0f, .output_limit = 180.0f
+};
+static fc_pid_t roll_rate_pid = {
+    .kp = 0.000829338f, .ki = 0.003870245f, .kd = 0.0f,
+    .integrator_limit = 15.0f, .output_limit = 0.35f
+};
+static fc_pid_t pitch_rate_pid = {
+    .kp = 0.000829338f, .ki = 0.003870245f, .kd = 0.0f,
+    .integrator_limit = 15.0f, .output_limit = 0.35f
+};
+static fc_pid_t yaw_rate_pid = {
+    .kp = 0.005375614f, .ki = 0.008362066f, .kd = 0.0f,
+    .integrator_limit = 8.0f, .output_limit = 0.35f
+};
+static fc_pid_t altitude_pid = {
+    .kp = 0.108045f, .ki = 0.03087f, .kd = 0.1225f,
+    .integrator_limit = 2.0f, .output_limit = 0.35f
+};
+static float altitude_hold_reference_m;
+static float hover_collective = FC_HOVER_THROTTLE_PLACEHOLDER;
+static float boost_state;
+static bool altitude_reference_initialized;
+
+static float clampf(float value, float low, float high) {
+    if (value < low) return low;
+    if (value > high) return high;
+    return value;
+}
+
+static void pid_reset(fc_pid_t *pid) {
+    pid->integrator = 0.0f;
+    pid->previous_measurement = 0.0f;
+    pid->initialized = false;
+}
+
+static void reset_control_state(void) {
+    boost_state=0;
+    pid_reset(&roll_angle_pid);
+    pid_reset(&pitch_angle_pid);
+    pid_reset(&roll_rate_pid);
+    pid_reset(&pitch_rate_pid);
+    pid_reset(&yaw_rate_pid);
+    pid_reset(&altitude_pid);
+    altitude_reference_initialized = false;
+}
+
+/* Derivative is taken on the measurement to avoid setpoint kick. */
+static float pid_update(fc_pid_t *pid, float setpoint, float measurement, float dt) {
+    if (!(dt > 0.0f) || dt > FC_MAX_CONTROL_DT) {
+        pid_reset(pid);
+        return 0.0f;
+    }
+    const float error = setpoint - measurement;
+    const float derivative = pid->initialized
+        ? (measurement - pid->previous_measurement) / dt : 0.0f;
+    const float candidate_i = clampf(pid->integrator + error * dt,
+                                     -pid->integrator_limit,
+                                     pid->integrator_limit);
+    const float raw = pid->kp * error + pid->ki * candidate_i
+                    - pid->kd * derivative;
+    const float output = clampf(raw, -pid->output_limit, pid->output_limit);
+    /* Conditional integration prevents windup when saturation is driven farther. */
+    if (raw == output || (raw > output && error < 0.0f)
+                      || (raw < output && error > 0.0f)) {
+        pid->integrator = candidate_i;
+    }
+    pid->previous_measurement = measurement;
+    pid->initialized = true;
+    return output;
+}
+
+/* Joseph scalar-observation covariance update, H=[1,0]. */
+static void covariance_correct(float *p00, float *p01, float *p10, float *p11,
+                                float k0, float k1, float r) {
+    const float a = *p00, b = (*p01 + *p10)*0.5f, d = *p11;
+    const float z = 1.0f-k0;
+    *p00 = z*z*a + k0*k0*r;
+    *p01 = z*(b-k1*a) + k0*k1*r;
+    *p10 = *p01;
+    *p11 = d-2.0f*k1*b+k1*k1*a+k1*k1*r;
+}
+
+static void angle_kf_update(angle_kf_t *kf, float gyro_dps,
+                            float accel_angle_deg, float dt) {
+    kf->angle_deg += dt*(gyro_dps-kf->gyro_bias_dps);
+    const float a=kf->p00, b=kf->p01, c=kf->p10, d=kf->p11;
+    const float qb=kf->bias_walk;
+    /* gyro_noise is per-sample (deg/s)^2; bias_walk is (deg/s)^2/s. */
+    kf->p00=a-dt*(b+c)+dt*dt*d+kf->gyro_noise*dt*dt+qb*dt*dt*dt/3.0f;
+    kf->p01=b-dt*d-qb*dt*dt/2.0f;
+    kf->p10=c-dt*d-qb*dt*dt/2.0f;
+    kf->p11=d+qb*dt;
+    kf->innovation_variance=kf->p00+kf->accel_noise;
+    kf->gain_angle=kf->p00/kf->innovation_variance;
+    kf->gain_bias=kf->p10/kf->innovation_variance;
+    kf->innovation=accel_angle_deg-kf->angle_deg;
+    kf->angle_deg+=kf->gain_angle*kf->innovation;
+    kf->gyro_bias_dps+=kf->gain_bias*kf->innovation;
+    covariance_correct(&kf->p00,&kf->p01,&kf->p10,&kf->p11,
+                       kf->gain_angle,kf->gain_bias,kf->accel_noise);
+}
+
+/* 2-state constant-acceleration filter: state = [height, vertical speed]. */
+static void altitude_kf_predict(altitude_kf_t *kf, float accel_up_mps2,
+                                float dt) {
+    kf->height_m += kf->velocity_mps * dt
+                  + 0.5f * accel_up_mps2 * dt * dt;
+    kf->velocity_mps += accel_up_mps2 * dt;
+
+    const float p00 = kf->p00;
+    const float p01 = kf->p01;
+    const float p10 = kf->p10;
+    const float p11 = kf->p11;
+    const float q = kf->accel_noise * kf->accel_noise;
+    kf->p00 = p00 + dt * (p01 + p10) + dt * dt * p11
+            + 0.25f * dt * dt * dt * dt * q;
+    kf->p01 = p01 + dt * p11 + 0.5f * dt * dt * dt * q;
+    kf->p10 = p10 + dt * p11 + 0.5f * dt * dt * dt * q;
+    kf->p11 = p11 + dt * dt * q;
+}
+
+static void altitude_kf_baro_update(altitude_kf_t *kf, float height_m) {
+    kf->innovation_variance=kf->p00+kf->baro_noise;
+    kf->gain_height=kf->p00/kf->innovation_variance;
+    kf->gain_velocity=kf->p10/kf->innovation_variance;
+    kf->innovation=height_m-kf->height_m;
+    kf->height_m+=kf->gain_height*kf->innovation;
+    kf->velocity_mps+=kf->gain_velocity*kf->innovation;
+    covariance_correct(&kf->p00,&kf->p01,&kf->p10,&kf->p11,
+                       kf->gain_height,kf->gain_velocity,kf->baro_noise);
+}
+
+/* Exactly one altitude PID: D uses commanded/measured vertical velocity. */
+static float altitude_pid_update(float reference, float height, float v_cmd,
+                                  float velocity, float dt) {
+    const float error=reference-height;
+    const float candidate=clampf(altitude_pid.integrator+error*dt,
+        -altitude_pid.integrator_limit,altitude_pid.integrator_limit);
+    const float raw=altitude_pid.kp*error+altitude_pid.ki*candidate
+                    +altitude_pid.kd*(v_cmd-velocity);
+    const float output=clampf(raw,-altitude_pid.output_limit,altitude_pid.output_limit);
+    if (raw==output || (raw>output && error<0.0f) || (raw<output && error>0.0f))
+        altitude_pid.integrator=candidate;
+    return output;
+}
+
+static bool sample_is_healthy(const sensor_sample_t *s) {
+    return s != NULL && s->imu_valid && s->imu_calibrated
+        && isfinite(s->accel_x_g) && isfinite(s->accel_y_g)
+        && isfinite(s->accel_z_g) && isfinite(s->gyro_x_dps)
+        && isfinite(s->gyro_y_dps) && isfinite(s->gyro_z_dps);
+}
+
+/*
+ * This function is currently a math/control core only. Mixer motor order and
+ * signs must be validated against the chosen frame before its outputs are used.
+ */
+static control_output_t flight_control_step(const sensor_sample_t *s,
+                                             const pilot_command_t *cmd,
+                                             float dt) {
+    control_output_t out = { .motor = {0.0f, 0.0f, 0.0f, 0.0f},
+                             .armed = false, .sensor_fault = false };
+    if (battery_disarm_latched) {
+        reset_control_state();
+        return out; /* Explicit user policy: stop mathematical demands, even airborne. */
+    }
+    if (!sample_is_healthy(s) || !isfinite(dt) || dt <= 0.0f
+        || dt > FC_MAX_CONTROL_DT) {
+        reset_control_state();
+        out.sensor_fault = true;
+        return out;
+    }
+
+    const float accel_roll_deg = atan2f(s->accel_y_g, s->accel_z_g)
+                               * FC_RAD_TO_DEG;
+    const float accel_pitch_deg = atan2f(-s->accel_x_g,
+        sqrtf(s->accel_y_g * s->accel_y_g + s->accel_z_g * s->accel_z_g))
+        * FC_RAD_TO_DEG;
+    angle_kf_update(&roll_estimator, s->gyro_x_dps, accel_roll_deg, dt);
+    angle_kf_update(&pitch_estimator, s->gyro_y_dps, accel_pitch_deg, dt);
+
+    if (s->barometer_valid && isfinite(s->barometer_height_m)
+        && isfinite(s->vertical_acceleration_mps2)) {
+        altitude_kf_predict(&altitude_estimator,
+                            s->vertical_acceleration_mps2, dt);
+        if (s->barometer_updated)
+            altitude_kf_baro_update(&altitude_estimator, s->barometer_height_m);
+    }
+
+    if (cmd == NULL || !cmd->valid || !isfinite(cmd->roll_deg) || !isfinite(cmd->pitch_deg)
+        || !isfinite(cmd->yaw_rate_dps) || !isfinite(cmd->throttle) || !isfinite(cmd->boost)) {
+        reset_control_state();
+        out.sensor_fault = true;
+        return out;
+    }
+    /* The only implemented mode requires valid height/rate aiding. */
+    if (!s->barometer_valid || !isfinite(s->barometer_height_m)
+        || !isfinite(s->vertical_acceleration_mps2)) {
+        reset_control_state();
+        out.sensor_fault = true;
+        return out;
+    }
+
+    /* Bound pilot inputs before they enter the control math. */
+    const float roll_setpoint = clampf(cmd->roll_deg, -35.0f, 35.0f);
+    const float pitch_setpoint = clampf(cmd->pitch_deg, -35.0f, 35.0f);
+    const float yaw_rate_setpoint = clampf(cmd->yaw_rate_dps, -180.0f, 180.0f);
+    const float throttle = clampf(cmd->throttle, 0.0f, 1.0f);
+    const float boost_target=clampf(cmd->boost,0,1);
+    boost_state+=clampf(boost_target-boost_state,-10*dt,4*dt);
+    const float boost=boost_state;
+    const float roll_rate_setpoint = pid_update(&roll_angle_pid, roll_setpoint,
+                                                 roll_estimator.angle_deg, dt);
+    const float pitch_rate_setpoint = pid_update(&pitch_angle_pid, pitch_setpoint,
+                                                  pitch_estimator.angle_deg, dt);
+    const float roll = pid_update(&roll_rate_pid, roll_rate_setpoint,
+                                  s->gyro_x_dps, dt);
+    const float pitch = pid_update(&pitch_rate_pid, pitch_rate_setpoint,
+                                   s->gyro_y_dps, dt);
+    const float yaw = pid_update(&yaw_rate_pid, yaw_rate_setpoint,
+                                 s->gyro_z_dps, dt);
+
+    if (!altitude_reference_initialized) {
+        altitude_hold_reference_m = altitude_estimator.height_m;
+        pid_reset(&altitude_pid);
+        altitude_reference_initialized = true;
+    }
+    const float pilot_vertical_speed = (throttle - 0.5f)
+                                     * 2.0f * (FC_MAX_VERTICAL_SPEED_MPS+boost);
+    altitude_hold_reference_m += pilot_vertical_speed * dt;
+    altitude_hold_reference_m=clampf(altitude_hold_reference_m,
+        altitude_estimator.height_m-2.0f,altitude_estimator.height_m+2.0f);
+    const float collective_correction=altitude_pid_update(altitude_hold_reference_m,
+        altitude_estimator.height_m,pilot_vertical_speed,altitude_estimator.velocity_mps,dt);
+    const float tilt_factor=fmaxf(0.5f,cosf(roll_estimator.angle_deg*FC_DEG_TO_RAD)
+                                     *cosf(pitch_estimator.angle_deg*FC_DEG_TO_RAD));
+    const float collective=clampf((hover_collective+collective_correction)/tilt_factor,0.0f,.65f+.15f*boost);
+
+    /* Provisional X-frame math in logical order FL, FR, RR, RL. The result is
+       for simulation only until motor order, spin directions, and frame axes
+       are verified. No PWM/DShot/ESC driver consumes these values. */
+    float correction[4]={roll-pitch-yaw,-roll-pitch+yaw,-roll+pitch-yaw,roll+pitch+yaw};
+    float low=correction[0],high=correction[0];
+    for(unsigned i=1;i<4;i++){low=fminf(low,correction[i]);high=fmaxf(high,correction[i]);}
+    // Uniformly scale only infeasible torque combinations, then shift collective
+    // into the feasible interval. Independent clipping would distort torques.
+    const float scale=high-low>1 ? 1/(high-low) : 1;
+    const float allocated=clampf(collective,-low*scale,1-high*scale);
+    for(unsigned i=0;i<4;i++)out.motor[i]=clampf(allocated+scale*correction[i],0,1);
+
+    /* There is deliberately no hardware arming/output path in this scaffold. */
+    out.armed = false;
+    return out;
+}
+
+/* ESP32-facing C API. Only the control task owns these states. */
+static imu_calibration_t saved_imu;
+static imu_stationary_cal_t verification;
+static cal_stats3_t accel_faces[6];
+static baro_reference_cal_t pressure_capture;
+static baro_calibration_t ground_reference;
+static uint32_t last_pressure_sequence;
+static uint64_t calibration_board_id;
+static bool gyro_verified,cal_dirty;
+static int8_t capture_face=-1;
+
+static uint32_t record_u32(const uint8_t *p) {
+    return (uint32_t)p[0]|(uint32_t)p[1]<<8|(uint32_t)p[2]<<16|(uint32_t)p[3]<<24;
+}
+static void record_put32(uint8_t *p,uint32_t v) {
+    for(unsigned i=0;i<4;i++) p[i]=(uint8_t)(v>>(8*i));
+}
+static uint32_t record_crc(const uint8_t *p,unsigned n) {
+    uint32_t crc=0xffffffffu;
+    for(unsigned i=0;i<n;i++) {
+        crc^=p[i];
+        for(unsigned j=0;j<8;j++) crc=(crc>>1)^((crc&1u)?0xedb88320u:0);
+    }
+    return ~crc;
+}
+static bool imu_fit_valid(const imu_calibration_t *c) {
+    if(c->gyro_valid && c->gyro_samples<500u) return false;
+    for(unsigned i=0;i<3;i++) {
+        if(c->gyro_valid && (!isfinite(c->gyro_bias_dps[i]) || fabsf(c->gyro_bias_dps[i])>5
+            || !isfinite(c->gyro_variance_dps2[i]) || c->gyro_variance_dps2[i]<0
+            || c->gyro_variance_dps2[i]>.01f || !isfinite(c->gyro_bias_variance_dps2[i])
+            || c->gyro_bias_variance_dps2[i]<0)) return false;
+        if(c->accel_valid && (!isfinite(c->accel_bias_g[i]) || fabsf(c->accel_bias_g[i])>.25f
+            || !isfinite(c->accel_gain[i]) || c->accel_gain[i]<.5f || c->accel_gain[i]>2
+            || !isfinite(c->accel_bias_variance_g2[i]) || c->accel_bias_variance_g2[i]<0
+            || !isfinite(c->accel_gain_variance[i]) || c->accel_gain_variance[i]<0)) return false;
+    }
+    return true;
+}
+void fc_init(uint64_t board_id) {
+    calibration_board_id=board_id;
+    saved_imu=(imu_calibration_t){0};
+    verification=(imu_stationary_cal_t){0};
+    memset(accel_faces,0,sizeof(accel_faces));
+    ground_reference=(baro_calibration_t){0};
+    pressure_capture=(baro_reference_cal_t){0};
+    last_pressure_sequence=0; gyro_verified=false; cal_dirty=false; capture_face=-1;
+    (void)battery_policy_reset(true);
+    reset_control_state();
+}
+bool fc_cal_load(const uint8_t record[FC_CAL_RECORD_BYTES]) {
+    if(record==NULL || record_u32(record)!=0x45494351u || record_u32(record+4)!=1u
+        || record_u32(record+8)!=FC_CAL_PROFILE || record_u32(record+12)!=(uint32_t)calibration_board_id
+        || record_u32(record+16)!=(uint32_t)(calibration_board_id>>32)
+        || record_u32(record+156)!=record_crc(record,156)) return false;
+    uint32_t flags=record_u32(record+20);
+    if(flags&~3u) return false;
+    imu_calibration_t fit={0};
+    fit.accel_valid=(flags&1u)!=0; fit.gyro_valid=(flags&2u)!=0;
+    fit.gyro_samples=record_u32(record+24);
+    float *vectors[]={fit.accel_bias_g,fit.accel_gain,fit.accel_bias_variance_g2,
+        fit.accel_gain_variance,fit.gyro_bias_dps,fit.gyro_variance_dps2,fit.gyro_bias_variance_dps2};
+    unsigned offset=28;
+    for(unsigned v=0;v<7;v++) for(unsigned a=0;a<3;a++,offset+=4) {
+        uint32_t bits=record_u32(record+offset); memcpy(&vectors[v][a],&bits,4);
+    }
+    if(!imu_fit_valid(&fit)) return false;
+    saved_imu=fit; gyro_verified=false; verification=(imu_stationary_cal_t){0};
+    return true;
+}
+bool fc_cal_take_pending(uint8_t record[FC_CAL_RECORD_BYTES]) {
+    if(!cal_dirty || record==NULL || !imu_fit_valid(&saved_imu)) return false;
+    memset(record,0xff,FC_CAL_RECORD_BYTES);
+    record_put32(record,0x45494351u); record_put32(record+4,1u);
+    record_put32(record+8,FC_CAL_PROFILE);
+    record_put32(record+12,(uint32_t)calibration_board_id);
+    record_put32(record+16,(uint32_t)(calibration_board_id>>32));
+    record_put32(record+20,(saved_imu.accel_valid?1u:0u)|(saved_imu.gyro_valid?2u:0u));
+    record_put32(record+24,saved_imu.gyro_samples);
+    const float *vectors[]={saved_imu.accel_bias_g,saved_imu.accel_gain,saved_imu.accel_bias_variance_g2,
+        saved_imu.accel_gain_variance,saved_imu.gyro_bias_dps,saved_imu.gyro_variance_dps2,
+        saved_imu.gyro_bias_variance_dps2};
+    unsigned offset=28;
+    for(unsigned v=0;v<7;v++) for(unsigned a=0;a<3;a++,offset+=4) {
+        uint32_t bits; memcpy(&bits,&vectors[v][a],4); record_put32(record+offset,bits);
+    }
+    record_put32(record+156,record_crc(record,156));
+    cal_dirty=false;
+    return true;
+}
+void fc_cal_command(char key) {
+    if(key=='R' || key=='r') {
+        saved_imu=(imu_calibration_t){0}; verification=(imu_stationary_cal_t){0};
+        memset(accel_faces,0,sizeof(accel_faces)); gyro_verified=false; capture_face=-1;
+        cal_dirty=true; reset_control_state();
+    } else if(key=='S' || key=='s') cal_dirty=true;
+    else if(key>='0' && key<='5') {
+        capture_face=(int8_t)(key-'0');
+        accel_faces[(unsigned)capture_face]=(cal_stats3_t){0};
+    }
+}
+static void update_calibration(const fc_sample_t *s) {
+    if(!s->imu_valid) return;
+    if(!gyro_verified) {
+        if(!imu_stationary_cal_add(&verification,s->accel_g,s->gyro_dps,true))
+            verification=(imu_stationary_cal_t){0};
+        else if(verification.gyro.n>=500u) {
+            imu_calibration_t fresh=saved_imu;
+            if(imu_gyro_cal_finish(&verification,&fresh,true)) {
+                bool refresh=!saved_imu.gyro_valid;
+                for(unsigned i=0;i<3;i++)
+                    if(fabsf(fresh.gyro_bias_dps[i]-saved_imu.gyro_bias_dps[i])
+                        >fmaxf(.05f,5*sqrtf(fresh.gyro_bias_variance_dps2[i]+saved_imu.gyro_bias_variance_dps2[i])))
+                        refresh=true;
+                if(refresh) { saved_imu=fresh; cal_dirty=true; }
+                gyro_verified=true;
+            } else verification=(imu_stationary_cal_t){0};
+        }
+    }
+    if(capture_face>=0) {
+        unsigned face=(unsigned)capture_face;
+        (void)imu_accel_face_add(accel_faces,face,s->accel_g,true);
+        if(accel_faces[face].n>=200u) {
+            capture_face=-1;
+            if(imu_accel_cal_finish(accel_faces,&saved_imu,true)) {
+                cal_dirty=true; reset_control_state();
+            }
+        }
+    }
+}
+void fc_set_estimated_soc(float percent) {
+    if(isfinite(percent) && percent>=0 && percent<=100) battery_apply_soc_policy(percent);
+}
+void fc_step(const fc_sample_t *raw,const fc_pilot_t *pilot,uint64_t now,float dt,fc_status_t *status) {
+    if(raw==NULL || pilot==NULL || status==NULL) return;
+    *status=(fc_status_t){0};
+    update_calibration(raw);
+    bool pressure_updated=raw->pressure_sequence!=last_pressure_sequence;
+    float height=altitude_estimator.height_m;
+    if(pressure_updated) {
+        last_pressure_sequence=raw->pressure_sequence;
+        if(raw->pressure_valid && isfinite(raw->pressure_pa)) {
+            if(!ground_reference.valid) {
+                (void)baro_reference_add(&pressure_capture,raw->pressure_pa,true);
+                if(pressure_capture.n>=100u
+                    && !baro_reference_finish(&pressure_capture,&ground_reference,3.0,true))
+                    pressure_capture=(baro_reference_cal_t){0};
+            }
+            if(ground_reference.valid) {
+                double h,sigma;
+                if(baro_relative_height(&ground_reference,raw->pressure_pa,&h,&sigma)) height=(float)h;
+            }
+        }
+    }
+    sensor_sample_t s={.accel_x_g=raw->accel_g[0],.accel_y_g=raw->accel_g[1],.accel_z_g=raw->accel_g[2],
+        .gyro_x_dps=raw->gyro_dps[0],.gyro_y_dps=raw->gyro_dps[1],.gyro_z_dps=raw->gyro_dps[2],
+        .imu_valid=raw->imu_valid,.barometer_height_m=height,
+        .barometer_valid=raw->pressure_valid && ground_reference.valid,
+        .barometer_updated=pressure_updated};
+    if(gyro_verified && saved_imu.accel_valid)
+        (void)sensor_sample_apply_imu_calibration(&s,&saved_imu);
+    if(s.imu_calibrated) {
+        float phi=roll_estimator.angle_deg*FC_DEG_TO_RAD,theta=pitch_estimator.angle_deg*FC_DEG_TO_RAD;
+        s.vertical_acceleration_mps2=9.80665f*(-sinf(theta)*s.accel_x_g
+            +sinf(phi)*cosf(theta)*s.accel_y_g+cosf(phi)*cosf(theta)*s.accel_z_g-1);
+    }
+    bool fresh=pilot->connected && now>=pilot->received_us
+        && now-pilot->received_us<=250000u
+        && isfinite(pilot->roll) && isfinite(pilot->pitch) && isfinite(pilot->yaw)
+        && isfinite(pilot->vertical) && isfinite(pilot->boost);
+    pilot_command_t cmd={.roll_deg=35*pilot->roll,.pitch_deg=35*pilot->pitch,
+        .yaw_rate_dps=180*pilot->yaw,.throttle=.5f+.5f*pilot->vertical,.boost=pilot->boost,.valid=fresh};
+    control_output_t result=flight_control_step(&s,&cmd,dt);
+    memcpy(status->motor_demand,result.motor,sizeof(status->motor_demand));
+    status->roll_deg=roll_estimator.angle_deg; status->pitch_deg=pitch_estimator.angle_deg;
+    status->height_m=altitude_estimator.height_m; status->vertical_mps=altitude_estimator.velocity_mps;
+    status->sensor_fault=result.sensor_fault; status->pilot_fresh=fresh;
+    status->gyro_verified=gyro_verified; status->accel_calibrated=saved_imu.accel_valid;
+    status->barometer_ready=ground_reference.valid; status->capturing_face=capture_face;
+    for(unsigned i=0;i<3;i++) status->gyro_sigma_dps[i]=sqrtf(fmaxf(0,saved_imu.gyro_variance_dps2[i]));
+    for(unsigned f=0;f<6;f++) if(accel_faces[f].n>=200u) status->faces_done|=1u<<f;
+    status->battery_warning=battery_warning_active; status->battery_disarm=battery_disarm_latched;
+}

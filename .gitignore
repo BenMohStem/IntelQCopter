@@ -1,4 +1,6 @@
 # Local SDK builds, Python environments, and generated binaries
+/.pio/
+/.vscode/
 /build/
 /.venv-*/
 /node_modules/

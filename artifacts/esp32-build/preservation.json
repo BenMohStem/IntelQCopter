@@ -1,0 +1,2977 @@
+{
+  "baseline": "3803437",
+  "main_ref_after": "38034376a9fcac1550fe46aed25f8f0be2fb9370",
+  "tracked_evidence_files": 591,
+  "all_evidence_bytes_preserved": true,
+  "original_drone_files": [
+    {
+      "path": "src/main.cpp",
+      "original_sha256": "d15124a9811eb94baeaa1a6aed6b896e8f70431321688807f4021a1f8bf2cf3e",
+      "snapshot_sha256": "d15124a9811eb94baeaa1a6aed6b896e8f70431321688807f4021a1f8bf2cf3e",
+      "matches_inspected_hash": true
+    },
+    {
+      "path": "platformio.ini",
+      "original_sha256": "8d9f114ed5a7866d82f55edc722302f8c37947e3d99cba61d0fcecd23b76a5ae",
+      "snapshot_sha256": "8d9f114ed5a7866d82f55edc722302f8c37947e3d99cba61d0fcecd23b76a5ae",
+      "matches_inspected_hash": true
+    }
+  ],
+  "archive_evidence": [
+    {
+      "path": "artifacts/model-design/current/calculations.json",
+      "git_blob": "c50c05477c38b31a49992244b253ab166089ad99",
+      "matches": true
+    },
+    {
+      "path": "artifacts/model-design/current/local-model-poles.png",
+      "git_blob": "aabb87108569088ab8c44736a8224956e159acc6",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/2026-10-20-calibration-flash/README.md",
+      "git_blob": "cc5dc311a4d7b434f892f7e61cb38ec3e72670f7",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/2026-10-20-calibration-flash/host-build.log",
+      "git_blob": "878121df8486ed86980fdcf6f4e8a1737045f15a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/2026-10-20-calibration-flash/latex-build.log",
+      "git_blob": "e9e8a1e84e7e711a3273cadda0ae2352addcdc53",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/2026-10-20-calibration-flash/latex-failed-alignment.log",
+      "git_blob": "efb23aed3e5cd015b8addabc9f8f3ca8bad26a36",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/2026-10-20-calibration-flash/latex-failed-fonts.log",
+      "git_blob": "279a0fc8b68f96b96a09273304083ff73d716507",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/2026-10-20-calibration-flash/linker-map-excerpt.txt",
+      "git_blob": "16145d3853eac42369f66f44099f8e79009693d8",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/2026-10-20-calibration-flash/manifest.json",
+      "git_blob": "de19da435a45d4ff6966bd32bb73bea66faf5b67",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/2026-10-20-calibration-flash/pdf-info.txt",
+      "git_blob": "a90f721bf35e4479888744fc8615ac29334a4b67",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/2026-10-20-calibration-flash/reserved-flash-region.ld",
+      "git_blob": "427b9e1c5b6fd0839bb0e3a981da2a6394d6accb",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/2026-10-20-calibration-flash/rp2350-build.log",
+      "git_blob": "3376e4a6d9a0218f944c98fe1739eb0b3f9ba460",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/2026-10-20-calibration-flash/rp2350-size.txt",
+      "git_blob": "336ffbe1fdaf4a7421becfa9e2c0c417efbc1157",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/2026-10-20-math-rendering/render.log",
+      "git_blob": "1aeb1a63e771fd2cfdcd956ba3679aa2c4a83ccf",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/companion-build-final.log",
+      "git_blob": "573611b970d54ce9c35a6c62dde766a424eca42e",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/companion-build-fourth.log",
+      "git_blob": "c5b1a231eb2a34713b42028b5cbac747a58da91f",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/companion-build-second.log",
+      "git_blob": "7f390f9d34d2e60f55f6ba015972fce5b6f04375",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/companion-build-third.log",
+      "git_blob": "aab3141be88ac58486f98145964fde5a45e83ee4",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/companion-build.log",
+      "git_blob": "83a6e817b9e5537589c9e68295ad448ee00cf7ff",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/cpp-integration-194037/mission_node-2.log",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/cpp-integration-194037/mission_node-3.log",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/cpp-integration-194037/panel_pose_node-1.log",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/cpp-integration-194037/result.json",
+      "git_blob": "325466d031e52e0a7034e0362f9e5b12ac153c74",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/cpp-integration-194037/yolo_node-0.log",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/cpp-integration-run-v2.log",
+      "git_blob": "506d5602a73922e954ac7f24f00c75ffde0f41c7",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/cpp-integration-run.log",
+      "git_blob": "4e6b3e0286a8b1672fe910b4d3eb5ccbcecd1abb",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/cpp-integration/mission_node-2.log",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/cpp-integration/panel_pose_node-1.log",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/cpp-integration/result.json",
+      "git_blob": "38268a1bd55455e828f9eb61431b36e8a4914d2b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/cpp-integration/yolo_node-0.log",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/dds-probe.log",
+      "git_blob": "7effd1427afcdb7b1339c932d44dc1f2aa49597f",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/f450-model.log",
+      "git_blob": "928bfc68b932a89cf74cdb60b0aa72300da88c49",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/f450-urdf-preview.png",
+      "git_blob": "99482922cd773538a6867b06011fdacefb851b0c",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/f450-urdf-validation.json",
+      "git_blob": "8f9035430175f6a35b9b9626a4b0dc84119c5142",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/f450-urdf-validation.log",
+      "git_blob": "69c482b6087d93f879596222a41b23abf1376744",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/gazebo-jazzy-run-v2.log",
+      "git_blob": "ce1339674ad1f665ed77aa87a54d20c13429fd2f",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/gazebo-jazzy-run-v3.log",
+      "git_blob": "de1286fe72ab88932c657a39a99574636958d022",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/gazebo-jazzy-run-v4.log",
+      "git_blob": "9a511e9f888fdb522eedf0d54b5aa20a7952ff6b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/gazebo-jazzy-run.log",
+      "git_blob": "8d753c88e9669d2270b5d1c9b7c0ee3e9359c2ce",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/index.html",
+      "git_blob": "63d7f981b2b96d723b300d3c20eaebdeba6f9c2e",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/isaac-uninstall.json",
+      "git_blob": "84fc963bad2291767a89813d0c0722fe27e4eff4",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/original-user-build.log",
+      "git_blob": "49c3f75edd49e0cfcc5eefb962b294d0d46893bb",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/packaging.log",
+      "git_blob": "72e2a6600eda145f6623f68a2b9a2c39b7dd684c",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/patch-normalization.json",
+      "git_blob": "a50ffb4c9efbd223c4672a27d4ce16dfe8c834b0",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/pixi.lock",
+      "git_blob": "0c52d60c8041471e84689bbb82b81588c8c11d16",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/pixi.toml",
+      "git_blob": "f0ef4415db15447696ac7263d838012cd96db3f3",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/rebuild-second.log",
+      "git_blob": "da704fcf4dfa9b7010fadc759bba01f387134540",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/rebuild-third.log",
+      "git_blob": "215745ba7a44f3d61ab6fdb2ea35b2eba3b80f25",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/rebuild.log",
+      "git_blob": "8243355d37d34e308fd77bd2ee1565bd278291c7",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/rosbag-benchmark-build.log",
+      "git_blob": "68631e7dfb75b1ca1da5d88dcfd8f8fa7f35e89b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/rviz-check.log",
+      "git_blob": "8f689238a88d99cce5b6c147e76a1783679426ef",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/rviz/result.json",
+      "git_blob": "1ee05b2b6bd6c51c8d0698f7cd683c2607463386",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/rviz/robot_state_publisher.log",
+      "git_blob": "398f7e69a9ba7a124efa44d78695008498601c79",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/rviz/rviz2.log",
+      "git_blob": "63513d9f77b227dc49f09b4f23fd13f9216c2d8c",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/sha256-manifest.json",
+      "git_blob": "fe7aa116d7cbecd210b0792e8fe402322ca45a7b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/setup/jazzy-repair/summary.json",
+      "git_blob": "eec62d13841c6a8b11b592310d5473b95eb72818",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/README.md",
+      "git_blob": "fd759ccb5ffbf34a12c0c94880ce2b8f17016cb0",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/comparison-validation.json",
+      "git_blob": "962aa407acd5d5edf3fab17181b196ce648d1e83",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/comparison.json",
+      "git_blob": "ae0b1a0bfb711498d2c08fcb830d9b23c6e9c07f",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/engine-comparison.pdf",
+      "git_blob": "825d99520d5310399a2d58834320a24df15781c2",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/engine-comparison.png",
+      "git_blob": "9875b19b20c64115bb4996d24eb8a72b40d721c9",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-contact-camera-12s.png",
+      "git_blob": "207922db4101fb47593bd8bc8ef0f1e5e1116745",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-contact-camera-20s.png",
+      "git_blob": "357a4f39607ef05919bad0e1ac1b1195c3f33112",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-contact-camera-6s.png",
+      "git_blob": "394e9f88d362fa03455bb513457daa3154a9037a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-contact-camera.jpg",
+      "git_blob": "273d2a9c3793acd91a7d0c1f7516f71da1e617c4",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-contact-events.json",
+      "git_blob": "3e434bac02c5b775a277adaf2003a2b6c6fa986b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-contact-observations.json",
+      "git_blob": "0f2e6bef92798e6d94a885aa8811159f1945ab14",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-contact-summary.json",
+      "git_blob": "60fada016db044d5f2dd0ce0194ae872f1e031b0",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-contact.csv",
+      "git_blob": "b0799a73f31094c209ac8f03568ab5c8113f5db7",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-contact.mp4",
+      "git_blob": "d903cadee3b15d5c3d1e1c253048673cab543e25",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-final-camera-12s.png",
+      "git_blob": "3ca02cfddf7420db7c238f60a9b4d4a63f7fbc14",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-final-camera-20s.png",
+      "git_blob": "16022e0f5cfe29e22843c64a1b0a15f1104c0a23",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-final-camera-6s.png",
+      "git_blob": "394e9f88d362fa03455bb513457daa3154a9037a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-final-camera.jpg",
+      "git_blob": "57bf1af5755655c2f54fae82610d7ef6495f76dd",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-final-events.json",
+      "git_blob": "11b43e4c392d39e0576ad91f5f856e373d135a6a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-final-observations.json",
+      "git_blob": "a8444276bf94f83c45c842c0290d3f8041732162",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-final-summary.json",
+      "git_blob": "bfba7ff4cee01ef86d591aaf1ba777eee29138f3",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-final.csv",
+      "git_blob": "e7319a50284d36ef75e6c9c409aeda22d5d3cdba",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-final.mp4",
+      "git_blob": "e0c8f2330b1842ac524f5822d78cf6257e1b29c2",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-initial-camera-12s.png",
+      "git_blob": "3ca02cfddf7420db7c238f60a9b4d4a63f7fbc14",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-initial-camera-20s.png",
+      "git_blob": "16022e0f5cfe29e22843c64a1b0a15f1104c0a23",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-initial-camera-6s.png",
+      "git_blob": "2a87c449c7637c1de5a893a40cd426da276b211e",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-initial-camera.jpg",
+      "git_blob": "57bf1af5755655c2f54fae82610d7ef6495f76dd",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-initial-events.json",
+      "git_blob": "11b43e4c392d39e0576ad91f5f856e373d135a6a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-initial-observations.json",
+      "git_blob": "2cab4441205ebe0ee0b625a9011f039e07780165",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-initial-summary.json",
+      "git_blob": "7add2d0f5011a66aa66ec36e109513855ce724ef",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-initial.csv",
+      "git_blob": "e7319a50284d36ef75e6c9c409aeda22d5d3cdba",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-initial.mp4",
+      "git_blob": "efbd88ef38bc5bbc8ac50c2d0965600696fee9a6",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-ros-camera-12s.png",
+      "git_blob": "3ca02cfddf7420db7c238f60a9b4d4a63f7fbc14",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-ros-camera-20s.png",
+      "git_blob": "d1ee6bc2421636bd15ce72cd6010dd1dde550ad8",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-ros-camera-6s.png",
+      "git_blob": "394e9f88d362fa03455bb513457daa3154a9037a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-ros-camera.jpg",
+      "git_blob": "42be62157add325777340ad52cd162b407cc758c",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-ros-events.json",
+      "git_blob": "1ed61121865b2bb1f5f3f45def6d0adbef70a569",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-ros-graphs.pdf",
+      "git_blob": "d99b6e8b51552f1ae9d018093c444407b8b4dfb6",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-ros-graphs.png",
+      "git_blob": "0eec20b9d16a5f95fa6530b595b5d7462572502d",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-ros-metrics.json",
+      "git_blob": "82a60de0b7c018de09bd1309406bf44d43eb2423",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-ros-observations.json",
+      "git_blob": "d720cd140a1ea27c6d2647e76114c51f5aeba58e",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-ros-preview.png",
+      "git_blob": "ef74517e31748cfe908188ab1898240081c8323d",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-ros-source-snapshot.zip",
+      "git_blob": "acdb741940cefe73ab03cadb43ec911477a623f3",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-ros-summary.json",
+      "git_blob": "376ccfbff8289d3603886c76fb0bf8a06556b4a1",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-ros-transport.json",
+      "git_blob": "5cecc7bd1fff513358ddde14fc12f2e0b664122d",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-ros-validation.json",
+      "git_blob": "772c835e6611cb877f2bc3b773240041dfadd836",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-ros.csv",
+      "git_blob": "698f93e1488360273aec2c85c5fc7c35bcc52d1c",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-garden-ros.mp4",
+      "git_blob": "524c5e510f94609d672aeb5fdba1a3175611b44f",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-preview.png",
+      "git_blob": "2157c38a0ff0073f55b6b674a5424e335acb2a98",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/gazebo-ros2-transport.json",
+      "git_blob": "e1d6fe556ae95251f7c01b4389fa3d5bf7e84ad3",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/index.html",
+      "git_blob": "db9597062d3d755700a5cbdcc9248b2be7bb0500",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-failed-stale-camera-ros2-transport.json",
+      "git_blob": "e5e3bac0d2ddabb49ecb57d5c76cc67fe96dab04",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-initial-camera-12s.png",
+      "git_blob": "d2e5b402c1623f145cb38292c1bcf9190da93032",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-initial-camera-20s.png",
+      "git_blob": "d2e5b402c1623f145cb38292c1bcf9190da93032",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-initial-camera-6s.png",
+      "git_blob": "d2e5b402c1623f145cb38292c1bcf9190da93032",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-initial-camera.jpg",
+      "git_blob": "4e505df0a232286e2c07758bed8cad8308132c13",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-initial-events.json",
+      "git_blob": "35ae7c14411d0ce9f3863221d784652cc5a39404",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-initial-observations.json",
+      "git_blob": "0637a088a01e8ddab3bf3fa98dbe804cbde1a0dc",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-initial-summary.json",
+      "git_blob": "3a68f74565b9fd31ac1acf874651a13ca8bb0d05",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-initial.csv",
+      "git_blob": "4f7f3b74c9b8fbe20ade3117cb9bf025f8488419",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-initial.mp4",
+      "git_blob": "16c9a4e4a33d3c660533b521e8609298117083ac",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-raytraced-camera-12s.png",
+      "git_blob": "3d69fefdd64273f10c0c0e946fb3ded4b3fec8b3",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-raytraced-camera-20s.png",
+      "git_blob": "29e7f0f50e7eb2f5f875119ce0c156320250a39d",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-raytraced-camera-6s.png",
+      "git_blob": "1a51684824da6b195471e00e793662238697d59a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-raytraced-camera.jpg",
+      "git_blob": "ee760eaaa9eec3281d7de54e75683d6ae3449e1e",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-raytraced-events.json",
+      "git_blob": "1e8de3b3525180f56df2ea66e0f1a7368d945e72",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-raytraced-graphs.pdf",
+      "git_blob": "f11fa89b0a111616f270663f32cfa2cab89ad975",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-raytraced-graphs.png",
+      "git_blob": "89d6196877d5daed700f304d608dc7f456833d15",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-raytraced-metrics.json",
+      "git_blob": "f9ee34c28c340a847623434f40f89d8194c4e763",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-raytraced-observations.json",
+      "git_blob": "2360e17ee6aab332e14a45249a03d3eff4296e0a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-raytraced-preview.png",
+      "git_blob": "cf0ac8f6f841db1541843456a79e772627e3d6f2",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-raytraced-source-snapshot.zip",
+      "git_blob": "c0db82bca4a86e0fe8bf9b49b48e5f962a95a720",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-raytraced-summary.json",
+      "git_blob": "5453a54194e9d664c7029c0840be7e4dd8610824",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-raytraced-transport.json",
+      "git_blob": "99545229c018ef6ddaed08b5e70516a435679fd6",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-raytraced-validation.json",
+      "git_blob": "51f2a0a72bd6a7543a379cb7722bb613fb6b65e6",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-raytraced.csv",
+      "git_blob": "900b266a8de7c0244fda5a6a46b4f3ef154fdccc",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-raytraced.mp4",
+      "git_blob": "591d67346c976cb1783bce9b48ac67d0192e80d7",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-ros-camera-12s.png",
+      "git_blob": "739973e307d5fb40506af8e6baff1b11397ad329",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-ros-camera-20s.png",
+      "git_blob": "739973e307d5fb40506af8e6baff1b11397ad329",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-ros-camera-6s.png",
+      "git_blob": "739973e307d5fb40506af8e6baff1b11397ad329",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-ros-camera.jpg",
+      "git_blob": "d8cf32d8b760b76e44f24ab4d10d0590a0668137",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-ros-events.json",
+      "git_blob": "35ae7c14411d0ce9f3863221d784652cc5a39404",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-ros-observations.json",
+      "git_blob": "0637a088a01e8ddab3bf3fa98dbe804cbde1a0dc",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-ros-summary.json",
+      "git_blob": "8eb6fa123599b34bfa17fcbfd72775fe45a6b153",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-ros.csv",
+      "git_blob": "4f7f3b74c9b8fbe20ade3117cb9bf025f8488419",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-ros.mp4",
+      "git_blob": "f1cfb17af9db3c8279bf36024b8547e94ab3239a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-writeback-camera-12s.png",
+      "git_blob": "e85c1a2e0b46f08706a9c30c55581d5d51763ca8",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-writeback-camera-20s.png",
+      "git_blob": "274d2bc1bf741ccdc5a83d041fd8c9236aee40ff",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-writeback-camera-6s.png",
+      "git_blob": "22c2202f16eb436595f93b4707a717d9df1bc868",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-writeback-camera.jpg",
+      "git_blob": "4e505df0a232286e2c07758bed8cad8308132c13",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-writeback-events.json",
+      "git_blob": "23f9013a1c96345ff53216a8504560d0edfae9c7",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-writeback-graphs.pdf",
+      "git_blob": "fa8a34397b864c40d4d5c92b513471a319659cc1",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-writeback-graphs.png",
+      "git_blob": "0d6da7b09c956e886654d93750b446e05cdc1e0c",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-writeback-metrics.json",
+      "git_blob": "7779cdfade6bf82d6388843f3744303b2a41660d",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-writeback-observations.json",
+      "git_blob": "744a81f8ed5b21c3976a199d0e0566d5a532f72f",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-writeback-preview.png",
+      "git_blob": "ad1aa4f985d9435a485c28fd047d740592dde9a0",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-writeback-source-snapshot.zip",
+      "git_blob": "45c49fb234664b16a2cef55c8d02d867b845efaa",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-writeback-summary.json",
+      "git_blob": "a859a96feba4a4b46e624ae22d08a33832197976",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-writeback-validation.json",
+      "git_blob": "074849f28dbc1d0d632b952a3613a1480c4d17f0",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-writeback.csv",
+      "git_blob": "6e24f8402f59469b8c8aafe594d099f951ac76a1",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-garden-writeback.mp4",
+      "git_blob": "2c89bbc9f3050cf13f1927ae6c087bfe77c61884",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-ros2-transport.json",
+      "git_blob": "99545229c018ef6ddaed08b5e70516a435679fd6",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-vs-gazebo.mp4",
+      "git_blob": "49efe22463f19751591c87d25fe62986bbbab0a4",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/isaac-writeback-ros2-transport.json",
+      "git_blob": "6ac4d2353baab0afcc42bd6e5c77b452e33db205",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/jazzy-migration-v3-gazebo-camera-12s.png",
+      "git_blob": "3ca02cfddf7420db7c238f60a9b4d4a63f7fbc14",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/jazzy-migration-v3-gazebo-camera-20s.png",
+      "git_blob": "d1ee6bc2421636bd15ce72cd6010dd1dde550ad8",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/jazzy-migration-v3-gazebo-camera-6s.png",
+      "git_blob": "394e9f88d362fa03455bb513457daa3154a9037a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/jazzy-migration-v3-gazebo-camera.jpg",
+      "git_blob": "42be62157add325777340ad52cd162b407cc758c",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/jazzy-migration-v3-gazebo-events.json",
+      "git_blob": "1ed61121865b2bb1f5f3f45def6d0adbef70a569",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/jazzy-migration-v3-gazebo-observations.json",
+      "git_blob": "d720cd140a1ea27c6d2647e76114c51f5aeba58e",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/jazzy-migration-v3-gazebo-summary.json",
+      "git_blob": "a48b99fbeda818ce1d98c480df39b0b1c53817de",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/jazzy-migration-v3-gazebo.csv",
+      "git_blob": "698f93e1488360273aec2c85c5fc7c35bcc52d1c",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/jazzy-migration-v3-gazebo.mp4",
+      "git_blob": "426d63da2a2c5e1fe0d1bbdd64e0176faaaf51a8",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/jazzy-migration-v4-gazebo-camera-12s.png",
+      "git_blob": "3ca02cfddf7420db7c238f60a9b4d4a63f7fbc14",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/jazzy-migration-v4-gazebo-camera-20s.png",
+      "git_blob": "d1ee6bc2421636bd15ce72cd6010dd1dde550ad8",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/jazzy-migration-v4-gazebo-camera-6s.png",
+      "git_blob": "394e9f88d362fa03455bb513457daa3154a9037a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/jazzy-migration-v4-gazebo-camera.jpg",
+      "git_blob": "42be62157add325777340ad52cd162b407cc758c",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/jazzy-migration-v4-gazebo-events.json",
+      "git_blob": "1ed61121865b2bb1f5f3f45def6d0adbef70a569",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/jazzy-migration-v4-gazebo-graphs.pdf",
+      "git_blob": "acb6b5a2b910819258938a45e8eb0d6931fd8394",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/jazzy-migration-v4-gazebo-graphs.png",
+      "git_blob": "4aef75d8f94f7b28b5289b41a232bbed73728ebc",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/jazzy-migration-v4-gazebo-metrics.json",
+      "git_blob": "82a60de0b7c018de09bd1309406bf44d43eb2423",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/jazzy-migration-v4-gazebo-observations.json",
+      "git_blob": "6995d06eaa727cf5360009a2ae958f85da4d3988",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/jazzy-migration-v4-gazebo-preview.png",
+      "git_blob": "16c40f8b2a7a3a1569999af2a868850e153710ce",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/jazzy-migration-v4-gazebo-source-snapshot.zip",
+      "git_blob": "d408bcd08dd33d426be57b27e1be855b4d5564a9",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/jazzy-migration-v4-gazebo-summary.json",
+      "git_blob": "a4c532f1e830996150f2253191b009f578385634",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/jazzy-migration-v4-gazebo-transport.json",
+      "git_blob": "e1d6fe556ae95251f7c01b4389fa3d5bf7e84ad3",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/jazzy-migration-v4-gazebo-validation.json",
+      "git_blob": "772c835e6611cb877f2bc3b773240041dfadd836",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/jazzy-migration-v4-gazebo.csv",
+      "git_blob": "698f93e1488360273aec2c85c5fc7c35bcc52d1c",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/jazzy-migration-v4-gazebo.mp4",
+      "git_blob": "962b14b11e9d21bb01f9e0e08771ce8a2014a091",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-engines/sha256-manifest.json",
+      "git_blob": "422c8346b0db3fa4f7e8204cf368e708aaeebf35",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/README.md",
+      "git_blob": "b7f408a0b502627e12a591a59cc4870a84eb8a72",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-best-ros2-camera.jpg",
+      "git_blob": "7c5ad214bbbd0ffe56c3a322e9d05cfde889db17",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-best-ros2-events.json",
+      "git_blob": "fcf27d0f300497d0b276e64975cd3945277e1b55",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-best-ros2-observations.json",
+      "git_blob": "f3553b7024f616d3e111d0bcf1b663911a1a24ec",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-best-ros2-summary.json",
+      "git_blob": "c4b1617f89b09b871375c44057af85b55e5fb7ab",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-best-ros2.csv",
+      "git_blob": "0fc962285c4d4bf8919c91695bfad5db5b86cd1b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-best-ros2.mp4",
+      "git_blob": "e0c9450a6fddf80198176d821567893146e064b6",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-boost-camera.jpg",
+      "git_blob": "a6a7fdb0f5c23d7f8c94457a57e9544ccc6ddbb1",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-boost-controlled-camera.jpg",
+      "git_blob": "2649051a3093c61856e33cca8a161cbf403cbdf7",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-boost-controlled-events.json",
+      "git_blob": "cf7f1bd38dc084d1682c466462fc10f5b8889e47",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-boost-controlled-observations.json",
+      "git_blob": "bdb11eb79bc29f6f8606867eb590dd03baedabca",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-boost-controlled-summary.json",
+      "git_blob": "cc3b2a7076b57d2b4982bc9aad5cb10530a12e50",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-boost-controlled.csv",
+      "git_blob": "7e0127688a841406e20e9dd32fc8c1e7b9925014",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-boost-events.json",
+      "git_blob": "3aa54098deec007fb0d48de7361c427159cf2afc",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-boost-observations.json",
+      "git_blob": "587477c8121ba4d17147ffb3806d528677a3cbf6",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-boost-slew-camera.jpg",
+      "git_blob": "1ead3902adbc2f186a1528fb2b4589cd6ad1ad75",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-boost-slew-events.json",
+      "git_blob": "1252ad6501d32a333b337d0c2f37c82de10c9b61",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-boost-slew-observations.json",
+      "git_blob": "50aa89e3628065c80f06f7ade268356740a45498",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-boost-slew-summary.json",
+      "git_blob": "5870aec44e305d298f2e566328efbfec3c198815",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-boost-slew.csv",
+      "git_blob": "5793a59059e7cc2d5abfc766efbaa41fc5da2bef",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-boost-summary.json",
+      "git_blob": "5d5a7d5b6187c566b28823dcf6ddefc19121e79e",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-boost.csv",
+      "git_blob": "2c6e52c7d884e14e708971256a43ac329a135beb",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-camera-dropout-camera.jpg",
+      "git_blob": "147f0b7817c1fa4c1344ceee9752167c4db8b3a0",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-camera-dropout-events.json",
+      "git_blob": "567de1934c07e92e14dacedb17cf6d9eba778bf9",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-camera-dropout-observations.json",
+      "git_blob": "1bbda1384453d2e022d0624a8c58f2618a58cf1c",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-camera-dropout-summary.json",
+      "git_blob": "3c29db2a92f7bc314886628e000c8c553df77107",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-camera-dropout.csv",
+      "git_blob": "b6a7a8c779661dc6cec8ce43472f7479065af0de",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-conservative-camera.jpg",
+      "git_blob": "d7143bfc1a5e6dabaad2fc02f27fd85b446e89b1",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-conservative-events.json",
+      "git_blob": "0dc606a09dd8318907689f2f0ba81996283eb7b6",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-conservative-observations.json",
+      "git_blob": "603045b7a8e7a92b8ade484accbcee8f30947297",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-conservative-summary.json",
+      "git_blob": "308f917709d6182aea41843b370fd1f7be6cb991",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-conservative.csv",
+      "git_blob": "d722eda7e18a804c4a11f82a8189d6db0ea5051d",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-final-camera-12s.png",
+      "git_blob": "3d8e43ecbbbe4d5a16e10b34cacdd3a1318ad774",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-final-camera-20s.png",
+      "git_blob": "be6ca85a25d0efb6bcb8d90152ddad35b0006d1b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-final-camera-6s.png",
+      "git_blob": "a5516bf27323cd024280857acb422841aaa5471a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-final-camera.jpg",
+      "git_blob": "e707e04baf333d08be0969526df5bb777100772e",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-final-cpp-policy-camera.jpg",
+      "git_blob": "e707e04baf333d08be0969526df5bb777100772e",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-final-cpp-policy-events.json",
+      "git_blob": "ffb50a08b7de1cfbc5fbab225f2806b4994aec50",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-final-cpp-policy-observations.json",
+      "git_blob": "a04e63ee512806fe383d6f4651b141bd22c93cd1",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-final-cpp-policy-summary.json",
+      "git_blob": "f2b4ef2ce77e29057903b5341d37ef8610c32b7f",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-final-cpp-policy.csv",
+      "git_blob": "6c46c3fced5ecae03bbcfd10aa8dc7c45059d9e8",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-final-events.json",
+      "git_blob": "0668adbb84a04103b7d50e821b6c58e88fd1d468",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-final-graphs.pdf",
+      "git_blob": "42c252380bf410a70f2a5a3d96e1347e59a7dd1c",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-final-graphs.png",
+      "git_blob": "538cf8ee9787d0be258d48179b363d801fc7b535",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-final-metrics.json",
+      "git_blob": "14556737f0dc92b65bb82ee7d42fcea0d07577c7",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-final-observations.json",
+      "git_blob": "8fd05f8b9f2843480691f885a16008aca94ec71b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-final-preview.png",
+      "git_blob": "0370ec6b8de48ca4af0a3e90d8e236679e58011e",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-final-ros2-camera.jpg",
+      "git_blob": "d7143bfc1a5e6dabaad2fc02f27fd85b446e89b1",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-final-ros2-events.json",
+      "git_blob": "0e528fd31d26f0d242f66cfd1755e6509ac65599",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-final-ros2-observations.json",
+      "git_blob": "2f0efed53f5578218511c25548ed170f58becc39",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-final-ros2-summary.json",
+      "git_blob": "e160db9bd15f1aad2ef203765db051b4e1edbfc4",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-final-ros2.csv",
+      "git_blob": "2f3b963328e328231648719c284fad1211c77dea",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-final-ros2.mp4",
+      "git_blob": "9ab0db48202df7223c0b13dadc328ccd64da0cd5",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-final-summary.json",
+      "git_blob": "1f4396fc1651852d799968f47f3f55f1018ae1b6",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-final.csv",
+      "git_blob": "b225bc85e40733fc04b129d65a78311bf4e3b10f",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-final.mp4",
+      "git_blob": "942e36b01389aac700daa461f46674a0959a0331",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-heldout-camera.jpg",
+      "git_blob": "7c5ad214bbbd0ffe56c3a322e9d05cfde889db17",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-heldout-events.json",
+      "git_blob": "fcf27d0f300497d0b276e64975cd3945277e1b55",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-heldout-observations.json",
+      "git_blob": "f3553b7024f616d3e111d0bcf1b663911a1a24ec",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-heldout-summary.json",
+      "git_blob": "813cfc2a463bea5a19ea0bcd4d735e600deeb7b4",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-heldout.csv",
+      "git_blob": "0fc962285c4d4bf8919c91695bfad5db5b86cd1b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-nominal-camera.jpg",
+      "git_blob": "1bcccf1057382c16dc954074d9fa2cc029f50bd8",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-nominal-events.json",
+      "git_blob": "bde89e06c377e3a33528c1c085ec55a8f93f0853",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-nominal-observations.json",
+      "git_blob": "2bd6d2d6c2a75c08052b57c0119672320fc1a280",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-nominal-summary.json",
+      "git_blob": "ec9f7a003a3120221629c9c2d68e8944372aae75",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-nominal.csv",
+      "git_blob": "693866c1c58aa4a55cbab10c16a94308ed55c2f3",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-preview.png",
+      "git_blob": "2bf000d225cdac2c31b0d7aab8f750dfd4d67911",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-recommended-camera.jpg",
+      "git_blob": "18140543d8f6af3eb411e258708f31a767ca856e",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-recommended-events.json",
+      "git_blob": "9cecb1d7ee7190d75c2a93ec3b731a4cbff3fc87",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-recommended-observations.json",
+      "git_blob": "7d142425e28531e7766512fda5a0ec213f0da776",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-recommended-summary.json",
+      "git_blob": "e03813f37762435678f15b455914b8982bd1e7ed",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-recommended.csv",
+      "git_blob": "eb65b3721854172baf8e9730b324b0c7fe5c83df",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-recommended.mp4",
+      "git_blob": "7ae7bba989dc4ff247df31eb3f7572b4eddbd797",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-ros2-transport.json",
+      "git_blob": "b03b02841dbd446caa15f9d350bf17382fb42804",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-scene.png",
+      "git_blob": "7dad21f8b3d088576ec6f97074bcc568a4c3a6e1",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-selected-ros2-camera.jpg",
+      "git_blob": "bff1d2bce5e7f6b0dcc507bbc6fc91e9b36f332b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-selected-ros2-events.json",
+      "git_blob": "393f3e69a95c5837e11f1ef9449d4fbd552131ee",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-selected-ros2-observations.json",
+      "git_blob": "0a01a9b027fe438f7011470bd8188c9a6e0ba490",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-selected-ros2-summary.json",
+      "git_blob": "a217907f8fcffbc1d89c5284632beeec0def5f73",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-selected-ros2.csv",
+      "git_blob": "4b743da6148cbb19f95d2745567627a96b245f75",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/garden-selected-ros2.mp4",
+      "git_blob": "7bc2618c77e9a7e6f4d47d42557984b7269200df",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/index.html",
+      "git_blob": "c27ae9caecef049dd8f59f33a0cdeef80b6adb24",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/initial-landing-drift-camera.jpg",
+      "git_blob": "07d3b5b7ee73c4176709b0b3f2da533716fd8414",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/initial-landing-drift-events.json",
+      "git_blob": "bde89e06c377e3a33528c1c085ec55a8f93f0853",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/initial-landing-drift-observations.json",
+      "git_blob": "2bd6d2d6c2a75c08052b57c0119672320fc1a280",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/initial-landing-drift-summary.json",
+      "git_blob": "91bf76e08895e8b30bfca0f368f783ead2ff9b18",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/initial-landing-drift.csv",
+      "git_blob": "beb50120709cadf9ede345568b806a01f57b2621",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/linear-analysis.json",
+      "git_blob": "21ef66ff799d14a8f2b13c76a17c6aede3841894",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/linear-step-responses.png",
+      "git_blob": "8d1fea75076e611c893bf1f0c7fb4f4cbb34361e",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/mathematical-report-source.zip",
+      "git_blob": "3c1ea7767ae7a333356e6937b9f1d8de8103934b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/panel-geometry-tests.json",
+      "git_blob": "af580ffd81f991f3d582d8203093f117fdee573a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/panel-model-card.md",
+      "git_blob": "42ddeffc5f50f5e76a1caf2cb0bc3f87c8206082",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/panel-onnx-test.json",
+      "git_blob": "b6ba375269c553cbf3f760359976e4d9559229f9",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/panel-training-results.csv",
+      "git_blob": "c9d369be179080eeb6522e07a3c98bfd07a19d93",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/ros-selected-points.json",
+      "git_blob": "5f05b33b9c83ab1fb089d636fe642a863f55e99a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/sha256-manifest.json",
+      "git_blob": "97f350a2e8828aa3925c31a75f73b650293750b1",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20-missions/validation.json",
+      "git_blob": "21e6c16b824d6c864e2a6c4b12dc28d87f2a4707",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/README.md",
+      "git_blob": "db6da3ab7763cf2b7795191290e853a2b0b76088",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/altitude-mc.csv",
+      "git_blob": "f5e65a067afd233fa493915e1d476f0212e4512f",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/analysis-tests.json",
+      "git_blob": "21ff276f427dcb23489421bb40fee0d4da8714f7",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/angle-mc.csv",
+      "git_blob": "3d7b9de941e7f9aa1bade58ed00e2f96430a512d",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/best-flight-cpu.mp4",
+      "git_blob": "cd88ab1de016264217977be8b32f61ff9852c8a9",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/delivery-validation.json",
+      "git_blob": "ff5f6d5f933d69629e59ebffe8d438f8da98f3c8",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/estimation-metrics.json",
+      "git_blob": "d013a38385b1a4237b57d336a6e0d18972af3c09",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/flight-results.pdf",
+      "git_blob": "45d5b3732ff664076e21a4dcc309e3a4d6cc6023",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/flight-results.png",
+      "git_blob": "de7daa292098a729e0e24b6d0285340285a44cf3",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/heldout-heavy-path.csv",
+      "git_blob": "f139f9cec679840c28dfc5a852d0768f60ae6f5d",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/heldout-heavy.csv",
+      "git_blob": "899ed5ef3a67c904f905427348a4bf095db05def",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/heldout-light-path.csv",
+      "git_blob": "f139f9cec679840c28dfc5a852d0768f60ae6f5d",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/heldout-light.csv",
+      "git_blob": "64926dd8196384e02d0b0b4d5238d1f413d0542e",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/heldout-weak-thrust-path.csv",
+      "git_blob": "f139f9cec679840c28dfc5a852d0768f60ae6f5d",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/heldout-weak-thrust.csv",
+      "git_blob": "7156e0274347b60797bb459b1809078291bedaef",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/index.html",
+      "git_blob": "fbeddefb2a2b92bb9f615dda68fd609ff0e650f5",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/kalman-gains.png",
+      "git_blob": "7bec5fd1f81947ec87f1c6b8fb5f2df43363c072",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/kalman-monte-carlo.png",
+      "git_blob": "10f082c6b6341e86a83e2fcb15e0f838dc3e2849",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/mathematical-report-source.zip",
+      "git_blob": "73c10d5cdc4dba221776adba0966fd235701850b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/nominal-0.7-path.csv",
+      "git_blob": "f139f9cec679840c28dfc5a852d0768f60ae6f5d",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/nominal-0.7.csv",
+      "git_blob": "e6e723f4363ed7aa3fff5bebf83d993f5d06f7de",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/nominal-1.0-path.csv",
+      "git_blob": "f139f9cec679840c28dfc5a852d0768f60ae6f5d",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/nominal-1.0.csv",
+      "git_blob": "0ca974789ab82f768c6b6560e96e86dd5dab33d3",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/nominal-1.3-path.csv",
+      "git_blob": "f139f9cec679840c28dfc5a852d0768f60ae6f5d",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/nominal-1.3.csv",
+      "git_blob": "3a01d27ca0bf6f3310a93d0fc3b3688d2851ebca",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/perception/onnx-result.json",
+      "git_blob": "d82e316e9a69852a2c243b57c28d750dd73a0580",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/perception/opencv-onnx-reference.jpg",
+      "git_blob": "b1b35e6842a4a1de759d29d45a4acd39294ca627",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/perception/yolo-reference.jpg",
+      "git_blob": "d886e22705044d62e2cf6bc3509373601214d40a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/perception/yolo-result.json",
+      "git_blob": "e9160b95e968b5828f6dce07fd326101e39d1425",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/refine-2-path.csv",
+      "git_blob": "f139f9cec679840c28dfc5a852d0768f60ae6f5d",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/refine-2.csv",
+      "git_blob": "f145099027c2860efb7f37fbdb5d659fc35e01f8",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/refine-4-path.csv",
+      "git_blob": "f139f9cec679840c28dfc5a852d0768f60ae6f5d",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/refine-4.csv",
+      "git_blob": "2237acd11672b3e9f940fc53d88a2804b2bc5c9b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/ros2/dds-latencies-ms.csv",
+      "git_blob": "c005ef0e34c3acbdc37982525362f8e2c4f54e67",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/ros2/dds-route-path.csv",
+      "git_blob": "f139f9cec679840c28dfc5a852d0768f60ae6f5d",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/ros2/dds-route.csv",
+      "git_blob": "3a01d27ca0bf6f3310a93d0fc3b3688d2851ebca",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/ros2/summary.json",
+      "git_blob": "167f95d71ec1ec00b5a533a46be4885faf905c45",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/sha256-manifest.json",
+      "git_blob": "0ae5413421f091a222fe109dd4c31746cc31a34e",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/summary.json",
+      "git_blob": "db69009d5b48c21f80559c274ac4e3c1f4fcf690",
+      "matches": true
+    },
+    {
+      "path": "artifacts/simulation/2026-10-20/video-preview.png",
+      "git_blob": "c653d0247c753c31137674e848ab8021a61d582f",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/README.md",
+      "git_blob": "a8aa0f573056d97eebf386d969d15017727544b9",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/flight-control-trace.csv",
+      "git_blob": "b4c90ecaec36aaea37d84db2a05dcb8639acd13c",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/flight-controller-host-tests.log",
+      "git_blob": "552be04504a7589e6eae0913f834f2fb9bcbf037",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/kalman-monte-carlo.log",
+      "git_blob": "4e78da0ef2fef0c2cb53925f636e90a8f7ff7ddf",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/kalman-roll-monte-carlo.csv",
+      "git_blob": "8d1311e21c8c8d0f54313e7d5fc013f23d99548c",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/mass-inertia-monte-carlo.csv",
+      "git_blob": "991eec8d8c0a506e6ff9ed81fe84e09f3ea7f21a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/mass-inertia-run.log",
+      "git_blob": "06c61c8e73055fe8a7f65ca4a7e09eceb1ff71fd",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/mass-inertia-summary.json",
+      "git_blob": "06c61c8e73055fe8a7f65ca4a7e09eceb1ff71fd",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/model-validation.log",
+      "git_blob": "81a13b3d8509fcbecb983a773ab893244175da9c",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/review/README.md",
+      "git_blob": "d6dcdda9c16a621b078b7c3b7af24c25ef071d04",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/review/SHA256SUMS.txt",
+      "git_blob": "7c64f2393b1beb1d84fe802f0874d29b539e6cd0",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/review/battery-monitor-host-tests.log",
+      "git_blob": "37fb789a44493283f3bd3aa5733d43d7f8afc190",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/review/control-mode-host-tests.log",
+      "git_blob": "37fb789a44493283f3bd3aa5733d43d7f8afc190",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/review/control-mode-rp2350-build.log",
+      "git_blob": "a35ae648639d4cf491552c3073508a5bfcbc754d",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/review/controller-rp2040-build.log",
+      "git_blob": "5e6e00aa940e18cfbe3d02f84af3dac42c4e167e",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/review/flight-control-trace.csv",
+      "git_blob": "da155b7937d4255523f85fa2fddf57cdb45d2171",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/review/flight-rp2350-build.log",
+      "git_blob": "41f79246a8241905772e1689067528661ac34a6d",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/review/host-and-kalman-tests.log",
+      "git_blob": "37fb789a44493283f3bd3aa5733d43d7f8afc190",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/review/input-protocol-host-tests.log",
+      "git_blob": "d0300ba4d67464de91469e37ce18329e8100ae04",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/review/input-protocol-rp2350js.log",
+      "git_blob": "c501866ccfc90892c2c21f024edf44fa33f1a414",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/review/isaacsim-install-record.md",
+      "git_blob": "df05573bb87613570fa97b89b2d5bcc3fd3d0a40",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/review/kalman-roll-monte-carlo.csv",
+      "git_blob": "8d1311e21c8c8d0f54313e7d5fc013f23d99548c",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/review/mass-model/mass-inertia-monte-carlo.csv",
+      "git_blob": "991eec8d8c0a506e6ff9ed81fe84e09f3ea7f21a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/review/mass-model/mass-inertia-summary.json",
+      "git_blob": "9b834909266f4799f7073161f5f9e731cbf6d705",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/review/mass-monte-carlo.log",
+      "git_blob": "9b834909266f4799f7073161f5f9e731cbf6d705",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/review/pcb-drc.log",
+      "git_blob": "d681dcd87cdb0cb80b7739156e9a5ec3a3c6ae49",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/review/rp2040-build.log",
+      "git_blob": "61fa0236f9d064ad679931baac91c80a1967d3fc",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/review/rp2350-build.log",
+      "git_blob": "71c35dedc33c3bc71eb37ed40731f78ba7d6fa19",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/review/rp2350js-boot.log",
+      "git_blob": "830bfd0290b0f71981b0e5ef01163f605def1d87",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/review/sensor-calibration-host-tests.log",
+      "git_blob": "2b83bcf330973a997eb9eb67ee531e91facbbf53",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/review/single-file-handler-rp2040-build.log",
+      "git_blob": "e11cbe7b5d0ab76d934f6d165c12156848a81e95",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/review/single-file-rp2350-build.log",
+      "git_blob": "a4fa0ee221930af786e838dff046ef4b7d5249d3",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-19/rp2350js-boot.log",
+      "git_blob": "c369113f619973897507d058fdd00348f93f102f",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-api.log",
+      "git_blob": "46d0cd34c1f8233a2759b3d42b8c757d07cefedd",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-bindings-install.log",
+      "git_blob": "f9272b04f71debc54d600e8786f07fce38cb62a7",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-bindings.log",
+      "git_blob": "278e77d18255c46481755050f71a631593d3e2bd",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-camera.json",
+      "git_blob": "b0f493c6ca0d3b39e726ae21b6f497f7c353a558",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-camera.log",
+      "git_blob": "ef7079dea18a345a2a5d121cc8d6b3a980c12d26",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-contact-engine.log",
+      "git_blob": "bc8e688a9fb7d7e6243d03e3790f9b9c20f06ffb",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-contact-engine.stderr.log",
+      "git_blob": "d76253ba9df6434128d481394168972c18347b2b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-drone.png",
+      "git_blob": "17d167608b37603b11ecaeaf44b702030ef4f4cc",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-drone.ppm",
+      "git_blob": "7c87a2a1d519684b389d34db285376b15f5b9770",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-engine.log",
+      "git_blob": "76c49796d8d8918b5b93f22431cc510e96370769",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-engine.stderr.log",
+      "git_blob": "d76253ba9df6434128d481394168972c18347b2b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-final-engine.log",
+      "git_blob": "76c49796d8d8918b5b93f22431cc510e96370769",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-final-engine.stderr.log",
+      "git_blob": "d76253ba9df6434128d481394168972c18347b2b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-gravity-trace.json",
+      "git_blob": "6ed79fa452eae3fafc0bdb96adb3efc6878b91be",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-gravity.json",
+      "git_blob": "203bb4d276666154e212d1d57a46631932e7acf8",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-gravity.log",
+      "git_blob": "a58a87bae1c5932c1ecdbb2a821cc7d123ecdadf",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-install.log",
+      "git_blob": "f9272b04f71debc54d600e8786f07fce38cb62a7",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-mission-contact.log",
+      "git_blob": "b172422ab264950684a5740903f9c6d373e6da02",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-mission-final.log",
+      "git_blob": "e9303dea1235d0efa265849ec01b7180f1bdc49e",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-mission-initial.log",
+      "git_blob": "4470d32e42a826fbf8d36411790278904833e284",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-mission-ros.log",
+      "git_blob": "d17b2c25ea174cd9662089fdf1a924af38a81e4e",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-overview.png",
+      "git_blob": "846b4fb34d5d45ae9183fe1ce48c0011d46502e3",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-overview.ppm",
+      "git_blob": "ae273d0ec067eb929edf9ff83d8c0b84bdde332e",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-ros-bridge.log",
+      "git_blob": "549fa43bb0534069135333eb475a59fe59c4b299",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-ros-bridge.stderr.log",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-ros-engine.log",
+      "git_blob": "b702d11cfc00a9789e0a2b8e3fbcdaf3c3b5522e",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-ros-engine.stderr.log",
+      "git_blob": "d76253ba9df6434128d481394168972c18347b2b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/gazebo-ros-validation.log",
+      "git_blob": "815326ee3ebc723c54cd8dcc0b522d145edfe28b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/isaac-initial-aborted.txt",
+      "git_blob": "808928f27131173d1ff305d443889e82929417c3",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/isaac-mission-initial.log",
+      "git_blob": "0b15e1282daef2853fe962aa03fcecca6fab8633",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/isaac-mission-raytraced.log",
+      "git_blob": "db5ce2db19e8ccd871e90f5c69d61a331c499ddd",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/isaac-mission-ros.log",
+      "git_blob": "f05bd3ae287a646f23e3f5c6ef7e0041dc7f210f",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/isaac-mission-writeback.log",
+      "git_blob": "b429efea6a4ef157654e0bec577ce5bf44284c3a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/isaac-raytraced-ros.log",
+      "git_blob": "956566267717603d114fc48a91317f17b82457ad",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/isaac-raytraced-ros.stderr.log",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/isaac-raytraced-validation.log",
+      "git_blob": "8e3d88538e6bc6113f1dc2e0cadaec2619f4b281",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/isaac-ros-bridge.log",
+      "git_blob": "7e036174e306b2f631478317aade925404385904",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/isaac-ros-bridge.stderr.log",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/isaac-writeback-ros.log",
+      "git_blob": "b1996fadaf3253beda66b4b3cf18dde22a8aa3e2",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/isaac-writeback-ros.stderr.log",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/isaac-writeback-validation.log",
+      "git_blob": "d8a0559e7c309cb8f19d49e80244db0e62dbc1a0",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/native-package.log",
+      "git_blob": "cc0184e401b72d46f12f6314da3758c1b5e4bd36",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-engines/pixi-install.json",
+      "git_blob": "23ff6e4e02e54f9dd00f50ac0780f212df05fe0e",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/dx12-arguments.txt",
+      "git_blob": "c4a5b1239a8b9ce0896d53fe1abaeeb2eeb8973e",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/dx12-fabric/dx12-arguments.txt",
+      "git_blob": "d337f44e67927436e1b5e63dd8d54493552baf9c",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/dx12-fabric/dx12-kit.log",
+      "git_blob": "df8a9de4b0c177fb284352714be7999a821e1393",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/dx12-fabric/dx12-outcome.txt",
+      "git_blob": "43625a78c120eca179f79765c2556a495f1f4243",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/dx12-fabric/dx12-pid.txt",
+      "git_blob": "b5efe4b79b704c4e8af186e111207c773c41637b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/dx12-fabric/dx12-stderr.log",
+      "git_blob": "ae538c286d7995389ce48adbe4aef2b087253aa1",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/dx12-fabric/dx12-stdout.log",
+      "git_blob": "0fd5ecfeecb56cc3c1f446c789e59f4517c7f78d",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/dx12-kit.log",
+      "git_blob": "287b2c9ca9358547c26c81278c31756f95e22356",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/dx12-outcome.txt",
+      "git_blob": "fc67e69d97cf3630f76beb7bbe4c61b8aadfce86",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/dx12-pid.txt",
+      "git_blob": "c7b503ac1166a402dd1c4bfd74e9d11dd4277380",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/dx12-render/dx12-arguments.txt",
+      "git_blob": "c98770b75237a13ca899b98e8f46c9307c40e2d0",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/dx12-render/dx12-kit.log",
+      "git_blob": "a0994ceed296a81ee9e33e155310165525b20cad",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/dx12-render/dx12-outcome.txt",
+      "git_blob": "fc67e69d97cf3630f76beb7bbe4c61b8aadfce86",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/dx12-render/dx12-pid.txt",
+      "git_blob": "78981d0d85a77664fee3408848b39e1dd152035f",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/dx12-render/dx12-stderr.log",
+      "git_blob": "ae538c286d7995389ce48adbe4aef2b087253aa1",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/dx12-render/dx12-stdout.log",
+      "git_blob": "070d1934301d28639ea07fc00958e30735e971df",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/dx12-render/probe-result.json",
+      "git_blob": "3d929cf34e7a88e1f6387dd6e6f65f7aea2efbb4",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/dx12-stderr.log",
+      "git_blob": "ae538c286d7995389ce48adbe4aef2b087253aa1",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/dx12-stdout.log",
+      "git_blob": "c6f72c2f2f96b8229995d0e28cb65061ad15f772",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-corrected/dx12-arguments.txt",
+      "git_blob": "f88a82bd4c523a079c6db007e99c86d3555a5a87",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-corrected/dx12-kit.log",
+      "git_blob": "c297b540a4e4e14d2b83017e73db945dc9800286",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-corrected/dx12-outcome.txt",
+      "git_blob": "fc67e69d97cf3630f76beb7bbe4c61b8aadfce86",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-corrected/dx12-pid.txt",
+      "git_blob": "4dab755b43cf8e739d45f5bc179839c9554c9aae",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-corrected/dx12-stderr.log",
+      "git_blob": "de84aec1344cfe99df319b05e01a6c6b170ab581",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-corrected/dx12-stdout.log",
+      "git_blob": "f32061078bd0585311d954dac1f4f7a48731695d",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-corrected/engine-complete.json",
+      "git_blob": "7fec87a738bf83e20b1611e63be7be1be42ee3c8",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-corrected/engine-progress.json",
+      "git_blob": "26eccde4b681fa633d00addd35af035199fb2847",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-corrected/engine-ready.json",
+      "git_blob": "d5d7e6de02d58dd87c714132f137cb43bc63342f",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-engine-v2/dx12-arguments.txt",
+      "git_blob": "db9a00df301595baa902708303d3fb67a4e6cb5d",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-engine-v2/dx12-kit.log",
+      "git_blob": "ef245a30a1ee98e5f06c8a4658e5805850abc268",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-engine-v2/dx12-outcome.txt",
+      "git_blob": "fc67e69d97cf3630f76beb7bbe4c61b8aadfce86",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-engine-v2/dx12-pid.txt",
+      "git_blob": "8c4df92b67af834ed24d39fecde3419b4ceb0429",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-engine-v2/dx12-stderr.log",
+      "git_blob": "8af00d65a40673692051764a7b9abbafe972557a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-engine-v2/dx12-stdout.log",
+      "git_blob": "f2a7b512f0a5fd0206ae2e33d6a6a240ad3e5bc6",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-engine-v2/engine-complete.json",
+      "git_blob": "7fec87a738bf83e20b1611e63be7be1be42ee3c8",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-engine-v2/engine-ready.json",
+      "git_blob": "d5d7e6de02d58dd87c714132f137cb43bc63342f",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-engine/dx12-arguments.txt",
+      "git_blob": "09ee9a20bf7fe6e9962d35bdc2af3540ff2c19c3",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-engine/dx12-kit.log",
+      "git_blob": "dcfd1b5649cc6d67a985fa27979c648e8bc4b61d",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-engine/dx12-outcome.txt",
+      "git_blob": "fc67e69d97cf3630f76beb7bbe4c61b8aadfce86",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-engine/dx12-pid.txt",
+      "git_blob": "154fcb96c295ae738a89a5a7315bf8c84c5e85ce",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-engine/dx12-stderr.log",
+      "git_blob": "3ad85fed4082901cade49af5ce84c16de3fbeced",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-engine/dx12-stdout.log",
+      "git_blob": "7e3e3cd855b8ce9a33ee96e234f6317d6410424a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-engine/engine-error.txt",
+      "git_blob": "d178c96a2cad5736fc9a8c7cab9ea9b5df8ae32b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-raytraced/dx12-arguments.txt",
+      "git_blob": "bad882fbdb78dd9950d90f0479098474d1ab9e9f",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-raytraced/dx12-kit.log",
+      "git_blob": "0c0f166a2df4b3b779fa26f1848dc1a872de81e6",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-raytraced/dx12-outcome.txt",
+      "git_blob": "fc67e69d97cf3630f76beb7bbe4c61b8aadfce86",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-raytraced/dx12-pid.txt",
+      "git_blob": "2a24457e3e6b93088a5991da5be14aa7c4d31b8f",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-raytraced/dx12-stderr.log",
+      "git_blob": "1ce82260d9ec4d7f65fb5881fa2761d4c1322a0a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-raytraced/dx12-stdout.log",
+      "git_blob": "d7a5e2deffcf9ae37dbc0e78eb9f3a35f16d9db8",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-raytraced/engine-complete.json",
+      "git_blob": "64d3ab062a3230cfa137f02d19050f2f8ca0678a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-raytraced/engine-progress.json",
+      "git_blob": "d0a9fae53f0ea556fc4d20ed8dcec84046116598",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-raytraced/engine-ready.json",
+      "git_blob": "93ca859decfb06425f13858fd13e02c534369110",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-writeback/dx12-arguments.txt",
+      "git_blob": "fb441e07a86608cc39ce94c2e23ca0e62f035b50",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-writeback/dx12-kit.log",
+      "git_blob": "107a583d28af2d32ef26a1aad59e8b3ed009a5ff",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-writeback/dx12-outcome.txt",
+      "git_blob": "fc67e69d97cf3630f76beb7bbe4c61b8aadfce86",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-writeback/dx12-pid.txt",
+      "git_blob": "f7665e1f1b38fe5d69addc3f693f69e942ca9eb8",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-writeback/dx12-stderr.log",
+      "git_blob": "2f1289bee2e925beff2dea621bab6e51afb84584",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-writeback/dx12-stdout.log",
+      "git_blob": "8dd10fac043c469d07716a1c24e6647c75471020",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-writeback/engine-complete.json",
+      "git_blob": "a2c939c8a840f4a1290970b6fd6ab927f03bc905",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-writeback/engine-progress.json",
+      "git_blob": "e2195569a868004d81acc817f21897cb9bc6e2ee",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/isaac-garden-writeback/engine-ready.json",
+      "git_blob": "d5d7e6de02d58dd87c714132f137cb43bc63342f",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/native-clock-fixed/dx12-arguments.txt",
+      "git_blob": "53c3d4b2319fe071b02083ab078b6a3b4834cfd3",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/native-clock-fixed/dx12-kit.log",
+      "git_blob": "189e1d02a178fdcb3f6d0b4c36cb53cc92e064d9",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/native-clock-fixed/dx12-outcome.txt",
+      "git_blob": "fc67e69d97cf3630f76beb7bbe4c61b8aadfce86",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/native-clock-fixed/dx12-pid.txt",
+      "git_blob": "f17fb0cbfc76924cf42d6b9724cc0e33c1ab97fa",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/native-clock-fixed/dx12-stderr.log",
+      "git_blob": "ae538c286d7995389ce48adbe4aef2b087253aa1",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/native-clock-fixed/dx12-stdout.log",
+      "git_blob": "833c9b481c67e5d464fae44d5a161386070cddf6",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/native-clock-fixed/isaac-camera.png",
+      "git_blob": "6665ba1ef0d15db9722b5bbe1f54f1470778cc71",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/native-clock-fixed/physics-trace.json",
+      "git_blob": "61ea4c012921a00884b52538b8f0e63fb83149fb",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/native-clock-fixed/probe-result.json",
+      "git_blob": "93d466dde106189d30967ec4b0c3a4ef3fc263e4",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/native-physics-minimal/dx12-arguments.txt",
+      "git_blob": "ff77b2aeb1e90eae4f00fd90a6f0ebac206c6e69",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/native-physics-minimal/dx12-kit.log",
+      "git_blob": "4ccecf69ad5ee8d21d5a8196a17dc252b2912d72",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/native-physics-minimal/dx12-outcome.txt",
+      "git_blob": "43625a78c120eca179f79765c2556a495f1f4243",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/native-physics-minimal/dx12-pid.txt",
+      "git_blob": "998d00738cb63fd9a2c59fd0806a424483aa57a5",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/native-physics-minimal/dx12-stderr.log",
+      "git_blob": "7fe5325cad2ffdeb50fd947e487c085eb76f395e",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/native-physics-minimal/dx12-stdout.log",
+      "git_blob": "a030b293b99e86542bffc7489d55c5c75c69e4ff",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/native-valid-timeline/dx12-arguments.txt",
+      "git_blob": "a597428b57bf88284210918b0c7ffae67070d652",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/native-valid-timeline/dx12-kit.log",
+      "git_blob": "273092b9f61b806d1b832c912c67e3d631493994",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/native-valid-timeline/dx12-outcome.txt",
+      "git_blob": "fc67e69d97cf3630f76beb7bbe4c61b8aadfce86",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/native-valid-timeline/dx12-pid.txt",
+      "git_blob": "782a8040dadb87454d248daab7ada82027381f16",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/native-valid-timeline/dx12-stderr.log",
+      "git_blob": "ae538c286d7995389ce48adbe4aef2b087253aa1",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/native-valid-timeline/dx12-stdout.log",
+      "git_blob": "77bf19e65f687060529465f7c5c52f842dc854a9",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/native-valid-timeline/isaac-camera.png",
+      "git_blob": "6665ba1ef0d15db9722b5bbe1f54f1470778cc71",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/native-valid-timeline/physics-trace.json",
+      "git_blob": "61ea4c012921a00884b52538b8f0e63fb83149fb",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/native-valid-timeline/probe-result.json",
+      "git_blob": "288342416c32af72278b2acce0dc39944e788ab2",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-isaac-retry/probe-result.json",
+      "git_blob": "3d929cf34e7a88e1f6387dd6e6f65f7aea2efbb4",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/delivered-ros2-bridge.log",
+      "git_blob": "b5bab024ea90382c4a2ad6fa4e3e4d93df3c0d5a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/delivered-ros2-bridge.stderr.log",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/delivered-ros2-selection.log",
+      "git_blob": "27494be77d5ce3ed1c4c5fe2036c3725e508c003",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/final-ros2-bridge.log",
+      "git_blob": "f2f6b7de2935b154a060f40457ba61c2551a5989",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/final-ros2-bridge.stderr.log",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/final-ros2-selection.log",
+      "git_blob": "27494be77d5ce3ed1c4c5fe2036c3725e508c003",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/flight-build.log",
+      "git_blob": "5247c383526d43011e36494a9f3726e2d0ddab0b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/flight-tests.log",
+      "git_blob": "70e59c0981d0cda4c184dd0d3874b6f69d9d46b3",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/garden-best-ros2.log",
+      "git_blob": "da2b4ff60813a05df500b23a754e1ac4c550d0d7",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/garden-boost-controlled.log",
+      "git_blob": "0b2249403453101e62bc86c1e7d1881e88ff47de",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/garden-boost-slew.log",
+      "git_blob": "1aa1adba341318daef5c8d7ac1dd33be858f3e96",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/garden-boost.log",
+      "git_blob": "da6fba4be85eb89fc2b283e7aac23780d9a43fc8",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/garden-camera-dropout.log",
+      "git_blob": "feeb76ecc5fcfd530aec99288c2d18d887cf2ce6",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/garden-conservative.log",
+      "git_blob": "d21dcbefa9bf1d83932a62c8a9a3035a436c7b0a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/garden-final-cpp-policy.log",
+      "git_blob": "f73d68803b433689146e5ade1adf1e9bb7a6c7f0",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/garden-final-ros2.log",
+      "git_blob": "a440083b1c4d2f9faf4d3ead41ed7e74934e80d6",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/garden-final.log",
+      "git_blob": "dc34dbcbc130eb17e0f67f0610c5d3e894c9c3b1",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/garden-heldout.log",
+      "git_blob": "95c5e9566d3897282ee1bb041e0c7f557955af2b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/garden-nominal.log",
+      "git_blob": "5bd61608a45be3ef7a2b0b75e2b8b0bc4d6e01fd",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/garden-recommended.log",
+      "git_blob": "1cd451bb478784e2aefd0d057a1b46635ee245fa",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/garden-ros2-bridge.log",
+      "git_blob": "141b1bdad334b3ae34d3ef438e44e113e7620db6",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/garden-ros2-bridge.stderr.log",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/garden-selected-ros2.log",
+      "git_blob": "6c5368e21cbb9c416fe5222ad54c82221ca4897f",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/handler-build.log",
+      "git_blob": "376b563463313d6e3a3e6d676e9a7f0429515255",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/handler-tests.log",
+      "git_blob": "543ad34f248275ad8b4e00c9898b02c708b36eda",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/initial-landing-drift.log",
+      "git_blob": "c7c5e0b397bc687ff08396dec46d1ec1b77326fb",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/latex-build.log",
+      "git_blob": "b7fa9182af7d39b75e229d94b39888fac2d8c484",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/linear-analysis.log",
+      "git_blob": "dac7930675994307d465314dbcbfccb530199546",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/mission-tests.log",
+      "git_blob": "3c482a65ed3faddd7055c6f05844f2dc441afcaf",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/package-validation.log",
+      "git_blob": "490d9921a27fd2f2f288a85330148b5d77e69065",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/panel-geometry-tests.log",
+      "git_blob": "30fd70cb893c0cc9a2e2df9417ab0410da702a8a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/panel-onnx-export.log",
+      "git_blob": "4426ffb13220c3533c41dec9497544a26d27640a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/panel-onnx-test.log",
+      "git_blob": "c306c7f11b8aba58305fe2657ce93514a02be273",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/panel-training.log",
+      "git_blob": "90017ad42012a6628a8f1c71bf38e50da27c75d3",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/polars-import-check.log",
+      "git_blob": "5bf635378e4bb9f7eb45a4c37e39e3dfba4a95e8",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/polars-repair-network.log",
+      "git_blob": "6dfeb7117b3f3cd70eb39b6b5cd4ebd1035551aa",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/polars-repair.log",
+      "git_blob": "622de3419c563d9be2aee1012ccfadbc0354e17c",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/recommended-ros2-bridge.log",
+      "git_blob": "86b339d764cff2ae2af3fe7977e89c82b74b541d",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/recommended-ros2-bridge.stderr.log",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/recommended-ros2-selection.log",
+      "git_blob": "27494be77d5ce3ed1c4c5fe2036c3725e508c003",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/report-generation.log",
+      "git_blob": "2d0cf7967236a5af56071d65a16ee0b1f3196da1",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/ros2-mission-selection.log",
+      "git_blob": "ffc531eb924926361f2db9a97c76ab888861077c",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/rp2350js-boot.log",
+      "git_blob": "6d6b3e23b50005e9a2fe4fbaa76eb6ab540e73e2",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/selected-ros2-bridge.log",
+      "git_blob": "4d91202d1018776a3ad9a86833d778022a4df0f5",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/selected-ros2-bridge.stderr.log",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/sitl-build.log",
+      "git_blob": "878121df8486ed86980fdcf6f4e8a1737045f15a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20-missions/training-plot-repair-check.log",
+      "git_blob": "551990925da9de6c29993f9c86f87bb62bbd62ba",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/altitude-mc.log",
+      "git_blob": "bfee17f44a9429ab258d9eb33715a5f5fa168a70",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/analysis-tests.log",
+      "git_blob": "64170c89a15170dad76f38e9d66ef37af79af4cb",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/delivery-validation.log",
+      "git_blob": "c391ffc602a472e4d4059cf880b71c703d7e34c0",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/host-tests.log",
+      "git_blob": "df632c3f873f85ab8502802240d5c9e869c8907d",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/isaac-d3d12-launch.log",
+      "git_blob": "5f8b1924b688bbdbeae08dc686dd03bd91676950",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/isaac-health.log",
+      "git_blob": "481623ccbe99e8647b44a7c5cd62356a135e7ba5",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/isaac-launch.log",
+      "git_blob": "8a0353b11760181fb327c02d9089e9eb5dc50677",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/latex-build.log",
+      "git_blob": "5c4e2c19560934a3bb71434a74a9b118c9114be5",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/opencv-onnx.log",
+      "git_blob": "74930c552822fff013bb3eef1339deb64b007f07",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/pico2-build.log",
+      "git_blob": "3d7319d347d9f13875d49d04ace0c50bb55f2780",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/python-environment.txt",
+      "git_blob": "4632aa6edab6b0a6adbffe473e423dbc8e11e1f0",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/ros-logs/python_16084_1792520819493.log",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/ros-logs/python_24700_1792501377970.log",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/ros-logs/python_26876_1792521335403.log",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/ros-logs/python_29136_1792501609387.log",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/ros-logs/python_31524_1792521608875.log",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/ros-logs/python_34036_1792521406332.log",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/ros-logs/python_38396_1792502098932.log",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/ros-logs/python_7232_1792502235185.log",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/ros2-integration.log",
+      "git_blob": "a4b81678c450b6ccba2e57cab13c0f5ca859b990",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/ros2-probe-fixed.log",
+      "git_blob": "5075a6fbf8ad8c681899976e80151da4f6a30ecc",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/ros2-probe-retry.log",
+      "git_blob": "0e0ae1b396b89885c4d0e7379fca83b8ab2fdbda",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/ros2-probe.log",
+      "git_blob": "1ad13dd374cb1653bc07ab04293ecde3e7e2a314",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/rp2350js-boot.log",
+      "git_blob": "9bdb0cadbf8b2d53b30d930b71bd3d42a67f9e91",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/sitl-build.log",
+      "git_blob": "7893ea1035554c83ec8097931c9e8127cc04ddd7",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/sitl-rebuild.log",
+      "git_blob": "878121df8486ed86980fdcf6f4e8a1737045f15a",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/sitl-runs.log",
+      "git_blob": "66900d103f79d807e43473b6a11796beb739d698",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/usd-validation.json",
+      "git_blob": "3efa28625d1ec845228bed12665a4551d9e484f5",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/usd-validation.log",
+      "git_blob": "bcc2c8a417a38399303a103c7e461c4cacc7e90c",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/video-decode.log",
+      "git_blob": "e322ebe5de052ff023fa42606c27d433db5f774e",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/visualization.log",
+      "git_blob": "218d11eba6e68ac2379eeb002ea118fc5e10f643",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/yolo-onnx-export.log",
+      "git_blob": "bc00b580456676e5cbcaec83605856f1e17f40c3",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/2026-10-20/yolo-reference.log",
+      "git_blob": "1c61f1babd3d131192c3493bcc610bc4b3d6d9cd",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/README.md",
+      "git_blob": "51327b93601c761cfe1a71e29047e58c14848643",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/native-local/jazzy-migration-gazebo-engine.log",
+      "git_blob": "cff875f2b102baba45fe65679964cbaeb91b10ef",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/native-local/jazzy-migration-gazebo-engine.stderr.log",
+      "git_blob": "d76253ba9df6434128d481394168972c18347b2b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/native-local/jazzy-migration-gazebo-ros.log",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/native-local/jazzy-migration-gazebo-ros.stderr.log",
+      "git_blob": "1331f7d63a2d1d7e066e729e4c4804d9f79999b1",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/native-local/jazzy-migration-v2-gazebo-engine.log",
+      "git_blob": "cff875f2b102baba45fe65679964cbaeb91b10ef",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/native-local/jazzy-migration-v2-gazebo-engine.stderr.log",
+      "git_blob": "d76253ba9df6434128d481394168972c18347b2b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/native-local/jazzy-migration-v2-gazebo-ros.log",
+      "git_blob": "737cd14e0b2a880c069e42aa013f4cafd3a6661c",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/native-local/jazzy-migration-v2-gazebo-ros.stderr.log",
+      "git_blob": "03cb0c0d63d161117fe770af2346a5f08ef64fab",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/native-local/jazzy-migration-v3-gazebo-client.log",
+      "git_blob": "58ae20b7e9fb1a2685568b638a4c54299fb5d27f",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/native-local/jazzy-migration-v3-gazebo-client.stderr.log",
+      "git_blob": "fb24e3cae6acb4a19337ee05e58fb9ea44f04855",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/native-local/jazzy-migration-v3-gazebo-engine.log",
+      "git_blob": "b702d11cfc00a9789e0a2b8e3fbcdaf3c3b5522e",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/native-local/jazzy-migration-v3-gazebo-engine.stderr.log",
+      "git_blob": "d76253ba9df6434128d481394168972c18347b2b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/native-local/jazzy-migration-v3-gazebo-ros.log",
+      "git_blob": "ef10850222323b2c492897233f573d12b6c850a3",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/native-local/jazzy-migration-v3-gazebo-ros.stderr.log",
+      "git_blob": "1410ebc18d0a6b28c50cd31ca515063084616cd3",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/native-local/jazzy-migration-v4-gazebo-client.log",
+      "git_blob": "98ccff809cda9161793ed7d33159bbdb8ad49b27",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/native-local/jazzy-migration-v4-gazebo-client.stderr.log",
+      "git_blob": "1bdd8f5ded3559fada14ffbc4383fcec50a3210b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/native-local/jazzy-migration-v4-gazebo-engine.log",
+      "git_blob": "b702d11cfc00a9789e0a2b8e3fbcdaf3c3b5522e",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/native-local/jazzy-migration-v4-gazebo-engine.stderr.log",
+      "git_blob": "d76253ba9df6434128d481394168972c18347b2b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/native-local/jazzy-migration-v4-gazebo-ros.log",
+      "git_blob": "aeb3556a2977bef038d8ec99f0b36c2f5a732473",
+      "matches": true
+    },
+    {
+      "path": "artifacts/test-runs/native-local/jazzy-migration-v4-gazebo-ros.stderr.log",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    {
+      "path": "artifacts/visualizations/inertia-density.svg",
+      "git_blob": "67dfa554b403ba051afd203bbefc43e8283b245b",
+      "matches": true
+    },
+    {
+      "path": "artifacts/visualizations/kalman-uncertainty.png",
+      "git_blob": "3558970537b47399ed4187fa2c34eb894dd631f9",
+      "matches": true
+    },
+    {
+      "path": "artifacts/visualizations/kalman-uncertainty.svg",
+      "git_blob": "0dedcaf0be74dc3595e3ed3e8fa45dccb92bbfce",
+      "matches": true
+    },
+    {
+      "path": "artifacts/visualizations/mass-density.svg",
+      "git_blob": "75c86305d0ec7360a77152fcd2be865cc39aa4d4",
+      "matches": true
+    },
+    {
+      "path": "artifacts/visualizations/uncertainty-dashboard.html",
+      "git_blob": "d9df1cfeb0f916da2006738e6e8e51f634b3473f",
+      "matches": true
+    }
+  ]
+}

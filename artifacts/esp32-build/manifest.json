@@ -1,0 +1,80 @@
+{
+  "scope": "ESP32-S3 build only; no hardware, pairing, test suite or flight",
+  "files": [
+    {
+      "path": "firmware/src/flight_controller.c",
+      "bytes": 50312,
+      "sha256": "26cf9a9a795553756f86567fb528c8cfce58ce59282fe62f09fb02cb2ed1c492"
+    },
+    {
+      "path": "firmware/src/esp32_platform.cpp",
+      "bytes": 11190,
+      "sha256": "70bcd3114cddd35e296819ae01d88c334b9fdc83edb4388e0c318307b4068181"
+    },
+    {
+      "path": "firmware/include/fc_api.h",
+      "bytes": 1365,
+      "sha256": "af24cfb3eee981e3182e32e9d3d65bd0840258ce177bcfb47b019660a1fdcb99"
+    },
+    {
+      "path": "docs/drone-review.md",
+      "bytes": 2732,
+      "sha256": "c387d7b313fe1301b3e167b173ed7ff775a50ade17c705fc02c9c7268e0e16b5"
+    },
+    {
+      "path": "docs/setup.md",
+      "bytes": 4373,
+      "sha256": "bb26ad981f79af20e0f4572170b0303bc9585d9b0e30052012eb0bd2caf8f1a3"
+    },
+    {
+      "path": "docs/status.md",
+      "bytes": 2078,
+      "sha256": "e82983740f01ba6eb75c0b5c011d3eefacfa4bc85545558db870d03e3d25dbb9"
+    },
+    {
+      "path": "knowledge/project.json",
+      "bytes": 7547,
+      "sha256": "81a1719e8ab69a92b31ab9e94e4c50596e620dbb3928df8d0f8b0a1bfa77f87f"
+    },
+    {
+      "path": "knowledge/project.sqlite",
+      "bytes": 32768,
+      "sha256": "edea9a3af70dfc225759a0589d654130a31e1e19cf5abbc5e72b9e2c1783c62c"
+    },
+    {
+      "path": "knowledge/README.md",
+      "bytes": 1091,
+      "sha256": "965aae14f68871efde3dd8f326320b241de68f3a9ec4876fb5b9baf2e416493a"
+    },
+    {
+      "path": "tools/patch_xbox.py",
+      "bytes": 1164,
+      "sha256": "26ad33e8b365822f1f8e41587c10312837cfa072e47f1c0f95ff7cabfdf3359a"
+    },
+    {
+      "path": "tools/update_knowledge.py",
+      "bytes": 1023,
+      "sha256": "537976ef45c98c0475852bd9bfb029f7876b957fdd8d0e725381319602e24893"
+    },
+    {
+      "path": "platformio.ini",
+      "bytes": 668,
+      "sha256": "80d3a3af754a799eaed8a09b2b8949282924358fc07544582b07e1e54a2c1ca2"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3327,
+      "sha256": "179dd21c3e0cead8aa1c1baeefa50bce0c93d22cdb448c827df70f1745b6d5c7"
+    },
+    {
+      "path": ".pio/build/esp32-s3/firmware.bin",
+      "bytes": 589120,
+      "sha256": "05d6bf101284850d3f2ce3fc3646a2de6c063ce699a048829d274ef6150ee52a"
+    },
+    {
+      "path": ".pio/build/esp32-s3/firmware.elf",
+      "bytes": 13838396,
+      "sha256": "a5b64aa8503d26d1a83af62c87da1086e3e767348278b7dd83ec9f4cf255c955"
+    }
+  ]
+}

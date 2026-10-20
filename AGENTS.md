@@ -1,7 +1,12 @@
-# IntelQcopter working agreement
+# IntelQCopter — ESP32/Xbox branch
 
-- Keep each Pico firmware runtime in its single C file: flight_controller.c and
-  handler_controller.c. ROS 2 retains normal package organization.
+- Work on esp32-xbox. Main remains RP2350 flight controller/RP2040 handheld.
+- Keep control, estimation and calibration in firmware/src/flight_controller.c.
+  esp32_platform.cpp is a minimal C++ adapter for existing hardware libraries.
+- Keep centered left-stick vertical-speed/height-hold commands; RT is boost.
+- Current facts and assumptions live in knowledge/project.json and docs/status.md.
+- archive/ is historical evidence; archived launch scripts are not ESP32 tools.
+- Do not modify the original Drone folder or main checkout.
 - Physical motor arming remains disabled until the user changes that instruction.
 - Preserve original simulation/emulator logs and failed trials. Identify the actual
   engine, assumed parameters and unvalidated hardware interfaces in every report.

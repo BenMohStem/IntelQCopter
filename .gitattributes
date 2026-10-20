@@ -6,6 +6,7 @@ artifacts/** -text
 *.mp4 binary
 *.pdf binary
 *.zip binary
+*.sqlite binary
 # Keep measured source hashes stable across Windows/Linux checkouts.
 *.c text eol=lf
 *.h text eol=lf
@@ -18,3 +19,5 @@ artifacts/** -text
 *.cmd text eol=crlf
 # Evidence is retained byte-for-byte, including reports and original logs.
 artifacts/** -text
+# Preserve the archived baseline/reference bytes after moving them on this branch.
+archive/** -text
