@@ -1,0 +1,10 @@
+{
+  "engine": "Gazebo 10.5.0",
+  "server_return": true,
+  "samples": 1000,
+  "wall_s": 1.6092281000455841,
+  "initial_height_m": 1.4999607734,
+  "final_height_m": 0.07694730785434718,
+  "scope": "Gravity/contact only; no flight controller or RGB avoidance proof",
+  "success": true
+}

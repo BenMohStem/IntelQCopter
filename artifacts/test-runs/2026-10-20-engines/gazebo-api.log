@@ -1,0 +1,29 @@
+DynamicFactory(): Unable to parse descriptor set from [C:\Users\Mohamed\Desktop\Work\QCopter\sim\gazebo\.pixi\envs\default\Library\share\gz\protos\gz-msgs12.gz_desc]
+Fixture ['__class__', '__delattr__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__getstate__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__test__', '_pybind11_conduit_v1_', 'finalize', 'on_post_update', 'on_pre_update', 'on_reset', 'on_update', 'server']
+Server run(self: gz.sim.Server, arg0: bool, arg1: typing.SupportsInt | typing.SupportsIndex, arg2: bool) -> bool
+
+Run the server. By default this is a non-blocking call,  which means the server runs simulation in a separate thread. Pass  in true to the _blocking argument to run the server in the current  thread.
+
+Link ['__class__', '__copy__', '__deepcopy__', '__delattr__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__getstate__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '_pybind11_conduit_v1_', 'add_force_in_inertial_frame', 'add_world_force', 'add_world_wrench', 'axis_aligned_box', 'collision_by_name', 'collision_count', 'collisions', 'compute_axis_aligned_box', 'enable_acceleration_checks', 'enable_bounding_box_checks', 'enable_velocity_checks', 'entity', 'is_canonical', 'name', 'parent_model', 'reset_entity', 'sensor_by_name', 'sensor_count', 'sensors', 'set_angular_velocity', 'set_linear_velocity', 'valid', 'visual_by_name', 'visual_count', 'visuals', 'wind_mode', 'world_angular_acceleration', 'world_angular_velocity', 'world_axis_aligned_box', 'world_inertia_matrix', 'world_inertial', 'world_inertial_pose', 'world_kinetic_energy', 'world_linear_acceleration', 'world_linear_velocity', 'world_pose']
+Pose world_pose(self: gz.sim.Link, ecm: gz.sim.EntityComponentManager) -> gz::math::v9::Pose3<double> | None
+
+Get the pose of the link frame in the world coordinate frame.
+
+Force add_world_wrench(*args, **kwargs)
+Overloaded function.
+
+1. add_world_wrench(self: gz.sim.Link, ecm: gz.sim.EntityComponentManager, force: gz::math::v9::Vector3<double>, torque: gz::math::v9::Vector3<double>) -> None
+
+Add a wrench expressed in world coordinates and applied to the link at the link's origin. This wrench is applied for one simulation step.
+
+2. add_world_wrench(self: gz.sim.Link, ecm: gz.sim.EntityComponentManager, force: gz::math::v9::Vector3<double>, torque: gz::math::v9::Vector3<double>, offset: gz::math::v9::Vector3<double>) -> None
+
+Add a wrench expressed in world coordinates and applied to the link at an offset from the link's origin. This wrench is applied for one simulation step.
+
+World model_by_name(self: gz.sim.World, ecm: gz.sim.EntityComponentManager, name: str) -> int
+
+Get the ID of a model entity which is an immediate child of this world.
+
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+AttributeError: type object 'gz.sim.TestFixture' has no attribute 'on_configure'

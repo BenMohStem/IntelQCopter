@@ -2,6 +2,7 @@
 /build/
 /.venv-*/
 /node_modules/
+/sim/gazebo/.pixi/
 __pycache__/
 *.py[cod]
 CMakeCache.txt
