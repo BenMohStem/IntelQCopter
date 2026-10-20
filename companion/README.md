@@ -1,52 +1,52 @@
-# Companion autonomy — simulation development
+# ROS 2 companion: Pi / Jetson C++ sources
 
-`ros2_ws/src/qcopter_autonomy` is a C++17 ROS 2 package for the same Pi/Jetson build.
-The portable A* and tracking core is compiled and exercised by the CPU simulation.
-The ROS-specific C++ wrapper still requires a complete ROS 2 development installation
-and has **not** been compiled on this PC. The bundled Isaac runtime supplies Python
-message bindings and DDS libraries, not the complete C++ development environment.
+The ROS package is ros2_ws/src/qcopter_autonomy. Its portable C++ mission and A*
+navigation core is compiled and tested. The ROS C++ wrappers have **not** been
+built: this PC has runtime DDS/Python bindings, without ROS development headers.
+Real DDS adapter nodes were exercised separately; see the garden evidence.
 
-## Contract
+## Current garden route
 
-- Input `odometry`: `nav_msgs/Odometry`, local map/odom ENU, velocity transformed
-  into that world frame by the adapter. Standard Odometry twist is normally in
-  `child_frame_id`; transform it before using this adapter. Full VIO/GPS localization
-  is not implemented. The adapter sets child_frame_id equal to header.frame_id to
-  explicitly indicate this transformed velocity convention; ordinary base_link
-  twist is rejected. Goals must match that exact frame.
-- Input `goal`: `PoseStamped`, same frame as odometry. Static circles are parameters.
-- Output `autonomy/setpoint`: custom `AutonomySetpoint` message: desired roll/pitch
-  radians, yaw radians/s, normalized throttle (0.5 means hold), timestamp, valid flag
-  and reached flag in a single sample. Invalid on stale odometry >250ms.
-  The downstream adapter must time out this stream, reject old/out-of-order stamps,
-  require pilot mode authorization, and fall back to flight-controller control.
-  This node cannot arm motors.
+The companion selects start/finish, supervises spool, takeoff, hover, navigation,
+approach, descent and landed states. It emits the existing roll/pitch angle,
+yaw-rate and centered vertical-speed setpoints. No seventh flight PID is added.
+Approach holds horizontal position before descending. Hardware arming is disabled.
+RT boost is inhibited during simulated approach/landing.
 
-Build on a configured ROS 2 system: `colcon build --packages-select qcopter_autonomy`.
-Launch `ros2 launch qcopter_autonomy simulation.launch.py`. A* bounds are currently
-x[-2,10], y[-4,4], 0.2m cells; this is a bounded static map baseline, not a general
-dynamic-obstacle planner. A new goal triggers replanning. Out-of-map goals fail.
+Actual RGB YOLO plus known-size blue-panel PnP updates the observed obstacle map
+online; A* replans around those observations. The runtime has no true obstacle map
+or depth image. One downward lidar aids height. This requires calibrated 1.09 x
+1.69 m blue panel interiors and simulated odometry/contact; general monocular
+obstacle ranging, VIO, real landed detection and arbitrary-obstacle coverage remain
+unfinished. A* is bounded to x[-2,10], y[-4,4], 0.2 m cells with static observations.
 
-## Perception status
+## ROS interfaces (source only until a full ROS build)
 
-YOLO inference has its own recorded reference test; it is not driving the successful
-route in the current videos. `perception/depth_geometry.py` implements tested metric
-back-projection and semantic depth annotation. A camera + YOLO alone supplies no
-metric range or reliable unknown-obstacle coverage. The downward 1D lidar can help
-height; a front 1D lidar measures only one ray. Neither replaces depth/stereo or a
-mapped obstacle sensor for this planner. Camera synchronization, extrinsics, depth
-map updates, VIO and live replanning are remaining integration work.
+- Input odometry: local ENU; adapter must transform twist into the world frame
+  and explicitly set child_frame_id equal to header.frame_id. Ordinary base_link
+  twist is rejected. Stale pose invalidates commands; real fallback is unfinished.
+- camera/image and camera/camera_info: synchronized rectified RGB/calibration.
+- perception/semantics: custom stamped YOLO detections. yolo_node.cpp accepts a
+  raw YOLO ONNX export with no embedded NMS, configured input_size (320 here).
+- MetricObstacles: timestamped measured centres/radii, image_processed marker.
+- mission/request: RequestMission service, start/finish Point and cruise height.
+- mission/land: std_srvs/Trigger request to land at current XY.
+- autonomy/setpoint: atomic custom AutonomySetpoint with validity/time stamp.
+  A physical downstream bridge must enforce freshness, authority and fallback.
 
-`yolo_node.cpp` adds a ROS C++ semantic detector using OpenCV DNN and a raw
-YOLO11 ONNX export (640 square, no embedded NMS). Parameters: `onnx_model`
-(required path), `use_cuda` (default false; needs an OpenCV CUDA build).
-Topics: `camera/image`, `camera/depth_registered` (32FC1 metres or 16UC1
-millimetres), and `perception/semantics` (custom stamped detections).
-Range annotation requires matching dimensions/frame and timestamps within 50ms.
-These semantics are not connected to the static map. The C++ ROS wrapper is
-unbuilt; the actual OpenCV inference/preprocessing contract was separately
-executed through Python, with original JSON and logs saved.
+Build on a complete ROS 2 development system:
 
-Export the tested model with `YOLO('build/perception/yolo11n.pt').export(
-format='onnx',opset=12,simplify=False,dynamic=False)` in the project environment.
-Weights and ONNX files are generated under ignored `build/perception`.
+```bash
+colcon build --packages-select qcopter_autonomy
+source install/setup.bash
+ros2 launch qcopter_autonomy garden_mission.launch.py panel_model:=/path/best.onnx enable_simulation_missions:=true known_fixture_model_confirmed:=true
+```
+
+Those flags default false. mission_client takes seven metre values. The executed
+Windows Python DDS selector is documented in ../sim/garden/README.md. This adapter
+is evidence of DDS transport and common control-core execution, not a compiled ROS
+C++ deployment or a physical UART connection.
+
+Legacy simulation.launch.py/static-map and depth_geometry.py remain reference
+experiments. The new garden uses single RGB, not depth_geometry.py. Real-world
+unknown obstacles require additional validated sensing/localization work.

@@ -53,6 +53,7 @@ static void test_radio_frame_codec_sequence_and_watchdog(void) {
     CHECK(fabsf(command.pitch_deg + 35.0f) < 1e-5f);
     CHECK(fabsf(command.yaw_rate_dps + 180.0f) < 1e-5f);
     CHECK(fabsf(command.throttle - 0.5f) < 1e-5f);
+    CHECK(fabsf(command.boost-1.0f)<1e-6f);
     CHECK(!command.arm_request);
     CHECK(!pilot_link_current(&link, 250001u).valid);
     CHECK(!pilot_link_accept(&link, bytes, sizeof(bytes), 260000u));
@@ -508,6 +509,23 @@ static void test_matrix_covariance_and_pitch_sign(void) {
     const control_output_t o=flight_control_step(&s,&cmd,FC_LOOP_DT);
     CHECK(o.motor[2]+o.motor[3]>o.motor[0]+o.motor[1]);
     CHECK(!o.armed);
+    // RT grants performance allowance, but at center stick it still holds height.
+    qc_sitl_reset(.49f,0,gains);cmd=neutral_command();cmd.boost=1;
+    control_output_t boosted={0};
+    for(int i=0;i<125;i++)boosted=flight_control_step(&s,&cmd,FC_LOOP_DT);
+    CHECK(fabsf(boost_state-1)<1e-5f && fabsf(boosted.motor[0]-.49f)<1e-5f);
+    cmd.throttle=1;
+    for(int i=0;i<125;i++)boosted=flight_control_step(&s,&cmd,FC_LOOP_DT);
+    CHECK(boosted.motor[0]>.79f && boosted.motor[0]<=.80001f && !boosted.armed);
+    qc_sitl_reset(.49f,0,gains);cmd.boost=0;
+    for(int i=0;i<125;i++)boosted=flight_control_step(&s,&cmd,FC_LOOP_DT);
+    CHECK(boosted.motor[0]>.64f && boosted.motor[0]<=.65001f);
+    // Infeasible simultaneous torque requests: proportional allocation stays bounded.
+    s.gyro_x_dps=s.gyro_y_dps=s.gyro_z_dps=-1000;
+    cmd.roll_deg=cmd.pitch_deg=35;cmd.yaw_rate_dps=180;
+    boosted=flight_control_step(&s,&cmd,FC_LOOP_DT);
+    for(unsigned i=0;i<4;i++)CHECK(isfinite(boosted.motor[i])&&boosted.motor[i]>=0&&boosted.motor[i]<=1);
+    puts("RT boost slew/neutral hold/collective reserve and bounded coupled allocation checks passed");
     puts("matrix prediction, Joseph product, PSD covariance and FLU pitch mixer checks passed");
 }
 

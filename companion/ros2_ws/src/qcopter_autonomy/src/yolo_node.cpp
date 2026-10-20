@@ -14,6 +14,8 @@ class YoloNode : public rclcpp::Node {
   YoloNode():Node("qcopter_yolo") {
     auto model=declare_parameter<std::string>("onnx_model","");
     if(model.empty())throw std::invalid_argument("Set onnx_model to exported YOLO11 path");
+    side_=declare_parameter<int>("input_size",640);
+    if(side_<32||side_>1280||side_%32)throw std::invalid_argument("input_size must be a multiple of32 in32..1280");
     net_=cv::dnn::readNetFromONNX(model);
     if(declare_parameter<bool>("use_cuda",false)) {
       net_.setPreferableBackend(cv::dnn::DNN_BACKEND_CUDA);net_.setPreferableTarget(cv::dnn::DNN_TARGET_CUDA);
@@ -28,12 +30,12 @@ class YoloNode : public rclcpp::Node {
   void infer(const sensor_msgs::msg::Image::ConstSharedPtr &m) {
     try {
       auto frame=cv_bridge::toCvShare(m,"bgr8")->image;
-      const double scale=std::min(640./frame.cols,640./frame.rows);
+      const double scale=std::min(double(side_)/frame.cols,double(side_)/frame.rows);
       const int w=static_cast<int>(std::round(frame.cols*scale)),h=static_cast<int>(std::round(frame.rows*scale));
-      const int left=(640-w)/2,top=(640-h)/2;
-      cv::Mat resized,input(640,640,CV_8UC3,cv::Scalar(114,114,114));
+      const int left=(side_-w)/2,top=(side_-h)/2;
+      cv::Mat resized,input(side_,side_,CV_8UC3,cv::Scalar(114,114,114));
       cv::resize(frame,resized,{w,h});resized.copyTo(input(cv::Rect(left,top,w,h)));
-      net_.setInput(cv::dnn::blobFromImage(input,1./255.,{640,640},cv::Scalar(),true,false));
+      net_.setInput(cv::dnn::blobFromImage(input,1./255.,{side_,side_},cv::Scalar(),true,false));
       auto raw=net_.forward();
       if(raw.dims!=3 || raw.size[0]!=1 || raw.size[1]<5 || raw.size[1]>1000)
         throw std::runtime_error("Expected raw YOLO11 [1,4+C,N] ONNX output");
@@ -79,7 +81,7 @@ class YoloNode : public rclcpp::Node {
       pub_->publish(result);
     }catch(const std::exception&e){RCLCPP_ERROR_THROTTLE(get_logger(),*get_clock(),2000,"YOLO frame rejected: %s",e.what());}
   }
-  cv::dnn::Net net_;sensor_msgs::msg::Image::ConstSharedPtr depth_;
+  int side_=640;cv::dnn::Net net_;sensor_msgs::msg::Image::ConstSharedPtr depth_;
   rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr rgb_sub_,depth_sub_;
   rclcpp::Publisher<qcopter_autonomy::msg::SemanticDetections>::SharedPtr pub_;
 };

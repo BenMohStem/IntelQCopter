@@ -10,9 +10,11 @@
 #include <stdio.h>
 #include <stdint.h>
 
+#ifndef QCOPTER_HANDLER_HOST_TEST
 #include "pico/stdlib.h"
 #include "hardware/adc.h"
 #include "hardware/gpio.h"
+#endif
 /* BEGIN WIRE PROTOCOL v1: keep identical in both firmware files. */
 /* Fixed-size, endian-stable command frame shared by the two Pico firmwares. */
 #include <stdbool.h>
@@ -134,6 +136,80 @@ static inline bool qcopter_sequence_is_newer(uint16_t value, uint16_t previous) 
 #define CENTER_CALIBRATION_SAMPLES 128u
 #define BUTTON_COUNT 6u
 
+/* Pure input processing: shared by the Pico loop and host regression tests.
+ * Endpoints are provisional until a guided full-travel capture is available. */
+typedef struct {
+    float minimum[4], center[4], maximum[4];
+    float trigger_released[2], trigger_pressed[2];
+    float deadband, expo, filter_tau_s, slew_per_s;
+    bool valid;
+} handler_calibration_t;
+typedef struct {
+    float filtered[4], shaped[4],takeoff_hold_s,land_hold_s;
+    bool initialized,takeoff_latched,land_latched;
+    uint16_t sequence;uint8_t mission_events; /* 1 takeoff REQUEST, 2 land REQUEST; never arming */
+} handler_state_t;
+
+static bool handler_process(handler_state_t *state, const handler_calibration_t *cal,
+                             const uint16_t raw[6], uint16_t buttons, float dt,
+                             qcopter_command_frame_t *out) {
+    if(!state || !cal || !raw || !out || !cal->valid || !isfinite(dt) || dt<=0 || dt>.05f
+       || !isfinite(cal->deadband) || cal->deadband<0 || cal->deadband>=.5f
+       || !isfinite(cal->expo) || cal->expo<0 || cal->expo>1
+       || !isfinite(cal->filter_tau_s) || cal->filter_tau_s<0
+       || !isfinite(cal->slew_per_s) || cal->slew_per_s<=0 || (buttons&~0x3Fu))return false;
+    for(unsigned i=0;i<6;i++)if(raw[i]>4095)return false;
+    float values[4];
+    for(unsigned i=0;i<4;i++) {
+        if(!isfinite(cal->minimum[i]) || !isfinite(cal->center[i]) || !isfinite(cal->maximum[i])
+           || cal->minimum[i]<0 || cal->maximum[i]>4095
+           || cal->center[i]-cal->minimum[i]<256 || cal->maximum[i]-cal->center[i]<256)return false;
+        float delta=raw[i]-cal->center[i];
+        float v=delta/(delta>=0 ? cal->maximum[i]-cal->center[i] : cal->center[i]-cal->minimum[i]);
+        v=fmaxf(-1,fminf(1,v));
+        v=fabsf(v)<=cal->deadband ? 0 : copysignf((fabsf(v)-cal->deadband)/(1-cal->deadband),v);
+        values[i]=(1-cal->expo)*v+cal->expo*v*v*v;
+    }
+    float triggers[2];
+    for(unsigned i=0;i<2;i++) {
+        float travel=cal->trigger_pressed[i]-cal->trigger_released[i];
+        if(!isfinite(travel) || !isfinite(cal->trigger_released[i]) || fabsf(travel)<256
+          || cal->trigger_pressed[i]<0 || cal->trigger_pressed[i]>4095
+          || cal->trigger_released[i]<0 || cal->trigger_released[i]>4095)return false;
+        triggers[i]=fmaxf(0,fminf(1,(raw[i+4]-cal->trigger_released[i])/travel));
+    }
+    // Validate the entire capture before changing state; malformed input is atomic.
+    const float alpha=cal->filter_tau_s>0 ? -expm1f(-dt/cal->filter_tau_s) : 1;
+    for(unsigned i=0;i<4;i++) {
+        if(!state->initialized)state->filtered[i]=state->shaped[i]=0;
+        state->filtered[i]+=alpha*(values[i]-state->filtered[i]);
+        float change=state->filtered[i]-state->shaped[i],limit=cal->slew_per_s*dt;
+        state->shaped[i]+=fmaxf(-limit,fminf(limit,change));
+    }
+    state->initialized=true;
+    *out=(qcopter_command_frame_t){.sequence=state->sequence++,
+        .roll=(int16_t)lroundf(state->shaped[2]*QCOPTER_AXIS_SCALE),
+        .pitch=(int16_t)lroundf(-state->shaped[3]*QCOPTER_AXIS_SCALE),
+        .yaw_rate=(int16_t)lroundf(state->shaped[0]*QCOPTER_AXIS_SCALE),
+        .throttle=(uint16_t)lroundf((1-state->shaped[1])*.5f*QCOPTER_THROTTLE_SCALE),
+        .lt=(uint16_t)lroundf(triggers[0]*QCOPTER_TRIGGER_SCALE),
+        .rt=(uint16_t)lroundf(triggers[1]*QCOPTER_TRIGGER_SCALE),.buttons=buttons};
+    bool neutral=triggers[1]<.05f;
+    for(unsigned i=0;i<4;i++)neutral=neutral&&fabsf(state->shaped[i])<.05f;
+    const bool takeoff=neutral&&(buttons&(QCOPTER_BUTTON_RB|QCOPTER_BUTTON_NORTH))==(QCOPTER_BUTTON_RB|QCOPTER_BUTTON_NORTH);
+    const bool land=neutral&&(buttons&(QCOPTER_BUTTON_LB|QCOPTER_BUTTON_SOUTH))==(QCOPTER_BUTTON_LB|QCOPTER_BUTTON_SOUTH);
+    state->mission_events=0;
+    state->takeoff_hold_s=takeoff&&!land ? state->takeoff_hold_s+dt : 0;
+    state->land_hold_s=land&&!takeoff ? state->land_hold_s+dt : 0;
+    if(!takeoff)state->takeoff_latched=false;
+    if(!land)state->land_latched=false;
+    if(state->takeoff_hold_s>=1&&!state->takeoff_latched){state->mission_events|=1;state->takeoff_latched=true;}
+    if(state->land_hold_s>=1&&!state->land_latched){state->mission_events|=2;state->land_latched=true;}
+    return qcopter_frame_values_valid(out);
+}
+
+#ifndef QCOPTER_HANDLER_HOST_TEST
+
 /* GP26/ADC0 reads a 74HC4051 analog mux. Mux channels: LX, LY, RX, RY, LT, RT. */
 static const uint8_t mux_select_gpio[3] = {
     ADC_MUX_S0_GPIO, ADC_MUX_S1_GPIO, ADC_MUX_S2_GPIO
@@ -156,34 +232,6 @@ static uint16_t read_mux_channel(uint8_t channel) {
     mux_select(channel);
     (void)adc_read(); /* discard the first conversion after switching channels */
     return adc_read();
-}
-
-static float centered_axis(uint16_t raw, float center) {
-    const float delta = (float)raw - center;
-    const float denominator = delta >= 0.0f ? 4095.0f - center : center;
-    if (denominator < 1.0f) return 0.0f;
-    float value = delta / denominator;
-    if (fabsf(value) <= JOYSTICK_DEADBAND) return 0.0f;
-    value = copysignf((fabsf(value) - JOYSTICK_DEADBAND)
-                      / (1.0f - JOYSTICK_DEADBAND), value);
-    return value < -1.0f ? -1.0f : (value > 1.0f ? 1.0f : value);
-}
-
-static int16_t axis_scaled(float value) {
-    const long scaled = lroundf(value * (float)QCOPTER_AXIS_SCALE);
-    return (int16_t)(scaled < -QCOPTER_AXIS_SCALE ? -QCOPTER_AXIS_SCALE
-        : (scaled > QCOPTER_AXIS_SCALE ? QCOPTER_AXIS_SCALE : scaled));
-}
-
-static uint16_t trigger_scaled(uint16_t raw, uint16_t released) {
-    const int32_t delta = (int32_t)raw - (int32_t)released;
-    const uint32_t travel = (uint32_t)(delta < 0 ? -delta : delta);
-    const uint32_t available = released > (4095u - released)
-        ? released : (4095u - released);
-    if (available == 0u) return 0u;
-    const uint32_t value = travel * QCOPTER_TRIGGER_SCALE / available;
-    return (uint16_t)(value > QCOPTER_TRIGGER_SCALE
-        ? QCOPTER_TRIGGER_SCALE : value);
 }
 
 static uint16_t read_buttons(uint8_t debounce[BUTTON_COUNT],
@@ -267,12 +315,24 @@ int main(void) {
     }
     uint8_t debounce[BUTTON_COUNT] = {0u};
     uint16_t stable_buttons = 0u;
-    uint16_t sequence = 0u;
+    handler_state_t processor={0};
+    handler_calibration_t cal={.minimum={0,0,0,0},.maximum={4095,4095,4095,4095},
+        .deadband=JOYSTICK_DEADBAND,.expo=.25f,.filter_tau_s=.035f,.slew_per_s=3,.valid=true};
+    for(unsigned i=0;i<4;i++)cal.center[i]=center[i];
+    for(unsigned i=0;i<2;i++) {
+        cal.trigger_released[i]=trigger_released[i];
+        cal.trigger_pressed[i]=trigger_released[i]<2048 ? 4095 : 0;
+    }
     absolute_time_t deadline = make_timeout_time_us(HAND_LOOP_US);
+    uint64_t last_sample_us=time_us_64();
 
     for (;;) {
         sleep_until(deadline);
-        deadline = delayed_by_us(deadline, HAND_LOOP_US);
+        deadline = absolute_time_diff_us(deadline,get_absolute_time())>(int64_t)HAND_LOOP_US
+            ? make_timeout_time_us(HAND_LOOP_US) : delayed_by_us(deadline,HAND_LOOP_US);
+        const uint64_t sampled_us=time_us_64();
+        const float sample_dt=(float)(sampled_us-last_sample_us)*1e-6f;
+        last_sample_us=sampled_us;
 
         const uint16_t left_x = read_mux_channel(0u);
         const uint16_t left_y = read_mux_channel(1u);
@@ -280,24 +340,15 @@ int main(void) {
         const uint16_t right_y = read_mux_channel(3u);
         const uint16_t lt = read_mux_channel(4u);
         const uint16_t rt = read_mux_channel(5u);
-        const float yaw_axis = centered_axis(left_x, center[0]);
-        const float vertical_axis = -centered_axis(left_y, center[1]);
-        const float roll_axis = centered_axis(right_x, center[2]);
-        const float pitch_axis = -centered_axis(right_y, center[3]);
-
-        qcopter_command_frame_t command = {
-            .sequence = sequence++,
-            .roll = axis_scaled(roll_axis),
-            .pitch = axis_scaled(pitch_axis),
-            .yaw_rate = axis_scaled(yaw_axis),
-            .throttle = (uint16_t)lroundf((vertical_axis + 1.0f) * 0.5f
-                                          * QCOPTER_THROTTLE_SCALE),
-            .lt = trigger_scaled(lt, trigger_released[0]),
-            .rt = trigger_scaled(rt, trigger_released[1]),
-            .buttons = read_buttons(debounce, &stable_buttons)
-        };
+        const uint16_t raw[6]={left_x,left_y,right_x,right_y,lt,rt};
+        qcopter_command_frame_t command;
+        if(!handler_process(&processor,&cal,raw,read_buttons(debounce,&stable_buttons),
+                            sample_dt,&command))continue;
+        if(processor.mission_events&1)puts("TAKEOFF REQUEST: requires companion authorization; hardware remains disarmed");
+        if(processor.mission_events&2)puts("LAND REQUEST: requires companion authorization; hardware remains disarmed");
         uint8_t encoded[QCOPTER_FRAME_SIZE];
         if (qcopter_encode_frame(&command, encoded) && (command.sequence % 10u) == 0u)
             print_frame_debug(&command, encoded); /* 10 Hz USB debug, not RF */
     }
 }
+#endif

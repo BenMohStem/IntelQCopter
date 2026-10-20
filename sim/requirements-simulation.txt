@@ -10,4 +10,9 @@ onnx==1.17.0
 usd-core==26.8
 requests==2.34.2
 nvidia-ml-py==13.615.71
+pybullet==3.2.7
+scipy==1.15.3
+Pillow==12.3.0
+polars==1.35.1
+polars-runtime-32==1.35.1
 # Bundled ROS Python 3.12 separately uses build/ros_python/numpy==2.2.6.
