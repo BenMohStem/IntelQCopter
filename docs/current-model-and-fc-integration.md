@@ -1,5 +1,8 @@
 # From propeller force to flight control
+
 ## Nonlinear model · uncertainty · measured gains · RP2350 integration
+
+**[Open the formatted reading view](current-model-and-fc-integration.html)** if your Markdown viewer shows raw equations.
 
 **Start with the [illustrated mathematical paper](../output/pdf/IntelQcopter-model-guide.pdf).**
 It derives the equations step by step, including coordinate frames, angular momentum,
@@ -29,41 +32,53 @@ This page is the shorter navigation guide and worked introduction.
 A motor turns a propeller. The propeller accelerates air downward; the resulting aerodynamic
 reaction pushes the aircraft upward along that rotor's axis.
 
-$$T_i=\text{magnitude of thrust from propeller }i\quad[\mathrm N].$$
+$$
+T_i=\text{magnitude of thrust from propeller }i\quad[\mathrm{N}].
+$$
 
 It is a **force**, not throttle percentage, torque, electrical power, or motor KV.
 For four parallel rotors pointing along body +z:
 
-$$\mathbf F_{1,B}=\begin{bmatrix}0\\0\\T_1\end{bmatrix},\quad\ldots,\quad
-\mathbf F_{4,B}=\begin{bmatrix}0\\0\\T_4\end{bmatrix}.$$
+$$
+\mathbf{F}_{1,B}=\begin{bmatrix}0\\0\\T_1\end{bmatrix},\quad\ldots,\quad
+\mathbf{F}_{4,B}=\begin{bmatrix}0\\0\\T_4\end{bmatrix}.
+$$
 
 Forces add as vectors:
 
-$$\mathbf F_{\mathrm{prop},B}
-=\sum_{i=1}^4\mathbf F_{i,B}
+$$
+\mathbf{F}_{\mathrm{prop},B}
+=\sum_{i=1}^4\mathbf{F}_{i,B}
 =\begin{bmatrix}0+0+0+0\\0+0+0+0\\T_1+T_2+T_3+T_4\end{bmatrix}
 =\begin{bmatrix}0\\0\\T\end{bmatrix},\qquad
-T=\sum_{i=1}^4T_i.$$
+T=\sum_{i=1}^4T_i.
+$$
 
 ### 1.1 Choose coordinates before writing signs
 
 Use world +z upward, body +x forward, +y left, +z upward.
 Let R map a vector expressed in body coordinates to world coordinates:
 
-$$\mathbf a_W=R\mathbf a_B,\qquad R^TR=I,\qquad\det R=1.$$
+$$
+\mathbf{a}_W=R\mathbf{a}_B,\qquad R^TR=I,\qquad\det R=1.
+$$
 
-Let roll, pitch, yaw be φ, θ, ψ, with
+Let roll, pitch, yaw be $\phi$, $\theta$, $\psi$, with
 
-$$R=R_z(\psi)R_y(\theta)R_x(\phi).$$
+$$
+R=R_z(\psi)R_y(\theta)R_x(\phi).
+$$
 
 The third column of R tells us where the rotor axis points in the world:
 
-$$R\begin{bmatrix}0\\0\\1\end{bmatrix}
+$$
+R\begin{bmatrix}0\\0\\1\end{bmatrix}
 =\begin{bmatrix}
 \cos\psi\sin\theta\cos\phi+\sin\psi\sin\phi\\
 \sin\psi\sin\theta\cos\phi-\cos\psi\sin\phi\\
 \cos\theta\cos\phi
-\end{bmatrix}.$$
+\end{bmatrix}.
+$$
 
 Tilting redirects some thrust sideways. It does not create extra thrust.
 
@@ -71,15 +86,19 @@ Tilting redirects some thrust sideways. It does not create extra thrust.
 
 Define aircraft position and velocity in the world frame:
 
-$$\mathbf r=\begin{bmatrix}x\\y\\z\end{bmatrix},\qquad
-\mathbf v=\dot{\mathbf r},\qquad
-\dot{\mathbf v}=\ddot{\mathbf r}.$$
+$$
+\mathbf{r}=\begin{bmatrix}x\\y\\z\end{bmatrix},\qquad
+\mathbf{v}=\dot{\mathbf{r}},\qquad
+\dot{\mathbf{v}}=\ddot{\mathbf{r}}.
+$$
 
 For constant mass m, linear momentum is m v:
 
-$$\frac{d}{dt}(m\mathbf v)=\sum\mathbf F_W
+$$
+\frac{d}{dt}(m\mathbf{v})=\sum\mathbf{F}_W
 \quad\Longrightarrow\quad
-m\dot{\mathbf v}=\sum\mathbf F_W.$$
+m\dot{\mathbf{v}}=\sum\mathbf{F}_W.
+$$
 
 Now list each force in the **same frame**:
 
@@ -92,30 +111,40 @@ Now list each force in the **same frame**:
 
 Substitute that list into Newton's law:
 
-$$\boxed{
-m\dot{\mathbf v}
+$$
+\boxed{
+m\dot{\mathbf{v}}
 =R\begin{bmatrix}0\\0\\T\end{bmatrix}
 -\begin{bmatrix}0\\0\\mg\end{bmatrix}
--d\mathbf v+\mathbf f_{\mathrm{disturbance}}
-}.$$
+-d\mathbf{v}+\mathbf{f}_{\mathrm{disturbance}}
+}.
+$$
 
 Every term has units of newtons because kg·m/s² = N.
 The vertical row is
 
-$$m\ddot z=T\cos\phi\cos\theta-mg-d\dot z+f_z.$$
+$$
+m\ddot{z}=T\cos\phi\cos\theta-mg-d\dot{z}+f_z.
+$$
 
-At level stationary hover, φ=θ=0, vz=0 and fz=0:
+At level stationary hover, $\phi=\theta=0$, $v_z=0$ and $f_z=0$:
 
-$$0=T-mg\quad\Longrightarrow\quad T=mg.$$
+$$
+0=T-mg\quad\Longrightarrow\quad T=mg.
+$$
 
 If all four motors share equally:
 
-$$T_i=\frac{mg}{4}.$$
+$$
+T_i=\frac{mg}{4}.
+$$
 
-**Illustrative baseline only:** m=1.2 kg gives T=11.76798 N and T_i=2.941995 N.
+**Illustrative baseline only:** $m=1.2\,\mathrm{kg}$ gives $T=11.76798\,\mathrm{N}$ and $T_i=2.941995\,\mathrm{N}$.
 For 30° roll and zero pitch at constant height:
 
-$$T=\frac{mg}{\cos30^\circ}=13.5885\ \mathrm N.$$
+$$
+T=\frac{mg}{\cos30^\circ}=13.5885\ \mathrm{N}.
+$$
 
 That increase explains why tilted flight needs collective headroom.
 These are conditional calculations, not measured motor capabilities.
@@ -126,14 +155,18 @@ These are conditional calculations, not measured motor capabilities.
 
 ### 2.1 Force away from the centre creates torque
 
-For displacement r_i from the centre of mass to rotor i:
+For displacement $\mathbf{r}_i$ from the centre of mass to rotor $i$:
 
-$$\boldsymbol\tau_i=\mathbf r_i\times\mathbf F_i.$$
+$$
+\boldsymbol{\tau}_i=\mathbf{r}_i\times\mathbf{F}_i.
+$$
 
-With r_i=[x_i,y_i,z_i]ᵀ and F_i=[0,0,T_i]ᵀ:
+With $\mathbf{r}_i=[x_i,y_i,z_i]^T$ and $\mathbf{F}_i=[0,0,T_i]^T$:
 
-$$\boldsymbol\tau_i
-=\begin{bmatrix}y_iT_i\\-x_iT_i\\0\end{bmatrix}.$$
+$$
+\boldsymbol{\tau}_i
+=\begin{bmatrix}y_iT_i\\-x_iT_i\\0\end{bmatrix}.
+$$
 
 So roll and pitch come from unequal thrust and lever arms.
 Yaw additionally uses the rotors' aerodynamic reaction torques.
@@ -142,66 +175,94 @@ Yaw additionally uses the rotors' aerodynamic reaction torques.
 
 For a small element dm at position ρ relative to the centre:
 
-$$J=\int\left((\boldsymbol\rho^T\boldsymbol\rho)I
--\boldsymbol\rho\boldsymbol\rho^T\right)\,dm.$$
+$$
+J=\int\left((\boldsymbol{\rho}^T\boldsymbol{\rho})I
+-\boldsymbol{\rho}\boldsymbol{\rho}^T\right)\,dm.
+$$
 
 For example:
 
-$$J_{xx}=\int(y^2+z^2)\,dm,\qquad J_{xy}=-\int xy\,dm.$$
+$$
+J_{xx}=\int(y^2+z^2)\,dm,\qquad J_{xy}=-\int xy\,dm.
+$$
 
 Units are kg·m². Moving the battery away from an axis increases inertia about that axis.
 Total mass alone therefore cannot determine J.
 
-The body's angular velocity is ω=[p,q,r_b]ᵀ in rad/s.
+The body's angular velocity is $\boldsymbol{\omega}=[p,q,r_b]^T$ in radians per second.
 These are body rotation rates; at general attitude they are not simply the three Euler-angle derivatives.
 Angular momentum in body coordinates is
 
-$$\mathbf H_B=J\boldsymbol\omega.$$
+$$
+\mathbf{H}_B=J\boldsymbol{\omega}.
+$$
 
 ### 2.3 Differentiate angular momentum in the world
 
 Angular-momentum balance in the inertial frame is
 
-$$\boldsymbol\tau_W=\frac{d\mathbf H_W}{dt}.$$
+$$
+\boldsymbol{\tau}_W=\frac{d\mathbf{H}_W}{dt}.
+$$
 
 Since H_W=R H_B, the product rule gives
 
-$$\dot{\mathbf H}_W=\dot R\mathbf H_B+R\dot{\mathbf H}_B.$$
+$$
+\dot{\mathbf{H}}_W=\dot{R}\mathbf{H}_B+R\dot{\mathbf{H}}_B.
+$$
 
 Rotation kinematics gives
 
-$$\dot R=R[\boldsymbol\omega]_\times,\qquad
-[\boldsymbol\omega]_\times\mathbf H_B=\boldsymbol\omega\times\mathbf H_B.$$
+$$
+\dot{R}=R[\boldsymbol{\omega}]_\times,\qquad
+[\boldsymbol{\omega}]_\times\mathbf{H}_B=\boldsymbol{\omega}\times\mathbf{H}_B.
+$$
 
 Therefore
 
-$$\dot{\mathbf H}_W
-=R\left(\dot{\mathbf H}_B+\boldsymbol\omega\times\mathbf H_B\right).$$
+$$
+\dot{\mathbf{H}}_W
+=R\left(\dot{\mathbf{H}}_B+\boldsymbol{\omega}\times\mathbf{H}_B\right).
+$$
 
 Multiply by Rᵀ, use RᵀR=I, and express torque in body coordinates:
 
-$$\boldsymbol\tau_B=\dot{\mathbf H}_B+\boldsymbol\omega\times\mathbf H_B.$$
+$$
+\boldsymbol{\tau}_B=\dot{\mathbf{H}}_B+\boldsymbol{\omega}\times\mathbf{H}_B.
+$$
 
 For a fixed rigid assembly J is constant, so substitute H_B=Jω:
 
-$$\boldsymbol\tau_B=J\dot{\boldsymbol\omega}
-+\boldsymbol\omega\times(J\boldsymbol\omega).$$
+$$
+\boldsymbol{\tau}_B=J\dot{\boldsymbol{\omega}}
++\boldsymbol{\omega}\times(J\boldsymbol{\omega}).
+$$
 
 Rearrange:
 
-$$\boxed{J\dot{\boldsymbol\omega}
-=\boldsymbol\tau_B-\boldsymbol\omega\times(J\boldsymbol\omega)}.$$
+$$
+\boxed{J\dot{\boldsymbol{\omega}}
+=\boldsymbol{\tau}_B-\boldsymbol{\omega}\times(J\boldsymbol{\omega})}.
+$$
 
 The cross term appears because the coordinates themselves rotate.
 It is not an arbitrary correction added to a scalar equation.
 
-For principal axes J=diag(Jx,Jy,Jz):
+For principal axes $J=\operatorname{diag}(J_x,J_y,J_z)$:
 
-$$\dot p=\frac{\tau_x+(J_y-J_z)qr_b}{J_x},$$
-$$\dot q=\frac{\tau_y+(J_z-J_x)pr_b}{J_y},$$
-$$\dot r_b=\frac{\tau_z+(J_x-J_y)pq}{J_z}.$$
+$$
+\dot{p}=\frac{\tau_x+(J_y-J_z)qr_b}{J_x},
+$$
 
-The products qr_b, pr_b, pq couple the axes nonlinearly.
+$$
+\dot{q}=\frac{\tau_y+(J_z-J_x)pr_b}{J_y},
+$$
+
+$$
+\dot{r}_b=\frac{\tau_z+(J_x-J_y)pq}{J_z}.
+$$
+
+The products $qr_b$, $pr_b$, $pq$ couple the axes nonlinearly.
 The paper derives the inertia integral and each component before using them.
 
 ---
@@ -211,26 +272,40 @@ The paper derives the inertia integral and each component before using them.
 The complete proposed state contains position, velocity, attitude quaternion,
 body rates, rotor speeds, effective motor currents and battery states:
 
-$$\mathbf x=(\mathbf r,\mathbf v,\mathbf q,\boldsymbol\omega,
-\Omega_1,\dots,\Omega_4,I_1,\dots,I_4,V_p,z_{\rm SOC}).$$
+$$
+\mathbf{x}=(\mathbf{r},\mathbf{v},\mathbf{q},\boldsymbol{\omega},
+\Omega_1,\dot{s},\Omega_4,I_1,\dot{s},I_4,V_p,z_{\mathrm{SOC}}).
+$$
 
 Representative coupled equations are
 
-$$\dot{\mathbf r}=\mathbf v,\qquad
-m\dot{\mathbf v}=R(\mathbf q)\mathbf F_B+m\mathbf g_W+\mathbf F_{\rm aero},$$
+$$
+\dot{\mathbf{r}}=\mathbf{v},\qquad
+m\dot{\mathbf{v}}=R(\mathbf{q})\mathbf{F}_B+m\mathbf{g}_W+\mathbf{F}_{\mathrm{aero}},
+$$
 
-$$J\dot{\boldsymbol\omega}
-=\boldsymbol\tau_{\rm external}
--\boldsymbol\omega\times(J\boldsymbol\omega),$$
+$$
+J\dot{\boldsymbol{\omega}}
+=\boldsymbol{\tau}_{\mathrm{external}}
+-\boldsymbol{\omega}\times(J\boldsymbol{\omega}),
+$$
 
-$$J_{m,i}\dot\Omega_i=k_{t,i}I_i-Q_i(\Omega_i,V,\ldots)-b_i\Omega_i,$$
+$$
+J_{m,i}\dot{\Omega}_i=k_{t,i}I_i-Q_i(\Omega_i,V,\ldots)-b_i\Omega_i,
+$$
 
-$$L_i\dot I_i=D_i(u_i)V_{\rm battery}-R_iI_i-k_{e,i}\Omega_i,$$
+$$
+L_i\dot{I}_i=D_i(u_i)V_{\mathrm{battery}}-R_iI_i-k_{e,i}\Omega_i,
+$$
 
-$$T_i=k_{T,i}\Omega_i^2,\qquad Q_i=k_{Q,i}\Omega_i^2,$$
+$$
+T_i=k_{T,i}\Omega_i^2,\qquad Q_i=k_{Q,i}\Omega_i^2,
+$$
 
-$$\dot z_{\rm SOC}=-\frac{\eta I_{\rm battery}}{3600C_{\rm Ah}},\qquad
-V_{\rm battery}=V_{\rm OCV}(z,T)-I_{\rm battery}R_0-V_p.$$
+$$
+\dot{z}_{\mathrm{SOC}}=-\frac{\eta I_{\mathrm{battery}}}{3600C_{\mathrm{Ah}}},\qquad
+V_{\mathrm{battery}}=V_{\mathrm{OCV}}(z,T)-I_{\mathrm{battery}}R_0-V_p.
+$$
 
 The effective DC electrical model is an approximation to ESC/BLDC commutation; its parameters
 must be identified. Aerodynamic coefficients depend on propeller and inflow.
@@ -245,14 +320,21 @@ It retains exact attitude rotation and explains optional rotor angular momentum 
 A single global constant transfer function does not describe this nonlinear aircraft.
 Around a chosen equilibrium:
 
-$$\dot{\mathbf x}=f(\mathbf x,\mathbf u),\qquad f(\mathbf x_0,\mathbf u_0)=0,$$
-$$\delta\dot{\mathbf x}\simeq A\delta\mathbf x+B\delta\mathbf u,\qquad
-A=\left.\frac{\partial f}{\partial\mathbf x}\right|_0,\quad
-B=\left.\frac{\partial f}{\partial\mathbf u}\right|_0.$$
+$$
+\dot{\mathbf{x}}=f(\mathbf{x},\mathbf{u}),\qquad f(\mathbf{x}_0,\mathbf{u}_0)=0,
+$$
+
+$$
+\delta\dot{\mathbf{x}}\simeq A\delta\mathbf{x}+B\delta\mathbf{u},\qquad
+A=\left.\frac{\partial f}{\partial\mathbf{x}}\right|_0,\quad
+B=\left.\frac{\partial f}{\partial\mathbf{u}}\right|_0.
+$$
 
 Then a **local** transfer function is
 
-$$G(s)=C(sI-A)^{-1}B+D.$$
+$$
+G(s)=C(sI-A)^{-1}B+D.
+$$
 
 We use it to understand poles/gains near hover and retain the nonlinear equations for broader simulation.
 The paper keeps motor lag, drag, cascaded-loop coupling and higher-order characteristic polynomials
@@ -264,7 +346,9 @@ when calculating local stability. It also explains why continuous poles alone do
 
 The common controller form is
 
-$$u=K_Pe+K_I\int e\,dt+K_D\dot e.$$
+$$
+u=K_Pe+K_I\int e\,dt+K_D\dot{e}.
+$$
 
 Every nonzero term changes dynamics and introduces tradeoffs.
 Six controller objects do not require eighteen nonzero coefficients.
@@ -276,12 +360,14 @@ Six controller objects do not require eighteen nonzero coefficients.
 | Yaw rate | PI | Rate command and persistent torque rejection |
 | Altitude | PID using estimated vertical speed | Height correction, steady offset rejection, velocity damping |
 
-For independent measurement noise variance σ², a raw finite-difference derivative has
+For independent measurement noise variance $\sigma^2$, a raw finite-difference derivative has
 
-$$D_k=\frac{n_k-n_{k-1}}{\Delta t},\qquad
-\operatorname{Var}(D_k)=\frac{2\sigma^2}{\Delta t^2}.$$
+$$
+D_k=\frac{n_k-n_{k-1}}{\Delta t},\qquad
+\operatorname{Var}(D_k)=\frac{2\sigma^2}{\Delta t^2}.
+$$
 
-At Δt=.002 s, this can greatly amplify noise. Filtering reduces it but adds delay.
+At $\Delta t=0.002\,\mathrm{s}$, this can greatly amplify noise. Filtering reduces it but adds delay.
 More integral terms add states and can worsen saturation/windup.
 The paper derives existing gains, Routh conditions and a possible lag/drag-aware altitude design;
 **it does not install speculative new gains**.
@@ -298,33 +384,41 @@ Current reproducible scenario calculations:
 
 A useful measurement model is
 
-$$y_k=x_{\rm true}+b+n_k.$$
+$$
+y_k=x_{\mathrm{true}}+b+n_k.
+$$
 
 Here b is bias, while n_k describes fluctuation. Repeating a biased measurement
 many times can produce a very precise mean that is still wrong.
 
-For N independent readings:
+For $N$ independent readings:
 
-$$\bar y=\frac1N\sum y_k,\qquad
-s^2=\frac{1}{N-1}\sum(y_k-\bar y)^2,\qquad
-u_A(\bar y)=\frac{s}{\sqrt N}.$$
+$$
+\bar{y}=\frac{1}{N}\sum y_k,\qquad
+s^2=\frac{1}{N-1}\sum(y_k-\bar{y})^2,\qquad
+u_A(\bar{y})=\frac{s}{\sqrt{N}}.
+$$
 
-- s describes individual-reading scatter.
-- s/√N describes uncertainty of the mean under the independence assumption.
+- $s$ describes individual-reading scatter.
+- $s/\sqrt{N}$ describes uncertainty of the mean under the independence assumption.
 - Instrument calibration, temperature, alignment and reference uncertainty add other contributions.
 - A fixed aircraft mass is not fluctuating just because the scale does.
 - “About 150 g” does not specify a distribution or standard deviation.
 
-For correlated inputs with covariance Σ:
+For correlated inputs with covariance $\Sigma$:
 
-$$u_f^2\simeq\nabla f^T\Sigma\nabla f.$$
+$$
+u_f^2\simeq\nabla f^T\Sigma\nabla f.
+$$
 
 Example for hover thrust per rotor:
 
-$$T_i=\frac{mg}{4},\qquad
-u^2(T_i)\simeq\left(\frac g4\right)^2u_m^2+
-\left(\frac m4\right)^2u_g^2+
-2\frac g4\frac m4\operatorname{Cov}(m,g).$$
+$$
+T_i=\frac{mg}{4},\qquad
+u^2(T_i)\simeq\left(\frac{g}{4}\right)^2u_m^2+
+\left(\frac{m}{4}\right)^2u_g^2+
+2\frac{g}{4}\frac{m}{4}\operatorname{Cov}(m,g).
+$$
 
 A reference is a better characterized measurement, not absolute truth.
 Use a checked scale, calibrated voltage/current reference, known length target or suitable angular reference,
@@ -345,19 +439,19 @@ The paper gives full apparatus equations and uncertainty propagation.
 | Unknown | Measurement | Core calculation |
 |---|---|---|
 | Total flying mass | Weigh complete aircraft repeatedly; check scale bias | Mean, scatter, reference uncertainty |
-| Centre of mass | Reactions on two known supports for each axis | x_COM = L R₂/(R₁+R₂) |
-| Inertia | Bifilar pendulum for each axis; subtract fixture | J = mga²T_period²/(4π²L) |
-| Static thrust | Secured thrust stand at several commands and voltages | T from load cell; identify ∂T/∂u at hover |
-| Motor lag and delay | Timestamp command step and thrust response | Fit T(t)=T₀+ΔT(1−exp(−(t−t_d)/τ)) |
-| Reaction torque | Known lever arm and force | Q=ℓF |
+| Centre of mass | Reactions on two known supports for each axis | $x_{\mathrm{COM}}=LR_2/(R_1+R_2)$ |
+| Inertia | Bifilar pendulum for each axis; subtract fixture | $J=mga^2\mathcal{T}^2/(4\pi^2L)$ |
+| Static thrust | Secured thrust stand at several commands and voltages | $T$ from load cell; identify $\partial T/\partial u$ at hover |
+| Motor lag and delay | Timestamp command step and thrust response | Fit $T(t)=T_0+\Delta T(1-e^{-(t-t_d)/\tau})$, for $t\geq t_d$ |
+| Reaction torque | Known lever arm and force | $Q=\ell F$ |
 | Gyro noise/bias | Stationary log across temperature/configurations | Mean bias, variance, correlations, Allan plot |
 | Accel bias/scale | ±x, ±y, ±z reference poses | Offset and scale from opposite-face means |
 | Barometer/lidar | Compare against known heights and stationary logs | Offset, scale, residual variance, latency |
-| Battery capacity | Controlled charger/discharger plus current log | C_Ah=∫I dt/3600 |
+| Battery capacity | Controlled charger/discharger plus current log | $C_{\mathrm{Ah}}=\frac{1}{3600}\int I\,dt$ |
 | Camera/extrinsics | Calibration target and measured sensor transforms | Intrinsics, distortion, pose and reprojection residual |
 | Communication delay | Timestamped sequence/receive/application records | Latency distribution, jitter and dropouts |
 
-For a bifilar pendulum, a is **half the separation** of the two strings.
+For a bifilar pendulum, $a$ is **half the separation** of the two strings and $\mathcal{T}$ is the oscillation period.
 Measure several cycles, not a single period; use small oscillations and correct the fixture contribution.
 Each row in the paper includes assumptions and things that can bias the result.
 
@@ -367,8 +461,10 @@ Each row in the paper includes assumptions and things that can bias the result.
 
 Gyro calibration estimates the stationary mean and subtracts it:
 
-$$g_k=\omega_k+b+n_k,\qquad \hat b=\frac1N\sum g_k,\qquad
-g_k^{\rm corrected}=g_k-\hat b.$$
+$$
+g_k=\omega_k+b+n_k,\qquad \hat{b}=\frac{1}{N}\sum g_k,\qquad
+g_k^{\rm corrected}=g_k-\hat{b}.
+$$
 
 The C implementation uses Welford's online mean/variance to avoid storing every sample.
 New flash storage saves validated fits, loads them after reboot and verifies the gyro again.
@@ -376,27 +472,37 @@ Use [the exact flash/boot guide](calibration-flash.md) for commands and failure 
 
 The common Kalman recursion is
 
-$$\hat x^-_k=F_k\hat x^+_{k-1}+B_ku_k,\qquad
-P^-_k=F_kP^+_{k-1}F_k^T+Q_k,$$
+$$
+\hat{x}^-_k=F_k\hat{x}^+_{k-1}+B_ku_k,\qquad
+P^-_k=F_kP^+_{k-1}F_k^T+Q_k,
+$$
 
-$$S_k=H_kP^-_kH_k^T+R_k,\qquad
-K_k=P^-_kH_k^TS_k^{-1},$$
+$$
+S_k=H_kP^-_kH_k^T+R_k,\qquad
+K_k=P^-_kH_k^TS_k^{-1},
+$$
 
-$$\hat x^+_k=\hat x^-_k+K_k(y_k-H_k\hat x^-_k).$$
+$$
+\hat{x}^+_k=\hat{x}^-_k+K_k(y_k-H_k\hat{x}^-_k).
+$$
 
 Its gains depend on uncertainty models, sample timing and sensor quality.
 A large printed K is not automatically better than a small one.
 
 The independent roll/pitch filters actually each have two states, angle and gyro bias:
 
-$$x_{\rm angle}=[\theta,b]^T,\quad
-F=\begin{bmatrix}1&-\Delta t\\0&1\end{bmatrix},\quad H=[1,0].$$
+$$
+x_{\mathrm{angle}}=[\theta,b]^T,\quad
+F=\begin{bmatrix}1&-\Delta t\\0&1\end{bmatrix},\quad H=[1,0].
+$$
 
 The altitude filter has height and vertical speed:
 
-$$x_h=[h,v_z]^T,\quad
+$$
+x_h=[h,v_z]^T,\quad
 F_h=\begin{bmatrix}1&\Delta t\\0&1\end{bmatrix},\quad
-B_h=\begin{bmatrix}\Delta t^2/2\\\Delta t\end{bmatrix},\quad H_h=[1,0].$$
+B_h=\begin{bmatrix}\Delta t^2/2\\\Delta t\end{bmatrix},\quad H_h=[1,0].
+$$
 
 Accelerometers measure **specific force**, so gravity removal requires attitude and sign conventions.
 At rest, magnitude is about 1g; in ideal free fall it approaches zero.
