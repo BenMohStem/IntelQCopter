@@ -1,0 +1,16 @@
+# Preserve original evidence bytes, including binary PPM captures and raw logs.
+artifacts/** -text
+*.png binary
+*.jpg binary
+*.ppm binary
+*.mp4 binary
+*.pdf binary
+*.zip binary
+# Keep measured source hashes stable across Windows/Linux checkouts.
+*.c text eol=lf
+*.h text eol=lf
+*.cpp text eol=lf
+*.hpp text eol=lf
+*.py text eol=lf
+*.usda text eol=lf
+*.sdf text eol=lf

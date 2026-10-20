@@ -64,7 +64,7 @@ class GazeboAdapter:
     def close(self):self.exchange({'op':'close'});self.client.close()
 
 def main():
-    ap=argparse.ArgumentParser();ap.add_argument('--name',default='gazebo-garden');ap.add_argument('--video',action='store_true');args=ap.parse_args()
+    ap=argparse.ArgumentParser();ap.add_argument('--name',default='gazebo-garden');ap.add_argument('--video',action='store_true');ap.add_argument('--ros',action='store_true');args=ap.parse_args()
     world=GazeboAdapter();mission.p=world;mission.Garden=lambda *a,**kw:world
     mission.OUT=ROOT/'artifacts/simulation/2026-10-20-engines';mission.OUT.mkdir(parents=True,exist_ok=True)
     original_frame=mission.video_frame
@@ -77,7 +77,7 @@ def main():
     native_provenance={path:hashlib.sha256((ROOT/path).read_bytes()).hexdigest() for path in
         ['sim/gazebo/run_mission.py','sim/gazebo/engine_server.py','sim/gazebo/build_world.py','sim/gazebo/garden.sdf']}
     print('NATIVE GAZEBO RUN: physics/OGRE2 RGB via local adapter; inherited baseline result labels are corrected below.',flush=True)
-    result=mission.run_case(args.name,1,2452,model,ROOT/'build/panel-training/rgb-panel/weights/best.pt',video=args.video,gain_scale=.7)
+    result=mission.run_case(args.name,1,2452,model,ROOT/'build/panel-training/rgb-panel/weights/best.pt',video=args.video,ros=args.ros,gain_scale=.7)
     result.update(method='Native Gazebo 10.5 physics + OGRE2 RGB + production C + common C++ mission + actual YOLO/PnP',
         downward_lidar_model='Analytic floor-only ray, not a Gazebo lidar sensor',
         clearance_metric='Evaluation-only conservative cylinder/box distance, not Gazebo closest-points API',

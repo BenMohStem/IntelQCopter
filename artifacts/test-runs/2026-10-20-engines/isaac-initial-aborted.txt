@@ -1,0 +1,1 @@
+Stopped the initial Isaac diagnostic because its camera was inside the placeholder visual collider. Not a successful mission.

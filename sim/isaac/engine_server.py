@@ -19,17 +19,22 @@ async def main():
         SM.switch_physics_engine('physx');SM.setup_simulation(dt=.002,device='cpu');RenderingManager.set_dt(.002)
         timeline.get_timeline_interface().play()
         for _ in range(3):await app.next_update_async()
-        SM.enable_fabric(True);SM.initialize_physics()
+        SM.enable_fabric(False);SM.initialize_physics()
         tensors=SM.get_physics_sim_view();body=tensors.create_rigid_body_view('/World/drone')
         contact=tensors.create_rigid_contact_view('/World/drone',[
             '/World/ground/body/collision','/World/panel0/body/collision','/World/panel1/body/collision'])
         settings=carb.settings.get_settings();settings.set('/app/player/playSimulations',False)
+        settings.set('/app/useFabricSceneDelegate',False)
         settings.set('/rtx/rendermode','MinimalRendering');settings.set('/rtx/minimal/mode',3)
         products=[];annotators={}
         for topic,path,size in [('/drone/rgb','/World/drone/body/rgb',(320,240)),('/overview/rgb','/World/overview/camera/camera',(640,360))]:
             product=rep.create.render_product(path,size);products.append(product)
             annotator=rep.AnnotatorRegistry.get_annotator('rgb');annotator.attach([product]);annotators[topic]=annotator
         async def render():
+            # Publish the native solver's transforms to USD before camera
+            # capture. Without writeback a nested camera can stay at spawn.
+            import omni.physx
+            omni.physx.get_physx_interface().update_transformations(False,True,True,False)
             await rep.orchestrator.step_async(rt_subframes=1,delta_time=0.0,pause_timeline=False)
         for _ in range(3):await render()
         def state():
@@ -41,10 +46,13 @@ async def main():
         initial=state();print('ISAAC native engine ready',initial,flush=True)
         (OUT/'engine-ready.json').write_text(json.dumps(initial,indent=2))
         listener=Listener(('127.0.0.1',9251),authkey=b'intelqcopter-local-engine')
-        client=await asyncio.to_thread(listener.accept);count=0;last_capture=-100
+        # Run physics RPCs synchronously on Kit's main thread. Yield only for
+        # requested camera renders, avoiding an automatic render at every 2ms
+        # control request. This is a headless, single-client experiment.
+        client=listener.accept();count=0;last_capture=-100
         with client:
             while True:
-                message=await asyncio.to_thread(client.recv);op=message['op']
+                message=client.recv();op=message['op']
                 if op=='close':client.send({'steps':count});break
                 if op=='step':
                     q=body.get_transforms()[0,3:].copy();x,y,z,w=q
@@ -54,7 +62,10 @@ async def main():
                     force=(r@np.array(message['force'])+message['drag']).astype(np.float32).reshape(1,3)
                     torque=(r@np.array(message['torque'])).astype(np.float32).reshape(1,3)
                     body.apply_forces_and_torques_at_position(force,torque,None,np.array([0],np.uint32),True)
-                    SM.step(update_fabric=True);count+=1
+                    SM.step();count+=1
+                    if count%500==0:
+                        progress=state();progress['controlled_steps']=count
+                        (OUT/'engine-progress.json').write_text(json.dumps(progress,indent=2))
                 if op=='camera':
                     if last_capture!=count:await render();last_capture=count
                     image=annotators[message['topic']].get_data()

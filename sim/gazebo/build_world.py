@@ -42,13 +42,16 @@ def build(target=None,drop_test=False):
     inertia=SubElement(inertial,'inertia')
     for key,value in zip(['ixx','iyy','izz','ixy','ixz','iyz'],[*model['inertia_kg_m2'],0,0,0]):SubElement(inertia,key).text=str(value)
     for tag in ['collision','visual']:
-        item=SubElement(link,tag,name=tag);shape=SubElement(SubElement(item,'geometry'),'cylinder');SubElement(shape,'radius').text='.34';SubElement(shape,'length').text='.16'
+        item=SubElement(link,tag,name=tag);shape=SubElement(SubElement(item,'geometry'),'cylinder');SubElement(shape,'radius').text='.34' if tag=='collision' else '.06';SubElement(shape,'length').text='.16' if tag=='collision' else '.035'
         if tag=='visual':
             mat=SubElement(item,'material');SubElement(mat,'diffuse').text='.1 .1 .12 1'
     sensor=SubElement(link,'sensor',name='contact',type='contact');SubElement(sensor,'always_on').text='true';SubElement(sensor,'update_rate').text='500';SubElement(sensor,'topic').text='/drone/contact'
     contact=SubElement(sensor,'contact');SubElement(contact,'collision').text='collision';SubElement(contact,'topic').text='/drone/contact'
     a=.45/(2*math.sqrt(2))
     for i,(x,y) in enumerate([(a,a),(a,-a),(-a,-a),(-a,a)]):
+        arm=SubElement(link,'visual',name=f'arm{i}');SubElement(arm,'pose').text=f'{x/2} {y/2} 0 0 0 {math.atan2(y,x)}'
+        geometry=SubElement(SubElement(arm,'geometry'),'box');SubElement(geometry,'size').text='.225 .025 .02'
+        material=SubElement(arm,'material');SubElement(material,'diffuse').text='1 .05 .05 1' if i<2 else '.95 .95 .9 1'
         v=SubElement(link,'visual',name=f'rotor{i}');SubElement(v,'pose').text=f'{x} {y} .09 0 0 0'
         shape=SubElement(SubElement(v,'geometry'),'cylinder');SubElement(shape,'radius').text='.1143';SubElement(shape,'length').text='.006'
         mat=SubElement(v,'material');SubElement(mat,'diffuse').text='1 .05 .05 1' if i<2 else '.95 .95 .9 1'

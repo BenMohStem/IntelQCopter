@@ -35,8 +35,11 @@ def Xform "World"
 
         def Xform "body"
         {
-            def Cube "visual"
+            def Cube "visual" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
+                rel material:binding = </World/Materials/Color0>
                 color3f[] primvars:displayColor = [(0.22, 0.4, 0.15)]
                 double size = 1
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -59,6 +62,163 @@ def Xform "World"
         }
     }
 
+    def "Materials"
+    {
+        def Material "Color0"
+        {
+            token outputs:surface.connect = </World/Materials/Color0/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.22, 0.4, 0.15)
+                float inputs:metallic = 0
+                float inputs:roughness = 1
+                token outputs:surface
+            }
+        }
+
+        def Material "Color1"
+        {
+            token outputs:surface.connect = </World/Materials/Color1/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.63, 0.61, 0.53)
+                float inputs:metallic = 0
+                float inputs:roughness = 1
+                token outputs:surface
+            }
+        }
+
+        def Material "Color2"
+        {
+            token outputs:surface.connect = </World/Materials/Color2/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.93, 0.93, 0.9)
+                float inputs:metallic = 0
+                float inputs:roughness = 1
+                token outputs:surface
+            }
+        }
+
+        def Material "Color3"
+        {
+            token outputs:surface.connect = </World/Materials/Color3/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.025, 0.08, 0.68)
+                float inputs:metallic = 0
+                float inputs:roughness = 1
+                token outputs:surface
+            }
+        }
+
+        def Material "Color4"
+        {
+            token outputs:surface.connect = </World/Materials/Color4/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.3, 0.17, 0.06)
+                float inputs:metallic = 0
+                float inputs:roughness = 1
+                token outputs:surface
+            }
+        }
+
+        def Material "Color5"
+        {
+            token outputs:surface.connect = </World/Materials/Color5/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.32, 0.08)
+                float inputs:metallic = 0
+                float inputs:roughness = 1
+                token outputs:surface
+            }
+        }
+
+        def Material "Color6"
+        {
+            token outputs:surface.connect = </World/Materials/Color6/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.4, 0.22, 0.08)
+                float inputs:metallic = 0
+                float inputs:roughness = 1
+                token outputs:surface
+            }
+        }
+
+        def Material "Color7"
+        {
+            token outputs:surface.connect = </World/Materials/Color7/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.67, 0.54)
+                float inputs:metallic = 0
+                float inputs:roughness = 1
+                token outputs:surface
+            }
+        }
+
+        def Material "Color8"
+        {
+            token outputs:surface.connect = </World/Materials/Color8/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.1, 0.12)
+                float inputs:metallic = 0
+                float inputs:roughness = 1
+                token outputs:surface
+            }
+        }
+
+        def Material "Color9"
+        {
+            token outputs:surface.connect = </World/Materials/Color9/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (1, 0.05, 0.05)
+                float inputs:metallic = 0
+                float inputs:roughness = 1
+                token outputs:surface
+            }
+        }
+
+        def Material "Color10"
+        {
+            token outputs:surface.connect = </World/Materials/Color10/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.95, 0.95, 0.9)
+                float inputs:metallic = 0
+                float inputs:roughness = 1
+                token outputs:surface
+            }
+        }
+    }
+
     def Xform "path"
     {
         float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -67,8 +227,11 @@ def Xform "World"
 
         def Xform "body"
         {
-            def Cube "visual"
+            def Cube "visual" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
+                rel material:binding = </World/Materials/Color1>
                 color3f[] primvars:displayColor = [(0.63, 0.61, 0.53)]
                 double size = 1
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -87,8 +250,11 @@ def Xform "World"
 
         def Xform "body"
         {
-            def Cube "visual"
+            def Cube "visual" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
+                rel material:binding = </World/Materials/Color2>
                 color3f[] primvars:displayColor = [(0.93, 0.93, 0.9)]
                 double size = 1
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -97,8 +263,11 @@ def Xform "World"
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
             }
 
-            def Cube "blue_1"
+            def Cube "blue_1" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
+                rel material:binding = </World/Materials/Color3>
                 color3f[] primvars:displayColor = [(0.025, 0.08, 0.68)]
                 double size = 1
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -107,8 +276,11 @@ def Xform "World"
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
             }
 
-            def Cube "blue1"
+            def Cube "blue1" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
+                rel material:binding = </World/Materials/Color3>
                 color3f[] primvars:displayColor = [(0.025, 0.08, 0.68)]
                 double size = 1
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -139,8 +311,11 @@ def Xform "World"
 
         def Xform "body"
         {
-            def Cube "visual"
+            def Cube "visual" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
+                rel material:binding = </World/Materials/Color2>
                 color3f[] primvars:displayColor = [(0.93, 0.93, 0.9)]
                 double size = 1
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -149,8 +324,11 @@ def Xform "World"
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
             }
 
-            def Cube "blue_1"
+            def Cube "blue_1" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
+                rel material:binding = </World/Materials/Color3>
                 color3f[] primvars:displayColor = [(0.025, 0.08, 0.68)]
                 double size = 1
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -159,8 +337,11 @@ def Xform "World"
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
             }
 
-            def Cube "blue1"
+            def Cube "blue1" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
+                rel material:binding = </World/Materials/Color3>
                 color3f[] primvars:displayColor = [(0.025, 0.08, 0.68)]
                 double size = 1
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -191,8 +372,11 @@ def Xform "World"
 
         def Xform "body"
         {
-            def Cube "visual"
+            def Cube "visual" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
+                rel material:binding = </World/Materials/Color4>
                 color3f[] primvars:displayColor = [(0.3, 0.17, 0.06)]
                 double size = 1
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -223,8 +407,11 @@ def Xform "World"
 
         def Xform "body"
         {
-            def Cube "visual"
+            def Cube "visual" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
+                rel material:binding = </World/Materials/Color5>
                 color3f[] primvars:displayColor = [(0.1, 0.32, 0.08)]
                 double size = 1
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -255,8 +442,11 @@ def Xform "World"
 
         def Xform "body"
         {
-            def Cube "visual"
+            def Cube "visual" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
+                rel material:binding = </World/Materials/Color4>
                 color3f[] primvars:displayColor = [(0.3, 0.17, 0.06)]
                 double size = 1
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -287,8 +477,11 @@ def Xform "World"
 
         def Xform "body"
         {
-            def Cube "visual"
+            def Cube "visual" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
+                rel material:binding = </World/Materials/Color5>
                 color3f[] primvars:displayColor = [(0.1, 0.32, 0.08)]
                 double size = 1
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -319,8 +512,11 @@ def Xform "World"
 
         def Xform "body"
         {
-            def Cube "visual"
+            def Cube "visual" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
+                rel material:binding = </World/Materials/Color4>
                 color3f[] primvars:displayColor = [(0.3, 0.17, 0.06)]
                 double size = 1
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -351,8 +547,11 @@ def Xform "World"
 
         def Xform "body"
         {
-            def Cube "visual"
+            def Cube "visual" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
+                rel material:binding = </World/Materials/Color5>
                 color3f[] primvars:displayColor = [(0.1, 0.32, 0.08)]
                 double size = 1
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -383,8 +582,11 @@ def Xform "World"
 
         def Xform "body"
         {
-            def Cube "visual"
+            def Cube "visual" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
+                rel material:binding = </World/Materials/Color4>
                 color3f[] primvars:displayColor = [(0.3, 0.17, 0.06)]
                 double size = 1
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -415,8 +617,11 @@ def Xform "World"
 
         def Xform "body"
         {
-            def Cube "visual"
+            def Cube "visual" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
+                rel material:binding = </World/Materials/Color5>
                 color3f[] primvars:displayColor = [(0.1, 0.32, 0.08)]
                 double size = 1
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -447,8 +652,11 @@ def Xform "World"
 
         def Xform "body"
         {
-            def Cube "visual"
+            def Cube "visual" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
+                rel material:binding = </World/Materials/Color4>
                 color3f[] primvars:displayColor = [(0.3, 0.17, 0.06)]
                 double size = 1
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -479,8 +687,11 @@ def Xform "World"
 
         def Xform "body"
         {
-            def Cube "visual"
+            def Cube "visual" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
+                rel material:binding = </World/Materials/Color5>
                 color3f[] primvars:displayColor = [(0.1, 0.32, 0.08)]
                 double size = 1
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -511,8 +722,11 @@ def Xform "World"
 
         def Xform "body"
         {
-            def Cube "visual"
+            def Cube "visual" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
+                rel material:binding = </World/Materials/Color4>
                 color3f[] primvars:displayColor = [(0.3, 0.17, 0.06)]
                 double size = 1
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -543,8 +757,11 @@ def Xform "World"
 
         def Xform "body"
         {
-            def Cube "visual"
+            def Cube "visual" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
+                rel material:binding = </World/Materials/Color5>
                 color3f[] primvars:displayColor = [(0.1, 0.32, 0.08)]
                 double size = 1
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -575,8 +792,11 @@ def Xform "World"
 
         def Xform "body"
         {
-            def Cube "visual"
+            def Cube "visual" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
+                rel material:binding = </World/Materials/Color4>
                 color3f[] primvars:displayColor = [(0.3, 0.17, 0.06)]
                 double size = 1
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -607,8 +827,11 @@ def Xform "World"
 
         def Xform "body"
         {
-            def Cube "visual"
+            def Cube "visual" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
+                rel material:binding = </World/Materials/Color5>
                 color3f[] primvars:displayColor = [(0.1, 0.32, 0.08)]
                 double size = 1
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -639,8 +862,11 @@ def Xform "World"
 
         def Xform "body"
         {
-            def Cube "visual"
+            def Cube "visual" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
+                rel material:binding = </World/Materials/Color6>
                 color3f[] primvars:displayColor = [(0.4, 0.22, 0.08)]
                 double size = 1
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -671,8 +897,11 @@ def Xform "World"
 
         def Xform "body"
         {
-            def Cube "visual"
+            def Cube "visual" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
+                rel material:binding = </World/Materials/Color6>
                 color3f[] primvars:displayColor = [(0.4, 0.22, 0.08)]
                 double size = 1
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -703,8 +932,11 @@ def Xform "World"
 
         def Xform "body"
         {
-            def Cube "visual"
+            def Cube "visual" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
+                rel material:binding = </World/Materials/Color7>
                 color3f[] primvars:displayColor = [(0.7, 0.67, 0.54)]
                 double size = 1
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -742,19 +974,38 @@ def Xform "World"
 
         def Xform "body"
         {
-            def Cylinder "visual"
+            def Cylinder "visual" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
-                double height = 0.16
+                double height = 0.035
+                rel material:binding = </World/Materials/Color8>
                 color3f[] primvars:displayColor = [(0.1, 0.1, 0.12)]
-                double radius = 0.34
+                double radius = 0.06
                 float3 xformOp:rotateXYZ = (0, 0, 0)
                 double3 xformOp:translate = (0, 0, 0)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ"]
             }
 
-            def Cylinder "rotor0"
+            def Cube "arm0" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
+            {
+                rel material:binding = </World/Materials/Color9>
+                color3f[] primvars:displayColor = [(1, 0.05, 0.05)]
+                double size = 1
+                float3 xformOp:rotateXYZ = (0, 0, 45)
+                float3 xformOp:scale = (0.225, 0.025, 0.02)
+                double3 xformOp:translate = (0.07954951288348659, 0.07954951288348659, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+            }
+
+            def Cylinder "rotor0" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
                 double height = 0.006
+                rel material:binding = </World/Materials/Color9>
                 color3f[] primvars:displayColor = [(1, 0.05, 0.05)]
                 double radius = 0.1143
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -762,9 +1013,25 @@ def Xform "World"
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ"]
             }
 
-            def Cylinder "rotor1"
+            def Cube "arm1" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
+            {
+                rel material:binding = </World/Materials/Color9>
+                color3f[] primvars:displayColor = [(1, 0.05, 0.05)]
+                double size = 1
+                float3 xformOp:rotateXYZ = (0, 0, -45)
+                float3 xformOp:scale = (0.225, 0.025, 0.02)
+                double3 xformOp:translate = (0.07954951288348659, -0.07954951288348659, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+            }
+
+            def Cylinder "rotor1" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
                 double height = 0.006
+                rel material:binding = </World/Materials/Color9>
                 color3f[] primvars:displayColor = [(1, 0.05, 0.05)]
                 double radius = 0.1143
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -772,9 +1039,25 @@ def Xform "World"
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ"]
             }
 
-            def Cylinder "rotor2"
+            def Cube "arm2" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
+            {
+                rel material:binding = </World/Materials/Color10>
+                color3f[] primvars:displayColor = [(0.95, 0.95, 0.9)]
+                double size = 1
+                float3 xformOp:rotateXYZ = (0, 0, -135)
+                float3 xformOp:scale = (0.225, 0.025, 0.02)
+                double3 xformOp:translate = (-0.07954951288348659, -0.07954951288348659, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+            }
+
+            def Cylinder "rotor2" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
                 double height = 0.006
+                rel material:binding = </World/Materials/Color10>
                 color3f[] primvars:displayColor = [(0.95, 0.95, 0.9)]
                 double radius = 0.1143
                 float3 xformOp:rotateXYZ = (0, 0, 0)
@@ -782,9 +1065,25 @@ def Xform "World"
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ"]
             }
 
-            def Cylinder "rotor3"
+            def Cube "arm3" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
+            {
+                rel material:binding = </World/Materials/Color10>
+                color3f[] primvars:displayColor = [(0.95, 0.95, 0.9)]
+                double size = 1
+                float3 xformOp:rotateXYZ = (0, 0, 135)
+                float3 xformOp:scale = (0.225, 0.025, 0.02)
+                double3 xformOp:translate = (-0.07954951288348659, 0.07954951288348659, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+            }
+
+            def Cylinder "rotor3" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
             {
                 double height = 0.006
+                rel material:binding = </World/Materials/Color10>
                 color3f[] primvars:displayColor = [(0.95, 0.95, 0.9)]
                 double radius = 0.1143
                 float3 xformOp:rotateXYZ = (0, 0, 0)

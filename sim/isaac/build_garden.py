@@ -2,7 +2,7 @@
 import math,sys
 from pathlib import Path
 from xml.etree import ElementTree as ET
-from pxr import Usd,UsdGeom,UsdPhysics,UsdLux,Gf,Sdf
+from pxr import Usd,UsdGeom,UsdPhysics,UsdLux,UsdShade,Gf,Sdf
 ROOT=Path(__file__).resolve().parents[2]
 
 def build():
@@ -17,6 +17,16 @@ def build():
     def schema(prim,name):prim.SetMetadata('apiSchemas',Sdf.TokenListOp.Create(prependedItems=[*prim.GetAppliedSchemas(),name]))
     schema(scene.GetPrim(),'PhysxSceneAPI');scene.GetPrim().CreateAttribute('physxScene:enableGPUDynamics',Sdf.ValueTypeNames.Bool).Set(False)
     UsdLux.DomeLight.Define(stage,'/World/Light').CreateIntensityAttr(700)
+    materials={}
+    def material(color):
+        key=tuple(color)
+        if key not in materials:
+            path='/World/Materials/Color'+str(len(materials))
+            mat=UsdShade.Material.Define(stage,path);shader=UsdShade.Shader.Define(stage,path+'/Surface')
+            shader.CreateIdAttr('UsdPreviewSurface');shader.CreateInput('diffuseColor',Sdf.ValueTypeNames.Color3f).Set(Gf.Vec3f(*color))
+            shader.CreateInput('roughness',Sdf.ValueTypeNames.Float).Set(1);shader.CreateInput('metallic',Sdf.ValueTypeNames.Float).Set(0)
+            mat.CreateSurfaceOutput().ConnectToSource(shader.ConnectableAPI(),'surface');materials[key]=mat
+        return materials[key]
     def numbers(node,path,default):return list(map(float,node.findtext(path,default).split()))
     def pose(xform,values):
         xform.AddTranslateOp().Set(Gf.Vec3d(*values[:3]));xform.AddRotateXYZOp().Set(Gf.Vec3f(*[math.degrees(v) for v in values[3:]]))
@@ -41,7 +51,9 @@ def build():
                 if size:UsdGeom.Xformable(obj).AddScaleOp().Set(Gf.Vec3f(*size))
                 if item.tag=='collision':
                     UsdPhysics.CollisionAPI.Apply(obj.GetPrim());UsdGeom.Imageable(obj).MakeInvisible()
-                else:obj.CreateDisplayColorAttr([Gf.Vec3f(*numbers(item,'material/diffuse','.5 .5 .5 1')[:3])])
+                else:
+                    color=numbers(item,'material/diffuse','.5 .5 .5 1')[:3];obj.CreateDisplayColorAttr([Gf.Vec3f(*color)])
+                    UsdShade.MaterialBindingAPI.Apply(obj.GetPrim()).Bind(material(color))
             for sensor in link.findall("sensor[@type='camera']"):
                 cam=UsdGeom.Camera.Define(stage,link_path+'/'+sensor.get('name'))
                 values=numbers(sensor,'pose','0 0 0 0 0 0')

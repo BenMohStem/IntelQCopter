@@ -1,0 +1,13 @@
+{
+  "engine": "Isaac Sim 6.2 / PhysX",
+  "physics_success": true,
+  "renderer_success": true,
+  "initial_height_m": 1.4998823404312134,
+  "final_height_m": 0.03999998793005943,
+  "steps": 1000,
+  "rgb_shape": [
+    240,
+    320,
+    4
+  ]
+}

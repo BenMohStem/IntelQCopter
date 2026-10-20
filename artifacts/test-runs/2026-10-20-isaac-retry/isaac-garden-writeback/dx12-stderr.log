@@ -1,0 +1,3 @@
+Warning: Possible version incompatibility. Attempting to load carb::ujitso::IFactory with version v0.3 against v0.2.
+2026-10-20T13:07:04Z [28,293ms] [Error] [omni.kit.app._impl] [py stderr]: c:/users/mohamed/desktop/work/qcopter/sim/isaac/engine_server.py:42: DeprecationWarning: get_contact_force_matrix() is deprecated; use get_normal_contact_force_matrix(); returns normal forces only
+  matrix=contact.get_contact_force_matrix(.002)

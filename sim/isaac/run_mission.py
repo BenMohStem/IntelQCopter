@@ -13,7 +13,7 @@ class IsaacAdapter(adapter.GazeboAdapter):
         self.force=np.zeros(3);self.torque=np.zeros(3);self.drag=np.zeros(3)
         self.state=self.exchange({'op':'state'});self.ground=0;self.panels=[1,2]
 def main():
-    ap=argparse.ArgumentParser();ap.add_argument('--name',default='isaac-garden');ap.add_argument('--video',action='store_true');args=ap.parse_args()
+    ap=argparse.ArgumentParser();ap.add_argument('--name',default='isaac-garden');ap.add_argument('--video',action='store_true');ap.add_argument('--ros',action='store_true');args=ap.parse_args()
     world=IsaacAdapter();mission.p=world;mission.Garden=lambda *a,**kw:world
     mission.OUT=ROOT/'artifacts/simulation/2026-10-20-engines';mission.OUT.mkdir(parents=True,exist_ok=True)
     original_frame=mission.video_frame
@@ -26,7 +26,7 @@ def main():
     hashes={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in paths}
     model=json.loads((ROOT/'sim/model/simulation_parameters.json').read_text())
     print('NATIVE ISAAC RUN: actual PhysX and RGB; inherited baseline result labels are corrected below.',flush=True)
-    result=mission.run_case(args.name,1,2452,model,ROOT/'build/panel-training/rgb-panel/weights/best.pt',video=args.video,gain_scale=.7)
+    result=mission.run_case(args.name,1,2452,model,ROOT/'build/panel-training/rgb-panel/weights/best.pt',video=args.video,ros=args.ros,gain_scale=.7)
     result.update(method='Native Isaac Sim 6.2 / PhysX CPU + MinimalRendering RGB + production C + common C++ mission + YOLO/PnP',
         virtual_ground_contact_for_landing=False,contact_source='Native PhysX filtered contact forces',native_RGB_cameras=True,
         downward_lidar_model='Analytic floor-only virtual ray, not an Isaac lidar sensor',

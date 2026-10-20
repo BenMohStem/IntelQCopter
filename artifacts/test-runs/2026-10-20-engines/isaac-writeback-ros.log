@@ -1,0 +1,2 @@
+Garden ROS2 bridge listening at localhost:9241
+{"transport": "Two Python ROS2 DDS adapter nodes + localhost TCP IPC to Python3.10 renderer", "requests": 30003, "operation_counts": {"1": 1, "2": 27350, "3": 2652}, "median_ms": 0.797900022007525, "p99_ms": 1.8237800337374206, "max_ms": 10.721600032411516, "scope": "Actual C reset, control and lidar fusion through DDS; not ROS C++ wrapper/hardware/real-time proof"}
