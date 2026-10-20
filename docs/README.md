@@ -1,5 +1,7 @@
 # Documentation index
 
+- [Current model, gain calculations and FC integration](current-model-and-fc-integration.md) — stationary gyro averaging, nonlinear equations, transfer functions, full-order stability, periodic Kalman gains, actual DDS/Gazebo path and future wired bridge.
+- [Every flight-controller C line explained](flight-controller-line-by-line.md) — exact source with units, equations and unfinished hardware connections.
 - [Detailed mathematical PDF](modelisation/main.pdf) and [LaTeX source](modelisation/main.tex) — modelling, six PID gains, Kalman derivations and recorded simulation results.
 - [Simulation video, graphs and original data](../artifacts/simulation/2026-10-20-missions/index.html) — CPU flight model and ROS DDS route; Isaac startup failure recorded separately.
 - [ROS C++ companion](../companion/README.md) — common planner, ROS interfaces and YOLO ONNX node; implementation and test boundaries.
