@@ -1,0 +1,10 @@
+{
+  "engine": "NVIDIA Isaac Sim Kit",
+  "renderer_success": false,
+  "vulkan_setting": false,
+  "stage_open_result": "(True, '')",
+  "rgb_shape": [
+    0
+  ],
+  "error": "RuntimeError('No populated camera RGB frame')"
+}

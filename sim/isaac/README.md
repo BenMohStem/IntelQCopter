@@ -1,5 +1,15 @@
 # Isaac Sim: model prepared, execution blocked
 
+## DirectX 12 retry — 20 October 2026
+
+Explicitly setting `/app/vulkan=false` (in addition to `--d3d12`) detects the
+RTX 3050, reaches `app ready`, and opens the local drone USD successfully.
+The earlier plain d3d12 option did not override the base app's Vulkan setting.
+Two camera probes still return an empty RGB array. This is progress beyond GPU
+enumeration, but it does not yet establish working capture or vehicle physics.
+Original logs: `artifacts/test-runs/2026-10-20-isaac-retry/`.
+The repeatable probe is `tools/retry_isaac.ps1`; physical arming stays disabled.
+
 ## Installation and launch result
 
 The shared standalone installation is at **C:\IsaacSim\app**, moved from Public
