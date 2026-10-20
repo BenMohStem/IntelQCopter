@@ -16,6 +16,12 @@ artifacts/** -text
 *.usda text eol=lf
 *.sdf text eol=lf
 *.md text eol=lf
+*.json text eol=lf
+*.cjs text eol=lf
+*.html text eol=lf
+*.svg text eol=lf
+*.ini text eol=lf
+*.code-workspace text eol=lf
 *.cmd text eol=crlf
 # Evidence is retained byte-for-byte, including reports and original logs.
 artifacts/** -text

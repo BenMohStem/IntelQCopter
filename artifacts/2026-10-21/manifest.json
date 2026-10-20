@@ -1,0 +1,79 @@
+{
+  "date": "2026-10-21",
+  "branch": "esp32-xbox",
+  "base_commit": "bb93f1188c724466e2f588a8a8cb53fac4fd8e7f",
+  "files": {
+    "firmware/src/flight_controller.c": {
+      "bytes": 50760,
+      "sha256": "7810604bd3f80970ef13781165a871688c35317a57b6ef72a6ab3e1ff59655c1"
+    },
+    "firmware/include/fc_api.h": {
+      "bytes": 1365,
+      "sha256": "af24cfb3eee981e3182e32e9d3d65bd0840258ce177bcfb47b019660a1fdcb99"
+    },
+    "firmware/src/esp32_platform.cpp": {
+      "bytes": 11190,
+      "sha256": "70bcd3114cddd35e296819ae01d88c334b9fdc83edb4388e0c318307b4068181"
+    },
+    "emulation/scenario.c": {
+      "bytes": 4926,
+      "sha256": "a50c36de014dcce204b104ced0675fd7b53da70d7e0beeb68297961821e11045"
+    },
+    "emulation/run.py": {
+      "bytes": 3587,
+      "sha256": "0c6b7af8c1e438d874f4ba77616c108a582ee5778710e04c8b6c94bb14ee599d"
+    },
+    "emulation/build.py": {
+      "bytes": 1615,
+      "sha256": "700632c241a740fea0ebd4b07d8584e968cc780c26accc0eb0821a6e464daad2"
+    },
+    "emulation/setup.py": {
+      "bytes": 1378,
+      "sha256": "657f586e3180ccf16520d8603a79b42332bd602c7e3760a449ac1ffcb8b1bdda"
+    },
+    "emulation/platformio.ini": {
+      "bytes": 426,
+      "sha256": "625e3ded8231eac932a857cda39090db68d1ec441d63a83e50b33061f6cfa9d8"
+    },
+    "tools/knowledge_db.py": {
+      "bytes": 12878,
+      "sha256": "2a1c525dd7f251d91f75e5a89627f21be4263f6e7277a3c6e79b5c47127af477"
+    },
+    "tools/check_knowledge.py": {
+      "bytes": 2797,
+      "sha256": "6c4af5fa6a6723eeea787040fe006a2b8dd2ca530c6737469abb4bb0ca7bff24"
+    },
+    "tools/model_lti.py": {
+      "bytes": 5508,
+      "sha256": "c7c5e06f5799bbe7feff19ee500659d760af09e4b5e05ea3b564538091dfcd33"
+    },
+    "tools/render_math_guides.cjs": {
+      "bytes": 4812,
+      "sha256": "ef14b4d914c29a3d5140f35cadbd1fb979da707253ca683cccf053765562cb90"
+    },
+    "knowledge/project.json": {
+      "bytes": 27294,
+      "sha256": "638bfc6b573c29f715b8f2eb45c2bb650f9eaffc99ddd929c1b4a06ffb3a059c"
+    },
+    "docs/current-model-and-fc-integration.md": {
+      "bytes": 46298,
+      "sha256": "26518317fbbfbec4f5df4175da04e44a79e584977062c3728dc611f9af0ac811"
+    },
+    "docs/current-model-and-fc-integration.html": {
+      "bytes": 227147,
+      "sha256": "d7bd180848cd3e5109a866913acdac23d7f36fe06ce1d0bb83801dc871002008"
+    },
+    "docs/assets/lti/calculations.json": {
+      "bytes": 21111,
+      "sha256": "a4ce879b531c4a4c4edaddc7410ea3e745769f7a4ef9e64f6540b4431a6f7a43"
+    },
+    ".pio/build/esp32-s3/firmware.bin": {
+      "bytes": 589104,
+      "sha256": "9c4858e25aa61aa6cfab90a7aa708ca038974628c16a7d4e5a72e00c27eeba32"
+    },
+    "build/emulation-pio/esp32-s3-qemu/firmware.bin": {
+      "bytes": 280160,
+      "sha256": "6890f65193f2c1ed1d48407f08ed297d789d0a039847f2b6ebbb8bb0eacdd1cd"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "folders": [{"path": ".", "name": "IntelQCopter · ESP32-S3"}],
+  "settings": {
+    "files.exclude": {"**/.pio": true, "build": true, "archive/rp2350": true},
+    "search.exclude": {"**/.pio/**": true, "build/**": true, "archive/**": true, "artifacts/**": true, "**/*.html": true},
+    "files.associations": {"*.c": "c", "*.h": "c"}
+  }
+}

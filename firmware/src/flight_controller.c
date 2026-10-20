@@ -13,8 +13,8 @@ _Static_assert(sizeof(float)==4, "NVS schema requires a 32-bit float");
 static uint16_t qcopter_get_u16(const uint8_t *p) {
     return (uint16_t)p[0]|(uint16_t)((uint16_t)p[1]<<8);
 }
-/* Battery monitoring: types and implementation stay in this subproject file. */
-#include <stdbool.h>
+/* 1. Battery estimation and requested warning/disarm policy.
+ * Monitor math is retained for the future aircraft voltage/current acquisition. */
 
 typedef enum {
     BATTERY_ACTION_NORMAL = 0,
@@ -91,9 +91,6 @@ battery_action_t battery_monitor_update(battery_status_t *status,
                                         float dt_s);
 /* Configurable battery telemetry / warning logic. No hardware cut-off path. */
 
-
-#include <math.h>
-#include <stddef.h>
 
 static bool positive_finite(float value) {
     return isfinite(value) && value > 0.0f;
@@ -219,6 +216,7 @@ battery_action_t battery_monitor_update(battery_status_t *status,
     return status->action;
 }
 
+/* 2. Sensor calibration, uncertainty and pressure compensation. */
 #define FC_LOOP_HZ 500.0f
 #define FC_LOOP_PERIOD_US 2000u
 #define FC_LOOP_DT (1.0f / FC_LOOP_HZ)
@@ -604,6 +602,7 @@ bool linear_cal_apply(const linear_cal_t *c, double raw, double *corrected) {
     return true;
 }
 
+/* 3. Controller and estimator state; parameters are provisional. */
 typedef struct {
     float kp;
     float ki;
@@ -685,18 +684,16 @@ typedef struct {
     bool sensor_fault;
 } control_output_t;
 
-static angle_kf_t roll_estimator = {
+static const angle_kf_t angle_estimator_defaults = {
     .p00 = 1.0f, .p11 = 0.01f,
     .gyro_noise = 0.04f, .bias_walk = 0.0001f, .accel_noise = 4.0f
 };
-static angle_kf_t pitch_estimator = {
-    .p00 = 1.0f, .p11 = 0.01f,
-    .gyro_noise = 0.04f, .bias_walk = 0.0001f, .accel_noise = 4.0f
-};
-static altitude_kf_t altitude_estimator = {
+static angle_kf_t roll_estimator, pitch_estimator;
+static const altitude_kf_t altitude_estimator_defaults = {
     .p00 = 1.0f, .p11 = 1.0f,
     .accel_noise = 1.5f, .baro_noise = 2.0f
 };
+static altitude_kf_t altitude_estimator;
 
 /* Gains are placeholders for simulation/bench tuning, not flight values. */
 static fc_pid_t roll_angle_pid = {
@@ -751,7 +748,8 @@ static void reset_control_state(void) {
     altitude_reference_initialized = false;
 }
 
-/* Derivative is taken on the measurement to avoid setpoint kick. */
+/* 4. Discrete PID and Kalman update equations.
+ * Derivative is taken on the measurement to avoid setpoint kick. */
 static float pid_update(fc_pid_t *pid, float setpoint, float measurement, float dt) {
     if (!(dt > 0.0f) || dt > FC_MAX_CONTROL_DT) {
         pid_reset(pid);
@@ -858,7 +856,7 @@ static bool sample_is_healthy(const sensor_sample_t *s) {
         && isfinite(s->gyro_y_dps) && isfinite(s->gyro_z_dps);
 }
 
-/*
+/* 5. One control step and F450 X allocation.
  * This function is currently a math/control core only. Mixer motor order and
  * signs must be validated against the chosen frame before its outputs are used.
  */
@@ -960,7 +958,8 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
     return out;
 }
 
-/* ESP32-facing C API. Only the control task owns these states. */
+/* 6. ESP32-facing C API and calibration serialization.
+ * Only the control task owns these states. */
 static imu_calibration_t saved_imu;
 static imu_stationary_cal_t verification;
 static cal_stats3_t accel_faces[6];
@@ -1001,6 +1000,10 @@ static bool imu_fit_valid(const imu_calibration_t *c) {
 }
 void fc_init(uint64_t board_id) {
     calibration_board_id=board_id;
+    roll_estimator=angle_estimator_defaults;
+    pitch_estimator=angle_estimator_defaults;
+    altitude_estimator=altitude_estimator_defaults;
+    hover_collective=FC_HOVER_THROTTLE_PLACEHOLDER;
     saved_imu=(imu_calibration_t){0};
     verification=(imu_stationary_cal_t){0};
     memset(accel_faces,0,sizeof(accel_faces));

@@ -1,37 +1,904 @@
 {
-  "schema": 1,
+  "schema": 2,
   "branch": "esp32-xbox",
   "baseline_main": "3803437",
-  "updated": "2026-10-20",
+  "updated": "2026-10-21",
   "purpose": "Factual project knowledge, decisions, assumptions and evidence index",
+  "sources": [
+    {
+      "id": "source-001",
+      "kind": "file",
+      "locator": "artifacts/esp32-build/build-final.log"
+    },
+    {
+      "id": "source-002",
+      "kind": "decision",
+      "locator": "User request and clarification, 2026-10-20"
+    },
+    {
+      "id": "source-003",
+      "kind": "file",
+      "locator": "archive/reference-drone/platformio.ini"
+    },
+    {
+      "id": "source-004",
+      "kind": "note",
+      "locator": "user clarification"
+    },
+    {
+      "id": "source-005",
+      "kind": "file",
+      "locator": "platformio.ini"
+    },
+    {
+      "id": "source-006",
+      "kind": "file",
+      "locator": "tools/patch_xbox.py"
+    },
+    {
+      "id": "source-007",
+      "kind": "file",
+      "locator": "firmware/src/esp32_platform.cpp"
+    },
+    {
+      "id": "source-008",
+      "kind": "decision",
+      "locator": "User requirements"
+    },
+    {
+      "id": "source-009",
+      "kind": "file",
+      "locator": "README.md"
+    },
+    {
+      "id": "source-010",
+      "kind": "file",
+      "locator": "firmware/src/flight_controller.c"
+    },
+    {
+      "id": "source-011",
+      "kind": "file",
+      "locator": "docs/setup.md"
+    },
+    {
+      "id": "source-012",
+      "kind": "decision",
+      "locator": "User retained instruction"
+    },
+    {
+      "id": "source-013",
+      "kind": "decision",
+      "locator": "User battery-policy instruction"
+    },
+    {
+      "id": "source-014",
+      "kind": "file",
+      "locator": "docs/status.md"
+    },
+    {
+      "id": "source-015",
+      "kind": "decision",
+      "locator": "User sensor requirements"
+    },
+    {
+      "id": "source-016",
+      "kind": "decision",
+      "locator": "User hardware description"
+    },
+    {
+      "id": "source-017",
+      "kind": "decision",
+      "locator": "User uncertainty"
+    },
+    {
+      "id": "source-018",
+      "kind": "note",
+      "locator": "archived model papers"
+    },
+    {
+      "id": "source-019",
+      "kind": "file",
+      "locator": "archive/rp2350/measurements/README.md"
+    },
+    {
+      "id": "source-020",
+      "kind": "file",
+      "locator": "archive/reference-drone/src/main.cpp"
+    },
+    {
+      "id": "source-021",
+      "kind": "file",
+      "locator": "docs/drone-review.md"
+    },
+    {
+      "id": "source-022",
+      "kind": "file",
+      "locator": "simulation/README.md"
+    },
+    {
+      "id": "source-023",
+      "kind": "directory",
+      "locator": "archive/rp2350/artifacts"
+    },
+    {
+      "id": "source-024",
+      "kind": "decision",
+      "locator": "User companion decision"
+    },
+    {
+      "id": "source-025",
+      "kind": "decision",
+      "locator": "User setup decisions"
+    },
+    {
+      "id": "source-026",
+      "kind": "directory",
+      "locator": "archive/rp2350/docs"
+    },
+    {
+      "id": "source-027",
+      "kind": "file",
+      "locator": "archive/README.md"
+    },
+    {
+      "id": "hardware-build-20261021",
+      "kind": "file",
+      "locator": "artifacts/2026-10-21/hardware-build.log",
+      "sha256": "d9f29d1ea9767a4c1885e79e0392544b8d7b2475e2386d23d88090cc2f8d4192"
+    },
+    {
+      "id": "qemu-replay",
+      "kind": "file",
+      "locator": "artifacts/emulation/verified-replay/summary.json",
+      "sha256": "40e96311ae01109649f8bdc83c550f9718653b7287a292a14cea57b9c820c380"
+    },
+    {
+      "id": "qemu-uart",
+      "kind": "file",
+      "locator": "artifacts/emulation/verified-replay/uart.log",
+      "sha256": "19867b4ede51b59a3ab811b518d579d8c9ccd19e9b7d1011bfd2aaf5bf88f3a9"
+    },
+    {
+      "id": "qemu-guide",
+      "kind": "file",
+      "locator": "emulation/README.md"
+    },
+    {
+      "id": "lti-guide",
+      "kind": "file",
+      "locator": "docs/current-model-and-fc-integration.md"
+    },
+    {
+      "id": "lti-data",
+      "kind": "file",
+      "locator": "docs/assets/lti/calculations.json"
+    },
+    {
+      "id": "knowledge-design",
+      "kind": "file",
+      "locator": "knowledge/README.md"
+    },
+    {
+      "id": "knowledge-checks",
+      "kind": "file",
+      "locator": "artifacts/2026-10-21/knowledge-checks.log",
+      "sha256": "dcfca7e451acdbc4b24eee064046900962b5f833f97636eab4bc3f07dd287842"
+    },
+    {
+      "id": "code-map",
+      "kind": "file",
+      "locator": "docs/code-map.md"
+    }
+  ],
   "facts": [
-    {"id":"build","status":"measured","topic":"build","statement":"ESP32-S3 firmware compilation succeeds. PlatformIO reports 31724 bytes static RAM and 588761 bytes program flash. No hardware execution, pairing or flight was performed.","source":"artifacts/esp32-build/build-final.log"},
-    {"id":"branches","status":"confirmed","topic":"architecture","statement":"Main retains RP2350/RP2040. This branch uses an ESP32-S3 on the drone and an Xbox Series X/S controller.","source":"User request and clarification, 2026-10-20"},
-    {"id":"target","status":"confirmed","topic":"hardware","statement":"Use the esp32-s3-devkitc-1 target from the original Drone PlatformIO project; exact physical board/wiring still needs checking.","source":"archive/reference-drone/platformio.ini; user clarification"},
-    {"id":"library","status":"implemented","topic":"input","statement":"Use XboxSeriesXControllerESP32_asukiaaa 1.1.3 and NimBLE 2.5.1, with a guarded raw-report observer on the downloaded library.","source":"platformio.ini; tools/patch_xbox.py"},
-    {"id":"callback_snapshot","status":"implemented","topic":"input","statement":"Parse complete reports in the callback; synchronize the pilot snapshot and preserve actual receive time. Do not poll the mutable parser state across cores.","source":"firmware/src/esp32_platform.cpp"},
-    {"id":"controls","status":"confirmed","topic":"input","statement":"Mode 2: left horizontal yaw rate; left vertical speed with centered height hold; right roll/pitch angles; RT boost. LT and other buttons reserved.","source":"User requirements; README.md"},
-    {"id":"gestures","status":"implemented","topic":"input","statement":"LB+RB+A/B logs one-shot takeoff/landing requests. No mission or physical arming action is connected.","source":"firmware/src/esp32_platform.cpp"},
-    {"id":"mode","status":"implemented","topic":"control","statement":"Six C controller objects: roll/pitch outer-angle P and inner-rate PI, yaw-rate PI, altitude PID. All gains remain provisional.","source":"firmware/src/flight_controller.c"},
-    {"id":"language","status":"implemented","topic":"architecture","statement":"Flight math/calibration in one C file; minimal C++ adapter required by existing Arduino/Xbox/sensor APIs.","source":"firmware/src/flight_controller.c; firmware/src/esp32_platform.cpp"},
-    {"id":"timing","status":"implemented","topic":"control","statement":"A 2000 us timer requests control work. dt is measured and missed/late cycles reported. Actual deadlines have not been measured.","source":"firmware/src/esp32_platform.cpp"},
-    {"id":"watchdog","status":"assumed","topic":"input","statement":"250 ms maximum report age is provisional. Idle report behavior and actual loss/range/latency need bench measurements.","source":"firmware/src/flight_controller.c; docs/setup.md"},
-    {"id":"arming","status":"confirmed","topic":"outputs","statement":"Keep physical arming disabled. Motor pins remain inputs; no servo/ESC output driver is included.","source":"User retained instruction; firmware/src/esp32_platform.cpp"},
-    {"id":"battery_policy","status":"confirmed","topic":"battery","statement":"Warn at 35 percent estimated charge; latch disarm at 20 percent regardless of height. Do not automatically land.","source":"User battery-policy instruction"},
-    {"id":"battery_measurement","status":"pending","topic":"battery","statement":"No actual pack voltage/current acquisition or OCV/capacity characterization. An Xbox controller's reported battery level is not aircraft SOC.","source":"docs/status.md"},
-    {"id":"imu","status":"implemented","topic":"sensors","statement":"MPU6050 at 0x68, 8g/500dps, 42Hz DLPF, nominal 500Hz sampling; data-ready and complete burst checks. Mount transform remains unverified identity.","source":"firmware/src/esp32_platform.cpp"},
-    {"id":"altitude_sensor","status":"implemented","topic":"sensors","statement":"BMP280 factory compensation with 100-reading session ground reference; pressure-age checking. Actual correlated noise and delay remain unmeasured.","source":"firmware/src/esp32_platform.cpp; firmware/src/flight_controller.c"},
-    {"id":"calibration","status":"implemented","topic":"calibration","statement":"500-sample stationary gyro verification; six 200-sample accelerometer faces with geometry/noise gates; no real coefficients captured.","source":"firmware/src/flight_controller.c"},
-    {"id":"nvs","status":"implemented","topic":"calibration","statement":"160-byte versioned CRC/profile/board-bound IMU record in Preferences/NVS. Write spacing/readback and bounded retries. No hardware persistence proof.","source":"docs/setup.md"},
-    {"id":"estimator_limit","status":"pending","topic":"estimation","statement":"Independent angle/bias filters approximate Euler rates; gravity removal uses the previous estimate. Full quaternion/heading fusion remains future work.","source":"firmware/src/flight_controller.c; docs/status.md"},
-    {"id":"extra_sensors","status":"pending","topic":"sensors","statement":"HMC5883L, TOFSense F2 mini and battery ADC/current drivers are not integrated on this branch; lidar mounting choice remains open.","source":"User sensor requirements; docs/status.md"},
-    {"id":"airframe","status":"confirmed","topic":"model","statement":"F450/Q450 frame family, 1400KV orange motors of unconfirmed exact model, 9047 props, 40A ESCs, 3S 4200mAh 120C LiPo label.","source":"User hardware description"},
-    {"id":"mass","status":"assumed","topic":"model","statement":"1.2kg flight scenario and 0.740kg component URDF are separate assumptions, neither measured. Approximate battery mass 150g is unverified.","source":"User uncertainty; archived model papers"},
-    {"id":"identify","status":"pending","topic":"model","statement":"Measure complete mass/COM/inertia, thrust-command-voltage curve, motor delay, reaction torque, noise/drift and actual current/capacity.","source":"archive/rp2350/measurements/README.md"},
-    {"id":"source_review","status":"historical","topic":"provenance","statement":"Original Drone sketch used direct RT throttle, five PID objects, 50Hz ESC servo output, fixed dt and a Boolean tick flag; it was reviewed, not flown.","source":"archive/reference-drone/src/main.cpp; docs/drone-review.md"},
-    {"id":"simulation","status":"pending","topic":"simulation","statement":"Prior native Gazebo/ROS and other engine recordings are retained as historical evidence. No ESP32-specific feedback simulation or flight is claimed.","source":"simulation/README.md; archive/rp2350/artifacts"},
-    {"id":"autonomy","status":"pending","topic":"companion","statement":"Workstation simulation first; companion hardware not selected. ROS2 C++/camera/YOLO/localization and physical transport remain future integration on this branch.","source":"User companion decision; docs/status.md"},
-    {"id":"isaac","status":"historical","topic":"simulation","statement":"Isaac Sim was removed at the user's request; do not add it as an active requirement. TensorFlow is not a project requirement.","source":"User setup decisions; archive/rp2350/docs"},
-    {"id":"archive","status":"implemented","topic":"organization","statement":"Prior tracked content is archived coherently; old launch scripts assume the original root layout. Main remains the runnable reference for that workflow.","source":"archive/README.md"}
+    {
+      "id": "build",
+      "topic": "build",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "measured",
+          "statement": "ESP32-S3 firmware compilation succeeds. PlatformIO reports 31724 bytes static RAM and 588761 bytes program flash. No hardware execution, pairing or flight was performed.",
+          "sources": [
+            "source-001"
+          ],
+          "evidence_level": "build",
+          "reason": "Migrated without changing the original claim from schema 1."
+        },
+        {
+          "revision": 2,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "The hardware ESP32-S3 target compiles with 31732 bytes static RAM and 588741 bytes program flash after the full estimator reset fix. No physical execution is claimed.",
+          "sources": [
+            "hardware-build-20261021"
+          ],
+          "evidence_level": "build",
+          "reason": "Rebuilt after fc_init reset and C organization changes; prior size evidence is retained."
+        }
+      ]
+    },
+    {
+      "id": "branches",
+      "topic": "architecture",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "confirmed",
+          "statement": "Main retains RP2350/RP2040. This branch uses an ESP32-S3 on the drone and an Xbox Series X/S controller.",
+          "sources": [
+            "source-002"
+          ],
+          "evidence_level": "requirement",
+          "reason": "Migrated without changing the original claim from schema 1."
+        }
+      ]
+    },
+    {
+      "id": "target",
+      "topic": "hardware",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "confirmed",
+          "statement": "Use the esp32-s3-devkitc-1 target from the original Drone PlatformIO project; exact physical board/wiring still needs checking.",
+          "sources": [
+            "source-003",
+            "source-004"
+          ],
+          "evidence_level": "requirement",
+          "reason": "Migrated without changing the original claim from schema 1."
+        }
+      ]
+    },
+    {
+      "id": "library",
+      "topic": "input",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "implemented",
+          "statement": "Use XboxSeriesXControllerESP32_asukiaaa 1.1.3 and NimBLE 2.5.1, with a guarded raw-report observer on the downloaded library.",
+          "sources": [
+            "source-005",
+            "source-006"
+          ],
+          "evidence_level": "source",
+          "reason": "Migrated without changing the original claim from schema 1."
+        }
+      ]
+    },
+    {
+      "id": "callback_snapshot",
+      "topic": "input",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "implemented",
+          "statement": "Parse complete reports in the callback; synchronize the pilot snapshot and preserve actual receive time. Do not poll the mutable parser state across cores.",
+          "sources": [
+            "source-007"
+          ],
+          "evidence_level": "source",
+          "reason": "Migrated without changing the original claim from schema 1."
+        }
+      ]
+    },
+    {
+      "id": "controls",
+      "topic": "input",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "confirmed",
+          "statement": "Mode 2: left horizontal yaw rate; left vertical speed with centered height hold; right roll/pitch angles; RT boost. LT and other buttons reserved.",
+          "sources": [
+            "source-008",
+            "source-009"
+          ],
+          "evidence_level": "requirement",
+          "reason": "Migrated without changing the original claim from schema 1."
+        }
+      ]
+    },
+    {
+      "id": "gestures",
+      "topic": "input",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "implemented",
+          "statement": "LB+RB+A/B logs one-shot takeoff/landing requests. No mission or physical arming action is connected.",
+          "sources": [
+            "source-007"
+          ],
+          "evidence_level": "source",
+          "reason": "Migrated without changing the original claim from schema 1."
+        }
+      ]
+    },
+    {
+      "id": "mode",
+      "topic": "control",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "implemented",
+          "statement": "Six C controller objects: roll/pitch outer-angle P and inner-rate PI, yaw-rate PI, altitude PID. All gains remain provisional.",
+          "sources": [
+            "source-010"
+          ],
+          "evidence_level": "source",
+          "reason": "Migrated without changing the original claim from schema 1."
+        }
+      ]
+    },
+    {
+      "id": "language",
+      "topic": "architecture",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "implemented",
+          "statement": "Flight math/calibration in one C file; minimal C++ adapter required by existing Arduino/Xbox/sensor APIs.",
+          "sources": [
+            "source-010",
+            "source-007"
+          ],
+          "evidence_level": "source",
+          "reason": "Migrated without changing the original claim from schema 1."
+        }
+      ]
+    },
+    {
+      "id": "timing",
+      "topic": "control",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "implemented",
+          "statement": "A 2000 us timer requests control work. dt is measured and missed/late cycles reported. Actual deadlines have not been measured.",
+          "sources": [
+            "source-007"
+          ],
+          "evidence_level": "source",
+          "reason": "Migrated without changing the original claim from schema 1."
+        }
+      ]
+    },
+    {
+      "id": "watchdog",
+      "topic": "input",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "assumed",
+          "statement": "250 ms maximum report age is provisional. Idle report behavior and actual loss/range/latency need bench measurements.",
+          "sources": [
+            "source-010",
+            "source-011"
+          ],
+          "evidence_level": "none",
+          "reason": "Migrated without changing the original claim from schema 1."
+        }
+      ]
+    },
+    {
+      "id": "arming",
+      "topic": "outputs",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "confirmed",
+          "statement": "Keep physical arming disabled. Motor pins remain inputs; no servo/ESC output driver is included.",
+          "sources": [
+            "source-012",
+            "source-007"
+          ],
+          "evidence_level": "requirement",
+          "reason": "Migrated without changing the original claim from schema 1."
+        }
+      ]
+    },
+    {
+      "id": "battery_policy",
+      "topic": "battery",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "confirmed",
+          "statement": "Warn at 35 percent estimated charge; latch disarm at 20 percent regardless of height. Do not automatically land.",
+          "sources": [
+            "source-013"
+          ],
+          "evidence_level": "requirement",
+          "reason": "Migrated without changing the original claim from schema 1."
+        }
+      ]
+    },
+    {
+      "id": "battery_measurement",
+      "topic": "battery",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "pending",
+          "statement": "No actual pack voltage/current acquisition or OCV/capacity characterization. An Xbox controller's reported battery level is not aircraft SOC.",
+          "sources": [
+            "source-014"
+          ],
+          "evidence_level": "none",
+          "reason": "Migrated without changing the original claim from schema 1."
+        }
+      ]
+    },
+    {
+      "id": "imu",
+      "topic": "sensors",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "implemented",
+          "statement": "MPU6050 at 0x68, 8g/500dps, 42Hz DLPF, nominal 500Hz sampling; data-ready and complete burst checks. Mount transform remains unverified identity.",
+          "sources": [
+            "source-007"
+          ],
+          "evidence_level": "source",
+          "reason": "Migrated without changing the original claim from schema 1."
+        }
+      ]
+    },
+    {
+      "id": "altitude_sensor",
+      "topic": "sensors",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "implemented",
+          "statement": "BMP280 factory compensation with 100-reading session ground reference; pressure-age checking. Actual correlated noise and delay remain unmeasured.",
+          "sources": [
+            "source-007",
+            "source-010"
+          ],
+          "evidence_level": "source",
+          "reason": "Migrated without changing the original claim from schema 1."
+        }
+      ]
+    },
+    {
+      "id": "calibration",
+      "topic": "calibration",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "implemented",
+          "statement": "500-sample stationary gyro verification; six 200-sample accelerometer faces with geometry/noise gates; no real coefficients captured.",
+          "sources": [
+            "source-010"
+          ],
+          "evidence_level": "source",
+          "reason": "Migrated without changing the original claim from schema 1."
+        }
+      ]
+    },
+    {
+      "id": "nvs",
+      "topic": "calibration",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "implemented",
+          "statement": "160-byte versioned CRC/profile/board-bound IMU record in Preferences/NVS. Write spacing/readback and bounded retries. No hardware persistence proof.",
+          "sources": [
+            "source-011"
+          ],
+          "evidence_level": "source",
+          "reason": "Migrated without changing the original claim from schema 1."
+        }
+      ]
+    },
+    {
+      "id": "estimator_limit",
+      "topic": "estimation",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "pending",
+          "statement": "Independent angle/bias filters approximate Euler rates; gravity removal uses the previous estimate. Full quaternion/heading fusion remains future work.",
+          "sources": [
+            "source-010",
+            "source-014"
+          ],
+          "evidence_level": "none",
+          "reason": "Migrated without changing the original claim from schema 1."
+        }
+      ]
+    },
+    {
+      "id": "extra_sensors",
+      "topic": "sensors",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "pending",
+          "statement": "HMC5883L, TOFSense F2 mini and battery ADC/current drivers are not integrated on this branch; lidar mounting choice remains open.",
+          "sources": [
+            "source-015",
+            "source-014"
+          ],
+          "evidence_level": "none",
+          "reason": "Migrated without changing the original claim from schema 1."
+        }
+      ]
+    },
+    {
+      "id": "airframe",
+      "topic": "model",
+      "scope": "airframe",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "confirmed",
+          "statement": "F450/Q450 frame family, 1400KV orange motors of unconfirmed exact model, 9047 props, 40A ESCs, 3S 4200mAh 120C LiPo label.",
+          "sources": [
+            "source-016"
+          ],
+          "evidence_level": "requirement",
+          "reason": "Migrated without changing the original claim from schema 1."
+        }
+      ]
+    },
+    {
+      "id": "mass",
+      "topic": "model",
+      "scope": "airframe",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "assumed",
+          "statement": "1.2kg flight scenario and 0.740kg component URDF are separate assumptions, neither measured. Approximate battery mass 150g is unverified.",
+          "sources": [
+            "source-017",
+            "source-018"
+          ],
+          "evidence_level": "none",
+          "reason": "Migrated without changing the original claim from schema 1."
+        }
+      ]
+    },
+    {
+      "id": "identify",
+      "topic": "model",
+      "scope": "airframe",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "pending",
+          "statement": "Measure complete mass/COM/inertia, thrust-command-voltage curve, motor delay, reaction torque, noise/drift and actual current/capacity.",
+          "sources": [
+            "source-019"
+          ],
+          "evidence_level": "none",
+          "reason": "Migrated without changing the original claim from schema 1."
+        }
+      ]
+    },
+    {
+      "id": "source_review",
+      "topic": "provenance",
+      "scope": "historical",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "historical",
+          "statement": "Original Drone sketch used direct RT throttle, five PID objects, 50Hz ESC servo output, fixed dt and a Boolean tick flag; it was reviewed, not flown.",
+          "sources": [
+            "source-020",
+            "source-021"
+          ],
+          "evidence_level": "none",
+          "reason": "Migrated without changing the original claim from schema 1."
+        }
+      ]
+    },
+    {
+      "id": "simulation",
+      "topic": "simulation",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "pending",
+          "statement": "Prior native Gazebo/ROS and other engine recordings are retained as historical evidence. No ESP32-specific feedback simulation or flight is claimed.",
+          "sources": [
+            "source-022",
+            "source-023"
+          ],
+          "evidence_level": "none",
+          "reason": "Migrated without changing the original claim from schema 1."
+        },
+        {
+          "revision": 2,
+          "date": "2026-10-21",
+          "status": "pending",
+          "statement": "QEMU now executes the active ESP32-S3 C core with synthetic input replay. An ESP32/Gazebo closed-loop flight connection and new flight recording remain pending. Prior engine recordings retain their historical scope.",
+          "sources": [
+            "qemu-guide"
+          ],
+          "evidence_level": "source",
+          "reason": "Separate completed CPU replay from the still-pending feedback flight simulation."
+        }
+      ]
+    },
+    {
+      "id": "autonomy",
+      "topic": "companion",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "pending",
+          "statement": "Workstation simulation first; companion hardware not selected. ROS2 C++/camera/YOLO/localization and physical transport remain future integration on this branch.",
+          "sources": [
+            "source-024",
+            "source-014"
+          ],
+          "evidence_level": "none",
+          "reason": "Migrated without changing the original claim from schema 1."
+        }
+      ]
+    },
+    {
+      "id": "isaac",
+      "topic": "simulation",
+      "scope": "historical",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "historical",
+          "statement": "Isaac Sim was removed at the user's request; do not add it as an active requirement. TensorFlow is not a project requirement.",
+          "sources": [
+            "source-025",
+            "source-026"
+          ],
+          "evidence_level": "none",
+          "reason": "Migrated without changing the original claim from schema 1."
+        }
+      ]
+    },
+    {
+      "id": "archive",
+      "topic": "organization",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-20",
+          "status": "implemented",
+          "statement": "Prior tracked content is archived coherently; old launch scripts assume the original root layout. Main remains the runnable reference for that workflow.",
+          "sources": [
+            "source-027"
+          ],
+          "evidence_level": "source",
+          "reason": "Migrated without changing the original claim from schema 1."
+        },
+        {
+          "revision": 2,
+          "date": "2026-10-21",
+          "status": "implemented",
+          "statement": "Active firmware, emulation, documentation and knowledge are indexed in a code map. Editor settings hide the historical RP2350 tree and caches by default. Original evidence stays versioned; generated SQLite moved to ignored build/knowledge.",
+          "sources": [
+            "code-map",
+            "knowledge-design"
+          ],
+          "evidence_level": "source",
+          "reason": "Keep durable evidence and facts separate from regenerable tool/search caches."
+        }
+      ]
+    },
+    {
+      "id": "emulation",
+      "topic": "emulation",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "Espressif QEMU ESP32-S3 executed 4982 logical 2 ms steps and passed 19 checks on the active C core. Inputs are synthetic; no BLE, sensor-register, ESC, NVS-persistence or real-time timing proof.",
+          "sources": [
+            "qemu-replay",
+            "qemu-uart",
+            "qemu-guide"
+          ],
+          "evidence_level": "emulated",
+          "reason": "Added for the requested emulation, organization and linear model work."
+        }
+      ]
+    },
+    {
+      "id": "estimator_reset",
+      "topic": "estimation",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "fc_init resets angle/bias and height/velocity estimator state and covariance defaults; a reinitialization check passes in the QEMU replay.",
+          "sources": [
+            "qemu-replay"
+          ],
+          "evidence_level": "emulated",
+          "reason": "Added for the requested emulation, organization and linear model work."
+        }
+      ]
+    },
+    {
+      "id": "lti_model",
+      "topic": "model",
+      "scope": "airframe",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-21",
+          "status": "implemented",
+          "statement": "A 16-state, four-input F450 hover LTI plant includes 450 mm nominal diagonal, 159.099 mm roll/pitch lever, motor lag and translational drag. Physical parameters are assumed; numerical continuous and exact held-input plant matrices are generated.",
+          "sources": [
+            "lti-guide",
+            "lti-data"
+          ],
+          "evidence_level": "source",
+          "reason": "Added for the requested emulation, organization and linear model work."
+        }
+      ]
+    },
+    {
+      "id": "sampled_stability",
+      "topic": "model",
+      "scope": "airframe",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "For the documented assumed plant and ideal state feedback, rounded C gains give stable continuous and 2 ms sampled loops. Largest sampled pole magnitudes: roll/pitch 0.994932, yaw 0.993840, height 0.998631. This excludes actual delay, estimator dynamics and saturation.",
+          "sources": [
+            "lti-data",
+            "lti-guide"
+          ],
+          "evidence_level": "simulated",
+          "reason": "Added for the requested emulation, organization and linear model work."
+        }
+      ]
+    },
+    {
+      "id": "knowledge_v2",
+      "topic": "organization",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-21",
+          "status": "implemented",
+          "statement": "Schema 2 stores stable facts, append-only dated revisions, typed sources, evidence levels and dependency relations. SQLite FTS5 is a disposable cache; validation, hash freshness, build locking and atomic replacement protect integrity. Nine isolated failure-containment/search checks pass.",
+          "sources": [
+            "knowledge-design",
+            "knowledge-checks"
+          ],
+          "evidence_level": "source",
+          "reason": "Added for the requested emulation, organization and linear model work."
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "from": "mode",
+      "type": "limited_by",
+      "to": "identify"
+    },
+    {
+      "from": "nvs",
+      "type": "depends_on",
+      "to": "calibration"
+    },
+    {
+      "from": "timing",
+      "type": "limited_by",
+      "to": "watchdog"
+    },
+    {
+      "from": "battery_policy",
+      "type": "limited_by",
+      "to": "battery_measurement"
+    },
+    {
+      "from": "autonomy",
+      "type": "depends_on",
+      "to": "simulation"
+    },
+    {
+      "from": "simulation",
+      "type": "limited_by",
+      "to": "mass"
+    },
+    {
+      "from": "callback_snapshot",
+      "type": "depends_on",
+      "to": "library"
+    },
+    {
+      "from": "emulation",
+      "type": "depends_on",
+      "to": "language"
+    },
+    {
+      "from": "emulation",
+      "type": "limited_by",
+      "to": "timing"
+    },
+    {
+      "from": "lti_model",
+      "type": "limited_by",
+      "to": "identify"
+    },
+    {
+      "from": "sampled_stability",
+      "type": "depends_on",
+      "to": "lti_model"
+    },
+    {
+      "from": "sampled_stability",
+      "type": "limited_by",
+      "to": "mass"
+    }
   ]
 }

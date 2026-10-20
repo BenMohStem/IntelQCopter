@@ -1,5 +1,6 @@
 # Local SDK builds, Python environments, and generated binaries
 /.pio/
+**/.pio/
 /.vscode/
 /build/
 /.venv-*/
@@ -15,6 +16,9 @@ compile_commands.json
 *.uf2
 *.bin
 *.hex
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
 
 # Local coursework (not QCopter project content)
 /Compte_rendu_TP1_SLM_LaTeX/

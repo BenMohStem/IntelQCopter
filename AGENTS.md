@@ -5,6 +5,10 @@
   esp32_platform.cpp is a minimal C++ adapter for existing hardware libraries.
 - Keep centered left-stick vertical-speed/height-hold commands; RT is boost.
 - Current facts and assumptions live in knowledge/project.json and docs/status.md.
+  Append dated revisions with sources; do not silently replace earlier claims.
+  Run tools/update_knowledge.py build after changes. SQLite lives in ignored build/knowledge/.
+- Distinguish hardware build, QEMU input replay, LTI calculation, flight simulation,
+  and physical measurements. New evidence must name its actual scope.
 - archive/ is historical evidence; archived launch scripts are not ESP32 tools.
 - Do not modify the original Drone folder or main checkout.
 - Physical motor arming remains disabled until the user changes that instruction.

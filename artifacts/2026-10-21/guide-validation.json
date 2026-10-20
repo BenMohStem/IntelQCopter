@@ -1,0 +1,7 @@
+{
+  "math_expressions": 322,
+  "local_links": 18,
+  "unique_anchors": 48,
+  "all_local_targets_exist": true,
+  "visual_qa": "Both SVG diagrams and plotted PNGs inspected; no browser HTML rendering claim."
+}

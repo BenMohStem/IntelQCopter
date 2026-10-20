@@ -19,6 +19,17 @@ The ESP32-S3 target compiled successfully. See ../artifacts/esp32-build/ for
 original build output and source/binary hashes. This is build evidence, not
 a measured timing or Bluetooth result.
 
+On 2026-10-21 the active C core also executed on the Espressif QEMU ESP32-S3
+machine with synthetic input replay: 19 checks passed in 4,982 logical steps.
+The initial failed startup and first successful run remain in artifacts/emulation/.
+`fc_init()` now resets estimator state, which is checked by the final replay.
+This is CPU/control evidence; it does not exercise the hardware adapter or flight physics.
+
+The active mathematical guide explains the F450 X allocation, continuous hover
+LTI model, six gains, stability, exact plant discretization and the actual C PID/Kalman
+updates. Its numerical response plots assume ideal state feedback and provisional
+airframe parameters. See current-model-and-fc-integration.html.
+
 ## Missing, in order
 
 1. Exact-board wiring, mounted axes, I²C integrity, controller firmware and pairing verification.
@@ -27,7 +38,7 @@ a measured timing or Bluetooth result.
 4. HMC5883L, lidar and voltage/current ADC integration; usable capacity/OCV identification.
 5. Complete mass/COM/inertia, thrust, motor delay and reaction torque measurements.
 6. ESC protocol/wiring and an explicitly authorized future arming/output design.
-7. ESP32-specific host/simulation adapter; no ESP32 flight recording exists.
+7. Connect the ESP32 C API or emulated CPU to a flight plant/ROS/Gazebo; CPU replay exists, but no ESP32 flight recording does.
 8. Companion transport/authority, localization, camera distance geometry and real-scene perception.
 
 The 1.2 kg flight baseline and 0.740 kg component URDF are distinct assumptions,

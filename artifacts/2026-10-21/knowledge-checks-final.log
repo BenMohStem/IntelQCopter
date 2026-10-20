@@ -1,0 +1,10 @@
+PASS valid build and full-text lookup
+PASS duplicate fact old cache retained
+PASS dangling evidence old cache retained
+PASS dependency cycle old cache retained
+PASS immutable previous revision old cache retained
+PASS path escape old cache retained
+PASS incorrect pinned hash old cache retained
+PASS competing builder preserves lock and cache
+PASS stale ledger query rejected
+Knowledge checks passed: 9

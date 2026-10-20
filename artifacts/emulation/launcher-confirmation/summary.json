@@ -1,0 +1,111 @@
+{
+  "engine": "Espressif QEMU ESP32-S3",
+  "command": [
+    "C:\\Users\\Mohamed\\Desktop\\Work\\QCopter\\build\\esp32-xbox\\build\\qemu\\qemu\\bin\\qemu-system-xtensa.exe",
+    "-machine",
+    "esp32s3",
+    "-display",
+    "none",
+    "-monitor",
+    "none",
+    "-serial",
+    "stdio",
+    "-no-reboot",
+    "-snapshot",
+    "-drive",
+    "file=C:/Users/Mohamed/Desktop/Work/QCopter/build/esp32-xbox/build/emulation-flash.bin,if=mtd,format=raw"
+  ],
+  "completed": true,
+  "checks": [
+    {
+      "name": "gyro_stationary_verification",
+      "result": "PASS"
+    },
+    {
+      "name": "barometer_ground_reference",
+      "result": "PASS"
+    },
+    {
+      "name": "uncalibrated_accelerometer_blocks_demands",
+      "result": "PASS"
+    },
+    {
+      "name": "six_face_calibration",
+      "result": "PASS"
+    },
+    {
+      "name": "healthy_calibrated_input",
+      "result": "PASS"
+    },
+    {
+      "name": "calibration_record_generated",
+      "result": "PASS"
+    },
+    {
+      "name": "crc_rejects_corruption",
+      "result": "PASS"
+    },
+    {
+      "name": "record_rejects_wrong_board",
+      "result": "PASS"
+    },
+    {
+      "name": "valid_record_load",
+      "result": "PASS"
+    },
+    {
+      "name": "init_resets_estimator_state",
+      "result": "PASS"
+    },
+    {
+      "name": "boot_requires_fresh_gyro_check",
+      "result": "PASS"
+    },
+    {
+      "name": "reload_recovers_after_verification",
+      "result": "PASS"
+    },
+    {
+      "name": "roll_mixer_sign",
+      "result": "PASS"
+    },
+    {
+      "name": "stale_report_zeroes_demands",
+      "result": "PASS"
+    },
+    {
+      "name": "imu_loss_zeroes_demands",
+      "result": "PASS"
+    },
+    {
+      "name": "barometer_loss_zeroes_demands",
+      "result": "PASS"
+    },
+    {
+      "name": "soc_35_warns",
+      "result": "PASS"
+    },
+    {
+      "name": "soc_20_disarms",
+      "result": "PASS"
+    },
+    {
+      "name": "battery_disarm_latches",
+      "result": "PASS"
+    }
+  ],
+  "host_elapsed_seconds": 0.6099999999860302,
+  "hashes": {
+    "firmware/src/flight_controller.c": "7810604bd3f80970ef13781165a871688c35317a57b6ef72a6ab3e1ff59655c1",
+    "firmware/include/fc_api.h": "af24cfb3eee981e3182e32e9d3d65bd0840258ce177bcfb47b019660a1fdcb99",
+    "emulation/scenario.c": "a50c36de014dcce204b104ced0675fd7b53da70d7e0beeb68297961821e11045",
+    "emulation/main.cpp": "61f91c1c8ea45b6d5b7d6615c98ae5875f19ba9079299519df5086d567fd01aa",
+    "emulation/flight_core.c": "bd9fa17a1755c4b74bb36fce1e3aa5c1965a9b796236542c8793a64ee1034bef",
+    "emulation/platformio.ini": "625e3ded8231eac932a857cda39090db68d1ec441d63a83e50b33061f6cfa9d8",
+    "build/emulation-pio/esp32-s3-qemu/firmware.elf": "b851a869205214cb7392d15b7ab38ad635e21a45c1a7a5eea7f02df9aac469d9",
+    "build/emulation-flash.bin": "cc49ed8c80b947d5e030fadf4675def1c05b2100fdc60c77416de51b8b97e96a",
+    "build/qemu/qemu/bin/qemu-system-xtensa.exe": "7716f734130a20193ab45a4c14581918822e5ae684eb5cf3073b9429bee29825"
+  },
+  "scope": "Active C core compiled for Xtensa; synthetic input replay, not flight physics, BLE, sensor registers or real-time timing.",
+  "passed": true
+}
