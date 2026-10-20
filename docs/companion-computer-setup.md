@@ -1,5 +1,18 @@
 # Companion computer setup
 
+## Current scope: simulation only
+
+The user has deferred choosing a companion board until hardware is available.
+Run the companion software on the workstation for simulation and keep its ROS
+interfaces portable. Do not block simulation on a Pi/Jetson choice or install a
+board-specific OS, camera stack or accelerator runtime yet. Hardware deployment
+recipes below are future options, not current installation requirements.
+
+The next simulation integration step is to connect native Gazebo camera, pose
+and contact data to the standard ROS topic graph, then exercise the compiled
+C++ perception and mission nodes as part of the complete flight path. Continue
+recording original logs, videos and graphs; label simulated sensor/pose inputs.
+
 ## Common software boundary
 
 Pi 4/5 and Jetson use the same C++ sources in `qcopter_autonomy`. Start with CPU
