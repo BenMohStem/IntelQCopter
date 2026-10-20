@@ -28,3 +28,8 @@ compile_commands.json
 /docs/modelisation/*.out
 /docs/modelisation/*.toc
 /docs/modelisation/*.synctex.gz
+/docs/model-guide/*.log
+/docs/model-guide/*.aux
+/docs/model-guide/*.out
+/docs/model-guide/*.toc
+/docs/model-guide/*.synctex.gz

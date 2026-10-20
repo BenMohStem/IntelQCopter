@@ -1,0 +1,2 @@
+   text	   data	    bss	    dec	    hex	filename
+  46592	      0	   5740	  52332	   cc6c	build\flight-rp2350\qcopter.elf

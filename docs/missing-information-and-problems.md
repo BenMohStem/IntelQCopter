@@ -64,9 +64,16 @@
   ROS C++ wrapper flight and physical companion/serial integration remain pending.
 - Isaac Sim was removed at the user's request. Historical successful native
   PhysX/RGB flight evidence remains; the current workflow uses Gazebo.
-- GPS/sensor-loss recovery, companion authority, landed detection, low-battery
-  landing and dropout behaviour require explicit state-machine tests. Cutting
-  motors at an airborne SOC threshold is not a landing strategy.
+- The requested battery policy is now warning at 35% estimated SOC and latched
+  disarm at 20%, regardless of height, with no automatic landing. USB and simulation
+  ROS flags exist; real acquisition and LoRa notification remain unfinished.
+  Physical arming remains disabled. This policy update has not been exercised in a new flight.
+- Calibration now has a two-slot RP2350 flash journal and stationary gyro boot
+  verification/recalculation. Physical power-loss/endurance checks, acquisition,
+  guided six-face capture, and automatic mapping of measured noise into all filter
+  settings remain unfinished.
+- GPS/sensor-loss recovery, companion authority, landed detection and dropout
+  behavior still require explicit state-machine verification.
 - Git origin is the public BenMohStem/IntelQCopter repository. Setup changes and
   original evidence are committed/pushed as separate steps; downloaded environments
   and model weights are excluded.

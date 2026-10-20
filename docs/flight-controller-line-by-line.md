@@ -1,6 +1,12 @@
 # flight_controller.c — complete line-by-line teaching guide
 
-This guide explains the current source in order. It does not change the firmware
+**Historical source snapshot at commit 68619b5, before flash persistence and the
+35% warning / 20% disarm policy.** For current behavior, see
+[the model/integration guide](current-model-and-fc-integration.md) and
+[calibration flash guide](calibration-flash.md). Old LAND and volatile-calibration
+descriptions below apply only to this snapshot.
+
+This guide explains that snapshot in order. It does not change the firmware
 or rerun implementation tests. Every nonblank physical source line appears below;
 blank lines are spacing only and are omitted. For a C statement spanning several
 lines, the first line explains the complete operation and subsequent lines identify
@@ -187,9 +193,9 @@ compensate for an incorrect sensor model or prove statistically calibrated error
 In each table, source is copied verbatim with Markdown escaping. A continuation
 entry refers to the complete multi-line statement, not an additional operation.
 
-Source: `flight_controller/flight_controller.c` · 1238 physical lines.
+Source: [flight_controller.c at 68619b5](https://github.com/BenMohStem/IntelQCopter/blob/68619b5/flight_controller/flight_controller.c) · 1238 physical lines.
 
-Source SHA256: `194580b7235aa4bdccd4c1ccfcbd4dd25500d4d065eb87e21fe294be8fe15314`.
+Git blob content SHA256: `194580b7235aa4bdccd4c1ccfcbd4dd25500d4d065eb87e21fe294be8fe15314`.
 
 
 ### L1: Purpose, C includes and the 22-byte command protocol

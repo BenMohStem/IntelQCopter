@@ -1,0 +1,364 @@
+\chapter{Equilibrium, local models and the six controllers}
+\section{Keep the full model as the prediction model}
+Collect the nonlinear mechanical, rotor and electrical states:
+\begin{equation}
+\vect x=(\vect r^T,\vect v^T,q^T,\vect\omega^T,
+\Omega_1,\ldots,\Omega_4,I_1,\ldots,I_4,V_p,z)^T.
+\end{equation}
+The preceding equations define $\dot{\vect x}=f(\vect x,\vect u,\vect\theta)$,
+where $\vect\theta$ contains measured or assumed physical parameters. The unit
+quaternion has one constraint. A numerical simulation integrates these equations;
+it need not replace trigonometric functions with their small-angle forms.
+
+For controller calculation, select a level hover operating point:
+\begin{align}
+\vect v_0&=0,&\vect\omega_0&=0,&R_0&=I,\\
+\sum_i k_T\Omega_{i0}^2&=mg,&
+k_\tau I_{i0}&=Q_i(\Omega_{i0})+B_r\Omega_{i0}.
+\end{align}
+For symmetric rotors, $\Omega_{i0}=\sqrt{mg/(4k_T)}$.
+Without identified $k_T$, this is a relationship, not an available numeric RPM.
+
+\section{Where a local linear model comes from}
+Write $\vect x=\vect x_0+\delta\vect x$ and $\vect u=\vect u_0+\delta\vect u$.
+A first-order Taylor expansion at equilibrium gives
+\begin{align}
+f(\vect x_0+\delta\vect x,\vect u_0+\delta\vect u)
+&=f(\vect x_0,\vect u_0)
++A\delta\vect x+B\delta\vect u+\text{higher-order terms},\\
+A&=\left.\frac{\partial f}{\partial\vect x}\right|_0,&
+B&=\left.\frac{\partial f}{\partial\vect u}\right|_0.
+\end{align}
+At equilibrium $f(\vect x_0,\vect u_0)=0$. Neglecting only the remainder gives
+the \emph{local} perturbation model. This step is explicitly labelled and does
+not delete the original nonlinear equations.
+
+For example, speed-squared thrust expands exactly as
+\begin{align}
+T(\Omega_0+\delta\Omega)
+&=k_T\Omega_0^2+2k_T\Omega_0\delta\Omega+k_T(\delta\Omega)^2,\\
+\delta T&\approx 2k_T\Omega_0\delta\Omega.
+\end{align}
+The local slope $2k_T\Omega_0$ changes with operating point.
+For a measured command curve $T=f_T(u)$,
+$\delta T\approx f_T'(u_0)\delta u$. A nonlinear thrust curve can therefore be
+used for simulation while its measured hover slope supplies local controller gain.
+
+\section{The currently reproducible baseline}
+\begin{center}
+\begin{tabular}{@{}ll@{}}\toprule
+Parameter & Assumed baseline\\\midrule
+$m$ & 1.2 kg\\
+$(J_x,J_y,J_z)$ & (.012,.012,.022) kg m$^2$\\
+$D$, $a=D/(2\sqrt2)$ & .45 m, .159099 m\\
+$T_{\max}$ & 6 N per rotor in the normalized linear-thrust surrogate\\
+$\tau_m$ & .04 s thrust lag\\
+$d$ & .12 N s/m\\
+$\Delta t$ & .002 s virtual control interval\\\bottomrule
+\end{tabular}
+\end{center}
+For the surrogate $T_i=T_{\max}u_i^a$,
+\begin{equation}
+c_0=\frac{mg}{4T_{\max}}=.4903325.
+\end{equation}
+The other model is the provisional .740 kg component URDF, with inertia
+\begin{equation}
+(J_x,J_y,J_z)=(.00885852,.00906322,.01718682)\unit{kg\,m^2}.
+\end{equation}
+Its masses are not verified and it is
+not the physics body of the recorded 1.2 kg flight. Never combine one model's
+mass with another model's inertia accidentally.
+
+\section{Derive each local transfer function}
+For a small roll perturbation, with other rates zero,
+\begin{align}
+J_x\dot p&=4aT_{\max}u_\phi^a,\\
+\tau_m\dot u_\phi^a+u_\phi^a&=u_\phi.
+\end{align}
+In radian units define $b_x=4aT_{\max}/J_x$. Under zero perturbation initial
+conditions, $\mathcal L\{\dot p\}=sP(s)$, so
+\begin{align}
+sP(s)&=b_xU_\phi^a(s),\\
+(\tau_ms+1)U_\phi^a(s)&=U_\phi(s),\\
+\frac{P(s)}{U_\phi(s)}&=\frac{b_x}{s(\tau_ms+1)}.
+\end{align}
+Integrating rate gives a further factor $1/s$ in the local angle plant:
+\begin{equation}
+G_\phi(s)=\frac{b_x}{s^2(\tau_ms+1)}.
+\end{equation}
+Pitch substitutes $J_y$. Yaw rate substitutes $b_z=4\kappa T_{\max}/J_z$ and
+has no outer yaw-angle controller.
+
+The present C rate inputs are degrees/s. Multiply the radian effectiveness by
+$180/\pi$ before using those C gain units:
+\begin{equation}
+b_{\phi,\deg}=18231.4054,\qquad b_{\psi,\deg}=937.5673.
+\end{equation}
+For height, subtract hover equilibrium and set $\lambda=d/m$:
+\begin{align}
+\delta\ddot h+\lambda\delta\dot h&=b_h\delta c^a,&b_h&=\frac{4T_{\max}}m,\\
+G_h(s)&=\frac{b_h}{s(s+\lambda)(\tau_ms+1)}.
+\end{align}
+The numeric baseline is
+$G_h(s)=20/[s(s+.1)(.04s+1)]$.
+
+\section{Why do not all controllers use nonzero P, I and D?}
+The letters name three available mathematical terms:
+\begin{align}
+e(t)&=r(t)-y(t),\\
+u_P(t)&=K_pe(t),\\
+u_I(t)&=K_i\int_0^t e(\xi)\dd\xi,\\
+u_D(t)&=-K_d\dot y(t).
+\end{align}
+The last form differentiates measurement to avoid target-derivative kick.
+Choosing $K_i=0$ or $K_d=0$ is a design choice, not an incomplete calculation.
+
+\subsection{P changes the immediate response}
+Larger error gives larger correction. For an angle error of 3 degrees and outer
+$K_a=3\unit{s^{-1}}$, the desired rate is 9 degrees/s. P-only angle control can
+work with an inner rate PI that rejects constant torque disturbances.
+
+\subsection{I adds a state and removes certain steady errors}
+For a constant rate disturbance, the inner rate integral can grow until its
+output balances the disturbance torque. But each integrator adds dynamic order
+and can accumulate unavailable demand during saturation. An additional outer
+angle integral is not automatically beneficial; sensor bias is not made physically
+correct merely by integrating its mistaken measurement.
+
+\subsection{D amplifies high-frequency measurement variation}
+If independent measurement noise has variance $\sigma_y^2$,
+\begin{align}
+\dot y_k&\approx(y_k-y_{k-1})/\Delta t,\\
+\Var(\dot n_k)&=\frac{2\sigma_y^2}{\Delta t^2}.
+\end{align}
+At .2 degrees/s gyro sigma and .002 s spacing, the unfiltered rate derivative
+noise sigma would be about $141.4$ degrees/s$^2$. Real filtering/correlation
+changes that number, but not the need to account for noise. A nonzero rate D
+term therefore needs bandwidth/noise design, not merely a wish to use all letters.
+
+\subsection{Why altitude does use D}
+The altitude controller has a useful filtered velocity estimate. It forms
+\begin{equation}
+u_h=K_p(h_{\rm ref}-\hat h)+K_iI_h+K_d(v_{\rm cmd}-\hat v).
+\end{equation}
+Since $\dot h_{\rm ref}\approx v_{\rm cmd}$ away from its limiter, the last term
+is a derivative of height error using an estimated state rather than a noisy
+finite difference. There is one altitude PID, not a seventh separate velocity PID.
+
+\section{Calculate the initial six gains}
+For a rate plant first approximated by $b/s$, use PI:
+\begin{align}
+C(s)&=\frac{K_ps+K_i}{s},\\
+1+C(s)G(s)&=0,\\
+s^2+bK_ps+bK_i&=0.
+\end{align}
+Choose $s^2+2\zeta\omega_ns+\omega_n^2$ and equate coefficients:
+\begin{equation}
+K_p=\frac{2\zeta\omega_n}{b},\qquad
+K_i=\frac{\omega_n^2}{b}.
+\end{equation}
+For the current candidate, $\zeta=.9$, roll/pitch $\omega_n=8.4$ rad/s,
+yaw $\omega_n=2.8$ rad/s, and outer angle $K_a=3$.
+These bandwidths are chosen response objectives, not motor measurements.
+
+For the initial altitude double-integrator design,
+\begin{align}
+G(s)&=b_h/s^2,\\
+1+\left(K_p+K_i/s+K_ds\right)G(s)&=0,\\
+s^3+b_hK_ds^2+b_hK_ps+b_hK_i&=0.
+\end{align}
+Expand desired $(s+p_h)(s^2+2\zeta_h\omega_hs+\omega_h^2)$:
+\begin{align}
+s^3+(2\zeta_h\omega_h+p_h)s^2
++(\omega_h^2+2\zeta_h\omega_hp_h)s+p_h\omega_h^2.
+\end{align}
+Coefficient matching gives
+\begin{equation}
+K_d=\frac{2\zeta_h\omega_h+p_h}{b_h},\quad
+K_p=\frac{\omega_h^2+2\zeta_h\omega_hp_h}{b_h},\quad
+K_i=\frac{p_h\omega_h^2}{b_h}.
+\end{equation}
+Use $\omega_h=1.05$, $p_h=.56$, $\zeta_h=.9$. The resulting degree-based C gains:
+\begin{center}
+\begin{tabular}{@{}lrrr@{}}\toprule
+Loop & $K_p$ & $K_i$ & $K_d$\\\midrule
+Roll angle & 3 & 0 & 0\\
+Roll rate & .0008293381 & .0038702447 & 0\\
+Pitch angle & 3 & 0 & 0\\
+Pitch rate & .0008293381 & .0038702447 & 0\\
+Yaw rate & .0053756141 & .0083620664 & 0\\
+Altitude & .108045 & .03087 & .1225\\\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Now restore lag, drag and the complete cascade}
+For a rate PI with lag, the characteristic is
+\begin{equation}
+\tau_ms^3+s^2+bK_ps+bK_i.
+\end{equation}
+Positive gains are not enough: the cubic Routh condition also requires
+$K_p>\tau_mK_i$. The baseline roll/pitch polynomial is
+$.04s^3+s^2+15.12s+70.56$, with poles $-7$ and $-9\pm13.0767j$.
+
+The outer angle loop surrounds the closed inner rate loop plus angle integration:
+\begin{align}
+T_p(s)&=\frac{b(K_ps+K_i)}{\tau_ms^3+s^2+bK_ps+bK_i},\\
+1+\frac{K_aT_p(s)}s&=0.
+\end{align}
+Multiplying out gives the complete cascade characteristic
+\begin{equation}
+\tau_ms^4+s^3+bK_ps^2+b(K_i+K_aK_p)s+K_abK_i.
+\end{equation}
+For altitude with drag and lag:
+\begin{equation}
+\tau_ms^4+(1+\tau_m\lambda)s^3+(\lambda+b_hK_d)s^2+b_hK_ps+b_hK_i.
+\end{equation}
+These quartics retain more of the local dynamics than the initial simplified
+coefficient-matching models.
+
+For $a_4s^4+a_3s^3+a_2s^2+a_1s+a_0$, the Routh first-column construction is
+\begin{align}
+b_1&=\frac{a_3a_2-a_4a_1}{a_3},\\
+c_1&=\frac{b_1a_1-a_3a_0}{b_1}.
+\end{align}
+With all $a_i>0$, positivity reduces to
+\begin{align}
+\Delta_2&=a_3a_2-a_4a_1>0,\\
+\Delta_3&=a_3a_2a_1-a_4a_1^2-a_3^2a_0>0.
+\end{align}
+For the baseline angle cascade these are 10.4832 and 1003.532544.
+For altitude they are 2.473764 and 4.7232075492. Both local continuous models
+satisfy the conditions; this does not prove a delayed/saturated nonlinear flight.
+
+\subsection{A fuller altitude coefficient match}
+Choose the fourth-order desired polynomial
+\begin{equation}
+\tau_m(s+\rho)(s+p_h)(s^2+2\zeta_h\omega_hs+\omega_h^2).
+\end{equation}
+The cubic coefficient fixes
+$\rho=1/\tau_m+\lambda-p_h-2\zeta_h\omega_h$. Equate the other coefficients:
+\begin{align}
+K_d&=\frac{\tau_m[\omega_h^2+2\zeta_h\omega_hp_h+
+\rho(p_h+2\zeta_h\omega_h)]-\lambda}{b_h},\\
+K_p&=\frac{\tau_m[p_h\omega_h^2+
+\rho(\omega_h^2+2\zeta_h\omega_hp_h)]}{b_h},\\
+K_i&=\frac{\tau_m\rho p_h\omega_h^2}{b_h}.
+\end{align}
+This gives the uninstalled analytic candidate
+$(.09912357,.02796822,.1103068)$ for $(K_p,K_i,K_d)$.
+It has selected local poles $-22.65$, $-.56$, $-.945\pm.457684j$.
+It has not replaced the recorded-flight gains or been verified in a new flight.
+
+\section{Sampling, limits and nonlinear assessment}
+For a local continuous state model, zero-order-hold discretization is
+\begin{equation}
+A_d=e^{A\Delta t},\qquad B_d=\int_0^{\Delta t}e^{A\xi}B\dd\xi.
+\end{equation}
+Augment the discrete plant with integral, estimator and delay states. Local
+sampled stability requires all closed-loop eigenvalues to satisfy $|z_i|<1$.
+Continuous poles alone do not prove this implementation property.
+
+Use the nonlinear model to examine different initial attitudes, wind, changing
+voltage, sensor errors, motor limits and parameter ranges. This is validation of
+the design model, not a reason to linearize away every difficult term.
+Saturation, ground contact and the battery disarm event are hybrid/non-smooth
+events and must be represented explicitly.
+
+\chapter{Kalman estimation: uncertainty changes the gains}
+\section{From noisy sensors to states}
+The nonlinear sensor model for a body accelerometer is
+\begin{equation}
+\vect a_m=R^T(\ddot{\vect r}-\vect g_W)+\vect b_a+\vect n_a,\qquad
+\vect g_W=(0,0,-g)^T.
+\end{equation}
+At rest and level, it reads approximately $(0,0,g)^T$; in ideal free fall
+$\ddot{\vect r}=\vect g_W$ and it reads approximately zero. An accelerometer
+measures specific force, not a direct world acceleration vector.
+The gyro model is $\vect g_m=\vect\omega+\vect b_g+\vect n_g$.
+
+Gravity-based tilt observations are
+\begin{equation}
+\phi_a=\operatorname{atan2}(a_y,a_z),\qquad
+\theta_a=\operatorname{atan2}(-a_x,\sqrt{a_y^2+a_z^2}).
+\end{equation}
+During translation these observations contain nongravitational acceleration.
+Using a stationary noise variance does not remove that modelling error.
+
+\section{The current two-state angle/bias filter}
+For one independent angular axis:
+\begin{align}
+\vect x&=(\alpha,b_g)^T,&
+F&=\begin{bmatrix}1&-\Delta t\\0&1\end{bmatrix},&
+H&=[1,0],\\
+\alpha^-&=\alpha+\Delta t(g_m-b_g),&
+b_g^-&=b_g.
+\end{align}
+Although sometimes called a one-dimensional angle filter, it estimates two
+states per axis. Let $P=\begin{bmatrix}a&b\\c&d\end{bmatrix}$. Then
+\begin{equation}
+FPF^T=
+\begin{bmatrix}
+a-\Delta t(b+c)+\Delta t^2d&b-\Delta t d\\
+c-\Delta t d&d
+\end{bmatrix}.
+\end{equation}
+The current noise model adds
+\begin{equation}
+Q=\begin{bmatrix}
+\sigma_g^2\Delta t^2+q_b\Delta t^3/3&-q_b\Delta t^2/2\\
+-q_b\Delta t^2/2&q_b\Delta t
+\end{bmatrix}.
+\end{equation}
+Here $\sigma_g^2$ is rate variance per sample and $q_b$ is a continuous
+bias-random-walk intensity. They do not have interchangeable units.
+
+\section{Derive the correction quantities}
+\begin{align}
+P^-&=FP^+F^T+Q,\\
+\nu&=z-H\vect x^-,\\
+S&=HP^-H^T+R,\\
+K&=P^-H^TS^{-1},\\
+\vect x^+&=\vect x^-+K\nu.
+\end{align}
+For $H=[1,0]$, $S=P_{00}^-+R$ and
+$K=(P_{00}^-,P_{10}^-)^T/S$. A scalar observation can correct bias through
+cross covariance even though it does not directly measure bias.
+The covariance uses Joseph form
+\begin{equation}
+P^+=(I-KH)P^-(I-KH)^T+KRK^T.
+\end{equation}
+With the existing assumed noise values and .002 s updates, limiting gains are
+approximately $K_\alpha=.000966191$, $K_b=-.000223499$.
+They are conditional on the model; startup gains differ and they are not
+universal sensor constants.
+
+\section{Height and vertical velocity}
+For $\vect x=(h,v_z)^T$, external upward acceleration and interval $\Delta t$:
+\begin{align}
+F&=\begin{bmatrix}1&\Delta t\\0&1\end{bmatrix},&
+G&=\begin{bmatrix}\Delta t^2/2\\\Delta t\end{bmatrix},\\
+\vect x^-&=F\vect x^++Ga_{\rm up},&
+Q&=G\sigma_a^2G^T.
+\end{align}
+With $\sigma_a=1.5$ m/s$^2$, $\Delta t=.002$ s:
+\begin{equation}
+Q=\begin{bmatrix}9\,10^{-12}&9\,10^{-9}\\9\,10^{-9}&9\,10^{-6}\end{bmatrix}.
+\end{equation}
+Predict at 500 Hz, correct only on independent fresh observations, typically
+50 Hz for the assumed barometer. With $R_{\rm baro}=.0025$ m$^2$, periodic
+limiting gains at correction time are approximately $(.0834306,.181649)^T$.
+Applying these as constant gains every 2 ms would be a different filter.
+
+An observed height from a tilted downward range sensor also needs its beam
+geometry, sensor lever arm and terrain assumptions. A one-ray range is not
+automatically aircraft vertical height over arbitrary obstacles. The current
+simulation's floor ray is declared analytical, not a native physical sensor.
+
+\section{A fuller estimator is possible, but must be identified}
+For a nonlinear model $\dot x=f(x,u)$ and observations $y=h(x)$, an EKF uses
+Jacobians of $f,h$ along the evolving estimate. A quaternion error-state filter
+can include position, velocity, attitude and IMU biases. It preserves more of
+the nonlinear observation geometry than independent tilt filters.
+This is a future estimator option, not an implementation claim. Unknown noise,
+unobservable states and poor camera/pose information do not disappear merely
+because a larger filter is used.

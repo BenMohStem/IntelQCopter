@@ -160,11 +160,11 @@ static void test_estimator_and_mixer_remain_finite(void) {
 }
 
 static void test_battery_monitor_filter_soc_and_actions(void) {
+    (void)battery_policy_reset(true);
     battery_status_t status;
     battery_monitor_init(&status, 100.0f);
     const battery_config_t cfg = {
         .capacity_ah = 4.2f, .initial_soc_percent = 100.0f,
-        .low_soc_percent = 20.0f,
         .low_cell_voltage_v = 3.6f, .critical_cell_voltage_v = 3.3f,
         .low_pack_voltage_v = 10.8f, .maximum_discharge_current_a = 80.0f,
         .voltage_measurement_variance_v2 = 0.04f,
@@ -190,36 +190,37 @@ static void test_battery_monitor_filter_soc_and_actions(void) {
     battery_monitor_update(&status, &sample, &cfg, 0.1f);
     CHECK(status.estimated_soc_percent < 90.0f);
     CHECK(status.estimated_soc_sigma_percent < sigma_before_correction);
-    /* A SOC threshold requests landing in flight and disarm only once landed. */
+    /* User-selected policy now disarms at 20%, regardless of landed state. */
     status.estimated_soc_percent = 20.0f;
     sample.rested_soc_observation_valid = false;
     CHECK(battery_monitor_update(&status, &sample, &cfg, 0.1f)
-          == BATTERY_ACTION_LAND);
+          == BATTERY_ACTION_DISARM);
     sample.aircraft_landed = true;
     CHECK(battery_monitor_update(&status, &sample, &cfg, 0.1f)
-          == BATTERY_ACTION_LANDED_DISARM);
+          == BATTERY_ACTION_DISARM);
     sample.aircraft_landed = false;
     sample.rested_soc_observation_valid = false;
     sample.pack_voltage_v = 10.0f;
     for (unsigned i = 0; i < 20; ++i)
         battery_monitor_update(&status, &sample, &cfg, 0.1f);
-    CHECK(status.action == BATTERY_ACTION_LAND);
+    CHECK(status.action == BATTERY_ACTION_DISARM);
     sample.pack_voltage_v = 12.0f;
     sample.minimum_cell_voltage_v = 3.2f;
     CHECK(battery_monitor_update(&status, &sample, &cfg, 0.1f)
-          == BATTERY_ACTION_LAND);
+          == BATTERY_ACTION_DISARM);
     sample.aircraft_landed = true;
     CHECK(battery_monitor_update(&status, &sample, &cfg, 0.1f)
-          == BATTERY_ACTION_LANDED_DISARM);
+          == BATTERY_ACTION_DISARM);
     sample.aircraft_landed = false;
     sample.minimum_cell_voltage_v = 4.0f;
     sample.bms_alert = true;
     CHECK(battery_monitor_update(&status, &sample, &cfg, 0.1f)
-          == BATTERY_ACTION_LAND);
+          == BATTERY_ACTION_DISARM);
     sample.bms_alert = false;
     sample.pack_current_valid = false;
     CHECK(battery_monitor_update(&status, &sample, &cfg, 0.1f)
           == BATTERY_ACTION_SENSOR_FAULT);
+    (void)battery_policy_reset(true);
 }
 
 static void test_imu_calibration_known_bias_gain_and_motion_rejection(void) {

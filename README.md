@@ -34,7 +34,9 @@ The control design target is a 500 Hz attitude loop: roll and pitch use angle se
 
 ### New mathematical report and 3D garden evidence
 
-[Flight-controller C: complete line-by-line explanation](docs/flight-controller-line-by-line.md) — exact source, units, PID/Kalman equations, simulation ABI and unfinished hardware connections.
+[Current model and integration guide](docs/current-model-and-fc-integration.md) · [Illustrated mathematical paper](output/pdf/IntelQcopter-model-guide.pdf) · [Measurement worksheets](measurements/README.md) · [Calibration flash journal](docs/calibration-flash.md).
+
+[Flight-controller C: line-by-line explanation](docs/flight-controller-line-by-line.md) — pinned pre-flash source snapshot at 68619b5. Current flash and battery changes are documented in the guides above.
 
 [47-page mathematical PDF](docs/modelisation/main.pdf) · [Editable LaTeX](docs/modelisation/main.tex) · [Garden evidence viewer](artifacts/simulation/2026-10-20-missions/index.html) · [Original video](artifacts/simulation/2026-10-20-missions/garden-final.mp4) · [Current problems](docs/missing-information-and-problems.md)
 
@@ -60,8 +62,8 @@ the generic matrix lessons and retains earlier experiments as historical results
 | RP2350 firmware | Builds for Pico 2 / ARM-S | No physical board or sensor drivers yet |
 | RP2040 firmware | Builds for Pico; scans six muxed analog inputs, debounces six buttons, emits protocol frames over USB for debug | Requires the proposed 74HC4051 mux and confirmed wiring; no LoRa transmit or screen code yet |
 | Flight math | Six CPU route scenarios succeed with production C equations; independent covariance/mixer checks and two 500-trial Kalman experiments pass | Provisional model and gains; no physical airframe identification or hard-real-time proof |
-| Sensor calibration | Host checks recover injected IMU/magnetic errors, reject bad captures, verify BMP280 compensation and reference-fit uncertainty | Physical capture, drivers, guided UI, and flash storage are not implemented |
-| Battery monitor | Host checks cover voltage/SOC Kalman math, 20% SOC landing request, alarms, and input faults | No drivers, coulomb-count current sensor, calibrated OCV curve, or landing-action integration are connected |
+| Sensor calibration | Earlier host checks cover calibration math; new two-slot flash journal loads validated fits and verifies gyro bias at boot | Flash code compiled, not verified on physical hardware; acquisition and guided capture UI unfinished |
+| Battery monitor | Earlier checks cover estimator math; current policy warns at 35% and latches disarm at 20%, without automatic landing | Current change compiled, no new behavioral tests; real acquisition and handheld warning delivery unfinished |
 | RP2350 emulator | 1,000,000 instruction steps complete | Emulator reports unsupported peripherals; not timing or I/O validation |
 | PCB | Editable KiCad logic-carrier draft; power/current-sensor/BMS interfaces added | DRC: 0 geometry violations; 76 pads unrouted, not manufacturable |
 | CAD / URDF | Component F450 URDF independently loaded/rendered; masses, COM and inertia calculated; RViz receives 14 transforms | Provisional 740 g model, no measured mass/inertia or exact manufacturer mesh |
@@ -142,7 +144,7 @@ In the current seeded roll run, empirical final error σ was 0.1031° while Kalm
 
 Each embedded subproject has one application C source: `flight_controller/flight_controller.c` and `handler_controller/handler_controller.c`. The flight source contains battery monitoring, sensor calibration, packet validation, estimators, and control. The handheld source contains input sampling and packet generation. The wire-protocol section is embedded in both files and checked for equality by the host test script. Pico SDK remains an external dependency. Host tests and build tools stay separate; ROS 2 keeps its own package structure.
 
-Calibration math now covers stationary gyro bias/noise, six-face accelerometer offset/gain, a basic magnetometer offset/diagonal scale fit, BMP280 factory compensation and ground reference/noise, and linear reference fits for lidar/voltage/current. No physical calibration has been recorded or saved to flash; I²C acquisition remains unimplemented. See [sensor calibration](docs/sensor-calibration.md).
+Calibration math covers stationary gyro bias/noise, six-face accelerometer offset/gain, a basic magnetic offset/diagonal scale fit, BMP280 factory compensation and ground reference/noise, and lidar/voltage/current linear fits. A versioned two-slot RP2350 flash journal now saves validated fits, loads them at boot and verifies/recalculates gyro bias from stationary samples. No physical coefficients have been recorded; sensor acquisition remains unfinished. See [sensor calibration](docs/sensor-calibration.md) and [flash format/commands](docs/calibration-flash.md).
 
 ## Build and reproduce
 

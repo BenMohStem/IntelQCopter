@@ -1,0 +1,209 @@
+\chapter{What are we measuring?}
+\section{Objects, symbols and units}
+A symbol denotes a physical quantity, not an arbitrary number. If a motor
+produces $3\unit{N}$, the number 3 depends on the chosen unit; the force itself
+does not. Keep units beside measurements and check every equation dimensionally.
+
+\begin{longtable}{@{}p{.17\linewidth}p{.53\linewidth}p{.22\linewidth}@{}}
+\toprule Symbol & Meaning & SI unit\\\midrule\endhead
+$m$ & Complete aircraft mass, including battery, ESCs and attached parts & kg\\
+$\vect r=(x,y,z)^T$ & Position of the aircraft centre of mass in world axes & m\\
+$\vect v=\dot{\vect r}$ & Velocity of that centre of mass & m/s\\
+$\dot{\vect v}=\ddot{\vect r}$ & Acceleration of that centre of mass & m/s$^2$\\
+$g$ & Magnitude of gravitational acceleration; baseline uses 9.80665 & m/s$^2$\\
+$T_i$ & Upward body-axis force produced by propeller $i$ & N\\
+$T=\sum_iT_i$ & Sum of the four propeller thrust magnitudes & N\\
+$R$ & Rotation mapping body components into world components & dimensionless\\
+$\vect\omega=(p,q,r_b)^T$ & Body angular velocity; $r_b$ is yaw rate & rad/s\\
+$J$ & Inertia tensor about the centre of mass & kg m$^2$\\
+$\vect\tau$ & External torque vector about the centre of mass & N m\\
+$\Omega_i$ & Rotor spin speed; different from aircraft angular velocity & rad/s\\
+$u_i$ & Normalized motor command, before identifying its physical response & dimensionless\\
+\bottomrule
+\end{longtable}
+
+The dot is a derivative with respect to time:
+\begin{align}
+\dot x(t)&=\lim_{\epsilon\to0}\frac{x(t+\epsilon)-x(t)}{\epsilon},\\
+\ddot x(t)&=\frac{\dd}{\dd t}\dot x(t),\\
+\dot{\vect r}&=(\dot x,\dot y,\dot z)^T.
+\end{align}
+For sampled data separated by $\Delta t$, a finite difference approximates the
+derivative. It is an approximation, not the definition:
+\begin{equation}
+\dot x(t_k)\approx\frac{x_k-x_{k-1}}{\Delta t}.
+\end{equation}
+
+\section{Mass is not weight; thrust is a force}
+Mass describes inertia against translational acceleration. Weight is the
+gravitational force. Their relationship is
+\begin{equation}
+W=mg,\qquad [W]=\unit{kg}\frac{\unit m}{\unit{s^2}}=\unit N.
+\end{equation}
+A propeller accelerates air downward; the aerodynamic reaction exerts an upward
+force on the motor/airframe. That force magnitude is its thrust $T_i$.
+It is not a temperature, a torque, a throttle percentage or a mass.
+
+For four parallel propeller axes, expressed in body coordinates,
+\begin{align}
+\vect F_{1,B}&=(0,0,T_1)^T,&
+\vect F_{2,B}&=(0,0,T_2)^T,\\
+\vect F_{3,B}&=(0,0,T_3)^T,&
+\vect F_{4,B}&=(0,0,T_4)^T.
+\end{align}
+Forces add component by component:
+\begin{align}
+\vect F_{T,B}
+&=\vect F_{1,B}+\vect F_{2,B}+\vect F_{3,B}+\vect F_{4,B}\\
+&=\begin{bmatrix}0+0+0+0\\0+0+0+0\\T_1+T_2+T_3+T_4\end{bmatrix}\\
+&=\begin{bmatrix}0\\0\\T\end{bmatrix},
+\qquad \boxed{T=T_1+T_2+T_3+T_4}.
+\end{align}
+Only the propeller axes being parallel permits this particular scalar sum.
+For tilted rotor axes $\vect n_{i,B}$, the general expression is
+$\vect F_{T,B}=\sum_i T_i\vect n_{i,B}$.
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[>=Latex,scale=1]
+\fill[soft] (-1.3,-.12) rectangle (1.3,.12);
+\draw[very thick,ink] (-2,0)--(2,0);
+\draw[thick] (-2.5,.13)--(-1.5,.13) (1.5,.13)--(2.5,.13);
+\fill[ink] (0,0) circle (.07) node[below right]{COM};
+\draw[->,very thick,accent] (-2,0)--(-2,1.8) node[above]{$T_L$};
+\draw[->,very thick,accent] (2,0)--(2,1.8) node[above]{$T_R$};
+\draw[->,very thick,red!70!black] (0,0)--(0,-2) node[below]{$mg$};
+\draw[->] (3,-1.4)--(3,1.4) node[above]{$z_W$};
+\node at (0,2.3){Level aircraft: body up and world up coincide};
+\end{tikzpicture}
+\caption{Side view groups two rotors per side. All arrows are forces; the COM
+is the point used for translation and torque accounting.}
+\end{figure}
+
+\section{One vector, two coordinate descriptions}
+The world frame is fixed for a local experiment. The body frame rotates with
+the aircraft. Body x points forward, y left, z up. A vector must be expressed in
+one common frame before adding it to another vector.
+
+Let $\vect b_1,\vect b_2,\vect b_3$ be the body unit axes, each expressed in world
+coordinates. Define
+\begin{equation}
+R=\begin{bmatrix}|&|&|\\\vect b_1&\vect b_2&\vect b_3\\|&|&|\end{bmatrix}.
+\end{equation}
+For body components $(f_x,f_y,f_z)$, the physical vector is
+\begin{align}
+\vect F_W&=f_x\vect b_1+f_y\vect b_2+f_z\vect b_3\\
+&=R\begin{bmatrix}f_x\\f_y\\f_z\end{bmatrix}.
+\end{align}
+Because the axes are orthonormal,
+\begin{equation}
+R^TR=I,\qquad R^{-1}=R^T,\qquad \det R=+1.
+\end{equation}
+Consequently $\vect F_B=R^T\vect F_W$. Multiplying by $R$ changes components,
+not force magnitude: $\|R\vect F_B\|=\|\vect F_B\|$.
+
+\section{Build the rotation explicitly}
+Use roll $\phi$, pitch $\theta$ and yaw $\psi$, with the convention
+$R=R_z(\psi)R_y(\theta)R_x(\phi)$. All trigonometric arguments here are radians.
+\begin{align}
+R_x(\phi)&=\begin{bmatrix}1&0&0\\0&\cos\phi&-\sin\phi\\0&\sin\phi&\cos\phi\end{bmatrix},\\
+R_y(\theta)&=\begin{bmatrix}\cos\theta&0&\sin\theta\\0&1&0\\-\sin\theta&0&\cos\theta\end{bmatrix},\\
+R_z(\psi)&=\begin{bmatrix}\cos\psi&-\sin\psi&0\\\sin\psi&\cos\psi&0\\0&0&1\end{bmatrix}.
+\end{align}
+We only need the rotated thrust direction, so start with
+$\vect e_3=(0,0,1)^T$ and perform each physical rotation:
+\begin{align}
+R_x\vect e_3&=\begin{bmatrix}0\\-\sin\phi\\\cos\phi\end{bmatrix},\\
+R_yR_x\vect e_3&=\begin{bmatrix}\sin\theta\cos\phi\\-\sin\phi\\\cos\theta\cos\phi\end{bmatrix},\\
+R\vect e_3&=\begin{bmatrix}
+\cos\psi\sin\theta\cos\phi+\sin\psi\sin\phi\\
+\sin\psi\sin\theta\cos\phi-\cos\psi\sin\phi\\
+\cos\theta\cos\phi
+\end{bmatrix}.
+\end{align}
+The last vector is exactly the third column of $R$. Thus the world thrust is
+$T$ times this column. We have not used $\sin\phi\approx\phi$ or any small-angle
+approximation.
+
+\chapter{Where the translational equation comes from}
+\section{Start with Newton's law}
+For constant mass, linear momentum is $\vect P=m\vect v$. The momentum balance is
+\begin{align}
+\frac{\dd\vect P}{\dd t}&=\sum\vect F_{\rm external},\\
+\frac{\dd(m\vect v)}{\dd t}&=\sum\vect F_{\rm external},\\
+m\dot{\vect v}&=\sum\vect F_{\rm external}.
+\end{align}
+If mass changes, the second line needs more careful momentum accounting; battery
+discharge does not meaningfully eject aircraft mass in our model.
+
+List every force and express it in world axes:
+\begin{align}
+\vect F_{T,W}&=R(0,0,T)^T&&\text{propellers},\\
+\vect F_{g,W}&=(0,0,-mg)^T&&\text{gravity},\\
+\vect F_{D,W}&=-d\vect v&&\text{current simple drag assumption},\\
+\vect F_{{dist},W}&=\text{other unmodelled external forces}.
+\end{align}
+Substitute these four expressions into Newton's law:
+\begin{align}
+m\dot{\vect v}
+&=\vect F_{T,W}+\vect F_{g,W}+\vect F_{D,W}+\vect F_{{dist},W}\\
+&=\boxed{R\begin{bmatrix}0\\0\\T\end{bmatrix}
+-\begin{bmatrix}0\\0\\mg\end{bmatrix}
+-d\vect v+\vect F_{\rm dist}}.
+\end{align}
+This is the requested equation. It is a force balance, not a guessed controller
+formula. Every term has units of newtons:
+\begin{equation}
+[m\dot v]=\unit N,\quad [RT]=\unit N,\quad [mg]=\unit N,\quad
+[d]=\unit{N\,s/m},\quad[dv]=\unit N.
+\end{equation}
+
+\section{Write each differential equation without hiding $R$}
+Using the third-column expression derived earlier:
+\begin{align}
+m\ddot x&=T(\cos\psi\sin\theta\cos\phi+\sin\psi\sin\phi)-d\dot x+f_x,\\
+m\ddot y&=T(\sin\psi\sin\theta\cos\phi-\cos\psi\sin\phi)-d\dot y+f_y,\\
+m\ddot z&=T\cos\theta\cos\phi-mg-d\dot z+f_z.
+\end{align}
+These are coupled nonlinear equations because of products of changing thrust
+and trigonometric functions of changing attitude.
+
+At level hover, $\phi=\theta=0$, $\vect v=0$ and disturbances are neglected:
+\begin{align}
+0&=T-mg,&T&=mg,&T_i&=\frac{mg}{4}\quad\text{if balanced}.
+\end{align}
+For the assumed $m=1.2\unit{kg}$:
+\begin{equation}
+mg=11.76798\unit N,\qquad T_i=2.941995\unit N.
+\end{equation}
+At roll $30^\circ$, pitch zero and zero vertical acceleration:
+\begin{align}
+T\cos30^\circ&=mg,&
+T&=\frac{mg}{\cos30^\circ}\approx13.5885\unit N.
+\end{align}
+The larger total thrust is needed because some thrust now points horizontally.
+Keeping $T=mg$ while tilting instead gives downward vertical acceleration.
+
+\section{A more general aerodynamic force model}
+The force balance remains exact as an accounting statement; a chosen drag law
+can still be approximate. A richer candidate is
+\begin{align}
+\vect v_{\rm rel}&=\vect v_W-\vect w_W,\\
+\vect F_D&=-D_1\vect v_{\rm rel}
+-D_2\bigl(\|\vect v_{\rm rel}\|\vect v_{\rm rel}\bigr).
+\end{align}
+$\vect w_W$ is wind velocity. $D_1,D_2$ may depend on attitude and direction.
+Their coefficients need data. Adding unknown coefficients without measurement
+does not automatically make a simulation more accurate.
+
+\section{After commanded disarming}
+Disarming removes commanded rotor drive; the rotor does not physically stop
+spinning at the exact same instant. Its motor/air dynamics determine spin-down.
+As $T\to0$, neglecting drag for this illustration,
+\begin{align}
+\ddot z&=-g,\\
+\dot z(t)&=v_{z0}-gt,\\
+z(t)&=z_0+v_{z0}t-\tfrac12gt^2.
+\end{align}
+These equations describe falling, not a controlled landing. The selected
+20-percent battery action requests this motor inhibition regardless of height.

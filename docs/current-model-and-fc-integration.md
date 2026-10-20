@@ -1,614 +1,461 @@
-# Worked drone model, calibration and flight-controller integration
+# From propeller force to flight control
+## Nonlinear model · uncertainty · measured gains · RP2350 integration
 
-This note answers the four connected questions: what gyro calibration actually
-does, how our current model leads to control/estimator gains, how ROS communicates
-with the C core, and how that same core participates in native Gazebo simulation.
-Numerical calculations are reproducible with
-`tools/calculate_current_control_design.py`; the full results are in
-`artifacts/model-design/current/calculations.json`. These are mathematical model
-calculations, not new implementation tests or a new flight recording. No firmware,
-gain initialization or running simulation parameter was changed.
+**Start with the [illustrated mathematical paper](../output/pdf/IntelQcopter-model-guide.pdf).**
+It derives the equations step by step, including coordinate frames, angular momentum,
+motor/battery coupling, all six gain calculations, Kalman covariance and real measurement procedures.
+Its editable source is [main.tex](model-guide/main.tex).
+This page is the shorter navigation guide and worked introduction.
 
-![Calculated local continuous poles, not a new flight test](../artifacts/model-design/current/local-model-poles.png)
+| Read next | What you will learn |
+|---|---|
+| [1. Forces](#1-what-is-t) | What each T means and where the translation equation comes from |
+| [2. Rotation](#2-why-rotation-has-a-cross-product) | Torque, inertia, angular momentum and nonlinear coupling |
+| [3. Model and controllers](#3-keep-the-nonlinear-model) | What remains nonlinear; what a transfer function can describe |
+| [4. Uncertainty](#5-standard-deviation-is-not-the-whole-error) | Noise, bias, uncertainty of the mean and reference measurements |
+| [5. Measurement plan](../measurements/README.md) | Apparatus, capture order and blank CSV worksheets |
+| [6. Persistent calibration](calibration-flash.md) | Flash journal, boot verification, recalculation and USB commands |
+| [7. Integration](#8-ros-2-and-gazebo) | Current simulation path versus future physical companion |
 
-## 1. Gyro calibration: yes, it averages stationary measurements
+> **Status:** No actual aircraft parameters have been newly measured.
+> The full nonlinear equations are a model specification, not a claim that every additional
+> aerodynamic/electrical term is already implemented in the simulator.
+> Physical arming and ESC outputs remain disabled. This change has build evidence, not a new flight recording.
 
-For each axis, use the measurement equation
+---
 
-$$g_k=\omega_k+b+n_k,$$
+## 1. What is T?
 
-where $g_k$ is measured rate, $\omega_k$ is true rate, $b$ is zero-rate bias and
-$n_k$ is zero-mean noise. A stationary aircraft has approximately $\omega_k=0$.
-For $N$ accepted fresh measurements,
+A motor turns a propeller. The propeller accelerates air downward; the resulting aerodynamic
+reaction pushes the aircraft upward along that rotor's axis.
 
-$$\hat b=\frac1N\sum_{k=1}^N g_k,\qquad
+$$T_i=\text{magnitude of thrust from propeller }i\quad[\mathrm N].$$
+
+It is a **force**, not throttle percentage, torque, electrical power, or motor KV.
+For four parallel rotors pointing along body +z:
+
+$$\mathbf F_{1,B}=\begin{bmatrix}0\\0\\T_1\end{bmatrix},\quad\ldots,\quad
+\mathbf F_{4,B}=\begin{bmatrix}0\\0\\T_4\end{bmatrix}.$$
+
+Forces add as vectors:
+
+$$\mathbf F_{\mathrm{prop},B}
+=\sum_{i=1}^4\mathbf F_{i,B}
+=\begin{bmatrix}0+0+0+0\\0+0+0+0\\T_1+T_2+T_3+T_4\end{bmatrix}
+=\begin{bmatrix}0\\0\\T\end{bmatrix},\qquad
+T=\sum_{i=1}^4T_i.$$
+
+### 1.1 Choose coordinates before writing signs
+
+Use world +z upward, body +x forward, +y left, +z upward.
+Let R map a vector expressed in body coordinates to world coordinates:
+
+$$\mathbf a_W=R\mathbf a_B,\qquad R^TR=I,\qquad\det R=1.$$
+
+Let roll, pitch, yaw be φ, θ, ψ, with
+
+$$R=R_z(\psi)R_y(\theta)R_x(\phi).$$
+
+The third column of R tells us where the rotor axis points in the world:
+
+$$R\begin{bmatrix}0\\0\\1\end{bmatrix}
+=\begin{bmatrix}
+\cos\psi\sin\theta\cos\phi+\sin\psi\sin\phi\\
+\sin\psi\sin\theta\cos\phi-\cos\psi\sin\phi\\
+\cos\theta\cos\phi
+\end{bmatrix}.$$
+
+Tilting redirects some thrust sideways. It does not create extra thrust.
+
+### 1.2 Derive the equation from Newton's law
+
+Define aircraft position and velocity in the world frame:
+
+$$\mathbf r=\begin{bmatrix}x\\y\\z\end{bmatrix},\qquad
+\mathbf v=\dot{\mathbf r},\qquad
+\dot{\mathbf v}=\ddot{\mathbf r}.$$
+
+For constant mass m, linear momentum is m v:
+
+$$\frac{d}{dt}(m\mathbf v)=\sum\mathbf F_W
+\quad\Longrightarrow\quad
+m\dot{\mathbf v}=\sum\mathbf F_W.$$
+
+Now list each force in the **same frame**:
+
+| Force | World expression | Reason |
+|---|---|---|
+| Propeller thrust | R[0,0,T]ᵀ | Rotors are attached to the tilted body |
+| Gravity | [0,0,−mg]ᵀ | World +z is upward |
+| Assumed linear drag | −d v | Opposes velocity; d has units N·s/m |
+| Other forces | f_disturbance | Wind/contact/unmodelled effects |
+
+Substitute that list into Newton's law:
+
+$$\boxed{
+m\dot{\mathbf v}
+=R\begin{bmatrix}0\\0\\T\end{bmatrix}
+-\begin{bmatrix}0\\0\\mg\end{bmatrix}
+-d\mathbf v+\mathbf f_{\mathrm{disturbance}}
+}.$$
+
+Every term has units of newtons because kg·m/s² = N.
+The vertical row is
+
+$$m\ddot z=T\cos\phi\cos\theta-mg-d\dot z+f_z.$$
+
+At level stationary hover, φ=θ=0, vz=0 and fz=0:
+
+$$0=T-mg\quad\Longrightarrow\quad T=mg.$$
+
+If all four motors share equally:
+
+$$T_i=\frac{mg}{4}.$$
+
+**Illustrative baseline only:** m=1.2 kg gives T=11.76798 N and T_i=2.941995 N.
+For 30° roll and zero pitch at constant height:
+
+$$T=\frac{mg}{\cos30^\circ}=13.5885\ \mathrm N.$$
+
+That increase explains why tilted flight needs collective headroom.
+These are conditional calculations, not measured motor capabilities.
+
+---
+
+## 2. Why rotation has a cross product
+
+### 2.1 Force away from the centre creates torque
+
+For displacement r_i from the centre of mass to rotor i:
+
+$$\boldsymbol\tau_i=\mathbf r_i\times\mathbf F_i.$$
+
+With r_i=[x_i,y_i,z_i]ᵀ and F_i=[0,0,T_i]ᵀ:
+
+$$\boldsymbol\tau_i
+=\begin{bmatrix}y_iT_i\\-x_iT_i\\0\end{bmatrix}.$$
+
+So roll and pitch come from unequal thrust and lever arms.
+Yaw additionally uses the rotors' aerodynamic reaction torques.
+
+### 2.2 Inertia depends on where the mass is
+
+For a small element dm at position ρ relative to the centre:
+
+$$J=\int\left((\boldsymbol\rho^T\boldsymbol\rho)I
+-\boldsymbol\rho\boldsymbol\rho^T\right)\,dm.$$
+
+For example:
+
+$$J_{xx}=\int(y^2+z^2)\,dm,\qquad J_{xy}=-\int xy\,dm.$$
+
+Units are kg·m². Moving the battery away from an axis increases inertia about that axis.
+Total mass alone therefore cannot determine J.
+
+The body's angular velocity is ω=[p,q,r_b]ᵀ in rad/s.
+These are body rotation rates; at general attitude they are not simply the three Euler-angle derivatives.
+Angular momentum in body coordinates is
+
+$$\mathbf H_B=J\boldsymbol\omega.$$
+
+### 2.3 Differentiate angular momentum in the world
+
+Angular-momentum balance in the inertial frame is
+
+$$\boldsymbol\tau_W=\frac{d\mathbf H_W}{dt}.$$
+
+Since H_W=R H_B, the product rule gives
+
+$$\dot{\mathbf H}_W=\dot R\mathbf H_B+R\dot{\mathbf H}_B.$$
+
+Rotation kinematics gives
+
+$$\dot R=R[\boldsymbol\omega]_\times,\qquad
+[\boldsymbol\omega]_\times\mathbf H_B=\boldsymbol\omega\times\mathbf H_B.$$
+
+Therefore
+
+$$\dot{\mathbf H}_W
+=R\left(\dot{\mathbf H}_B+\boldsymbol\omega\times\mathbf H_B\right).$$
+
+Multiply by Rᵀ, use RᵀR=I, and express torque in body coordinates:
+
+$$\boldsymbol\tau_B=\dot{\mathbf H}_B+\boldsymbol\omega\times\mathbf H_B.$$
+
+For a fixed rigid assembly J is constant, so substitute H_B=Jω:
+
+$$\boldsymbol\tau_B=J\dot{\boldsymbol\omega}
++\boldsymbol\omega\times(J\boldsymbol\omega).$$
+
+Rearrange:
+
+$$\boxed{J\dot{\boldsymbol\omega}
+=\boldsymbol\tau_B-\boldsymbol\omega\times(J\boldsymbol\omega)}.$$
+
+The cross term appears because the coordinates themselves rotate.
+It is not an arbitrary correction added to a scalar equation.
+
+For principal axes J=diag(Jx,Jy,Jz):
+
+$$\dot p=\frac{\tau_x+(J_y-J_z)qr_b}{J_x},$$
+$$\dot q=\frac{\tau_y+(J_z-J_x)pr_b}{J_y},$$
+$$\dot r_b=\frac{\tau_z+(J_x-J_y)pq}{J_z}.$$
+
+The products qr_b, pr_b, pq couple the axes nonlinearly.
+The paper derives the inertia integral and each component before using them.
+
+---
+
+## 3. Keep the nonlinear model
+
+The complete proposed state contains position, velocity, attitude quaternion,
+body rates, rotor speeds, effective motor currents and battery states:
+
+$$\mathbf x=(\mathbf r,\mathbf v,\mathbf q,\boldsymbol\omega,
+\Omega_1,\dots,\Omega_4,I_1,\dots,I_4,V_p,z_{\rm SOC}).$$
+
+Representative coupled equations are
+
+$$\dot{\mathbf r}=\mathbf v,\qquad
+m\dot{\mathbf v}=R(\mathbf q)\mathbf F_B+m\mathbf g_W+\mathbf F_{\rm aero},$$
+
+$$J\dot{\boldsymbol\omega}
+=\boldsymbol\tau_{\rm external}
+-\boldsymbol\omega\times(J\boldsymbol\omega),$$
+
+$$J_{m,i}\dot\Omega_i=k_{t,i}I_i-Q_i(\Omega_i,V,\ldots)-b_i\Omega_i,$$
+
+$$L_i\dot I_i=D_i(u_i)V_{\rm battery}-R_iI_i-k_{e,i}\Omega_i,$$
+
+$$T_i=k_{T,i}\Omega_i^2,\qquad Q_i=k_{Q,i}\Omega_i^2,$$
+
+$$\dot z_{\rm SOC}=-\frac{\eta I_{\rm battery}}{3600C_{\rm Ah}},\qquad
+V_{\rm battery}=V_{\rm OCV}(z,T)-I_{\rm battery}R_0-V_p.$$
+
+The effective DC electrical model is an approximation to ESC/BLDC commutation; its parameters
+must be identified. Aerodynamic coefficients depend on propeller and inflow.
+Unknown coefficients stay symbolic. Adding unmeasured coefficients does not itself increase accuracy.
+
+The **existing native flight adapter** still uses assumed first-order thrust lag and drag.
+The paper distinguishes those implemented assumptions from the richer proposed equations.
+It retains exact attitude rotation and explains optional rotor angular momentum consistently.
+
+### Why still calculate transfer functions?
+
+A single global constant transfer function does not describe this nonlinear aircraft.
+Around a chosen equilibrium:
+
+$$\dot{\mathbf x}=f(\mathbf x,\mathbf u),\qquad f(\mathbf x_0,\mathbf u_0)=0,$$
+$$\delta\dot{\mathbf x}\simeq A\delta\mathbf x+B\delta\mathbf u,\qquad
+A=\left.\frac{\partial f}{\partial\mathbf x}\right|_0,\quad
+B=\left.\frac{\partial f}{\partial\mathbf u}\right|_0.$$
+
+Then a **local** transfer function is
+
+$$G(s)=C(sI-A)^{-1}B+D.$$
+
+We use it to understand poles/gains near hover and retain the nonlinear equations for broader simulation.
+The paper keeps motor lag, drag, cascaded-loop coupling and higher-order characteristic polynomials
+when calculating local stability. It also explains why continuous poles alone do not prove sampled nonlinear stability.
+
+---
+
+## 4. Why not nonzero Ki and Kd everywhere?
+
+The common controller form is
+
+$$u=K_Pe+K_I\int e\,dt+K_D\dot e.$$
+
+Every nonzero term changes dynamics and introduces tradeoffs.
+Six controller objects do not require eighteen nonzero coefficients.
+
+| Loop | Current structure | Reason |
+|---|---|---|
+| Roll angle / pitch angle | P → body-rate target | Inner rate PI already supplies integral action |
+| Roll rate / pitch rate | PI | Rejects persistent torque error; avoids raw gyro differentiation |
+| Yaw rate | PI | Rate command and persistent torque rejection |
+| Altitude | PID using estimated vertical speed | Height correction, steady offset rejection, velocity damping |
+
+For independent measurement noise variance σ², a raw finite-difference derivative has
+
+$$D_k=\frac{n_k-n_{k-1}}{\Delta t},\qquad
+\operatorname{Var}(D_k)=\frac{2\sigma^2}{\Delta t^2}.$$
+
+At Δt=.002 s, this can greatly amplify noise. Filtering reduces it but adds delay.
+More integral terms add states and can worsen saturation/windup.
+The paper derives existing gains, Routh conditions and a possible lag/drag-aware altitude design;
+**it does not install speculative new gains**.
+
+Current reproducible scenario calculations:
+[calculation script](../tools/calculate_current_control_design.py),
+[full numerical results](../artifacts/model-design/current/calculations.json).
+
+![Local model poles; historical calculation, not a new flight](../artifacts/model-design/current/local-model-poles.png)
+
+---
+
+## 5. Standard deviation is not the whole error
+
+A useful measurement model is
+
+$$y_k=x_{\rm true}+b+n_k.$$
+
+Here b is bias, while n_k describes fluctuation. Repeating a biased measurement
+many times can produce a very precise mean that is still wrong.
+
+For N independent readings:
+
+$$\bar y=\frac1N\sum y_k,\qquad
+s^2=\frac{1}{N-1}\sum(y_k-\bar y)^2,\qquad
+u_A(\bar y)=\frac{s}{\sqrt N}.$$
+
+- s describes individual-reading scatter.
+- s/√N describes uncertainty of the mean under the independence assumption.
+- Instrument calibration, temperature, alignment and reference uncertainty add other contributions.
+- A fixed aircraft mass is not fluctuating just because the scale does.
+- “About 150 g” does not specify a distribution or standard deviation.
+
+For correlated inputs with covariance Σ:
+
+$$u_f^2\simeq\nabla f^T\Sigma\nabla f.$$
+
+Example for hover thrust per rotor:
+
+$$T_i=\frac{mg}{4},\qquad
+u^2(T_i)\simeq\left(\frac g4\right)^2u_m^2+
+\left(\frac m4\right)^2u_g^2+
+2\frac g4\frac m4\operatorname{Cov}(m,g).$$
+
+A reference is a better characterized measurement, not absolute truth.
+Use a checked scale, calibrated voltage/current reference, known length target or suitable angular reference,
+and preserve their uncertainty with the comparison.
+The paper covers uniform/triangular bounds, resolution, correlations, drift and Allan variance,
+with explicitly invented teaching examples.
+
+References: [NIST Type A](https://physics.nist.gov/cuu/Uncertainty/typea.html),
+[NIST Type B](https://physics.nist.gov/cuu/Uncertainty/typeb.html).
+
+---
+
+## 6. How to measure what is missing
+
+Follow the [measurement plan and blank CSV worksheets](../measurements/README.md).
+The paper gives full apparatus equations and uncertainty propagation.
+
+| Unknown | Measurement | Core calculation |
+|---|---|---|
+| Total flying mass | Weigh complete aircraft repeatedly; check scale bias | Mean, scatter, reference uncertainty |
+| Centre of mass | Reactions on two known supports for each axis | x_COM = L R₂/(R₁+R₂) |
+| Inertia | Bifilar pendulum for each axis; subtract fixture | J = mga²T_period²/(4π²L) |
+| Static thrust | Secured thrust stand at several commands and voltages | T from load cell; identify ∂T/∂u at hover |
+| Motor lag and delay | Timestamp command step and thrust response | Fit T(t)=T₀+ΔT(1−exp(−(t−t_d)/τ)) |
+| Reaction torque | Known lever arm and force | Q=ℓF |
+| Gyro noise/bias | Stationary log across temperature/configurations | Mean bias, variance, correlations, Allan plot |
+| Accel bias/scale | ±x, ±y, ±z reference poses | Offset and scale from opposite-face means |
+| Barometer/lidar | Compare against known heights and stationary logs | Offset, scale, residual variance, latency |
+| Battery capacity | Controlled charger/discharger plus current log | C_Ah=∫I dt/3600 |
+| Camera/extrinsics | Calibration target and measured sensor transforms | Intrinsics, distortion, pose and reprojection residual |
+| Communication delay | Timestamped sequence/receive/application records | Latency distribution, jitter and dropouts |
+
+For a bifilar pendulum, a is **half the separation** of the two strings.
+Measure several cycles, not a single period; use small oscillations and correct the fixture contribution.
+Each row in the paper includes assumptions and things that can bias the result.
+
+---
+
+## 7. Calibration in flash, and Kalman noise
+
+Gyro calibration estimates the stationary mean and subtracts it:
+
+$$g_k=\omega_k+b+n_k,\qquad \hat b=\frac1N\sum g_k,\qquad
 g_k^{\rm corrected}=g_k-\hat b.$$
 
-Thus 0.8 degrees/s is an example estimated bias, not a universal correction or a
-number hard-coded into the firmware. Negative biases are subtracted with their
-sign: a bias of -0.3 means adding 0.3 to a later reading.
+The C implementation uses Welford's online mean/variance to avoid storing every sample.
+New flash storage saves validated fits, loads them after reboot and verifies the gyro again.
+Use [the exact flash/boot guide](calibration-flash.md) for commands and failure behavior.
 
-### How the existing C calculates this
+The common Kalman recursion is
 
-`imu_stationary_cal_add` accepts one sample pair; `cal_stats3_add` implements
-Welford's online mean/variance, independently for x,y,z:
+$$\hat x^-_k=F_k\hat x^+_{k-1}+B_ku_k,\qquad
+P^-_k=F_kP^+_{k-1}F_k^T+Q_k,$$
 
-1. Increment $N$.
-2. Compute $\delta=g_k-\bar g_{N-1}$.
-3. Update $\bar g_N=\bar g_{N-1}+\delta/N$.
-4. Update $M_{2,N}=M_{2,N-1}+\delta(g_k-\bar g_N)$.
-5. At finalization, $s^2=M_2/(N-1)$ estimates sample variance.
+$$S_k=H_kP^-_kH_k^T+R_k,\qquad
+K_k=P^-_kH_k^TS_k^{-1},$$
 
-This produces the ordinary arithmetic mean without storing every sample and
-with better numerical behavior than subtracting two large raw squared sums.
-`imu_gyro_cal_finish` stores $\hat b_i=\bar g_i$ and
-$\operatorname{Var}(\hat b_i)\approx s_i^2/N$. `imu_cal_apply` subsequently
-subtracts the stored mean from each gyro axis. `sensor_sample_apply_imu_calibration`
-is an optional wrapper that writes corrected values back into a sensor sample.
+$$\hat x^+_k=\hat x^-_k+K_k(y_k-H_k\hat x^-_k).$$
 
-The current acceptance rules include:
+Its gains depend on uncertainty models, sample timing and sensor quality.
+A large printed K is not automatically better than a small one.
 
-- Disarmed capture; fresh samples are a caller responsibility.
-- At least 500 samples; equal accelerometer/gyro sample counts.
-- Initial per-sample acceleration magnitude 0.8..1.2 g and each rate <=10 degrees/s.
-- Final mean acceleration magnitude 0.9..1.1 g.
-- Each mean gyro rate <=5 degrees/s in magnitude.
-- Per-axis accelerometer variance <=0.0004 g² and gyro variance <=0.01 (degrees/s)².
+The independent roll/pitch filters actually each have two states, angle and gyro bias:
 
-The last gyro bound means a capture sigma no greater than 0.1 degrees/s per axis.
-At $N=500$, that corresponds to bias-mean sigma no greater than
-$0.1/\sqrt{500}\approx0.00447$ degrees/s **under an independent-sample assumption**.
-Filtered adjacent samples can be correlated, so $s^2/N$ can be optimistic. The
-number of iterations does not by itself establish elapsed time or independence.
+$$x_{\rm angle}=[\theta,b]^T,\quad
+F=\begin{bmatrix}1&-\Delta t\\0&1\end{bmatrix},\quad H=[1,0].$$
 
-### What is already implemented versus still missing
+The altitude filter has height and vertical speed:
 
-Mean removal, variance checking and fit uncertainty already exist; replacing them
-with a simpler average would not improve them. Physical startup acquisition,
-warm-up/temperature qualification, ensuring unique samples, storage in flash and
-actually applying the fit in the Pico's real driver path remain unfinished. The
-Pico main currently supplies invalid zero sensor data rather than a calibrated IMU.
+$$x_h=[h,v_z]^T,\quad
+F_h=\begin{bmatrix}1&\Delta t\\0&1\end{bmatrix},\quad
+B_h=\begin{bmatrix}\Delta t^2/2\\\Delta t\end{bmatrix},\quad H_h=[1,0].$$
 
-A future physical calibration should record sensor temperature and repeat after
-warm-up at several stable temperatures. Fit $b_i(T)$ only after measuring it; do
-not invent a compensation slope or continuously relearn zero rate while rotating.
-For correlated samples, estimate effective sample count or uncertainty from
-independent batches. Long stationary records/Allan analysis help distinguish white
-noise, drift and random-walk behavior. Current thresholds are provisional: for
-example, a sensor/capture with sigma 0.2 degrees/s will be rejected by the 0.1
-degrees/s capture bound, even though simulation deliberately injects 0.2 degrees/s.
-That mismatch must be resolved using measured sensor settings/noise, not by
-silently accepting motion or pretending synthetic noise is measured hardware.
+Accelerometers measure **specific force**, so gravity removal requires attitude and sign conventions.
+At rest, magnitude is about 1g; in ideal free fall it approaches zero.
+The paper derives this before using vertical acceleration and explains periodic multi-rate gains.
+Saved sample variances are not yet automatically mapped into every estimator setting.
 
-Temperature dependence and a digital temperature channel are documented in the
-[MPU6050 specification](https://product.tdk.com/system/files/dam/doc/product/sensor/mortion-inertial/imu/data_sheet/mpu-6000-datasheet1.pdf).
+---
 
-## 2. Separate supplied information from assumptions
+## 8. ROS 2 and Gazebo
 
-| Parameter | Current knowledge |
+### Current simulation path
+
+Native Gazebo physics/RGB → sensor model and common C++ mission core →
+ROS 2 DDS adapters/local IPC → host-compiled flight_controller.c →
+motor/thrust model → applied Gazebo link wrench.
+
+The flight library runs production C math on the PC; it is not an RP2350 emulator.
+The recorded garden uses simulated local odometry and synthetic inertial/height measurements,
+with native camera pixels. The floor range is an analytical ray.
+The separately built standard C++ ROS graph is not claimed to have replaced every adapter in that recording.
+
+Rebuild after C changes using tools/build_sitl.ps1.
+The launcher is tools/run_native_garden.ps1; see [README](../README.md) for its command and environment.
+
+### New battery policy input for simulation
+
+Publish a Float32 estimated SOC percentage to **/qcopter/battery_soc_percent**.
+The same C instance used by flight control sets flags published as UInt8 on
+**/qcopter/battery_policy**: bit 0 warning, bit 1 disarm latch.
+
+In an already configured ROS 2 terminal, these are example commands:
+
+    ros2 topic pub --once /qcopter/battery_soc_percent std_msgs/msg/Float32 "{data: 35.0}"
+    ros2 topic echo /qcopter/battery_policy --qos-durability transient_local
+
+At 20 or below, the mathematical motor demands are inhibited and the simulated aircraft can fall.
+The bridge does not invent a battery-discharge trace. This new topic path has not been exercised in a new flight.
+
+### Future physical companion
+
+ROS mission → framed USB/UART commands → RP2350 parser → local 500 Hz loop.
+Actual physical transport framing, freshness, CRC, authority and acknowledgements remain unfinished.
+ROS uses radians; the C interface currently uses degrees.
+A slow mission setpoint stream must not determine the inner-loop period.
+
+## 9. Requested battery behavior
+
+| Estimated SOC | Behavior |
 |---|---|
-| Frame | F450/Q450 family; 0.45 m motor diagonal is the working geometry, not a measured clone dimension |
-| Motor | Orange hobby motor, 1400 KV; exact model/thrust curve unknown |
-| Propeller | 9047: nominal 9 inch diameter and 4.7 inch pitch; mass/aerodynamic coefficients unknown |
-| ESC | 40 A rating; this is not measured current or thrust response |
-| Battery | 3S 4200 mAh 120C; user-estimated mass 150 g, unverified |
-| Controller period | Intended 0.002 s; host simulation uses this virtual interval |
-| Real vehicle mass/inertia | Not yet measured |
-| Thrust gain/lag/yaw drag torque | Not yet identified |
-
-Two different assumed models exist and must not be mixed:
-
-| Quantity | Recorded flight baseline | Separate component URDF estimate |
-|---|---:|---:|
-| Mass, kg | 1.2 | 0.740 |
-| $J_x$, kg m² | .012 | .00885852 |
-| $J_y$, kg m² | .012 | .00906322 |
-| $J_z$, kg m² | .022 | .01718682 |
-| Component measurements verified? | No | No |
-
-The component estimate uses guessed 330 g frame, 55 g each motor, 10 g each prop
-and the user's approximate 150 g battery. Other electronics/ESC masses were
-excluded as requested. The actual completed airframe may differ substantially.
-The native Gazebo recording has not been switched to this 740 g model.
-
-For the worked baseline only, assume maximum thrust $T_{max}=6$ N per motor,
-reaction torque/thrust ratio $\kappa=.015$ m, thrust lag $\tau=.04$ s and linear
-drag $d=.12$ N s/m. They cannot be deduced uniquely from 1400 KV, 9047, 40 A and
-3S. KV describes a speed/voltage relationship, not a thrust/command curve.
-
-Numerical precision of calculations must not be confused with accuracy of these
-assumptions. Performance objectives such as settling time, overshoot, noise
-amplification and allowable motor saturation must also be selected: plant
-parameters alone do not specify one unique PID design.
-
-## 3. Construct the nonlinear differential equations
-
-Use a right-handed body frame x forward, y left, z up. ROS angles normally use
-radians; the current inner C API uses degrees. The bridge must explicitly convert
-them. See [ROS REP 103](https://raw.githubusercontent.com/ros-infrastructure/rep/master/rep-0103.rst).
-
-Let $r,v$ be world position/velocity, $R$ rotate body vectors into world axes,
-$\omega=[p,q,r_b]^T$ be body angular velocity, and $J$ inertia about the centre
-of mass. We use $r_b$ for yaw rate here to avoid confusing it with position $r$.
-
-### Translation
-
-Newton's law gives mass times acceleration equal to the sum of external forces:
-
-$$\dot r=v,$$
-$$m\dot v=R\begin{bmatrix}0\\0\\T\end{bmatrix}
--\begin{bmatrix}0\\0\\mg\end{bmatrix}-dv+f_{dist},\qquad
-T=\sum_{i=1}^{4}T_i.$$
-
-The thrust vector points along body z. Multiplying by $R$ gives its world
-direction. Gravity points down in world z. Linear drag opposes velocity.
-
-### Rotation
-
-Angular momentum balance in rotating body coordinates gives
-
-$$J\dot\omega=\tau_B-\omega\times(J\omega),\qquad
-\dot R=R[\omega]_\times.$$
-
-If $J$ is diagonal, the x equation is
-$J_x\dot p=\tau_x+(J_y-J_z)qr_b$, with cyclic counterparts for y,z.
-These coupling products vanish to first order around a stationary level hover.
-General coupled flight still needs them; scalar transfer functions are local models.
-
-### Motors, thrust and mixer
-
-A more physical rotor model would use $T_i=k_T\Omega_i^2$ and
-$Q_i=k_Q\Omega_i^2$, with measured speed/current/voltage dynamics. Those
-coefficients are unknown. The current simulator instead assumes
-
-$$\tau\dot u_i^a+u_i^a=u_i,\qquad T_i=T_{max}u_i^a.$$
-
-Here normalized demand $u_i$ is **linear in the simulator's thrust model**;
-it is not established that real ESC PWM or DShot command is linear in thrust.
-For a better real model linearized about hover, replace $T_{max}$ in local
-control effectiveness by the measured derivative $dT/du$ at the operating point.
-
-For motor diagonal $D$, the x/y motor coordinate magnitude is
-
-$$a=\frac{D}{2\sqrt2}=0.1590990258\ {\rm m}.$$
-
-With motor order FL,FR,RR,RL, thrusts produce
-
-$$\begin{bmatrix}T\\\tau_x\\\tau_y\\\tau_z\end{bmatrix}=
-\begin{bmatrix}
-1&1&1&1\\
-a&-a&-a&a\\
--a&-a&a&a\\
--\kappa&\kappa&-\kappa&\kappa
-\end{bmatrix}
-\begin{bmatrix}T_{FL}\\T_{FR}\\T_{RR}\\T_{RL}\end{bmatrix}.$$
-
-The corresponding unsaturated mixer is
-
-$$\begin{aligned}
-u_{FL}&=c+u_\phi-u_\theta-u_\psi,\\
-u_{FR}&=c-u_\phi-u_\theta+u_\psi,\\
-u_{RR}&=c-u_\phi+u_\theta-u_\psi,\\
-u_{RL}&=c+u_\phi+u_\theta+u_\psi.
-\end{aligned}$$
-
-Substitution shows $T=4T_{max}c$, $\tau_x=4aT_{max}u_\phi$,
-$\tau_y=4aT_{max}u_\theta$ and $\tau_z=4\kappa T_{max}u_\psi$.
-These signs/spin assumptions describe the simulator; physical motors/axes still
-need verification. The C allocator changes this simple linear relationship when
-torque demands saturate or collective is shifted.
-
-### Hover equilibrium
-
-At level hover, zero acceleration requires $T=mg$. Therefore
-
-$$T_{hover,each}=\frac{mg}{4}=2.941995\ {\rm N},\qquad
-c_0=\frac{mg}{4T_{max}}=0.4903325$$
-
-for the 1.2 kg/6 N baseline. This explains the nominal .5 hover value. It is not
-a real motor setting derived from the KV label. The 740 g estimate would require
-1.81423025 N each and a different feed-forward under the same assumed thrust model.
-
-## 4. Obtain local transfer functions
-
-Linearize at $v=0$, $\omega=0$, level attitude, and $T=mg$. For small angles,
-$\dot\phi\approx p$, $\dot\theta\approx q$, $\dot\psi\approx r_b$;
-$\ddot x\approx g\theta$ and $\ddot y\approx-g\phi$ if yaw is zero.
-
-Define control effectiveness in the C controller's degree-based units:
-
-$$b_\phi=\frac{4aT_{max}}{J_x}\frac{180}{\pi},\quad
-b_\theta=\frac{4aT_{max}}{J_y}\frac{180}{\pi},\quad
-b_\psi=\frac{4\kappa T_{max}}{J_z}\frac{180}{\pi},\quad
-b_h=\frac{4T_{max}}m,\quad\lambda=\frac dm.$$
-
-With zero perturbation initial conditions, Laplace transforming
-$\dot p=b_\phi u_\phi^a$ and $\tau\dot u_\phi^a+u_\phi^a=u_\phi$
-gives $sP=b_\phi U_\phi^a$ and $(\tau s+1)U_\phi^a=U_\phi$. Divide to obtain
-
-$$G_p(s)=\frac{P(s)}{U_\phi(s)}=\frac{b_\phi}{s(\tau s+1)},\qquad
-G_\phi(s)=\frac{\Phi(s)}{U_\phi(s)}=\frac{b_\phi}{s^2(\tau s+1)}.$$
-
-Pitch has the same forms with $b_\theta$; yaw rate uses $b_\psi/[s(\tau s+1)]$.
-Rate is already second order with actuator lag; angle is third order.
-
-For vertical perturbations $\delta c=c-c_0$, gravity cancels at equilibrium:
-
-$$\ddot h+\lambda\dot h=b_h\delta c^a.$$
-
-Laplace transformation plus the same thrust lag gives
-
-$$G_h(s)=\frac{H(s)}{\Delta C(s)}=
-\frac{b_h}{s(s+\lambda)(\tau s+1)}.$$
-
-Ignoring drag and lag reduces this to $b_h/s^2$, but this simpler model does not
-retain all dynamics used in the current baseline. Numerically:
-
-$$G_p(s)=\frac{18231.4054}{s(.04s+1)},\quad
-G_{r_b}(s)=\frac{937.5673}{s(.04s+1)},\quad
-G_h(s)=\frac{20}{s(s+.1)(.04s+1)}.$$
-
-Angular outputs above are degrees/s or degrees; substituting radian-based gains
-without the conversion would change loop gain by about 57.3.
-
-## 5. Derive the current six gains
-
-### Inner rate PI
-
-First neglect motor lag to choose an initial bandwidth. With $G=b/s$ and
-$C=K_p+K_i/s$, unity feedback gives
-
-$$1+CG=0\quad\Longrightarrow\quad s^2+bK_ps+bK_i=0.$$
-
-Choose target polynomial $s^2+2\zeta\omega_ns+\omega_n^2$ and match coefficients:
-
-$$K_p=\frac{2\zeta\omega_n}{b},\qquad K_i=\frac{\omega_n^2}{b}.$$
-
-The selected simulation design uses $\zeta=.9$, roll/pitch
-$\omega_n=12(.7)=8.4$ rad/s and yaw $\omega_n=4(.7)=2.8$ rad/s. These bandwidths
-are engineering choices, not measurements inferable from motor KV.
-
-The outer roll/pitch angle controller is P-only with $K_a=3$; its output is a
-rate target. The six `pid_t` objects therefore include two P controllers, three
-PI controllers and one altitude PID. Rate-loop gains use degree-based inputs.
-
-### Single altitude PID
-
-For the simplified double-integrator plant $G=b_h/s^2$, the PID characteristic is
-
-$$s^3+b_hK_ds^2+b_hK_ps+b_hK_i.$$
-
-Choose $(s+p_h)(s^2+2\zeta_h\omega_hs+\omega_h^2)$, expand, and equate coefficients:
-
-$$K_d=\frac{2\zeta_h\omega_h+p_h}{b_h},\quad
-K_p=\frac{\omega_h^2+2\zeta_h\omega_hp_h}{b_h},\quad
-K_i=\frac{p_h\omega_h^2}{b_h}.$$
-
-Use $\omega_h=1.5(.7)=1.05$ rad/s, $p_h=.8(.7)=.56$/s and $\zeta_h=.9$.
-The C code implements the height PID's derivative contribution as
-$K_d(v_{cmd}-\hat v)$, avoiding a numerical difference of noisy height.
-The moving reference satisfies approximately $\dot h_{ref}=v_{cmd}$ unless its
-distance limiter activates. There is no additional seventh vertical-speed PID.
-
-### Result for the existing 1.2 kg baseline
-
-| Loop | Kp | Ki | Kd |
-|---|---:|---:|---:|
-| Roll angle | 3 | 0 | 0 |
-| Roll rate | .0008293381 | .0038702447 | 0 |
-| Pitch angle | 3 | 0 | 0 |
-| Pitch rate | .0008293381 | .0038702447 | 0 |
-| Yaw rate | .0053756141 | .0083620664 | 0 |
-| Altitude | .108045 | .03087 | .1225 |
-
-These reproduce the current scale-.7 design and C initializers; they are not new
-hardware tuning recommendations. Changing mass/inertia changes the calculated
-gains even if desired bandwidth is unchanged. The separate 740 g estimate gives
-different gains, saved alongside the baseline in the JSON, without installing them.
-
-## 6. Check the dynamics we neglected during initial gain matching
-
-### Rate PI with motor lag
-
-Using $G=b/[s(\tau s+1)]$ instead of $b/s$ changes the characteristic to
-
-$$\tau s^3+s^2+bK_ps+bK_i.$$
-
-For $b,\tau,K_p,K_i>0$, the remaining cubic Routh condition is
-$bK_p>\tau bK_i$, equivalently $K_p>\tau K_i$.
-For roll/pitch it becomes
-
-$$.04s^3+s^2+15.12s+70.56,$$
-
-whose poles are $-7$ and $-9\pm13.0767j$. They are not the poles of the
-lag-free target second-order polynomial. This is why a second-order initial
-design is not the end of the calculation.
-
-### Complete roll/pitch cascade
-
-The closed inner rate transfer is
-
-$$T_p(s)=\frac{b(K_ps+K_i)}{\tau s^3+s^2+bK_ps+bK_i}.$$
-
-The outer loop sees $T_p/s$ and gain $K_a$. Multiplying $1+K_aT_p/s=0$ by its
-denominator gives
-
-$$\tau s^4+s^3+bK_ps^2+b(K_i+K_aK_p)s+K_abK_i.$$
-
-For the baseline this is
-
-$$.04s^4+s^3+15.12s^2+115.92s+211.68.$$
-
-For a quartic $a_4s^4+a_3s^3+a_2s^2+a_1s+a_0$ with positive coefficients,
-the additional Hurwitz conditions are
-
-$$\Delta_2=a_3a_2-a_4a_1>0,$$
-$$\Delta_3=a_3a_2a_1-a_4a_1^2-a_3^2a_0>0.$$
-
-Here $\Delta_2=10.4832$ and $\Delta_3=1003.532544$, both positive. The complete
-continuous local cascade poles are approximately
-$-2.54124$, $-10.67161$, $-5.89357\pm12.66510j$.
-
-### Altitude with lag and vertical drag
-
-Using the fuller vertical plant gives
-
-$$\tau s^4+(1+\tau\lambda)s^3+(\lambda+b_hK_d)s^2+b_hK_ps+b_hK_i.$$
-
-With the existing gains:
-
-$$.04s^4+1.004s^3+2.55s^2+2.1609s+.6174.$$
-
-Its Hurwitz determinants are 2.473764 and 4.7232075492, both positive. Its poles
-are approximately $-22.3550$, $-1.37553$, $-.684731\pm.181921j$.
-
-These results establish local continuous unsaturated model stability with ideal
-state/rate feedback. They do **not** include Kalman-estimator dynamics, radio/ROS
-delay, sampled implementation, battery sag, thrust uncertainty, contact, saturation
-or the full nonlinear model. A sampled analysis must discretize the motor/vehicle
-state with the actual hold/update order, augment the controller/filter states and
-check all eigenvalues lie inside the unit circle. It is not enough to display the
-continuous poles or assume that every 500 Hz implementation has zero delay.
-
-### An analytically matched fourth-order altitude candidate
-
-One can include the assumed lag/drag in coefficient matching instead of ignoring
-them. Choose
-
-$$\tau(s+\rho)(s+p_h)(s^2+2\zeta_h\omega_hs+\omega_h^2).$$
-
-The fixed cubic coefficient requires
-$\rho=1/\tau+\lambda-p_h-2\zeta_h\omega_h=22.65$/s. Expanding the other terms gives
-
-$$K_d=\frac{\tau[\omega_h^2+2\zeta_h\omega_hp_h+\rho(p_h+2\zeta_h\omega_h)]-\lambda}{b_h},$$
-$$K_p=\frac{\tau[p_h\omega_h^2+\rho(\omega_h^2+2\zeta_h\omega_hp_h)]}{b_h},\qquad
-K_i=\frac{\tau\rho p_h\omega_h^2}{b_h}.$$
-
-For the assumed baseline this yields Kp=.09912357, Ki=.02796822, Kd=.1103068.
-It exactly matches the selected continuous local target poles
-$-22.65$, $-.56$, $-.945\pm.457684j$. This is an **uninstalled analytic candidate**,
-not a claim of improved full-flight results. Current code/gains are unchanged.
-
-## 7. Calculate Kalman gains from noise and sampling, not motor KV
-
-PID design uses plant dynamics and performance objectives. Kalman design uses
-state dynamics, observation models, covariance assumptions and sampling times.
-Sensor calibration estimates bias/noise, but cannot independently identify every
-in-flight process-noise term or make these assumptions automatically correct.
-
-### Roll/pitch angle and bias
-
-For each angular axis,
-
-$$x=\begin{bmatrix}\alpha\\b_g\end{bmatrix},\quad
-F=\begin{bmatrix}1&-\Delta t\\0&1\end{bmatrix},\quad H=[1,0],$$
-$$x^-_{k}=Fx^+_{k-1}+\begin{bmatrix}\Delta t\\0\end{bmatrix}g_k.$$
-
-The current code's noise convention is
-
-$$Q=\begin{bmatrix}
-\sigma_g^2\Delta t^2+q_b\Delta t^3/3&-q_b\Delta t^2/2\\
--q_b\Delta t^2/2&q_b\Delta t
-\end{bmatrix},\qquad R=\sigma_{\alpha,acc}^2.$$
-
-Prediction and correction:
-
-$$P^-=FP^+F^T+Q,\qquad S=HP^-H^T+R,$$
-$$K=P^-H^TS^{-1},\quad\nu=z-Hx^-,\quad x^+=x^-+K\nu,$$
-$$P^+=(I-KH)P^-(I-KH)^T+KRK^T.$$
-
-Using the existing assumptions $\Delta t=.002$, $\sigma_g^2=.04$,
-$q_b=.0001$ and $R=4$ degree², the conditional limiting gain is approximately
-
-$$K_\alpha=.000966191,\qquad K_b=-.000223499.$$
-
-The negative bias gain is expected from the angle model's negative bias
-coupling; it is not an invalid probability. Conditional posterior sigmas approach
-.06217 degrees for angle and .02079 degrees/s for residual bias. These are model
-covariance predictions, not measured flight-error bounds. Startup gains differ.
-
-Accelerometer angle noise is not directly `accel_noise_g²`: observation geometry
-must be propagated. At level rest, $\alpha\approx a_y$ in radians when acceleration
-is expressed in g, so $\sigma_\alpha^2\approx(180/\pi)^2\sigma_{a_y,g}^2$.
-During translational acceleration, that gravity-based observation is biased;
-stationary white-noise variance alone does not describe it.
-
-### Altitude: 500 Hz prediction, 50 Hz height observations
-
-$$x=\begin{bmatrix}h\\v\end{bmatrix},\quad
-F=\begin{bmatrix}1&\Delta t\\0&1\end{bmatrix},\quad
-G=\begin{bmatrix}\Delta t^2/2\\\Delta t\end{bmatrix},\quad H=[1,0],$$
-$$x^-=Fx^++Ga_{up},\qquad Q=G\sigma_a^2G^T.$$
-
-With $\sigma_a=1.5$ m/s² and $\Delta t=.002$, each prediction adds
-
-$$Q=\begin{bmatrix}9\times10^{-12}&9\times10^{-9}\\9\times10^{-9}&9\times10^{-6}\end{bmatrix}.$$
-
-The host reset uses $R_{baro}=.0025$ m². Applying ten predictions then one
-height correction yields periodic limiting gains at correction time:
-
-$$K_h\approx.0834306,\qquad K_v\approx.181649.$$
-
-Do not apply those as fixed gains every 2 ms: the height observation interval is
-20 ms. The actual C calculates its current gain from covariance whenever a fresh
-measurement is flagged.
-
-If a valid independent lidar-derived height with $R_{lidar}=.0004$ m² is fused
-after each barometer correction, the conditional periodic gains become:
-
-| Correction | Height gain | Velocity gain |
-|---|---:|---:|
-| Barometer first | .0207565 | .0741164 |
-| Lidar second | .1148311 | .4100348 |
-
-Startup, missing floor returns, tilt, terrain, dropouts and other observation
-ordering change these values. Sharing attitude error between projected lidar
-height and inertial acceleration can introduce correlations not represented by
-this simple independent-noise calculation.
-
-The garden injects barometer sigma .03 m (variance .0009), while the host filter
-uses .0025; lidar noise sigma .01 m is injected, while the update uses .0004.
-Those conservative tuning variances are not measured sensor calibrations. Keep
-injected noise, assumed filter noise and actual observed residual/error statistics
-separately labelled rather than claiming they are identical.
-
-## 8. Trace parameter uncertainty without inventing distributions
-
-For small uncertainty, propagate a parameter covariance by a Jacobian:
-
-$$\Sigma_y\approx J_f\Sigma_\theta J_f^T,\qquad
-J_f=\frac{\partial f}{\partial\theta}.$$
-
-For example $b_\phi\propto aT_{max}/J_x$, so
-$\delta b_\phi/b_\phi\approx\delta a/a+\delta T_{max}/T_{max}-\delta J_x/J_x$.
-With fixed target bandwidth, $K_p,K_i\propto1/b_\phi$, reversing those signs.
-For a fixed simplified altitude target, gains scale with $m/T_{max}$.
-
-The same component measurements influence both mass and inertia; their errors
-can be correlated. Do not automatically add independent percentages if the same
-weighing/position error contributes to several terms. Uniform/Gaussian parameter
-distributions and standard deviations need measured support or an explicit
-scenario assumption. Current JSON numbers are point assumptions, not confidence
-intervals. Local Hurwitz determinants can be recomputed across declared parameter
-ranges, but a finite grid alone does not prove every continuous combination stable.
-
-Measurements that matter most for real gain accuracy are full takeoff mass/COM,
-component positions/inertia, 3S thrust-versus-command near hover, motor step
-response/lag, yaw torque effectiveness, and timestamped sensor noise/drift at the
-actual digital filtering/sample settings. Simulate these as uncertain parameters
-until hardware arrives; no board selection is required for the derivation.
-
-## 9. How ROS 2 communicates with the flight controller
-
-### What exists today: workstation simulation
-
-```text
-Gazebo state + synthetic sensor generation / shared C++ mission core
-    -> local TCP IPC (port 9241)
-    -> ROS adapter publishes garden/sensors_commands
-    -> DDS delivers to garden_c_flight_core subscriber
-    -> subscriber calls the compiled flight_controller.c DLL
-    -> garden/control_reply returns four motor demands + diagnostics
-    -> local IPC reply -> motor dynamics -> native Gazebo force/torque
-```
-
-`sim/garden/ros_transport.py` implements the simulator-side `RosFlight` calls.
-`sim/ros2_garden_bridge.py` runs the actual DDS publishers/subscribers and calls
-`qc_sitl_step` through ctypes. `sim/engines/ros_bridge.py` adapts evidence paths for
-the native engine. Both DDS adapter nodes currently run in one process. The C core
-is host-compiled, not an RP2350 firmware image/emulator running inside Gazebo.
-
-Separately, the compiled C++ ROS mission/perception nodes publish an atomic
-`autonomy/setpoint` message containing roll/pitch angles in radians, yaw rate in
-rad/s, centered throttle and validity. They have passed separate DDS integration
-checks; that entire ROS C++ topic graph is not yet the recorded flight path.
-
-### Future physical connection: proposed, not implemented
-
-```text
-ROS C++ mission -> autonomy/setpoint -> wired bridge on companion
-       USB CDC or UART frames -> RP2350 core-1 parser -> bounded setpoint mailbox
-       RP2350 core 0 runs estimators/PIDs locally at 500 Hz -> eventual ESC drivers
-```
-
-The microcontroller does not currently run ROS 2 or micro-ROS. A wired protocol
-still needs implementation: framing/version, message type, sequence plus session,
-CRC, bounded units, heartbeat/freshness, acknowledgements/status and explicit
-pilot/companion authority. The existing 22-byte LoRa pilot frame is not already a
-ROS serial protocol. Pins/baud/USB identity remain deployment choices, not things
-already configured on an absent board.
-
-Convert ROS radian setpoints to C degrees at one documented boundary. Use local
-reception time plus negotiated sequence/session for freshness rather than trusting
-that remote ROS and Pico clocks share an epoch. A slower companion setpoint stream
-(for example 20–50 Hz) must not clock the inner 500 Hz PID loop. Loss of companion
-commands needs an explicit valid fallback/landing supervisor; do not copy the
-current scaffold's zero-motor early returns into an armed airborne design.
-
-Telemetry should return state estimates, covariances/innovations, battery status,
-sensor/link health, selected command authority and timing/drop counts. Physical
-arming remains disabled. LoRa stays the planned pilot channel; unused CC1101
-channels are separate from the wired companion interface.
-
-## 10. How the existing C core is integrated into Gazebo
-
-### Build the same C source for the host
-
-`tools/build_sitl.ps1` compiles `flight_controller/flight_controller.c` with
-`QCOPTER_HOST_TEST` and `QCOPTER_SITL_DLL` into `build/sitl/flight_core.dll`.
-These flags expose the host ABI and exclude Pico-specific main/peripheral calls;
-the PID/filter/mixer equations remain the same. The C++ mission/navigation core
-is compiled into a separate host library.
-
-### Supply measurements, not perfect controller states
-
-The simulator generates body specific force and angular rate from native rigid
-body state, adds declared noise, and supplies barometer/lidar models. The C
-controller estimates roll/pitch/height/vertical speed. Horizontal localization for
-navigation currently comes from simulated odometry. Camera pixels come from native
-Gazebo rendering. The current downward lidar is an analytical floor ray, not a
-native range-sensor or physical TOFSense driver.
-
-`qc_sitl_step` consumes nine sensor floats (acceleration xyz, gyro xyz, upward
-acceleration, height, new-height-sample flag), five command floats (roll, pitch,
-yaw rate, throttle, boost), dt and validity flags. It returns four normalized
-motor demands and sixteen diagnostics. The external simulation mission supervisor
-provides virtual spool/landing gating; this is not physical arming permission.
-
-### Close the physical feedback loop
-
-For each .002 s simulation interval:
-
-1. Read current native Gazebo state/camera buffers.
-2. Generate the declared sensor observations and timestamp/update flags.
-3. Obtain bounded mission/pilot-mode commands.
-4. Execute the C control step, directly or through the documented DDS adapter.
-5. Evolve each motor's assumed first-order thrust lag.
-6. Calculate total thrust and the three differential torques.
-7. Rotate body force/torque into world coordinates and apply native link wrench.
-8. Advance native Gazebo physics by one step and repeat.
-
-`sim/gazebo/engine_server.py` uses `Link.add_world_wrench` in the simulation
-pre-update callback, then obtains the resulting native state after the physics
-step. It does not move the drone by setting pose to follow a prerecorded path.
-Gazebo's [Link API](https://gazebosim.org/api/sim/10/classgz_1_1sim_1_1Link.html)
-documents the world-frame wrench and its one-step lifetime.
-
-Launch the existing integrated recorded flight from the project root:
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File tools/run_native_garden.ps1 -RunPrefix model-study-01
-```
-
-Use a new run name each time. Videos, CSV, gains/uncertainty diagnostics and
-validation go under `artifacts/simulation/2026-10-20-engines`; original stdout and
-stderr are under `artifacts/test-runs/native-local`. The simulator's .002 s virtual
-interval is not proof of a 2 ms wall-clock DDS round trip or physical MCU deadline.
-
-The separate component URDF/RViz model is not automatically the physics body used
-by this flight adapter. Importing an URDF by itself neither runs a C controller nor
-adds aerodynamic thrust. When replacing the body, update mass, COM, inertia,
-rotor positions and force application consistently, then recalculate/assess gains.
-The next architectural integration remains the complete standard ROS C++ camera,
-pose, perception, mission and command graph, followed later by a physical wired
-bridge; neither has been silently claimed complete by these model calculations.
+| Above 35% | Normal SOC policy |
+| At/below 35%, above 20% | Warning |
+| At/below 20% | Latched disarm, regardless of height |
+
+There is **no automatic battery landing**. Once set, disarm does not clear on an SOC rebound.
+An explicit disarmed reset starts a new policy session.
+Critical configured external cell/BMS alerts also latch disarm.
+
+Notifications currently mean USB status and the simulation ROS flags.
+Handheld LoRa delivery, real voltage/current acquisition and physical ESC inhibition remain unfinished.
+A voltage divider alone cannot measure discharge current.
+SOC is uncertain; its threshold crossing is not proof of exact remaining capacity.
+With motors stopped in air, thrust decays and the aircraft falls—the paper derives that case too.

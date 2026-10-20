@@ -11,7 +11,8 @@ import numpy as np
 import ctypes as ct
 from run import libraries,ROOT
 import rclpy
-from std_msgs.msg import Float32MultiArray,Float64MultiArray
+from std_msgs.msg import Float32MultiArray,Float64MultiArray,Float32,UInt8
+from rclpy.qos import QoSProfile,DurabilityPolicy
 
 def exact(stream,n):
     buf=b''
@@ -24,6 +25,22 @@ def exact(stream,n):
 def main():
     fc,_=libraries();fc.qc_sitl_height_observation.argtypes=[ct.c_float,ct.c_float]
     rclpy.init();plant=rclpy.create_node('garden_transport_adapter');controller=rclpy.create_node('garden_c_flight_core')
+    fc.qc_sitl_set_battery_soc.argtypes=[ct.c_float]
+    fc.qc_sitl_battery_flags.restype=ct.c_uint
+    battery_pub=controller.create_publisher(UInt8,'qcopter/battery_policy',
+        QoSProfile(depth=1,durability=DurabilityPolicy.TRANSIENT_LOCAL))
+    last_battery_flags=None
+    def publish_battery_policy():
+        nonlocal last_battery_flags
+        flags=int(fc.qc_sitl_battery_flags())
+        if flags!=last_battery_flags:
+            battery_pub.publish(UInt8(data=flags))
+            print(f'Battery policy: warning={bool(flags&1)} disarm_latched={bool(flags&2)}; no automatic landing',flush=True)
+            last_battery_flags=flags
+    def battery_soc(message):
+        if np.isfinite(message.data) and 0<=message.data<=100:
+            fc.qc_sitl_set_battery_soc(float(message.data));publish_battery_policy()
+    battery_sub=controller.create_subscription(Float32,'qcopter/battery_soc_percent',battery_soc,10)
     response=None;selection=None
     selection_reply=controller.create_publisher(Float64MultiArray,'garden/mission_selection_ack',10)
     def select(m):
@@ -50,6 +67,7 @@ def main():
             fc.qc_sitl_step(payload[:9].copy(),payload[9:14].copy(),float(payload[14]),int(payload[15]),motor,diag);result=np.r_[motor,diag].tolist()
         elif op==3:fc.qc_sitl_height_observation(float(payload[0]),float(payload[1]));result=[]
         else:raise ValueError('Unknown operation')
+        publish_battery_policy()
         reply.publish(Float32MultiArray(data=[float(seq),*result]))
     sub=controller.create_subscription(Float32MultiArray,'garden/sensors_commands',control,10)
     received=plant.create_subscription(Float32MultiArray,'garden/control_reply',receive,10)

@@ -1,0 +1,381 @@
+note: "version 2" Tectonic command-line interface activated
+note: Running TeX ...
+Fontconfig error: Cannot load default config file: No such file: (null)
+warning: control:68: Overfull \hbox (44.34622pt too wide) in paragraph at lines 63--68
+warning: measurement:75: Overfull \hbox (42.29251pt too wide) in paragraph at lines 71--75
+warning: measurement:291: Overfull \hbox (2.1765pt too wide) in paragraph at lines 287--291
+note: downloading ts1-lmr10.tfm
+warning: failure fetching "ts1-lmr10.tfm" from network (1/3)
+caused by: error sending request for url (https://relay.fullyjustified.net/default_bundle_v33.tar)
+caused by: client error (Connect)
+caused by: tcp connect error
+caused by: An attempt was made to access a socket in a way forbidden by its access permissions. (os error 10013)
+warning: failure fetching "ts1-lmr10.tfm" from network (2/3)
+caused by: error sending request for url (https://relay.fullyjustified.net/default_bundle_v33.tar)
+caused by: client error (Connect)
+caused by: tcp connect error
+caused by: An attempt was made to access a socket in a way forbidden by its access permissions. (os error 10013)
+warning: failure fetching "ts1-lmr10.tfm" from network (3/3)
+caused by: error sending request for url (https://relay.fullyjustified.net/default_bundle_v33.tar)
+caused by: client error (Connect)
+caused by: tcp connect error
+caused by: An attempt was made to access a socket in a way forbidden by its access permissions. (os error 10013)
+warning: open of input ts1-lmr10 failed
+caused by: failed to download "ts1-lmr10.tfm"; please check your network connection.
+warning: accessing absolute path `C:/Windows/fonts\bahnschrift.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\framd.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\webdings.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\YuGothL.ttc`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\consola.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\Candarab.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swlink.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\DUBAI-BOLD.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\simsunb.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\GOTHIC.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\arialbd.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\TEMPSITC.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\CascadiaMono.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\SitkaI.ttc`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\YuGothB.ttc`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\himalaya.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swsimp.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\BKANT.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\SitkaB.ttc`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\NirmalaS.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\tahoma.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\ebrima.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swmono.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\CascadiaCode.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\pala.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\georgiaz.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\calibri.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\LTYPE.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\ebrimabd.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\cambriaz.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\corbell.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\msyhbd.ttc`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\trebucbi.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\ANTQUABI.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\palab.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\wingding.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\PAPYRUS.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\seguibli.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\ANTQUAB.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\simpo.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\symbol.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\olfsimplesansoc-regular.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\LeelaUIb.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\framdit.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\constanz.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\Sitka.ttc`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swtxt.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\UrdType.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\palai.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\majallab.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\gadugib.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\Nirmala.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\impact.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\segoescb.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\segmdl2.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\Candara.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\sylfaen.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\segoesc.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\MISTRAL.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\FRSCRIPT.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\msuighur.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\taileb.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\gadugi.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\segoeuib.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\javatext.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\YuGothR.ttc`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\segoeui.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\msgothic.ttc`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\LeelawUI.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\mvboli.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\seguibl.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\SitkaZ.ttc`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\phagspab.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\l_10646.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\UrdTypeb.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\LEELAWDB.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\malgunbd.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\georgia.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\seguisym.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\REFSAN.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\georgiab.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\hyswlongfangsong.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\arabtype.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\consolaz.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\seguihis.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\msjh.ttc`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\GARA.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\BSSYM7.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\taile.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\andlso.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\ntailu.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\MTEXTRA.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\DUBAI-REGULAR.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swromnc.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swromns.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\tradbdo.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\linedrw.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swscrps.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\trebucbd.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swscrpc.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\comic.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\courbd.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\LEELAWAD.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\LHANDW.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\Candarai.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\PRISTINA.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\monbaiti.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\BRADHITC.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\lucon.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\cambriab.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\BOOKOSB.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\constanb.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\verdanab.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\corbeli.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\mmrtextb.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\switalt.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\simpfxo.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swromnd.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\msyh.ttc`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\SimsunExtG.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\switalc.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\GOTHICI.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\GOTHICBI.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swastro.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\consolai.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swromnt.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\msjhbd.ttc`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\segoeuisl.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\WINGDNG3.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\CENTURY.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\mmrtext.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\marlett.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\seguisbi.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\WINGDNG2.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\verdanaz.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\LeelUIsl.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\holomdl2.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swital.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swmeteo.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\ARIALN.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\mingliub.ttc`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\ARIALNI.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\comicz.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\solidworks gdt.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\Candarali.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\DUBAI-LIGHT.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\YuGothM.ttc`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\JUICE___.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\cambriai.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swmap.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\timesi.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swgreks.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swgrekc.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\cour.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\calibrib.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\Inkfree.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\FREESCPT.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\BOOKOSBI.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\Gabriola.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\cambria.ttc`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\georgiai.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\GOTHICB.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\segoeuiz.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\seguili.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\DUBAI-MEDIUM.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\msjhl.ttc`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\GARABD.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\BOOKOSI.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\seguisb.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\ariblk.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\timesbd.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\msyhl.ttc`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\corbelb.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\seguiemj.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\BOOKOS.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\tahomabd.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\HATTEN.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\calibrili.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swmusic.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\consolab.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\corbel.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\Candaraz.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\trebucit.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\GARAIT.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\couri.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\3ds Light.otf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\corbelz.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\NirmalaB.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\micross.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\constan.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swcomp.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\verdanai.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\Candaral.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\msuighub.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\simsun.ttc`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\comici.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\trado.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\phagspa.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\arialbi.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swgothi.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\constani.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\calibril.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\ITCKRIST.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\aldhabi.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swisot2.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\verdana.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\OUTLOOK.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\ANTQUAI.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\times.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swgothg.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swgdt.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\segoeuil.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\malgun.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\ARIALNBI.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\REFSPCL.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swisot3.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swisop2.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\ariali.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\palabi.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\segoepr.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\MTCORSVA.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\arial.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swisop3.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\majalla.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\segoeprb.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swgothe.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\seguisli.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\ARIALNB.TTF`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swisot1.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\trebuc.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\calibrii.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\malgunsl.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\courbi.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swmath.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\simpbdo.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\swisop1.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\ntailub.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\segoeuii.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\msyi.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\timesbi.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\calibriz.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\corbelli.ttf`; build may not be reproducible in other environments
+warning: accessing absolute path `C:/Windows/fonts\comicbd.ttf`; build may not be reproducible in other environments
+error: implementation:134: Font TS1/lmr/m/n/10.95=ts1-lmr10 at 10.95pt not loadable: Metric (TFM) file or installed font not found
+note: Writing `build\pdf-review\main.log` (26.67578125 KiB)
+error: something bad happened inside XeTeX; its output follows:
+
+===============================================================================
+(main.tex
+LaTeX2e <2021-11-15> patch level 1
+L3 programming layer <2022-02-24> (report.cls
+Document Class: report 2021/10/04 v1.4n Standard LaTeX document class
+(size11.clo)) (fontenc.sty (t1lmr.fd)) (lmodern.sty) (geometry.sty (keyval.sty)
+ (ifvtex.sty (iftex.sty))) (amsmath.sty
+For additional information on amsmath, use the `?' option.
+(amstext.sty (amsgen.sty)) (amsbsy.sty) (amsopn.sty)) (amssymb.sty
+(amsfonts.sty)) (mathtools.sty (calc.sty) (mhsetup.sty)) (bm.sty) (booktabs.sty
+) (longtable.sty) (array.sty) (graphicx.sty (graphics.sty (trig.sty)
+(graphics.cfg) (xetex.def))) (xcolor.sty (color.cfg)) (hyperref.sty
+(ltxcmds.sty) (pdftexcmds.sty (infwarerr.sty)) (kvsetkeys.sty)
+(kvdefinekeys.sty) (pdfescape.sty) (hycolor.sty) (letltxmacro.sty) (auxhook.sty
+) (kvoptions.sty) (pd1enc.def) (intcalc.sty) (etexcmds.sty) (puenc.def)
+(url.sty) (bitset.sty (bigintcalc.sty)) (atbegshi-ltx.sty)) (hxetex.def
+(stringenc.sty) (rerunfilecheck.sty (atveryend-ltx.sty) (uniquecounter.sty)))
+(fancyhdr.sty) (tikz.sty (pgf.sty (pgfrcs.sty (pgfutil-common.tex
+(pgfutil-common-lists.tex)) (pgfutil-latex.def) (pgfrcs.code.tex
+(pgf.revision.tex))) (pgfcore.sty (pgfsys.sty (pgfsys.code.tex
+(pgfkeys.code.tex (pgfkeysfiltered.code.tex)) (pgf.cfg) (pgfsys-xetex.def
+(pgfsys-dvipdfmx.def (pgfsys-common-pdf.def)))) (pgfsyssoftpath.code.tex)
+(pgfsysprotocol.code.tex)) (pgfcore.code.tex (pgfmath.code.tex
+(pgfmathcalc.code.tex (pgfmathutil.code.tex) (pgfmathparser.code.tex)
+(pgfmathfunctions.code.tex (pgfmathfunctions.basic.code.tex)
+(pgfmathfunctions.trigonometric.code.tex) (pgfmathfunctions.random.code.tex)
+(pgfmathfunctions.comparison.code.tex) (pgfmathfunctions.base.code.tex)
+(pgfmathfunctions.round.code.tex) (pgfmathfunctions.misc.code.tex)
+(pgfmathfunctions.integerarithmetics.code.tex))) (pgfmathfloat.code.tex))
+(pgfint.code.tex) (pgfcorepoints.code.tex) (pgfcorepathconstruct.code.tex)
+(pgfcorepathusage.code.tex) (pgfcorescopes.code.tex)
+(pgfcoregraphicstate.code.tex) (pgfcoretransformations.code.tex)
+(pgfcorequick.code.tex) (pgfcoreobjects.code.tex)
+(pgfcorepathprocessing.code.tex) (pgfcorearrows.code.tex)
+(pgfcoreshade.code.tex) (pgfcoreimage.code.tex (pgfcoreexternal.code.tex))
+(pgfcorelayers.code.tex) (pgfcoretransparency.code.tex)
+(pgfcorepatterns.code.tex) (pgfcorerdf.code.tex))) (pgfmoduleshapes.code.tex)
+(pgfmoduleplot.code.tex) (pgfcomp-version-0-65.sty) (pgfcomp-version-1-18.sty))
+ (pgffor.sty (pgfkeys.sty (pgfkeys.code.tex)) (pgfmath.sty (pgfmath.code.tex))
+(pgffor.code.tex (pgfmath.code.tex))) (tikz.code.tex
+(pgflibraryplothandlers.code.tex) (pgfmodulematrix.code.tex)
+(tikzlibrarytopaths.code.tex))) (pgflibraryarrows.meta.code.tex)
+(tikzlibrarypositioning.code.tex) (tikzlibrarycalc.code.tex)
+(l3backend-xetex.def)
+No file main.aux.
+(ts1cmr.fd)
+*geometry* driver: auto-detecting
+*geometry* detected driver: xetex
+(nameref.sty (refcount.sty) (gettitlestring.sty))
+
+Package hyperref Warning: Rerun to get /PageLabels entry.
+
+(ot1lmr.fd) (omllmm.fd) (omslmsy.fd) (omxlmex.fd) (umsa.fd) (umsb.fd) [1]
+[1] [2] (foundations
+Chapter 1.
+[1] [2] [3]
+Chapter 2.
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 161.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 161.
+
+[4]) (nonlinear [5]
+Chapter 3.
+[6] [7] [8]
+Chapter 4.
+[9] [10]) (control [11]
+Chapter 5.
+[12]
+Overfull \hbox (44.34622pt too wide) in paragraph at lines 63--68
+\T1/lmr/m/n/10.95 The other model is the pro-vi-sional .740 kg com-po-nent URDF
+, with in-er-tia $\OT1/lmr/m/n/10.95 (\OML/lmm/m/it/10.95 :\OT1/lmr/m/n/10.95 0
+0885852\OML/lmm/m/it/10.95 ; :\OT1/lmr/m/n/10.95 00906322\OML/lmm/m/it/10.95 ; 
+:\OT1/lmr/m/n/10.95 01718682)$
+[13] [14] [15] [16] [17]
+Chapter 6.
+[18]) (measurement [19]
+Chapter 7.
+[20]
+Overfull \hbox (42.29251pt too wide) in paragraph at lines 71--75
+\T1/lmr/m/n/10.95 An il-lus-tra-tive $\OML/lmm/m/it/10.95 k \OT1/lmr/m/n/10.95 
+= 2$ \T1/lmr/m/n/10.95 ex-panded un-cer-tainty is 2.18 g. Its cov-er-age in-ter
+-pre-ta-tion needs distribution/degrees-
+[21]
+Chapter 8.
+(t1lmtt.fd) [22] [23] [24]
+Overfull \hbox (2.1765pt too wide) in paragraph at lines 287--291
+[]\T1/lmr/bx/n/10.95 Capacity: \T1/lmr/m/n/10.95 use an ap-pro-pri-ate con-trol
+led charger/discharger and in-te-grate $\OML/lmm/m/it/10.95 C[] \OT1/lmr/m/n/10
+.95 = [] \OML/lmm/m/it/10.95 I \OT1/lmr/m/n/10.95 d\OML/lmm/m/it/10.95 t=\OT1/l
+mr/m/n/10.95 3600$
+[25]) (implementation [26]
+Chapter 9.
+[27] [28]
+Chapter 10.
+[29] [30]
+! Font TS1/lmr/m/n/10.95=ts1-lmr10 at 10.95pt not loadable: Metric (TFM) file o
+r installed font not found.
+<to be read again> 
+                   relax 
+l.134 \item R
+             aspberry Pi Pico SDK flash APIs and execution safety:
+Output written on main.xdv (33 pages, 144596 bytes).
+Transcript written on main.log.
+===============================================================================
+error: the XeTeX engine had an unrecoverable error
+caused by: halted on potentially-recoverable error as specified

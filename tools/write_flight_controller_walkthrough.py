@@ -2,11 +2,16 @@
 from pathlib import Path
 import hashlib
 import re
+import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / 'flight_controller/flight_controller.c'
 DEST = ROOT / 'docs/flight-controller-line-by-line.md'
-lines = SOURCE.read_text().splitlines()
+SOURCE_REF = '68619b5'
+source_bytes = subprocess.check_output([
+    'git', '-c', f'safe.directory={ROOT.as_posix()}', 'show',
+    f'{SOURCE_REF}:flight_controller/flight_controller.c'], cwd=ROOT)
+lines = source_bytes.decode('utf-8').splitlines()
 notes = {}
 
 def explain(start, end, text):
@@ -999,7 +1004,13 @@ CHAPTERS = [
 
 INTRO = r'''# flight_controller.c — complete line-by-line teaching guide
 
-This guide explains the current source in order. It does not change the firmware
+**Historical source snapshot at commit 68619b5, before flash persistence and the
+35% warning / 20% disarm policy.** For current behavior, see
+[the model/integration guide](current-model-and-fc-integration.md) and
+[calibration flash guide](calibration-flash.md). Old LAND and volatile-calibration
+descriptions below apply only to this snapshot.
+
+This guide explains that snapshot in order. It does not change the firmware
 or rerun implementation tests. Every nonblank physical source line appears below;
 blank lines are spacing only and are omitted. For a C statement spanning several
 lines, the first line explains the complete operation and subsequent lines identify
@@ -1188,8 +1199,8 @@ entry refers to the complete multi-line statement, not an additional operation.
 '''
 
 chapter_map = dict(CHAPTERS)
-output = [INTRO, f'\nSource: `flight_controller/flight_controller.c` · {len(lines)} physical lines.\n',
-          f'\nSource SHA256: `{hashlib.sha256(SOURCE.read_bytes()).hexdigest()}`.\n\n']
+output = [INTRO, f'\nSource: [flight_controller.c at {SOURCE_REF}](https://github.com/BenMohStem/IntelQCopter/blob/{SOURCE_REF}/flight_controller/flight_controller.c) · {len(lines)} physical lines.\n',
+          f'\nGit blob content SHA256: `{hashlib.sha256(source_bytes).hexdigest()}`.\n\n']
 missing = []
 for number, source in enumerate(lines, 1):
     if number in chapter_map:

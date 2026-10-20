@@ -2,7 +2,7 @@
  * QCopter flight-controller foundation.
  *
  * This file contains hardware-independent estimation and control logic so the
- * same C implementation can be connected to a future Isaac Sim HIL backend.
+ * same C implementation is used in the native Gazebo host simulation.
  * Hardware sensor and ESC drivers are intentionally not enabled: board pins,
  * ESC protocol, frame orientation, and motor order have not been confirmed.
  * Therefore this firmware remains disarmed and never produces motor outputs.
@@ -11,6 +11,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <string.h>
+#include <float.h>
 /* BEGIN WIRE PROTOCOL v1: keep identical in both firmware files. */
 /* Fixed-size, endian-stable command frame shared by the two Pico firmwares. */
 #include <stdbool.h>
@@ -132,8 +134,8 @@ static inline bool qcopter_sequence_is_newer(uint16_t value, uint16_t previous) 
 
 typedef enum {
     BATTERY_ACTION_NORMAL = 0,
-    BATTERY_ACTION_LAND,
-    BATTERY_ACTION_LANDED_DISARM,
+    BATTERY_ACTION_WARN,
+    BATTERY_ACTION_DISARM,
     BATTERY_ACTION_CONFIGURATION_FAULT,
     BATTERY_ACTION_SENSOR_FAULT
 } battery_action_t;
@@ -154,7 +156,6 @@ typedef struct {
 typedef struct {
     float capacity_ah;
     float initial_soc_percent;  /* initialize from verified fully charged pack */
-    float low_soc_percent;      /* request landing at/below this estimate */
     float low_cell_voltage_v;
     float critical_cell_voltage_v;
     float low_pack_voltage_v;
@@ -179,6 +180,26 @@ typedef struct {
     bool sensor_fault;
 } battery_status_t;
 
+/* User-selected policy: warning at 35%, immediate latched disarm at 20%.
+ * No automatic landing. Only a deliberate disarmed reset starts a new pack/session.
+ * These flags do not create sensor data or enable a physical ESC output driver. */
+#define BATTERY_SOC_WARNING_PERCENT 35.0f
+#define BATTERY_SOC_DISARM_PERCENT 20.0f
+static bool battery_warning_active;
+static bool battery_disarm_latched;
+
+bool battery_policy_reset(bool disarmed) {
+    if (!disarmed) return false;
+    battery_warning_active = false;
+    battery_disarm_latched = false;
+    return true;
+}
+
+static void battery_apply_soc_policy(float soc_percent) {
+    battery_warning_active = soc_percent <= BATTERY_SOC_WARNING_PERCENT;
+    if (soc_percent <= BATTERY_SOC_DISARM_PERCENT) battery_disarm_latched = true;
+}
+
 void battery_monitor_init(battery_status_t *status, float initial_soc_percent);
 battery_action_t battery_monitor_update(battery_status_t *status,
                                         const battery_sample_t *sample,
@@ -198,8 +219,6 @@ static bool config_is_valid(const battery_config_t *c) {
     return c != NULL && positive_finite(c->capacity_ah)
         && isfinite(c->initial_soc_percent)
         && c->initial_soc_percent >= 0.0f && c->initial_soc_percent <= 100.0f
-        && isfinite(c->low_soc_percent)
-        && c->low_soc_percent >= 0.0f && c->low_soc_percent <= 100.0f
         && positive_finite(c->critical_cell_voltage_v)
         && c->low_cell_voltage_v >= c->critical_cell_voltage_v
         && positive_finite(c->low_cell_voltage_v)
@@ -297,22 +316,22 @@ battery_action_t battery_monitor_update(battery_status_t *status,
         fmaxf(0.0f, status->estimated_soc_percent));
     status->estimated_soc_sigma_percent = sqrtf(fmaxf(soc_variance, 0.0f));
 
-    /* BMS alerts and cell-level undervoltage outrank pack-level warnings. */
+    battery_apply_soc_policy(status->estimated_soc_percent);
+    /* Optional external critical alerts also latch disarm. Ordinary voltage/current
+       warnings notify; there is intentionally no landing action in this policy. */
     if (sample->bms_alert
         || (sample->cell_voltage_valid
             && sample->minimum_cell_voltage_v <= config->critical_cell_voltage_v)) {
-        status->action = sample->aircraft_landed
-            ? BATTERY_ACTION_LANDED_DISARM : BATTERY_ACTION_LAND;
-    } else if (status->estimated_soc_percent <= config->low_soc_percent
-        || status->filtered_pack_voltage_v <= config->low_pack_voltage_v
+        battery_disarm_latched = true;
+    }
+    if (status->filtered_pack_voltage_v <= config->low_pack_voltage_v
         || (sample->cell_voltage_valid
             && sample->minimum_cell_voltage_v <= config->low_cell_voltage_v)
         || sample->pack_current_a > config->maximum_discharge_current_a) {
-        status->action = sample->aircraft_landed
-            ? BATTERY_ACTION_LANDED_DISARM : BATTERY_ACTION_LAND;
-    } else {
-        status->action = BATTERY_ACTION_NORMAL;
+        battery_warning_active = true;
     }
+    status->action = battery_disarm_latched ? BATTERY_ACTION_DISARM
+                   : battery_warning_active ? BATTERY_ACTION_WARN : BATTERY_ACTION_NORMAL;
     return status->action;
 }
 
@@ -330,8 +349,9 @@ battery_action_t battery_monitor_update(battery_status_t *status,
 /* SENSOR CALIBRATION -------------------------------------------------------
  * Physical units after sensor factory conversion: g, deg/s, microtesla, Pa.
  * These collectors accept fresh samples only while disarmed. Results live in
- * RAM; sensor drivers, guided UI, temperature modelling and flash storage are
- * not implemented. No test fixture is ever installed as a flight calibration.
+ * RAM while collecting; validated fits can be persisted by the flash journal
+ * below. Sensor acquisition, temperature modelling and a guided six-face UI
+ * remain unfinished. No synthetic fixture is installed as a flight calibration.
  */
 typedef struct {
     uint32_t n;
@@ -1006,6 +1026,10 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
                                              float dt) {
     control_output_t out = { .motor = {0.0f, 0.0f, 0.0f, 0.0f},
                              .armed = false, .sensor_fault = false };
+    if (battery_disarm_latched) {
+        reset_control_state();
+        return out; /* Explicit user policy: stop mathematical demands, even airborne. */
+    }
     if (!sample_is_healthy(s) || !isfinite(dt) || dt <= 0.0f
         || dt > FC_MAX_CONTROL_DT) {
         reset_control_state();
@@ -1103,6 +1127,7 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
 #define QC_SIM_EXPORT
 #endif
 QC_SIM_EXPORT void qc_sitl_reset(float hover, float height, const float *gains) {
+    (void)battery_policy_reset(true); /* New simulated vehicle/battery session. */
     boost_state=0;
     roll_estimator=(angle_kf_t){.p00=1.0f,.p11=0.01f,
         .gyro_noise=0.04f,.bias_walk=0.0001f,.accel_noise=4.0f};
@@ -1154,9 +1179,280 @@ QC_SIM_EXPORT void qc_sitl_height_observation(float height,float variance) {
         altitude_estimator.baro_noise=previous;
     }
 }
+/* Optional simulation battery input. Existing flight scenarios do not fabricate
+ * battery measurements; a caller must supply a valid estimated SOC explicitly. */
+QC_SIM_EXPORT void qc_sitl_set_battery_soc(float soc_percent) {
+    if (isfinite(soc_percent) && soc_percent >= 0 && soc_percent <= 100)
+        battery_apply_soc_policy(soc_percent);
+}
+QC_SIM_EXPORT unsigned qc_sitl_battery_flags(void) {
+    return (battery_warning_active ? 1u : 0u) | (battery_disarm_latched ? 2u : 0u);
+}
 #endif
 
 #ifndef QCOPTER_HOST_TEST
+/* CALIBRATION FLASH JOURNAL -------------------------------------------------
+ * Two reserved 4096-byte sectors; 512-byte data + final 256-byte commit page.
+ * Explicit little-endian serialization, CRC32, board/config binding, A/B updates.
+ * Never persist volatile ground-pressure zero, battery SOC, or live PID integrals.
+ * Core 0 owns RAM fits and writes; flash operations are disarmed-only.
+ */
+#include "hardware/flash.h"
+#include "pico/flash.h"
+#include "pico/unique_id.h"
+
+#define FC_CAL_PROFILE_ID 0x00010001u /* Bump for units, mounting, IMU range/DLPF or sensor replacement. */
+#define FC_CAL_REGION_BYTES 8192u
+#define FC_CAL_DATA_BYTES 512u
+#define FC_CAL_COMMIT_BYTES 256u
+#define FC_CAL_MAGIC 0x4C414351u
+#define FC_CAL_COMMIT_MAGIC 0x54494D43u
+#define FC_CAL_SCHEMA 1u
+enum { CAL_ACCEL=1u, CAL_GYRO=2u, CAL_MAG=4u, CAL_VOLTAGE=8u, CAL_CURRENT=16u, CAL_LIDAR=32u };
+typedef struct {
+    uint32_t mask;
+    imu_calibration_t imu;
+    mag_calibration_t mag;
+    linear_cal_t voltage, current, lidar;
+} calibration_bundle_t;
+typedef enum { CAL_EMPTY, CAL_LOADED, CAL_RECALIBRATE, CAL_IO_ERROR } calibration_store_status_t;
+static calibration_bundle_t live_calibration;
+static calibration_store_status_t calibration_store_status;
+static imu_stationary_cal_t boot_gyro_capture;
+static bool boot_gyro_verified;
+static uint64_t calibration_board_id;
+static bool calibration_dirty;
+static unsigned calibration_auto_save_failures;
+_Static_assert(sizeof(float)==4 && FLT_MANT_DIG==24, "Flash schema requires binary32 float");
+_Static_assert(sizeof(double)==8 && DBL_MANT_DIG==53, "Flash schema requires binary64 double");
+_Static_assert(FLASH_SECTOR_SIZE==4096 && FLASH_PAGE_SIZE==256, "Unexpected flash geometry");
+_Static_assert(PICO_FLASH_SIZE_BYTES > FC_CAL_REGION_BYTES, "Flash too small for calibration region");
+
+static uint32_t cal_u32(const uint8_t *p) {
+    return (uint32_t)p[0] | (uint32_t)p[1]<<8 | (uint32_t)p[2]<<16 | (uint32_t)p[3]<<24;
+}
+static void cal_put32(uint8_t *p, uint32_t x) {
+    for(unsigned i=0;i<4;i++) p[i]=(uint8_t)(x>>(8*i));
+}
+static uint64_t cal_u64(const uint8_t *p) {
+    uint64_t x=0; for(unsigned i=0;i<8;i++) x|=(uint64_t)p[i]<<(8*i); return x;
+}
+static void cal_put64(uint8_t *p, uint64_t x) {
+    for(unsigned i=0;i<8;i++) p[i]=(uint8_t)(x>>(8*i));
+}
+static void cal_float_write(uint8_t *p, float x) {
+    uint32_t bits; memcpy(&bits,&x,4); cal_put32(p,bits);
+}
+static float cal_float_read(const uint8_t *p) {
+    uint32_t bits=cal_u32(p); float x; memcpy(&x,&bits,4); return x;
+}
+static void cal_double_write(uint8_t *p, double x) {
+    uint64_t bits; memcpy(&bits,&x,8); cal_put64(p,bits);
+}
+static double cal_double_read(const uint8_t *p) {
+    uint64_t bits=cal_u64(p); double x; memcpy(&x,&bits,8); return x;
+}
+static uint32_t cal_crc32(const uint8_t *p, size_t n) {
+    uint32_t crc=0xFFFFFFFFu;
+    for(size_t i=0;i<n;i++) {
+        crc^=p[i];
+        for(unsigned j=0;j<8;j++) crc=(crc>>1)^((crc&1u)?0xEDB88320u:0u);
+    }
+    return ~crc;
+}
+static bool calibration_values_valid(const calibration_bundle_t *c) {
+    if(c==NULL || (c->mask & ~63u)) return false;
+    for(unsigned i=0;i<3;i++) {
+        if((c->mask&CAL_ACCEL) && (!isfinite(c->imu.accel_bias_g[i])
+            || fabsf(c->imu.accel_bias_g[i])>.25f || !isfinite(c->imu.accel_gain[i])
+            || c->imu.accel_gain[i]<.5f || c->imu.accel_gain[i]>2.f
+            || !isfinite(c->imu.accel_bias_variance_g2[i]) || c->imu.accel_bias_variance_g2[i]<0
+            || !isfinite(c->imu.accel_gain_variance[i]) || c->imu.accel_gain_variance[i]<0)) return false;
+        if((c->mask&CAL_GYRO) && (c->imu.gyro_samples<500u
+            || !isfinite(c->imu.gyro_bias_dps[i]) || fabsf(c->imu.gyro_bias_dps[i])>5.f
+            || !isfinite(c->imu.gyro_variance_dps2[i]) || c->imu.gyro_variance_dps2[i]<0
+            || c->imu.gyro_variance_dps2[i]>.01f
+            || !isfinite(c->imu.gyro_bias_variance_dps2[i]) || c->imu.gyro_bias_variance_dps2[i]<0)) return false;
+        if((c->mask&CAL_MAG) && (!isfinite(c->mag.offset_ut[i]) || fabsf(c->mag.offset_ut[i])>1000.f
+            || !isfinite(c->mag.gain[i]) || c->mag.gain[i]<.5f || c->mag.gain[i]>2.f)) return false;
+    }
+    const linear_cal_t *linear[3]={&c->voltage,&c->current,&c->lidar};
+    for(unsigned i=0;i<3;i++) if((c->mask&(CAL_VOLTAGE<<i)) &&
+        (!isfinite(linear[i]->gain) || fabs(linear[i]->gain)<1e-12
+        || !isfinite(linear[i]->offset) || !isfinite(linear[i]->residual_sigma)
+        || linear[i]->residual_sigma<0)) return false;
+    return true;
+}
+static void calibration_pack(uint8_t page[FC_CAL_DATA_BYTES], const calibration_bundle_t *c, uint32_t seq) {
+    memset(page,0xFF,FC_CAL_DATA_BYTES);
+    cal_put32(page,FC_CAL_MAGIC); cal_put32(page+4,FC_CAL_SCHEMA);
+    cal_put32(page+8,seq); cal_put32(page+12,FC_CAL_PROFILE_ID);
+    cal_put64(page+16,calibration_board_id); cal_put32(page+24,c->mask);
+    cal_put32(page+28,c->imu.gyro_samples);
+    const float *vectors[]={c->imu.accel_bias_g,c->imu.accel_gain,
+        c->imu.accel_bias_variance_g2,c->imu.accel_gain_variance,
+        c->imu.gyro_bias_dps,c->imu.gyro_variance_dps2,c->imu.gyro_bias_variance_dps2,
+        c->mag.offset_ut,c->mag.gain};
+    unsigned at=32;
+    for(unsigned v=0;v<9;v++) for(unsigned a=0;a<3;a++,at+=4) cal_float_write(page+at,vectors[v][a]);
+    const linear_cal_t *linear[]={&c->voltage,&c->current,&c->lidar};
+    for(unsigned i=0;i<3;i++) {
+        cal_double_write(page+at,linear[i]->gain); at+=8;
+        cal_double_write(page+at,linear[i]->offset); at+=8;
+        cal_double_write(page+at,linear[i]->residual_sigma); at+=8;
+    }
+    cal_put32(page+508,cal_crc32(page,508));
+}
+static bool calibration_unpack(const uint8_t *page, calibration_bundle_t *c) {
+    if(cal_u32(page+12)!=FC_CAL_PROFILE_ID || cal_u64(page+16)!=calibration_board_id) return false;
+    *c=(calibration_bundle_t){0}; c->mask=cal_u32(page+24); c->imu.gyro_samples=cal_u32(page+28);
+    float *vectors[]={c->imu.accel_bias_g,c->imu.accel_gain,
+        c->imu.accel_bias_variance_g2,c->imu.accel_gain_variance,
+        c->imu.gyro_bias_dps,c->imu.gyro_variance_dps2,c->imu.gyro_bias_variance_dps2,
+        c->mag.offset_ut,c->mag.gain};
+    unsigned at=32;
+    for(unsigned v=0;v<9;v++) for(unsigned a=0;a<3;a++,at+=4) vectors[v][a]=cal_float_read(page+at);
+    linear_cal_t *linear[]={&c->voltage,&c->current,&c->lidar};
+    for(unsigned i=0;i<3;i++) {
+        linear[i]->gain=cal_double_read(page+at); at+=8;
+        linear[i]->offset=cal_double_read(page+at); at+=8;
+        linear[i]->residual_sigma=cal_double_read(page+at); at+=8;
+        linear[i]->valid=(c->mask&(CAL_VOLTAGE<<i))!=0;
+    }
+    c->imu.accel_valid=(c->mask&CAL_ACCEL)!=0; c->imu.gyro_valid=(c->mask&CAL_GYRO)!=0;
+    c->mag.valid=(c->mask&CAL_MAG)!=0;
+    return calibration_values_valid(c);
+}
+static uint32_t calibration_offset(unsigned slot) {
+    return PICO_FLASH_SIZE_BYTES-FC_CAL_REGION_BYTES+slot*FLASH_SECTOR_SIZE;
+}
+static const uint8_t *calibration_page(unsigned slot) {
+    return (const uint8_t *)(XIP_BASE+calibration_offset(slot));
+}
+static bool calibration_raw_committed(const uint8_t *p) {
+    const uint8_t *commit=p+FC_CAL_DATA_BYTES;
+    const uint32_t crc=cal_u32(p+508);
+    return cal_u32(p)==FC_CAL_MAGIC && cal_u32(p+4)==FC_CAL_SCHEMA
+        && crc==cal_crc32(p,508) && cal_u32(commit)==FC_CAL_COMMIT_MAGIC
+        && cal_u32(commit+4)==cal_u32(p+8) && cal_u32(commit+8)==crc
+        && cal_u32(commit+12)==~crc;
+}
+static int calibration_latest_slot(void) {
+    bool a=calibration_raw_committed(calibration_page(0)),b=calibration_raw_committed(calibration_page(1));
+    if(!a) return b?1:-1;
+    if(!b) return 0;
+    uint32_t delta=cal_u32(calibration_page(1)+8)-cal_u32(calibration_page(0)+8);
+    return delta!=0 && delta<0x80000000u ? 1:0;
+}
+static void calibration_boot_load(void) {
+    pico_unique_board_id_t id; pico_get_unique_board_id(&id); calibration_board_id=cal_u64(id.id);
+    live_calibration=(calibration_bundle_t){0}; boot_gyro_verified=false;
+    boot_gyro_capture=(imu_stationary_cal_t){0}; calibration_dirty=false;
+    int slot=calibration_latest_slot();
+    calibration_store_status=CAL_EMPTY;
+    if(slot>=0) {
+        calibration_bundle_t decoded;
+        if(calibration_unpack(calibration_page((unsigned)slot),&decoded)) {
+            live_calibration=decoded;
+            calibration_store_status=decoded.mask ? CAL_LOADED:CAL_RECALIBRATE;
+        } else calibration_store_status=CAL_RECALIBRATE;
+    }
+}
+typedef struct { uint32_t offset; uint8_t data[FC_CAL_DATA_BYTES],commit[FC_CAL_COMMIT_BYTES]; } calibration_write_t;
+static void __not_in_flash_func(calibration_flash_write)(void *arg) {
+    calibration_write_t *job=(calibration_write_t *)arg;
+    flash_range_erase(job->offset,FLASH_SECTOR_SIZE);
+    flash_range_program(job->offset,job->data,FC_CAL_DATA_BYTES);
+    flash_range_program(job->offset+FC_CAL_DATA_BYTES,job->commit,FC_CAL_COMMIT_BYTES);
+}
+bool fc_calibration_persist(bool disarmed) {
+    extern char __flash_binary_end;
+    if(!disarmed || get_core_num()!=0 || !multicore_lockout_victim_is_initialized(1)
+        || (uintptr_t)&__flash_binary_end > XIP_BASE+calibration_offset(0)
+        || !calibration_values_valid(&live_calibration)) return false;
+    int old=calibration_latest_slot();
+    uint32_t seq=old<0 ? 1u:cal_u32(calibration_page((unsigned)old)+8)+1u;
+    calibration_write_t job;
+    job.offset=calibration_offset(old==0 ? 1u:0u);
+    calibration_pack(job.data,&live_calibration,seq);
+    /* Unchanged fits do not spend an erase cycle. Sequence/CRC are intentionally excluded. */
+    if(old>=0 && memcmp(calibration_page((unsigned)old)+12,job.data+12,496)==0) {
+        calibration_dirty=false;
+        calibration_store_status=live_calibration.mask ? CAL_LOADED:CAL_RECALIBRATE;
+        return true;
+    }
+    memset(job.commit,0xFF,sizeof(job.commit));
+    cal_put32(job.commit,FC_CAL_COMMIT_MAGIC); cal_put32(job.commit+4,seq);
+    uint32_t crc=cal_u32(job.data+508); cal_put32(job.commit+8,crc); cal_put32(job.commit+12,~crc);
+    int rc=flash_safe_execute(calibration_flash_write,&job,500u);
+    /* A timeout may occur after writing; reread integrity before reporting success. */
+    const uint8_t *written=(const uint8_t *)(XIP_BASE+job.offset);
+    if(rc!=PICO_OK || !calibration_raw_committed(written) || memcmp(written,job.data,FC_CAL_DATA_BYTES)!=0) {
+        calibration_store_status=CAL_IO_ERROR; return false;
+    }
+    calibration_dirty=false;
+    calibration_store_status=live_calibration.mask ? CAL_LOADED:CAL_RECALIBRATE;
+    return true;
+}
+/* Capture/UI drivers can submit validated accel/gyro fits, then persist while disarmed.
+ * Magnetic and linear fits use this complete-bundle entry point as well. */
+bool fc_calibration_install(const calibration_bundle_t *fit, bool disarmed) {
+    if(!disarmed || !calibration_values_valid(fit)) return false;
+    live_calibration=*fit;
+    live_calibration.imu.accel_valid=(fit->mask&CAL_ACCEL)!=0;
+    live_calibration.imu.gyro_valid=(fit->mask&CAL_GYRO)!=0;
+    live_calibration.mag.valid=(fit->mask&CAL_MAG)!=0;
+    live_calibration.voltage.valid=(fit->mask&CAL_VOLTAGE)!=0;
+    live_calibration.current.valid=(fit->mask&CAL_CURRENT)!=0;
+    live_calibration.lidar.valid=(fit->mask&CAL_LIDAR)!=0;
+    boot_gyro_verified=false; boot_gyro_capture=(imu_stationary_cal_t){0};
+    calibration_dirty=true;
+    calibration_auto_save_failures=0;
+    return true;
+}
+static void calibration_process_imu(sensor_sample_t *sample, bool disarmed) {
+    if(sample==NULL || !sample->imu_valid || sample->imu_calibrated) return;
+    const float a[3]={sample->accel_x_g,sample->accel_y_g,sample->accel_z_g};
+    const float g[3]={sample->gyro_x_dps,sample->gyro_y_dps,sample->gyro_z_dps};
+    if(!boot_gyro_verified && disarmed) {
+        if(!imu_stationary_cal_add(&boot_gyro_capture,a,g,true)) {
+            boot_gyro_capture=(imu_stationary_cal_t){0};
+        } else if(boot_gyro_capture.gyro.n>=500u) {
+            imu_calibration_t fresh=live_calibration.imu;
+            if(imu_gyro_cal_finish(&boot_gyro_capture,&fresh,true)) {
+                bool refresh=(live_calibration.mask&CAL_GYRO)==0;
+                for(unsigned i=0;i<3;i++) {
+                    float uncertainty=sqrtf(fresh.gyro_bias_variance_dps2[i]
+                                           +live_calibration.imu.gyro_bias_variance_dps2[i]);
+                    if(fabsf(fresh.gyro_bias_dps[i]-live_calibration.imu.gyro_bias_dps[i])
+                        >fmaxf(.05f,5.f*uncertainty)) refresh=true;
+                }
+                if(refresh) { live_calibration.imu=fresh; live_calibration.mask|=CAL_GYRO; calibration_dirty=true; }
+                boot_gyro_verified=true;
+                puts(refresh ? "calibration: gyro refreshed; save pending":"calibration: stored gyro verified at boot");
+            } else boot_gyro_capture=(imu_stationary_cal_t){0};
+        }
+    }
+    if(boot_gyro_verified && (live_calibration.mask&(CAL_ACCEL|CAL_GYRO))==(CAL_ACCEL|CAL_GYRO))
+        (void)sensor_sample_apply_imu_calibration(sample,&live_calibration.imu);
+}
+static void calibration_console(int key, bool disarmed) {
+    if(key=='c' || key=='C')
+        printf("calibration: store=%u mask=0x%02lx gyro_verified=%u dirty=%u; missing accel needs six-face capture\n",
+            (unsigned)calibration_store_status,(unsigned long)live_calibration.mask,boot_gyro_verified,calibration_dirty);
+    if((key=='r' || key=='R') && disarmed) {
+        calibration_bundle_t clear={0};
+        (void)fc_calibration_install(&clear,true);
+        /* A newest committed empty record prevents resurrection of an older fit. */
+        puts(fc_calibration_persist(true) ? "calibration: cleared in flash; recapture required":"calibration: clear NOT persisted; retry");
+    }
+    if((key=='s' || key=='S') && disarmed) {
+        calibration_auto_save_failures=0;
+        if(live_calibration.mask==0) puts("calibration: nothing measured to save");
+        else puts(fc_calibration_persist(true) ? "calibration: saved":"calibration: save failed");
+    }
+}
+
 typedef struct {
     uint8_t bytes[QCOPTER_FRAME_SIZE];
     size_t length;
@@ -1174,6 +1470,7 @@ static bool radio_receive_frame(uint8_t *bytes, size_t capacity, size_t *length)
 }
 
 static void slow_core(void) {
+    if(!flash_safe_execute_core_init()) return;
     for (;;) {
         /*
          * Core 1 owns nonblocking radio and slower sensor acquisition.
@@ -1193,11 +1490,15 @@ static void slow_core(void) {
 #ifndef QCOPTER_HOST_TEST
 int main(void) {
     stdio_init_all();
+    calibration_boot_load();
+    (void)flash_safe_execute_core_init();
     queue_init(&radio_rx_queue, sizeof(radio_rx_item_t), 4u);
     multicore_launch_core1(slow_core);
     sleep_ms(1500);
     puts("QCopter RP2350 FC: 500 Hz loop, radio/sensors/ESC outputs not connected.");
     puts("Core 1 radio receive is a stub; outputs stay disarmed.");
+    calibration_console('c',true);
+    puts("USB commands: C=calibration status, R=clear/recalculate, S=save measured fits. Battery: warn35%, disarm20%.");
 
     pilot_link_state_t pilot_link = {0};
     uint64_t previous_us = time_us_64();
@@ -1221,11 +1522,28 @@ int main(void) {
                                     item.received_us);
 
         /* Sensor acquisition is not implemented: safe zero outputs by design. */
-        const sensor_sample_t no_sensors = {0};
+        sensor_sample_t no_sensors = {0};
+        /* Future driver must set imu_valid only for a fresh raw sample. No fake calibration input. */
+        calibration_process_imu(&no_sensors,true);
         const pilot_command_t command = pilot_link_current(&pilot_link, now_us);
         const control_output_t status = flight_control_step(&no_sensors,
                                                              &command, dt);
         (void)status;
+        int key=getchar_timeout_us(0);
+        if(key>=0) calibration_console(key,true);
+        /* Only a newly measured/changed fit is saved; never erase continuously. */
+        static uint64_t last_calibration_save_attempt_us;
+        if(calibration_dirty && live_calibration.mask!=0
+            && calibration_auto_save_failures<3u
+            && now_us-last_calibration_save_attempt_us>=5000000u) {
+            last_calibration_save_attempt_us=now_us;
+            if(!fc_calibration_persist(true) && ++calibration_auto_save_failures==3u)
+                puts("calibration: automatic saves stopped after three failures; S retries manually");
+        }
+        static bool previous_warning,previous_disarm;
+        if(battery_warning_active && !previous_warning) puts("BATTERY WARNING: SOC <=35% or voltage/current alert");
+        if(battery_disarm_latched && !previous_disarm) puts("BATTERY DISARM: latched motor inhibit; no landing");
+        previous_warning=battery_warning_active; previous_disarm=battery_disarm_latched;
         if (++loop_count == FC_LOOP_HZ) {
             printf("fc_loop=500Hz target; missed=%lu; command=%s; motors=DISABLED\n",
                    (unsigned long)missed_deadlines,
