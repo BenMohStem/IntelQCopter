@@ -34,6 +34,8 @@ The control design target is a 500 Hz attitude loop: roll and pitch use angle se
 
 ### New mathematical report and 3D garden evidence
 
+[Flight-controller C: complete line-by-line explanation](docs/flight-controller-line-by-line.md) — exact source, units, PID/Kalman equations, simulation ABI and unfinished hardware connections.
+
 [47-page mathematical PDF](docs/modelisation/main.pdf) · [Editable LaTeX](docs/modelisation/main.tex) · [Garden evidence viewer](artifacts/simulation/2026-10-20-missions/index.html) · [Original video](artifacts/simulation/2026-10-20-missions/garden-final.mp4) · [Current problems](docs/missing-information-and-problems.md)
 
 ![Recorded 3D garden experiment](artifacts/simulation/2026-10-20-missions/garden-final-preview.png)
