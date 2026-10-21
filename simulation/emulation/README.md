@@ -90,3 +90,7 @@ Build and merge artifacts live in `build/`; original run evidence lives in `arti
 
 QEMU is third-party GPL software; its files/licenses stay in the downloaded local
 cache and are not copied into the public project source.
+
+## Optional companion regression (2026-10-21)
+
+Latest replay: 44 checks passed. Five additional checks cover standalone mode selection, rejection of companion frames/navigation gesture, and QS capability bits. Original UART and source hashes: `artifacts/emulation/live-companion-policy-20261021/`. These are synthetic C-core CPU tests, not real BLE/UART/ESC or live flight.

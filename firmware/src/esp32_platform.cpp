@@ -115,7 +115,7 @@ static void slow_task(void*) {
         // blocking library calls must not postpone pressure or UART servicing.
         // No synthetic freshness refresh on connection polling: only actual HID reports count.
         static uint8_t uart_frame[FC_COMPANION_FRAME_BYTES];static unsigned uart_used=0;
-        while(Serial2.available()) {
+        while(FC_ENABLE_COMPANION && Serial2.available()) {
             uint8_t byte=static_cast<uint8_t>(Serial2.read());
             if(uart_used==0 && byte!='Q')continue;
             if(uart_used==1 && byte!='N'){uart_used=byte=='Q'?1:0;continue;}
@@ -175,15 +175,15 @@ static void slow_task(void*) {
                 static_cast<unsigned long>(missed),static_cast<unsigned long>(late),static_cast<unsigned long>(execution),
                 s.battery_warning,s.battery_disarm,save_pending,failures);
             Serial.printf("MODE,selected=%u,user_disarm=%d,companion=%d,reports=%lu,events=%lu\n",s.flight_mode,s.user_disarm,s.companion_fresh,(unsigned long)s.xbox_reports,(unsigned long)s.mode_events);
-            uint8_t telemetry[16];fc_status_frame(&s,telemetry);Serial2.write(telemetry,sizeof(telemetry));
+            uint8_t telemetry[16];fc_status_frame(&s,telemetry);if(FC_ENABLE_COMPANION)Serial2.write(telemetry,sizeof(telemetry));
         }
         vTaskDelay(pdMS_TO_TICKS(2));
     }
 }
 void setup() {
     Serial.begin(115200);
-    Serial2.setRxBufferSize(1024);
-    Serial2.begin(115200,SERIAL_8N1,18,17); // RX18, TX17; verify final PCB routing.
+    if(FC_ENABLE_COMPANION){Serial2.setRxBufferSize(1024);
+    Serial2.begin(115200,SERIAL_8N1,18,17);} // RX18, TX17; verify final PCB routing.
     for(int pin:MOTOR_PINS) pinMode(pin,INPUT_PULLDOWN);
     pinMode(LED_PIN,OUTPUT); digitalWrite(LED_PIN,LOW);
     i2c_mutex=xSemaphoreCreateMutex();

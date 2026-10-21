@@ -16,8 +16,14 @@ from build_world import build,ROOT
 from fc_binding import FlightCore
 
 parser=argparse.ArgumentParser();parser.add_argument('--env',required=True);parser.add_argument('--run',required=True);parser.add_argument('--port',type=int,default=9251)
-args=parser.parse_args()
+parser.add_argument('--standalone',action='store_true');parser.add_argument('--interactive',action='store_true')
+parser.add_argument('--spawn',type=float,nargs=2,default=[0,0]);args=parser.parse_args()
 spec=next(s for s in json.loads((ROOT/'simulation/gazebo/environments.json').read_text()) if s['id']==args.env)
+if not all(math.isfinite(v) for v in args.spawn) or not (-1<=args.spawn[0]<=9 and abs(args.spawn[1])<=3):raise SystemExit('Spawn outside map bounds')
+for x,y,yaw in spec['panels']:
+    dx,dy=args.spawn[0]-x,args.spawn[1]-y;c,s=math.cos(yaw),math.sin(yaw)
+    if math.hypot(max(abs(c*dx+s*dy)-.04,0),max(abs(-s*dx+c*dy)-.6,0))<.45:raise SystemExit('Spawn overlaps panel clearance')
+spec['spawn']=args.spawn
 parameters=json.loads((ROOT/'simulation/model/parameters.json').read_text())
 out=ROOT/'artifacts/gazebo-suite'/args.run;out.mkdir(parents=True,exist_ok=True)
 world_path=build(ROOT/'build/gazebo'/f'{args.run}.sdf',spec=spec)
@@ -31,6 +37,7 @@ def on_contact(message):
     contact_time=message.header.stamp.sec+message.header.stamp.nsec*1e-9
     contact_names=[(names.get(c.collision1.id,c.collision1.name),names.get(c.collision2.id,c.collision2.name)) for c in message.contact]
 callbacks.append(on_contact);assert node.subscribe(Contacts,'/drone/contact',on_contact)
+interactive_started=False;manual_lift_request=False
 fixture=sim.TestFixture(str(world_path));body=None;state=None;core=None;actual=np.zeros(4);count=0;hits=0;minimum_clearance=99.;xbox_packets=companion_packets=0
 csvfile=(out/'flight.csv').open('w',newline='');writer=csv.writer(csvfile)
 writer.writerow(['time_s','x','y','z','vx','vy','vz','roll_deg','pitch_deg','yaw_deg','estimated_z','estimated_vz','FL','FR','RR','RL','mode','user_disarm','pilot_fresh','companion_fresh','mode_events','xbox_reports','ground_contact','obstacle_contact','min_clearance'])
@@ -38,7 +45,7 @@ def rotation(q):
     x,y,z,w=q
     return np.array([[1-2*(y*y+z*z),2*(x*y-z*w),2*(x*z+y*w)],[2*(x*y+z*w),1-2*(x*x+z*z),2*(y*z-x*w)],[2*(x*z-y*w),2*(y*z+x*w),1-2*(x*x+y*y)]])
 def pre(info,ecm):
-    global body,actual
+    global body,actual,interactive_started
     if body is None:
         world=sim.World(sim.world_entity(ecm));model=sim.Model(world.model_by_name(ecm,'drone'));entity=model.link_by_name(ecm,'body')
         if entity:
@@ -48,6 +55,9 @@ def pre(info,ecm):
     if body is not None and core is not None and state is not None:
         r=rotation(state['quaternion']);desired=core.step(state,r)
         enabled=core.status.mode_events>0 and core.status.pilot_fresh and not core.status.user_disarm and not core.status.sensor_fault
+        if args.interactive:
+            if core.status.mode_events and ((core.status.flight_mode==1 and core.status.companion_fresh) or (core.status.flight_mode==0 and manual_lift_request)):interactive_started=True
+            enabled=enabled and interactive_started
         if not enabled:desired[:]=0
         actual+=(desired-actual)*(1-math.exp(-.002/parameters['thrust_time_constant_s']))
         thrust=actual*parameters['maximum_thrust_per_motor_n'];a=parameters['motor_diagonal_m']/(2*math.sqrt(2))
@@ -78,7 +88,7 @@ for _ in range(100):
     if state and len(frames)==2:break
     time.sleep(.02)
 assert state and len(frames)==2,'Gazebo physics/cameras unavailable'
-core=FlightCore(spec['seed'])
+core=FlightCore(spec['seed'],companion=not args.standalone)
 print(f"READY GAZEBO {args.env} {spec['name']} port={args.port}; actual physics + OGRE2; input=HID/UART only",flush=True)
 with Listener(('127.0.0.1',args.port),authkey=b'intelqcopter-esp32') as listener:
  with listener.accept() as client:
@@ -88,14 +98,17 @@ with Listener(('127.0.0.1',args.port),authkey=b'intelqcopter-esp32') as listener
     if op=='close':client.send({'steps':count});break
     if op=='step':
         now=state['sim_time_s']
-        for data in message.get('hid',[]):xbox_packets+=int(core.report(data,False,now))
+        for data in message.get('hid',[]):
+            if core.report(data,False,now):
+                xbox_packets+=1
+                manual_lift_request=int.from_bytes(data[2:4],'little')<26000 or int.from_bytes(data[10:12],'little')>100
         for data in message.get('companion',[]):companion_packets+=int(core.report(data,True,now))
         assert server.run(True,10,False)
     elif op!='state':raise ValueError('Only sensor/clock, raw HID and UART operations are allowed')
-    reply=dict(state);reply.update(fc=core.frame(),mode=int(core.status.flight_mode),disarm=bool(core.status.user_disarm),mapped_input_packets=companion_packets,xbox_packets=xbox_packets)
+    reply=dict(state);reply.update(simulation_actuation=bool(interactive_started if args.interactive else core.status.mode_events),fc=core.frame(),mode=int(core.status.flight_mode),disarm=bool(core.status.user_disarm),mapped_input_packets=companion_packets,xbox_packets=xbox_packets)
     client.send(reply);csvfile.flush()
 csvfile.close()
 summary=dict(engine='Native Gazebo 10.5 + OGRE2 RGB; ESP32 C core host build',environment=spec,assumed_parameters=parameters,sha256={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in ['firmware/src/flight_controller.c','firmware/include/fc_api.h','build/sitl/esp32_flight_core.dll']},steps=count,obstacle_contact_steps=hits,min_evaluated_clearance_m=minimum_clearance,xbox_packets=xbox_packets,companion_packets=companion_packets,final_state=state,
- calibration='Synthetic six-face sensor bench; no real coefficients',hardware_motor_arming=False,simulation_motor_gate='First completed mode gesture and fresh pilot/calibrated sensors; physical outputs remain disabled')
+ standalone=args.standalone,interactive=args.interactive,calibration='Synthetic six-face sensor bench; no real coefficients',hardware_motor_arming=False,simulation_motor_gate=('Completed mode gesture, fresh pilot/calibrated sensors, plus upward stick/RT in stable or fresh companion in navigation; latched for this interactive session' if args.interactive else 'First completed mode gesture and fresh pilot/calibrated sensors')+'; physical outputs remain disabled')
 (out/'engine-summary.json').write_text(json.dumps(summary,indent=2)+'\n')
 print('ENGINE COMPLETE',json.dumps({k:v for k,v in summary.items() if k not in ['environment','final_state']}),flush=True)

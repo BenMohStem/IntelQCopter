@@ -1,0 +1,203 @@
+{
+  "name": "route3-cyclone-20261021-env01-nav",
+  "environment": "env01",
+  "kind": "navigation",
+  "operator": true,
+  "passed": true,
+  "requested_landing_point": [
+    8.9,
+    0.3,
+    0.082
+  ],
+  "arrival_error_m": 0.011649138908769282,
+  "transport": {
+    "interactive": false,
+    "session_ended_cleanly": true,
+    "completed": true,
+    "timeout": false,
+    "simulated_seconds": 61.599999999999994,
+    "hid_packets": 3080,
+    "companion_packets": 2684,
+    "yolo_frames": 616,
+    "pnp_frames": 616,
+    "mission_status": "phase=7,done=1,mapped=3,plans=9,images=588,requests=1,camera=1,waypoint=2,points=3",
+    "final_state": {
+      "sim_time_s": 61.62,
+      "position": [
+        8.907907070666672,
+        0.29144542983031535,
+        0.0800006815556706
+      ],
+      "quaternion": [
+        2.2403558493231326e-05,
+        -3.558413419676272e-05,
+        -1.1688229404093409e-05,
+        0.9999999990476176
+      ],
+      "velocity": [
+        0.00041551238022588516,
+        0.00026160110291547056,
+        0.00013421946462095422
+      ],
+      "omega": [
+        -0.0032700443241072963,
+        0.005194013975185918,
+        -4.819305425525298e-11
+      ],
+      "ground_contact": true,
+      "obstacle_contact": false,
+      "simulation_actuation": true,
+      "mode": 1,
+      "disarm": true,
+      "mapped_input_packets": 2684,
+      "xbox_packets": 3080
+    },
+    "scope": "Native Gazebo physics and cameras; real ROS2 DDS; ESP32 C core host build. C++ mission/YOLO/PnP enabled only for navigation cases. Not Xtensa emulation or physical BLE."
+  },
+  "engine": {
+    "engine": "Native Gazebo 10.5 + OGRE2 RGB; ESP32 C core host build",
+    "environment": {
+      "id": "env01",
+      "name": "campus_garden",
+      "seed": 3200,
+      "panels": [
+        [
+          2.8,
+          0.15,
+          -0.06
+        ],
+        [
+          4.8,
+          0.6,
+          0.08
+        ],
+        [
+          6.7,
+          0.2,
+          -0.1
+        ]
+      ],
+      "decor": [
+        [
+          1.0,
+          3.6,
+          1.0,
+          0.4,
+          0.6,
+          2.0
+        ],
+        [
+          4.0,
+          3.8,
+          1.0,
+          0.4,
+          0.6,
+          2.0
+        ],
+        [
+          7.0,
+          -3.7,
+          1.0,
+          0.4,
+          0.6,
+          2.0
+        ]
+      ],
+      "ground_color": [
+        0.22,
+        0.4,
+        0.15
+      ],
+      "decor_color": [
+        0.3,
+        0.35,
+        0.4
+      ],
+      "start": [
+        0.0,
+        0.0,
+        0.082
+      ],
+      "finish": [
+        8.9,
+        -0.3,
+        0.082
+      ],
+      "cruise": 1.25,
+      "spawn": [
+        0,
+        0
+      ]
+    },
+    "assumed_parameters": {
+      "status": "ASSUMED complete-vehicle simulation model; not measured hardware",
+      "mass_kg": 1.2,
+      "inertia_kg_m2": [
+        0.012,
+        0.012,
+        0.022
+      ],
+      "motor_diagonal_m": 0.45,
+      "maximum_thrust_per_motor_n": 6.0,
+      "reaction_torque_per_thrust_m": 0.015,
+      "thrust_time_constant_s": 0.04,
+      "linear_drag_ns_per_m": 0.12,
+      "gravity_mps2": 9.80665,
+      "physics_dt_s": 0.002,
+      "barometer_hz": 50,
+      "barometer_sigma_m": 0.008,
+      "gyro_sigma_dps": 0.02,
+      "accel_sigma_g": 0.001,
+      "robot_collision_radius_m": 0.34,
+      "perception_mode": "Native RGB -> C++ YOLO panel detector -> known-size PnP -> observed obstacle map; simulated local odometry",
+      "hardware_known": {
+        "frame": "F450/Q450",
+        "battery": "3S 4200mAh 120C; mass ~150g unverified",
+        "motor": "1400KV exact model unknown",
+        "propeller": "9047"
+      },
+      "scenarios": "simulation/gazebo/environments.json"
+    },
+    "sha256": {
+      "firmware/src/flight_controller.c": "e52e4a420573ac1420e77f7f97802addfb508058621a4bc1c83ff8216fd145ac",
+      "firmware/include/fc_api.h": "3857dea9d56e7c4ef71542f5e6dc20efd4a09b847d2086880325866097e4659d",
+      "build/sitl/esp32_flight_core.dll": "b9c6a0f24015a28410944482fea44e2451a17006371e0ff19f8fed96568bd325"
+    },
+    "steps": 30800,
+    "obstacle_contact_steps": 0,
+    "min_evaluated_clearance_m": 0.5861606496601759,
+    "xbox_packets": 3080,
+    "companion_packets": 2684,
+    "final_state": {
+      "sim_time_s": 61.62,
+      "position": [
+        8.907907070666672,
+        0.29144542983031535,
+        0.0800006815556706
+      ],
+      "quaternion": [
+        2.2403558493231326e-05,
+        -3.558413419676272e-05,
+        -1.1688229404093409e-05,
+        0.9999999990476176
+      ],
+      "velocity": [
+        0.00041551238022588516,
+        0.00026160110291547056,
+        0.00013421946462095422
+      ],
+      "omega": [
+        -0.0032700443241072963,
+        0.005194013975185918,
+        -4.819305425525298e-11
+      ],
+      "ground_contact": true,
+      "obstacle_contact": false
+    },
+    "standalone": false,
+    "interactive": false,
+    "calibration": "Synthetic six-face sensor bench; no real coefficients",
+    "hardware_motor_arming": false,
+    "simulation_motor_gate": "First completed mode gesture and fresh pilot/calibrated sensors; physical outputs remain disabled"
+  }
+}

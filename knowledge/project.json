@@ -256,6 +256,31 @@
       "id": "source-map-operator",
       "kind": "file",
       "locator": "artifacts/gazebo-suite/pc-map-operator-20261021-env07-nav/result.json"
+    },
+    {
+      "id": "source-live-guide",
+      "kind": "file",
+      "locator": "docs/live-xbox-and-companion.md"
+    },
+    {
+      "id": "source-live-checks",
+      "kind": "file",
+      "locator": "artifacts/maintenance/live-setup-20261021/checks.json"
+    },
+    {
+      "id": "source-live-qemu",
+      "kind": "file",
+      "locator": "artifacts/emulation/live-companion-policy-20261021/summary.json"
+    },
+    {
+      "id": "source-live-route2",
+      "kind": "file",
+      "locator": "artifacts/gazebo-suite/route2-cyclone-20261021-env01-nav/route-check.json"
+    },
+    {
+      "id": "source-live-route3",
+      "kind": "file",
+      "locator": "artifacts/gazebo-suite/route3-cyclone-20261021-env01-nav/route-check.json"
     }
   ],
   "facts": [
@@ -965,6 +990,17 @@
           ],
           "evidence_level": "emulated",
           "reason": "Latest retained replay supersedes the 19-check baseline; baseline failures remain."
+        },
+        {
+          "revision": 3,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "Espressif QEMU ESP32-S3 passes 44 named checks on the active C source, including standalone companion disable/navigation rejection/capability bits. Synthetic inputs; no flight plant or physical timing proof.",
+          "sources": [
+            "source-live-qemu"
+          ],
+          "evidence_level": "emulated",
+          "reason": "Live Xbox / optional companion and selectable-route setup. Original evidence and previous revisions retained."
         }
       ]
     },
@@ -1108,6 +1144,58 @@
           ],
           "evidence_level": "simulated",
           "reason": "Completed original native trials and independent file/CRC/video consistency audit."
+        },
+        {
+          "revision": 3,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "PC map offers two or three points via mission/route. Both native Gazebo regressions pass through actual Cyclone DDS; three-point middle error 0.02964 m at 1.24831 m height, final error 0.01165 m, zero panel-contact steps. These route flights use simulated Xbox gestures; hardware precision and arbitrary obstacle avoidance are unvalidated.",
+          "sources": [
+            "source-live-route2",
+            "source-live-route3"
+          ],
+          "evidence_level": "simulated",
+          "reason": "Live Xbox / optional companion and selectable-route setup. Original evidence and previous revisions retained."
+        }
+      ]
+    },
+    {
+      "id": "live_xbox",
+      "topic": "simulation",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "Actual Windows XInput reports reach live native Gazebo through the active C host core. Standalone launch loads no ROS2; optional companion launch uses rmw_cyclonedds_cpp and YOLO/PnP. Native cameras and PC map are localhost tools. Startup checks establish input/transport, not completed human flight or ESP32 BLE.",
+          "sources": [
+            "source-live-guide",
+            "source-live-checks",
+            "source-live-qemu"
+          ],
+          "evidence_level": "simulated",
+          "reason": "User requested live real Xbox and optional companion architecture."
+        }
+      ]
+    },
+    {
+      "id": "standalone_companion",
+      "topic": "firmware",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "FC_ENABLE_COMPANION=0 builds an ESP32-S3 standalone target, disables Serial2 activity, rejects QN commands and Down+B navigation, and advertises capability off in QS byte 7 bit 0. Physical arming remains disabled. Runtime capability checks pass in QEMU; both hardware targets compile.",
+          "sources": [
+            "source-live-guide",
+            "source-live-checks",
+            "source-live-qemu"
+          ],
+          "evidence_level": "emulated",
+          "reason": "User requested live real Xbox and optional companion architecture."
         }
       ]
     }

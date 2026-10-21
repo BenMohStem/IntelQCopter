@@ -12,7 +12,7 @@ find_package(rosidl_default_generators REQUIRED)
 find_package(OpenCV REQUIRED COMPONENTS core imgproc dnn calib3d)
 rosidl_generate_interfaces(${PROJECT_NAME} "msg/AutonomySetpoint.msg"
   "msg/SemanticDetection.msg" "msg/SemanticDetections.msg" "msg/MetricObstacles.msg"
-  "srv/RequestMission.srv" DEPENDENCIES std_msgs geometry_msgs)
+  "srv/RequestMission.srv" "srv/RequestRoute.srv" DEPENDENCIES std_msgs geometry_msgs)
 add_library(navigation_core STATIC src/navigation.cpp src/mission.cpp)
 set_target_properties(navigation_core PROPERTIES POSITION_INDEPENDENT_CODE ON)
 target_include_directories(navigation_core PUBLIC include)

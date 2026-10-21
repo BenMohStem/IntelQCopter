@@ -10,6 +10,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef FC_ENABLE_COMPANION
+#define FC_ENABLE_COMPANION 1
+#endif
+FC_API void fc_configure_companion(bool enabled); /* Boot/control task only. Compile-time disabled builds cannot enable it. */
 #define FC_CAL_RECORD_BYTES 160u
 #define FC_CAL_PROFILE 0x00080001u /* ±8g, ±500dps, 42Hz DLPF, 500Hz; bump after mount/config changes. */
 /* After boot setup, only the control task calls this API. Cross-task requests use queues. */

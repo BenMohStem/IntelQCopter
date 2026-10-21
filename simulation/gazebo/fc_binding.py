@@ -13,7 +13,7 @@ class Status(c.Structure):
        ('faces_done',c.c_uint8),('capturing_face',c.c_int8),('flight_mode',c.c_uint8),('user_disarm',c.c_bool),('companion_fresh',c.c_bool),('xbox_reports',c.c_uint32),('mode_events',c.c_uint32)]
 
 class FlightCore:
-    def __init__(self,seed):
+    def __init__(self,seed,companion=True):
         self.dll=c.CDLL(str(ROOT/'build/sitl/esp32_flight_core.dll'))
         self.dll.fc_init.argtypes=[c.c_uint64]
         self.dll.fc_control_step.argtypes=[c.POINTER(Sample),c.c_uint64,c.c_float,c.POINTER(Status)]
@@ -40,6 +40,8 @@ class FlightCore:
         self.dll.fc_init(0x3200);assert self.dll.fc_cal_load(record)
         sample.accel_g[:]=[0,0,1];bench(1100)
         assert self.status.gyro_verified and self.status.accel_calibrated and self.status.barometer_ready
+        self.dll.fc_configure_companion.argtypes=[c.c_bool]
+        self.dll.fc_configure_companion(companion)
         self.tick=0;self.time_offset_us=20_000_000
         print('Synthetic sensor bench calibration complete; not physical calibration.',flush=True)
     def report(self,data,companion,now):

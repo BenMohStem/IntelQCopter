@@ -7,8 +7,10 @@ class Mission {
  public:
   bool request(const State& actual,const std::array<double,3>&start,const std::array<double,3>&finish,double cruise);
   MissionOutput step(const State&,const Command&navigation,bool odometry_fresh,bool perception_fresh,bool contact,double dt);
+  void enable_finish(bool enabled){navigation_finish_enabled_=enabled;}
   void request_land(const State&s){if(phase_!=Phase::Idle&&phase_!=Phase::Landed){finish_[0]=s.x;finish_[1]=s.y;transition(Phase::Land);}}
  private:
+  bool navigation_finish_enabled_=true;
   Phase phase_=Phase::Idle;std::array<double,3> finish_{};double cruise_=1.5,elapsed_=0,dwell_=0;
   void transition(Phase phase){phase_=phase;elapsed_=dwell_=0;}
 };

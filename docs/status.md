@@ -5,11 +5,17 @@
 - Flight control, estimation, calibration, Xbox parsing, mode gestures and UART authority stay in the single `firmware/src/flight_controller.c`.
 - Stable mode: roll/pitch angle cascades, yaw rate, centred-stick height hold/vertical speed. RT boosts; LT reduces. Down+A/B held five seconds selects stable/navigation. Down+LT held two seconds latches disarm.
 - Physical arming remains disabled: motor pins are inputs, and no ESC output driver is connected.
-- ESP32-S3 hardware build succeeds: 31,836 bytes static RAM, 590,573 bytes reported program flash. Real heap, task timing and hardware remain unmeasured.
-- Latest Espressif QEMU ESP32-S3 replay passes 39 named checks, including raw HID gestures, calibration, stale inputs and CRC/sequence/range-checked UART commands. These are synthetic input tests, not flight physics.
+- ESP32-S3 hardware build succeeds: 31,836 bytes static RAM, 590,629 bytes reported program flash. Real heap, task timing and hardware remain unmeasured.
+- Latest Espressif QEMU ESP32-S3 replay passes 44 named checks, including raw HID gestures, calibration, stale inputs and CRC/sequence/range-checked UART commands. These are synthetic input tests, not flight physics.
 - The active C core also drives native Gazebo 10.5/OGRE2 through simulated IMU/barometer samples at logical 500 Hz. Five virtual Xbox manual flights passed. All ten final navigation layouts also passed, plus an additional PC-map endpoint workflow. Original trials and corrections remain in `artifacts/gazebo-suite/`; see [final evidence](gazebo-results-2026-10-21.md).
 - ROS2 C++ drone mission/perception/UART software and a PC endpoint map are implemented. PC supplies endpoints over DDS; the drone plans/replans from RGB YOLO and known-size panel PnP observations.
 - Initial Windows DLL mismatch, recording serializer failure, gesture timing gap, occlusion-distance failure and interrupted trials are retained. No failing check or native contact is suppressed.
+
+## Live Xbox update
+
+[Launch instructions and wiring](live-xbox-and-companion.md). Actual Windows XInput was detected and received by both live standalone and ROS2 launches. The ROS2 launch reports Cyclone DDS and processes native RGB frames. Two-point and three-point PC route regressions passed using simulated Xbox mode selection; these are separate evidence categories from real controller startup. Original shutdown-race failure is retained. User-controlled flight performance has not yet been established.
+
+A separate ESP32-S3 standalone hardware target builds with companion authority/UART disabled. Physical outputs remain disabled.
 
 ## Evidence categories
 

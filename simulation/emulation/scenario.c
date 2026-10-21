@@ -149,6 +149,19 @@ void run_scenario(void) {
     fc_control_step(&sample,input_time+156000,.002f,&status);
     check("UART_stale_command_expires",!status.companion_fresh);
     check("UART_wrong_length_rejected",!fc_companion_report(uart,27,input_time+157000));
+    fc_configure_companion(false);
+    fc_control_step(&sample,input_time+158000,.002f,&status);
+    check("standalone_selects_stable",status.flight_mode==0 && !status.companion_fresh);
+    put32(uart+4,3);seal(uart);
+    check("standalone_rejects_companion_command",!fc_companion_report(uart,28,input_time+160000));
+    hid[12]=5;hid[13]=2;input_time+=200000;
+    for(unsigned i=0;i<260;i++){fc_xbox_report(hid,16,input_time);input_time+=20000;}
+    fc_control_step(&sample,input_time,.002f,&status);
+    check("standalone_rejects_navigation_gesture",status.flight_mode==0);
+    fc_status_frame(&status,telemetry);
+    check("standalone_telemetry_capability_off",(telemetry[7]&1)==0);
+    fc_configure_companion(true);fc_status_frame(&status,telemetry);
+    check("companion_telemetry_capability_on",(telemetry[7]&1)==1);
     printf("QCOPTER_EMU_END,checks=%u,failures=%u,ticks=%u\n",checks,failures,ticks);
     fflush(stdout);
 }

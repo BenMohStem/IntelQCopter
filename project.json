@@ -133,6 +133,54 @@
       "path": "tools/validation/check_gazebo_evidence.py",
       "description": "Audit final original flight files, CRC frames, videos and source fingerprints",
       "args": []
+    },
+    "play": {
+      "runtime": "python",
+      "path": "simulation/gazebo/live_session.py",
+      "args": [],
+      "description": "Live Xbox manual flight with ESP32 C core; no ROS2 companion"
+    },
+    "play-ros": {
+      "runtime": "python",
+      "path": "simulation/gazebo/live_session.py",
+      "args": [
+        "--with-companion"
+      ],
+      "description": "Live Xbox + ROS2 obstacle navigation and 2/3-point map"
+    },
+    "xbox-check": {
+      "runtime": "python",
+      "path": "simulation/gazebo/xinput_controller.py",
+      "args": [],
+      "description": "Probe actual Windows XInput controllers; no generated input"
+    },
+    "build-standalone": {
+      "runtime": "pio",
+      "path": "platformio.ini",
+      "args": [
+        "run",
+        "-e",
+        "esp32-s3-standalone"
+      ],
+      "description": "Compile FC-only ESP32-S3 firmware; companion mode disabled"
+    },
+    "check-live-controls": {
+      "runtime": "python",
+      "path": "simulation/gazebo/live_controls_check.py",
+      "args": [],
+      "description": "Check XInput/HID axis, button and trigger encoding"
+    },
+    "check-route": {
+      "runtime": "python",
+      "path": "simulation/gazebo/check_routes.py",
+      "args": [],
+      "description": "Replay a 2/3-point PC route with simulated Xbox and real Gazebo/ROS2"
+    },
+    "live-report": {
+      "runtime": "python",
+      "path": "tools/reports/live_routes_report.py",
+      "args": [],
+      "description": "Plot original 2/3-point native route trials with video links"
     }
   }
 }

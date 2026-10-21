@@ -10,7 +10,7 @@ bool Mission::request(const State&s,const std::array<double,3>&start,const std::
      ||std::hypot(s.vx,s.vy)>.15||std::abs(s.vz)>.15||cruise<.6||cruise>2.5
      ||start[0]<-1||start[0]>9||std::abs(start[1])>3||std::abs(finish[2]-start[2])>.15||cruise<start[2]+.4
      ||finish[0]<-1||finish[0]>9||std::abs(finish[1])>3)return false;
-  finish_=finish;cruise_=cruise;transition(Phase::Spool);return true;
+  navigation_finish_enabled_=true;finish_=finish;cruise_=cruise;transition(Phase::Spool);return true;
 }
 MissionOutput Mission::step(const State&s,const Command&nav,bool odometry_fresh,bool perception_fresh,bool contact,double dt){
   MissionOutput o;o.phase=phase_;
@@ -42,7 +42,7 @@ MissionOutput Mission::step(const State&s,const Command&nav,bool odometry_fresh,
          o.command.yaw_rate_dps=std::clamp(2*std::remainder(heading-s.yaw,2*3.141592653589793)*todeg,-45.,45.);
        }
      }
-     if(std::hypot(s.x-finish_[0],s.y-finish_[1])<.18&&std::hypot(s.vx,s.vy)<.15)transition(Phase::Approach);
+     if(navigation_finish_enabled_&&std::hypot(s.x-finish_[0],s.y-finish_[1])<.18&&std::hypot(s.vx,s.vy)<.15)transition(Phase::Approach);
      break;
    case Phase::Approach:
      dwell_=std::hypot(s.x-finish_[0],s.y-finish_[1])<.10&&std::hypot(s.vx,s.vy)<.10 ? dwell_+dt : 0;

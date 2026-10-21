@@ -85,7 +85,7 @@ This CRC detects corruption; it is not cryptographic authentication.
 | 0 | 2 | ASCII QS |
 | 2 / 3 | 1 each | Version 1 / mode (0 stable, 1 navigation) |
 | 4 / 5 / 6 | 1 each | User disarm / pilot fresh / companion fresh |
-| 7 | 1 | Reserved 0 |
+| 7 | 1 | Bit 0: companion enabled; other bits reserved 0 |
 | 8 | 4 | Accepted Xbox report count |
 | 12 | 4 | CRC32 of bytes 0–11 |
 
@@ -100,3 +100,14 @@ latency and physical computer integration remain untested.
 12, A/B bits 0/1 at 13, remaining bytes reserved. Stick centre is 32768 with
 12% deadband; triggers range 0–1023. This matches the pinned library's parser.
 The simulator emits this format over ROS2; it does not emulate Bluetooth radio.
+
+## Live sessions and selectable routes
+
+See [live Xbox and companion guide](live-xbox-and-companion.md). The additional
+`mission/route` service accepts 2 or 3 geometry points and a cruise height. Middle
+points are visited at cruise height before the final landing. The legacy
+`mission/request` service remains available for two endpoints.
+
+`FC_ENABLE_COMPANION=0` rejects Down+B and QN frames and disables Serial2 activity.
+QS byte 7 advertises this capability; its previous reserved-zero use is superseded.
+Status telemetry does not provide the full pose or velocity needed for navigation.

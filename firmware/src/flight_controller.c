@@ -974,6 +974,7 @@ static bool gyro_verified,cal_dirty;
 static int8_t capture_face=-1;
 static fc_pilot_t received_pilot;
 static uint8_t selected_mode,held_gesture;
+static bool companion_enabled=FC_ENABLE_COMPANION!=0;
 static uint64_t gesture_started_us,previous_report_us,companion_received_us;
 static uint32_t received_reports,mode_events,companion_sequence;
 static bool gesture_fired,have_companion;
@@ -1013,7 +1014,7 @@ void fc_init(uint64_t board_id) {
     pitch_estimator=angle_estimator_defaults;
     altitude_estimator=altitude_estimator_defaults;
     hover_collective=FC_HOVER_THROTTLE_PLACEHOLDER;
-    received_pilot=(fc_pilot_t){0}; selected_mode=held_gesture=0;
+    received_pilot=(fc_pilot_t){0}; selected_mode=held_gesture=0; companion_enabled=FC_ENABLE_COMPANION!=0;
     gesture_started_us=previous_report_us=companion_received_us=0;
     received_reports=mode_events=companion_sequence=0;
     gesture_fired=have_companion=user_disarm_latched=false;
@@ -1179,6 +1180,7 @@ bool fc_xbox_report(const uint8_t *p,unsigned length,uint64_t now) {
         .received_us=now,.connected=true};
     bool down=p[12]>=4 && p[12]<=6;
     uint8_t gesture=down && next.reduce>=.9f ? 3 : down && (p[13]&3u)==1 ? 1 : down && (p[13]&3u)==2 ? 2 : 0;
+    if(gesture==2 && !companion_enabled)gesture=0;
     if(!continuous || gesture!=held_gesture) {held_gesture=gesture;gesture_started_us=now;gesture_fired=false;}
     if(gesture && !gesture_fired && now>=gesture_started_us
         && now-gesture_started_us>=(gesture==3?2000000u:5000000u)) {
@@ -1189,7 +1191,12 @@ bool fc_xbox_report(const uint8_t *p,unsigned length,uint64_t now) {
     received_pilot=next;previous_report_us=now;received_reports++;
     return true;
 }
+void fc_configure_companion(bool enabled) {
+    companion_enabled=enabled && FC_ENABLE_COMPANION;
+    if(!companion_enabled){selected_mode=0;have_companion=false;reset_control_state();}
+}
 bool fc_companion_report(const uint8_t *p,unsigned length,uint64_t now) {
+    if(!companion_enabled)return false;
     if(!p || length!=FC_COMPANION_FRAME_BYTES || p[0]!='Q' || p[1]!='N' || p[2]!=1 || p[3]!=1
         || record_u32(p+24)!=record_crc(p,24))return false;
     uint32_t seq=record_u32(p+4);
@@ -1214,6 +1221,6 @@ void fc_control_step(const fc_sample_t *raw,uint64_t now,float dt,fc_status_t *s
 void fc_status_frame(const fc_status_t *s,uint8_t p[16]) {
     if(!s || !p)return;
     memset(p,0,16);p[0]='Q';p[1]='S';p[2]=1;p[3]=s->flight_mode;
-    p[4]=s->user_disarm;p[5]=s->pilot_fresh;p[6]=s->companion_fresh;
+    p[4]=s->user_disarm;p[5]=s->pilot_fresh;p[6]=s->companion_fresh;p[7]=companion_enabled?1:0;
     record_put32(p+8,s->xbox_reports);record_put32(p+12,record_crc(p,12));
 }

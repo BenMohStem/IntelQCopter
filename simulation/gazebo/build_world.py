@@ -65,7 +65,7 @@ def build(target=None,drop_test=False,spec=None):
     if theme=='sports_court':
         for side in [-1,1]:box(f'court_sideline{side}',(4,side*3,.007),(11,.045,.008),(.95,.95,.95),False)
         for j,x in enumerate([-1,4,9]):box(f'court_crossline{j}',(x,0,.008),(.045,6,.008),(.95,.95,.95),False)
-    drone=SubElement(world,'model',name='drone');SubElement(drone,'pose').text=f'0 0 {1.5 if drop_test else .082} 0 0 0'
+    drone=SubElement(world,'model',name='drone');SubElement(drone,'pose').text=f'{spec.get("spawn",[0,0])[0]} {spec.get("spawn",[0,0])[1]} {1.5 if drop_test else .082} 0 0 0'
     link=SubElement(drone,'link',name='body');inertial=SubElement(link,'inertial');SubElement(inertial,'mass').text=str(model['mass_kg'])
     inertia=SubElement(inertial,'inertia')
     for key,value in zip(['ixx','iyy','izz','ixy','ixz','iyz'],[*model['inertia_kg_m2'],0,0,0]):SubElement(inertia,key).text=str(value)

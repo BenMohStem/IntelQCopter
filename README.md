@@ -12,6 +12,20 @@ radio endpoints with a commercial Xbox controller connected directly to the ESP3
 **Start here:** [Illustrated F450 linear/discrete guide](docs/current-model-and-fc-integration.html) ·
 [Run the ESP32-S3 emulator](simulation/emulation/README.md) · [Code map](docs/code-map.md).
 
+## Play live with your Xbox
+
+```powershell
+.\qcopter.ps1 xbox-check
+.\qcopter.ps1 play       # standalone FC, no ROS2 companion
+# OR, after ending that session:
+.\qcopter.ps1 play-ros   # ROS2 obstacle navigation + 2/3-point PC map
+```
+
+Live native cameras: **http://127.0.0.1:8087**. PC route map: **http://127.0.0.1:8086** (companion launch).
+Hold Down+A five seconds for stable; Down+B five seconds for navigation.
+[Complete launch, control, route and UART guide](docs/live-xbox-and-companion.md).
+The live simulator uses the active C host DLL, synthetic sensors and an assumed aircraft model; physical outputs remain disabled.
+
 ## What is active
 
 | Part | Implementation |
@@ -23,7 +37,7 @@ radio endpoints with a commercial Xbox controller connected directly to the ESP3
 | Control mode | Roll/pitch angle cascades, yaw rate, vertical-speed throttle with height hold |
 | Scheduling | 2 ms timer requests; measured elapsed time; missed/late cycles and execution time reported |
 | Calibration | Stationary gyro verification, six-face accel capture, versioned/CRC/board-bound NVS record |
-| CPU emulation | Espressif QEMU ESP32-S3; 39 passing checks on the active C core with synthetic inputs |
+| CPU emulation | Espressif QEMU ESP32-S3; 44 passing checks on the active C core with synthetic inputs |
 | Battery policy | 35% estimated-SOC warning, 20% latched disarm; voltage/current acquisition unfinished |
 
 ## Controls
