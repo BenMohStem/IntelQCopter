@@ -4,7 +4,7 @@
 
 **[Open the formatted reading view](current-model-and-fc-integration.html)** if your Markdown viewer shows raw equations.
 
-**Start with the [illustrated mathematical paper](../output/pdf/IntelQcopter-model-guide.pdf).**
+**Start with the [illustrated mathematical paper](../docs/reports/IntelQcopter-model-guide.pdf).**
 It derives the equations step by step, including coordinate frames, angular momentum,
 motor/battery coupling, all six gain calculations, Kalman covariance and real measurement procedures.
 Its editable source is [main.tex](model-guide/main.tex).
@@ -373,7 +373,7 @@ The paper derives existing gains, Routh conditions and a possible lag/drag-aware
 **it does not install speculative new gains**.
 
 Current reproducible scenario calculations:
-[calculation script](../tools/calculate_current_control_design.py),
+[calculation script](../tools/model/calculate_current_control_design.py),
 [full numerical results](../artifacts/model-design/current/calculations.json).
 
 ![Local model poles; historical calculation, not a new flight](../artifacts/model-design/current/local-model-poles.png)
@@ -524,8 +524,8 @@ The recorded garden uses simulated local odometry and synthetic inertial/height 
 with native camera pixels. The floor range is an analytical ray.
 The separately built standard C++ ROS graph is not claimed to have replaced every adapter in that recording.
 
-Rebuild after C changes using tools/build_sitl.ps1.
-The launcher is tools/run_native_garden.ps1; see [README](../README.md) for its command and environment.
+Rebuild after C changes using tools/build/build_sitl.ps1.
+The launcher is tools/simulation/run_native_garden.ps1; see [README](../README.md) for its command and environment.
 
 ### New battery policy input for simulation
 

@@ -42,7 +42,7 @@ From the repository root, in separate terminals:
 For the complete recorded DDS run use:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File tools/run_native_garden.ps1
+powershell -ExecutionPolicy Bypass -File tools/simulation/run_native_garden.ps1
 ```
 
 This uses the user's standalone Jazzy installation at `C:\dev\jazzy` through

@@ -1,5 +1,7 @@
 # Preserve original evidence bytes, including binary PPM captures and raw logs.
 artifacts/** -text
+# Freeze retired implementations and their original line endings.
+archive/** -text
 *.png binary
 *.jpg binary
 *.ppm binary
@@ -17,4 +19,11 @@ artifacts/** -text
 *.md text eol=lf
 *.cmd text eol=crlf
 # Evidence is retained byte-for-byte, including reports and original logs.
+artifacts/** -text
+
+*.json text eol=lf
+*.cjs text eol=lf
+*.html text eol=lf
+*.code-workspace text eol=lf
+archive/** -text
 artifacts/** -text

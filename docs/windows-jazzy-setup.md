@@ -41,7 +41,7 @@ still appear; the short-directory build completed successfully.
 Open PowerShell in the project directory:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File tools/run_native_garden.ps1
+powershell -ExecutionPolicy Bypass -File tools/simulation/run_native_garden.ps1
 ```
 
 This starts native Gazebo physics/RGB, native Jazzy DDS adapters, production C
@@ -67,8 +67,8 @@ TOFSense driver or a full obstacle-depth sensor. Position is simulated odometry.
 From PowerShell:
 
 ```powershell
-& C:/WinLibs/pixi/pixi.exe run --manifest-path C:/dev/pixi.toml cmd /c tools\build_companion_windows.cmd
-& C:/WinLibs/pixi/pixi.exe run --manifest-path C:/dev/pixi.toml cmd /c tools\ros2_windows.cmd python tools/test_ros2_companion.py
+& C:/WinLibs/pixi/pixi.exe run --manifest-path C:/dev/pixi.toml cmd /c tools\build\build_companion_windows.cmd
+& C:/WinLibs/pixi/pixi.exe run --manifest-path C:/dev/pixi.toml cmd /c tools\ros2\ros2_windows.cmd python tools/validation/test_ros2_companion.py
 ```
 
 The successful integration test used recorded native Gazebo images plus synthetic
@@ -80,7 +80,7 @@ accuracy or a complete closed-loop flight through the ROS C++ wrappers.
 To launch these nodes manually with the existing exported ONNX:
 
 ```powershell
-& C:/WinLibs/pixi/pixi.exe run --manifest-path C:/dev/pixi.toml cmd /c tools\ros2_windows.cmd ros2 launch qcopter_autonomy garden_mission.launch.py panel_model:=C:/Users/Mohamed/Desktop/Work/QCopter/build/panel-training/rgb-panel/weights/best.onnx known_fixture_model_confirmed:=true
+& C:/WinLibs/pixi/pixi.exe run --manifest-path C:/dev/pixi.toml cmd /c tools\ros2\ros2_windows.cmd ros2 launch qcopter_autonomy garden_mission.launch.py panel_model:=C:/Users/Mohamed/Desktop/Work/QCopter/build/panel-training/rgb-panel/weights/best.onnx known_fixture_model_confirmed:=true
 ```
 
 This defaults to inactive missions. These nodes require synchronized `camera/image`
@@ -91,7 +91,7 @@ with no sensor publishers for an operational autonomous system.
 
 ## View the F450 in RViz
 
-Double-click `tools/view_f450_windows.cmd` or run it from a terminal. It starts
+Double-click `tools/simulation/view_f450_windows.cmd` or run it from a terminal. It starts
 robot_state_publisher and RViz using `qcopter_description/launch/view.launch.py`.
 The executed startup check initialized OpenGL 4.6, kept both processes running
 and received all 14 fixed component transforms. Original logs are under
@@ -104,7 +104,7 @@ alone does not simulate lift or execute flight control.
 
 ## Useful recording commands
 
-Prefix ROS commands with the same Pixi/`tools\ros2_windows.cmd` wrapper. Once the
+Prefix ROS commands with the same Pixi/`tools\ros2\ros2_windows.cmd` wrapper. Once the
 standard sensor graph is running, a separate terminal can record:
 
 ```text

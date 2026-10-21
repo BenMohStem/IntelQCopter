@@ -1,0 +1,11 @@
+{
+  "folders": [
+    {"path": ".", "name": "IntelQCopter · Pico main"},
+    {"path": "../QCopter-ESP32-Xbox", "name": "IntelQCopter · ESP32 Xbox"}
+  ],
+  "settings": {
+    "files.exclude": {"**/.cache": true, "**/.local": true, "**/build": true, "**/.pio": true},
+    "search.exclude": {"**/build/**": true, "**/.cache/**": true, "**/archive/**": true, "**/artifacts/**": true, "**/.venv*/**": true},
+    "files.associations": {"*.c": "c", "*.h": "c"}
+  }
+}

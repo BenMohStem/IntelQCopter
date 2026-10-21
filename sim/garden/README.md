@@ -34,18 +34,18 @@ Use the existing project environments; no TensorFlow is required.
 
 ```powershell
 & .venv-isaacsim/Scripts/python.exe sim/garden/train_panels.py
-& powershell -ExecutionPolicy Bypass -File tools/build_sitl.ps1
+& powershell -ExecutionPolicy Bypass -File tools/build/build_sitl.ps1
 & .venv-isaacsim/Scripts/python.exe sim/garden/run_mission.py --name local-check --layout 1 --seed 2452 --gain-scale .7 --video
 ```
 
 Training uses 180 synthetic training images and 40 validation images. Runtime
 weights are under ignored build/panel-training/rgb-panel/weights/best.pt.
 For the actual ROS round trip, start sim/ros2_garden_bridge.py with native Jazzy
-Python through tools/ros2_windows.cmd, run the mission with --ros --ros-selection, then publish points
+Python through tools/ros2/ros2_windows.cmd, run the mission with --ros --ros-selection, then publish points
 using sim/ros2_select_mission.py while selection is pending (30 s timeout):
 
 ```powershell
-& C:/WinLibs/pixi/pixi.exe run --manifest-path C:/dev/pixi.toml cmd /c tools\ros2_windows.cmd python sim/ros2_select_mission.py --points 0 0 .082 8 0 .082 1.25
+& C:/WinLibs/pixi/pixi.exe run --manifest-path C:/dev/pixi.toml cmd /c tools\ros2\ros2_windows.cmd python sim/ros2_select_mission.py --points 0 0 .082 8 0 .082 1.25
 ```
 
 Start the bridge in a hidden process with separate stdout/stderr logs; it handles

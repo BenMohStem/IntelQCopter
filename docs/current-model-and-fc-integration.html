@@ -1,7 +1,7 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>From propeller force to flight control</title><style>:root{color-scheme:light}*{box-sizing:border-box}body{margin:0;background:#edf2f6;color:#17324d;font:17px/1.7 system-ui,sans-serif}main{max-width:1120px;margin:32px auto;background:white;padding:48px 64px;border-radius:16px;box-shadow:0 10px 35px #17324d12}h1{font-size:2.2rem;line-height:1.2}h2{margin-top:2.4em;padding-bottom:.3em;border-bottom:2px solid #dbe9ee}h3{margin-top:1.8em}a{color:#007b83}table{border-collapse:collapse;width:100%;font-size:.91rem;margin:1.5em 0;display:block;overflow:auto}th,td{padding:11px 14px;text-align:left;border-bottom:1px solid #dbe3e9;vertical-align:top}th{background:#e8f2f4}blockquote{margin:24px 0;padding:12px 22px;background:#e8f2f4;border-left:4px solid #007f87}.equation{overflow-x:auto;padding:24px 12px;margin:24px 0;background:#f5f8fa;border:1px solid #e0e9ed;border-radius:8px;color:#142b43}.equation math{font-size:1.2em}math[display=block]{margin:0}img{max-width:100%}pre{overflow:auto;padding:16px;background:#f0f4f6}hr{border:0;border-top:1px solid #dbe3e9;margin:36px 0}.reading-note{font-size:.9rem;color:#526878} @media(max-width:700px){main{margin:0;padding:24px 18px;border-radius:0}body{font-size:16px}.equation{padding:18px 8px}} @media print{body{background:white}main{margin:0;padding:0;box-shadow:none}.equation{break-inside:avoid}h2,h3{break-after:avoid}}</style></head><body><main><p class="reading-note">Offline mathematical reading view · Equations authored in LaTeX, rendered as native MathML · <a href="current-model-and-fc-integration.md">Markdown source</a></p><h1 id="from-propeller-force-to-flight-control">From propeller force to flight control</h1>
 <h2 id="nonlinear-model-uncertainty-measured-gains-rp2350-integration">Nonlinear model · uncertainty · measured gains · RP2350 integration</h2>
 <p><strong><a href="current-model-and-fc-integration.html">Open the formatted reading view</a></strong> if your Markdown viewer shows raw equations.</p>
-<p><strong>Start with the <a href="../output/pdf/IntelQcopter-model-guide.pdf">illustrated mathematical paper</a>.</strong>
+<p><strong>Start with the <a href="../docs/reports/IntelQcopter-model-guide.pdf">illustrated mathematical paper</a>.</strong>
 It derives the equations step by step, including coordinate frames, angular momentum,
 motor/battery coupling, all six gain calculations, Kalman covariance and real measurement procedures.
 Its editable source is <a href="model-guide/main.tex">main.tex</a>.
@@ -262,7 +262,7 @@ More integral terms add states and can worsen saturation/windup.
 The paper derives existing gains, Routh conditions and a possible lag/drag-aware altitude design;
 <strong>it does not install speculative new gains</strong>.</p>
 <p>Current reproducible scenario calculations:
-<a href="../tools/calculate_current_control_design.py">calculation script</a>,
+<a href="../tools/model/calculate_current_control_design.py">calculation script</a>,
 <a href="../artifacts/model-design/current/calculations.json">full numerical results</a>.</p>
 <p><img src="../artifacts/model-design/current/local-model-poles.png" alt="Local model poles; historical calculation, not a new flight"></p>
 <hr>
@@ -409,8 +409,8 @@ motor/thrust model → applied Gazebo link wrench.</p>
 The recorded garden uses simulated local odometry and synthetic inertial/height measurements,
 with native camera pixels. The floor range is an analytical ray.
 The separately built standard C++ ROS graph is not claimed to have replaced every adapter in that recording.</p>
-<p>Rebuild after C changes using tools/build_sitl.ps1.
-The launcher is tools/run_native_garden.ps1; see <a href="../README.md">README</a> for its command and environment.</p>
+<p>Rebuild after C changes using tools/build/build_sitl.ps1.
+The launcher is tools/simulation/run_native_garden.ps1; see <a href="../README.md">README</a> for its command and environment.</p>
 <h3 id="new-battery-policy-input-for-simulation">New battery policy input for simulation</h3>
 <p>Publish a Float32 estimated SOC percentage to <strong>/qcopter/battery_soc_percent</strong>.
 The same C instance used by flight control sets flags published as UInt8 on

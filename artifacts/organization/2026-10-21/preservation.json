@@ -1,0 +1,30 @@
+{
+  "preexisting_files_unchanged": 24,
+  "files": {
+    "artifacts/simulation/2026-10-20-engines/gazebo-ros2-transport.json": "b4266c386fb6c605ebde8fb433f345d60331d038f993a77b83bd3b431853bfc8",
+    "artifacts/simulation/2026-10-20-engines/my-first-test-gazebo-camera-12s.png": "2c27587a4e92416505e9da76991a35dc1fb3e6df811db4b8a776169c2be2b22b",
+    "artifacts/simulation/2026-10-20-engines/my-first-test-gazebo-camera-20s.png": "2165ccc19fc80ea71a3c85ecc695577afeb882fe77ce858391228e29c116a2d0",
+    "artifacts/simulation/2026-10-20-engines/my-first-test-gazebo-camera-6s.png": "18430d598d36a96cafa6a62630804c09a751503da4620f6884f1459751907e19",
+    "artifacts/simulation/2026-10-20-engines/my-first-test-gazebo-camera.jpg": "9502699de7c6a410b7fabb52bd97cc7200cc9fe5b9247b5f2b16d0d80383b045",
+    "artifacts/simulation/2026-10-20-engines/my-first-test-gazebo-events.json": "322c702f9cf3cdfc68e50a110245e4bf2cb06d6219fe9a0b5877560eb0fb891c",
+    "artifacts/simulation/2026-10-20-engines/my-first-test-gazebo-graphs.pdf": "f71bc80e3ad95539b2327e6788ceb9232482094d9c638150b6f21022bae1735f",
+    "artifacts/simulation/2026-10-20-engines/my-first-test-gazebo-graphs.png": "3c655852313bdd7275aad3baca6875b428b32309d8677942edac333347079121",
+    "artifacts/simulation/2026-10-20-engines/my-first-test-gazebo-metrics.json": "b775871b5dbf266048b8d4a29566e189ce4977e0f4aecc9fb933ba581e586b07",
+    "artifacts/simulation/2026-10-20-engines/my-first-test-gazebo-observations.json": "9764e8122c523a1ffc18481497a2ea919e7cf0646c186db0afdbfc13aa9c3259",
+    "artifacts/simulation/2026-10-20-engines/my-first-test-gazebo-preview.png": "1e3468ee71dbfbe3f22e0882dac101291f1156d434bc8f12876d4789a18a2090",
+    "artifacts/simulation/2026-10-20-engines/my-first-test-gazebo-source-snapshot.zip": "7a342bfbc22e44d0e02c4ec413bf4b2aa28aaf34a03358cb5a84cb07b1e9fbe9",
+    "artifacts/simulation/2026-10-20-engines/my-first-test-gazebo-summary.json": "d739316f05f8c72426d894c0ae5c190f726683319b3825b1cc156f7cb1a012f8",
+    "artifacts/simulation/2026-10-20-engines/my-first-test-gazebo-transport.json": "b4266c386fb6c605ebde8fb433f345d60331d038f993a77b83bd3b431853bfc8",
+    "artifacts/simulation/2026-10-20-engines/my-first-test-gazebo-validation.json": "a770f76cd71fae8d4149f5cce8007a62a475ce5fe158e6639a7e721257c8c762",
+    "artifacts/simulation/2026-10-20-engines/my-first-test-gazebo.csv": "f9160f90da78e272819fac78ac581b0120ae6c7c95b2d1d43715ad725e4c4524",
+    "artifacts/simulation/2026-10-20-engines/my-first-test-gazebo.mp4": "7270ea9b4045a7fcb9b3e6e7cb69d2ee4dbee8e7a9f2a7e0bbc4d63bf9a4bf1c",
+    "artifacts/test-runs/2026-10-20/ros-logs/python_31456_1792524576504.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "artifacts/test-runs/native-local/my-first-test-gazebo-client.log": "9f2445422993dbf8e2a4ffee84016bc458904b9fb3bbfc81e45dce2238f2632c",
+    "artifacts/test-runs/native-local/my-first-test-gazebo-client.stderr.log": "45ed8bd6737f9866719f7377c77651c75d0c857a4de6900904a39d17ab09d80f",
+    "artifacts/test-runs/native-local/my-first-test-gazebo-engine.log": "d0c89860b72ed9de0137f374f6ebe585da50ff596012b5dc5ed3f3a26cc770fd",
+    "artifacts/test-runs/native-local/my-first-test-gazebo-engine.stderr.log": "3592322fdfab4ae73072933ed166dd5ebe4a2c498be13ac1f07d26a02ab1ca1a",
+    "artifacts/test-runs/native-local/my-first-test-gazebo-ros.log": "07770566ea5f2277b65c1e9c524295155987008640115ec4c293dcc145addd11",
+    "artifacts/test-runs/native-local/my-first-test-gazebo-ros.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "scope": "Files already modified/untracked before the reorganization; retained and excluded from the new commit."
+}

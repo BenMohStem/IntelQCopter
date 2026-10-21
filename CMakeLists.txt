@@ -30,7 +30,7 @@ pico_sdk_init()
 
 if(QCOPTER_TARGET STREQUAL "flight")
     add_executable(qcopter
-        flight_controller/flight_controller.c)
+        firmware/flight_controller/flight_controller.c)
     target_link_libraries(qcopter pico_stdlib pico_multicore pico_util hardware_flash pico_flash pico_unique_id)
     # Reserve the last two erase sectors without changing the physical flash-size
     # macro used by the SDK flash driver. Link-time exclusion + runtime overlap check.
@@ -40,7 +40,7 @@ if(QCOPTER_TARGET STREQUAL "flight")
         "FLASH(rx) : ORIGIN = 0x10000000, LENGTH = ${QCOPTER_FIRMWARE_FLASH_BYTES}\n")
     pico_add_linker_script_override_path(qcopter "${CMAKE_CURRENT_BINARY_DIR}/calibration-reserved" FILES pico_flash_region.ld)
 elseif(QCOPTER_TARGET STREQUAL "controller")
-    add_executable(qcopter handler_controller/handler_controller.c)
+    add_executable(qcopter firmware/handler_controller/handler_controller.c)
     target_link_libraries(qcopter pico_stdlib hardware_adc hardware_gpio)
 else()
     message(FATAL_ERROR "QCOPTER_TARGET must be flight or controller")

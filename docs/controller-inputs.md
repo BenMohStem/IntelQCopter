@@ -1,6 +1,6 @@
 # Hand-controller input and radio frame
 
-The RP2040 hand-controller firmware samples controls at 100 Hz and creates one fixed 22-byte command frame per sample. At the moment it prints each tenth frame over USB for bench inspection; it does **not** transmit over LoRa. The encoder/parser is embedded in both [`flight_controller.c`](../flight_controller/flight_controller.c) and [`handler_controller.c`](../handler_controller/handler_controller.c). A host check requires the two wire-protocol sections to remain identical.
+The RP2040 hand-controller firmware samples controls at 100 Hz and creates one fixed 22-byte command frame per sample. At the moment it prints each tenth frame over USB for bench inspection; it does **not** transmit over LoRa. The encoder/parser is embedded in both [`flight_controller.c`](../firmware/flight_controller/flight_controller.c) and [`handler_controller.c`](../firmware/handler_controller/handler_controller.c). A host check requires the two wire-protocol sections to remain identical.
 
 ## Proposed Pico pin map
 

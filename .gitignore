@@ -33,3 +33,7 @@ compile_commands.json
 /docs/model-guide/*.out
 /docs/model-guide/*.toc
 /docs/model-guide/*.synctex.gz
+
+# Local caches and machine-specific configuration
+/.cache/
+/.local/

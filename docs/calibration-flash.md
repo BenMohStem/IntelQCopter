@@ -1,6 +1,6 @@
 # Calibration: capture → validate → save → verify after boot
 
-Implemented in the single runtime file, [flight_controller.c](../flight_controller/flight_controller.c).
+Implemented in the single runtime file, [flight_controller.c](../firmware/flight_controller/flight_controller.c).
 The Pico2/RP2350 target compiles this storage layer; the desktop library excludes physical flash operations.
 **No RP2350 has been flashed or used to verify persistence yet.** Physical sensor acquisition is unfinished.
 

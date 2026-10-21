@@ -12,3 +12,6 @@
   unrelated personal/coursework files. Never put authentication tokens in URLs.
 - If authentication/network access blocks a push, retain local commits and report
   exactly what remains unpublished. Do not describe local commits as pushed.
+
+- Use project.json and qcopter.ps1 for current command paths. Group tools by purpose.
+- Source checkouts must stay outside build/ and .cache/. Preserve original evidence.

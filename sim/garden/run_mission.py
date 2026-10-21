@@ -49,7 +49,7 @@ def video_frame(world,rgb,annotated,rows,phase,observed,t):
     return np.ascontiguousarray(canvas)
 
 def run_case(name,layout,seed,model,weights,video=False,dropout=False,boost=0,ros=False,selection=False,gain_scale=1.3):
-    source_files=['flight_controller/flight_controller.c','companion/ros2_ws/src/qcopter_autonomy/src/mission.cpp',
+    source_files=['firmware/flight_controller/flight_controller.c','companion/ros2_ws/src/qcopter_autonomy/src/mission.cpp',
       'companion/ros2_ws/src/qcopter_autonomy/src/navigation.cpp','companion/perception/panel_pose.py',
       'sim/garden/world.py','sim/garden/run_mission.py','sim/ros2_garden_bridge.py']
     provenance={name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in source_files}

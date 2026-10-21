@@ -1,0 +1,187 @@
+{
+  "branch": "main",
+  "baseline": "3803437",
+  "moves": {
+    "tools/build_firmware.ps1": "tools/build/build_firmware.ps1",
+    "tools/build_sitl.ps1": "tools/build/build_sitl.ps1",
+    "tools/build_companion_windows.cmd": "tools/build/build_companion_windows.cmd",
+    "tools/run_native_garden.ps1": "tools/simulation/run_native_garden.ps1",
+    "tools/view_f450_windows.cmd": "tools/simulation/view_f450_windows.cmd",
+    "tools/check_rviz_windows.py": "tools/simulation/check_rviz_windows.py",
+    "tools/build_f450_urdf.py": "tools/model/build_f450_urdf.py",
+    "tools/preview_f450_urdf.py": "tools/model/preview_f450_urdf.py",
+    "tools/calculate_current_control_design.py": "tools/model/calculate_current_control_design.py",
+    "tools/flight_linear_analysis.py": "tools/model/flight_linear_analysis.py",
+    "tools/model_uncertainty.py": "tools/model/model_uncertainty.py",
+    "tools/render_math_guides.cjs": "tools/docs/render_math_guides.cjs",
+    "tools/render_kalman_preview.ps1": "tools/reports/render_kalman_preview.ps1",
+    "tools/make_test_dashboard.py": "tools/reports/make_test_dashboard.py",
+    "tools/make_uncertainty_dashboard.py": "tools/reports/make_uncertainty_dashboard.py",
+    "tools/make_uncertainty_svg.py": "tools/reports/make_uncertainty_svg.py",
+    "tools/write_native_engine_report.py": "tools/reports/write_native_engine_report.py",
+    "tools/setup_pico_sdk.ps1": "tools/setup/setup_pico_sdk.ps1",
+    "tools/install_pixi.py": "tools/setup/install_pixi.py",
+    "tools/ros2_windows.cmd": "tools/ros2/ros2_windows.cmd",
+    "tools/run_flight_controller_tests.ps1": "tools/validation/run_flight_controller_tests.ps1",
+    "tools/test_ros2_companion.py": "tools/validation/test_ros2_companion.py",
+    "tools/validate_simulation_artifacts.py": "tools/validation/validate_simulation_artifacts.py",
+    "tools/run_simulation_evidence.ps1": "archive/tools/run_simulation_evidence.ps1",
+    "tools/rebuild_rosbag_benchmark.cmd": "archive/tools/rebuild_rosbag_benchmark.cmd",
+    "tools/rebuild_jazzy_windows.cmd": "archive/tools/rebuild_jazzy_windows.cmd",
+    "tools/retry_isaac.ps1": "archive/tools/retry_isaac.ps1",
+    "tools/repair_jazzy_windows.py": "archive/tools/repair_jazzy_windows.py",
+    "tools/summarize_jazzy_setup.py": "archive/tools/summarize_jazzy_setup.py",
+    "tools/create_github_repository.py": "archive/tools/create_github_repository.py",
+    "tools/package_native_engines.py": "archive/tools/package_native_engines.py",
+    "tools/package_garden_evidence.py": "archive/tools/package_garden_evidence.py",
+    "tools/write_mission_report.py": "archive/tools/write_mission_report.py",
+    "tools/write_modelling_results.py": "archive/tools/write_modelling_results.py",
+    "tools/write_flight_controller_walkthrough.py": "archive/tools/write_flight_controller_walkthrough.py",
+    "flight_controller/": "firmware/flight_controller/",
+    "handler_controller/": "firmware/handler_controller/",
+    "output/pdf/IntelQcopter-model-guide.pdf": "docs/reports/IntelQcopter-model-guide.pdf",
+    "sim/isaac/": "archive/isaac/"
+  },
+  "preserved_bytes": [
+    {
+      "old": "flight_controller/flight_controller.c",
+      "new": "firmware/flight_controller/flight_controller.c",
+      "sha256": "3858b16b51da4439ec0ddfcc7fe7ccf67ee528b7b5c3baa3dffddf151c5d079d"
+    },
+    {
+      "old": "flight_controller/tests/test_flight_controller.c",
+      "new": "firmware/flight_controller/tests/test_flight_controller.c",
+      "sha256": "0439c3f7c8bcf0b1b98ff120a84ca4a045f52e3f5ee97aa3c03671084ced70ff"
+    },
+    {
+      "old": "handler_controller/handler_controller.c",
+      "new": "firmware/handler_controller/handler_controller.c",
+      "sha256": "24b361407e8906b826e8e322a1a327aa37624c5585cf4b05a2748b47b988af4b"
+    },
+    {
+      "old": "handler_controller/tests/test_handler_controller.c",
+      "new": "firmware/handler_controller/tests/test_handler_controller.c",
+      "sha256": "2ff1425e0e793f3bf0a060a81383924e1965c3199da9087a3555d354eee8825d"
+    },
+    {
+      "old": "sim/isaac/build_garden.py",
+      "new": "archive/isaac/build_garden.py",
+      "sha256": "401809ffc43322f67cc15540cb50880f6f7e38bc8361221478a8e19dfe0aa091"
+    },
+    {
+      "old": "sim/isaac/build_stage.py",
+      "new": "archive/isaac/build_stage.py",
+      "sha256": "411b77a67b1cb382e3bf0332ae2dc66af1069456bab9d520639dd850b7a6ac0a"
+    },
+    {
+      "old": "sim/isaac/engine_server.py",
+      "new": "archive/isaac/engine_server.py",
+      "sha256": "5a06d6c91ff92e431f34ad8d6470526eecd979dfe6ce3cba24052dc6e3bd07a9"
+    },
+    {
+      "old": "sim/isaac/native_probe.py",
+      "new": "archive/isaac/native_probe.py",
+      "sha256": "27e99c10d9cc416da9fc118ffc51d18a79327d3420e96d5e29c23cadcb33159d"
+    },
+    {
+      "old": "sim/isaac/README.md",
+      "new": "archive/isaac/README.md",
+      "sha256": "91915a2dd45b17a8c4408cb88b03157152d5b5bd1b835c1df36ac7f88c7ea7ae"
+    },
+    {
+      "old": "sim/isaac/retry_probe.py",
+      "new": "archive/isaac/retry_probe.py",
+      "sha256": "6daffb34f0b79896262b3b2272162348f5a825b738997c157a33163ef6fe4dc8"
+    },
+    {
+      "old": "sim/isaac/ros2_interface.md",
+      "new": "archive/isaac/ros2_interface.md",
+      "sha256": "a7283b460393add0caff80094f608d9953bf981002211a453c262f4c1edac31d"
+    },
+    {
+      "old": "sim/isaac/run_mission.py",
+      "new": "archive/isaac/run_mission.py",
+      "sha256": "0e625081f00f5769196fe00b2299357b72164445d9a0f7ac56eeb6e261fe102f"
+    },
+    {
+      "old": "sim/isaac/scenarios.json",
+      "new": "archive/isaac/scenarios.json",
+      "sha256": "433d810d905cde06825043ebdb4f703a7b50aa4dfd34f0259594016be455a487"
+    },
+    {
+      "old": "sim/isaac/assets/garden_native.usda",
+      "new": "archive/isaac/assets/garden_native.usda",
+      "sha256": "5c4fcba26339495f866b7b5b3bcb0355fb93c202939d39a11c51f3608c3570ad"
+    },
+    {
+      "old": "sim/isaac/assets/qcopter.urdf",
+      "new": "archive/isaac/assets/qcopter.urdf",
+      "sha256": "3e852b3f613de9878bfbddfa0ef8af0f7937039382868e77bb490f125bdc026e"
+    },
+    {
+      "old": "sim/isaac/assets/qcopter_test.usda",
+      "new": "archive/isaac/assets/qcopter_test.usda",
+      "sha256": "0b612ae4de1c018e9c19dd84120a7a2c11d44ec353142b5779a4b2af5dc9ac5a"
+    },
+    {
+      "old": "tools/rebuild_rosbag_benchmark.cmd",
+      "new": "archive/tools/rebuild_rosbag_benchmark.cmd",
+      "sha256": "0f5a16d636f3491117fe3c8c405d7bf0ae97a09494f35d0c29c963c0bca3c9dd"
+    },
+    {
+      "old": "tools/rebuild_jazzy_windows.cmd",
+      "new": "archive/tools/rebuild_jazzy_windows.cmd",
+      "sha256": "4b08c11b2109aae5533541654ea39512ce97c49d761675605006a2f79306d64a"
+    },
+    {
+      "old": "tools/retry_isaac.ps1",
+      "new": "archive/tools/retry_isaac.ps1",
+      "sha256": "60bbd45ebde9ca2340d612b984a193de522feef5c3d6ef8c0476ccecb3488004"
+    },
+    {
+      "old": "tools/repair_jazzy_windows.py",
+      "new": "archive/tools/repair_jazzy_windows.py",
+      "sha256": "e24d2fd243e8cba90c270a9dcfd8b9c45c3a494f5cf1c4ae3d72a164142b0a64"
+    },
+    {
+      "old": "tools/summarize_jazzy_setup.py",
+      "new": "archive/tools/summarize_jazzy_setup.py",
+      "sha256": "419e1a2396e274f14afd7fdec730ace23a0c2c7dfefb78870520b9b20862833e"
+    },
+    {
+      "old": "tools/create_github_repository.py",
+      "new": "archive/tools/create_github_repository.py",
+      "sha256": "6d96377bb355e82edebe5782c9baa23af34e5a4eea8280cc4034624c2dda06f3"
+    },
+    {
+      "old": "tools/package_native_engines.py",
+      "new": "archive/tools/package_native_engines.py",
+      "sha256": "ac0ddfff7403ae0e74d9320af240beb7eaaa513b5ed14cb4f00bdedb6eed4264"
+    },
+    {
+      "old": "tools/package_garden_evidence.py",
+      "new": "archive/tools/package_garden_evidence.py",
+      "sha256": "54a0a95a8ba6dfd24c336fcd03abc3fd325e8d9a6151a7d79f22d32aeba27533"
+    },
+    {
+      "old": "tools/write_mission_report.py",
+      "new": "archive/tools/write_mission_report.py",
+      "sha256": "8d325b65d3daab0168b8abce31c3e4c7ba9bdc6a390ccb566875444b19a0da4c"
+    },
+    {
+      "old": "tools/write_modelling_results.py",
+      "new": "archive/tools/write_modelling_results.py",
+      "sha256": "17f9b9c03ba9227dbda4d5760f74165a922b029d3067794e728b316fe6809ce6"
+    },
+    {
+      "old": "tools/write_flight_controller_walkthrough.py",
+      "new": "archive/tools/write_flight_controller_walkthrough.py",
+      "sha256": "a90c892c279e69c49d05547a9b8568aef9d27a5aa43bbcc8bfc83b740b29c340"
+    },
+    {
+      "old": "tools/run_simulation_evidence.ps1",
+      "new": "archive/tools/run_simulation_evidence.ps1",
+      "sha256": "ca18afabcdc7b707e90c61bb6ce04b45902864743c831aa01f9c6a39773d2b76"
+    }
+  ]
+}

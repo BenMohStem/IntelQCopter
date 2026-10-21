@@ -20,7 +20,7 @@ diameter/pitch, not mass, thrust or airfoil shape. CW/CCW propeller pairs must b
 confirmed physically; matching diameter/pitch does not mean all four spin the same way.
 
 Edit `sim/model/f450_components.json`, then run
-`tools/build_f450_urdf.py` with the simulation Python. The generator uses box and
+`tools/model/build_f450_urdf.py` with the simulation Python. The generator uses box and
 cylinder inertia, rotates each tensor into the body frame, finds the combined
 centre of mass and applies the parallel-axis theorem. The report is
 `urdf/mass-properties.json`; it is not a measured inertia tensor.

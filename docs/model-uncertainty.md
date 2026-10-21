@@ -50,10 +50,10 @@ The CSV contains 251 points, including mean error, empirical error sigma, Kalman
 From the project root in PowerShell, with `.venv-tests` and Zig installed:
 
 ```powershell
-.\tools\run_flight_controller_tests.ps1 `
+.\tools\validation\run_flight_controller_tests.ps1 `
   -KalmanPath artifacts\test-runs\kalman-roll-monte-carlo.csv `
   -KalmanTrials 500
-.\.venv-tests\Scripts\python.exe tools\model_uncertainty.py artifacts\test-runs\mass-model
+.\.venv-tests\Scripts\python.exe tools\model\model_uncertainty.py artifacts\test-runs\mass-model
 ```
 
 Use measured part masses with a 0.1 g scale, measure motor diagonal and component coordinates, and then replace the priors. For the arm fraction/solid geometry, weigh the four arms and center plates separately. Replace the box dimensions and placement with the actual pack measurements. The distribution will then become measurement-based rather than prior-based.

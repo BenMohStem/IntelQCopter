@@ -2,7 +2,7 @@
 
 This guide follows the code in execution order. The RP2350 program now schedules a 500 Hz control loop and contains a radio-frame parser, but sensor acquisition and the RF driver are stubs and ESC outputs remain disabled. The RP2040 program scans a proposed hand-controller input map and emits debug frames over USB; LoRa transmission is not connected.
 
-## Flight controller ([`flight_controller.c`](../flight_controller/flight_controller.c))
+## Flight controller ([`flight_controller.c`](../firmware/flight_controller/flight_controller.c))
 
 Open the linked source and follow these sections from top to bottom.
 
@@ -23,7 +23,7 @@ The battery module is hardware-independent and is contained in the RP2350 applic
 
 The module can request a controlled landing at/below the configured SOC limit (set to 20% by the current test configuration), on a configured low-pack/low-cell/current warning, or on an external BMS alert; it recommends disarming only when the caller says the aircraft is landed. Invalid or stale samples return a sensor-fault action. It cannot disconnect the battery or replace hardware cell protection. Configuration thresholds are deliberately caller-provided and have no flight-ready defaults. No battery sensors or landing action are wired into the flight loop yet.
 
-## Hand controller ([`handler_controller.c`](../handler_controller/handler_controller.c))
+## Hand controller ([`handler_controller.c`](../firmware/handler_controller/handler_controller.c))
 
 The RP2040 code configures the ADC mux and six active-low buttons, calibrates joystick centers at boot, normalizes the Mode 2 axes, applies a 4% dead band, debounces buttons, then generates a sequence-numbered CRC-protected command frame at 100 Hz. It prints every tenth frame over USB for inspection. The frame is not sent by RF yet: the exact LoRa module and band are unconfirmed. LT/RT are reported as analog values; buttons are data only, with no arm/disarm behavior. See the [input map and packet format](controller-inputs.md).
 
@@ -37,6 +37,6 @@ All calibration collectors and correction functions live in `flight_controller.c
 
 ## What current test results mean
 
-`flight_controller/tests/test_flight_controller.c` compiles the same C implementation with `QCOPTER_HOST_TEST`; it feeds scripted values to the math and filter functions. The Kalman Monte Carlo gives the filter noisy synthetic sensor measurements and compares its estimate with a known synthetic roll trajectory over 500 trials. The separate mass Monte Carlo varies explicitly assumed frame/battery priors. These checks verify software arithmetic under those inputs; they do not simulate motors, airframe response, or flight stability.
+`firmware/flight_controller/tests/test_flight_controller.c` compiles the same C implementation with `QCOPTER_HOST_TEST`; it feeds scripted values to the math and filter functions. The Kalman Monte Carlo gives the filter noisy synthetic sensor measurements and compares its estimate with a known synthetic roll trajectory over 500 trials. The separate mass Monte Carlo varies explicitly assumed frame/battery priors. These checks verify software arithmetic under those inputs; they do not simulate motors, airframe response, or flight stability.
 
 For source links, test commands, measured results, and the project status, see the [top-level README](../README.md) and the [timestamped evidence index](../artifacts/test-runs/README.md).

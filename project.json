@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "name": "IntelQCopter",
+  "branch": "main",
+  "architecture": "RP2350 aircraft + RP2040 handheld",
+  "domains": {
+    "firmware": "firmware/",
+    "companion": "companion/",
+    "simulation": "sim/",
+    "hardware": "hardware/",
+    "documentation": "docs/",
+    "measurements": "measurements/",
+    "evidence": "artifacts/",
+    "history": "archive/"
+  },
+  "local": {
+    "build": "build/",
+    "cache": ".cache/",
+    "settings": ".local/",
+    "environments": [
+      ".venv-isaacsim/",
+      ".venv-tests/"
+    ]
+  },
+  "commands": {
+    "build-flight": {
+      "runtime": "powershell",
+      "path": "tools/build/build_firmware.ps1",
+      "description": "Compile RP2350 firmware",
+      "args": [
+        "-Target",
+        "flight"
+      ]
+    },
+    "build-handler": {
+      "runtime": "powershell",
+      "path": "tools/build/build_firmware.ps1",
+      "description": "Compile RP2040 handheld",
+      "args": [
+        "-Target",
+        "controller"
+      ]
+    },
+    "build-sitl": {
+      "runtime": "powershell",
+      "path": "tools/build/build_sitl.ps1",
+      "description": "Compile C/C++ host shared libraries",
+      "args": []
+    },
+    "build-companion": {
+      "runtime": "cmd",
+      "path": "tools/build/build_companion_windows.cmd",
+      "description": "Build ROS2 C++ packages",
+      "args": []
+    },
+    "garden": {
+      "runtime": "powershell",
+      "path": "tools/simulation/run_native_garden.ps1",
+      "description": "Run native Gazebo/ROS garden mission",
+      "args": []
+    },
+    "view-model": {
+      "runtime": "cmd",
+      "path": "tools/simulation/view_f450_windows.cmd",
+      "description": "Open the F450 model in RViz",
+      "args": []
+    },
+    "docs": {
+      "runtime": "node",
+      "path": "tools/docs/render_math_guides.cjs",
+      "description": "Render offline mathematical guides",
+      "args": []
+    },
+    "check-flight": {
+      "runtime": "powershell",
+      "path": "tools/validation/run_flight_controller_tests.ps1",
+      "description": "Run existing C firmware checks",
+      "args": []
+    },
+    "check-layout": {
+      "runtime": "python",
+      "path": "tools/validation/check_layout.py",
+      "description": "Validate active paths and script syntax",
+      "args": []
+    }
+  }
+}

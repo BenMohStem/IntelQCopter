@@ -12,7 +12,12 @@
 - [Uncertainty visualizations](../artifacts/visualizations/uncertainty-dashboard.html) — interactive replay and static SVG/PNG plots generated from the saved Monte Carlo CSVs.
 - [Mass and Kalman uncertainty report](model-uncertainty.md) — assumptions, distributions, metrics, and limitations.
 - [PCB notes](../hardware/flight_controller_pcb/README.md) — draft board state and unrouted nets.
-- [Simulation status](../sim/isaac/README.md) — what is present and what has not run.
+- [Current Gazebo workflow](../sim/gazebo/README.md) — native engine setup and current launch instructions.
+- [Historical Isaac integration](../archive/isaac/README.md) — retained after Isaac was removed.
 - [Evidence index](../artifacts/test-runs/README.md) — logs, data, rerun instructions, and proof limits.
 
 - [Missing information and current problems](missing-information-and-problems.md) — priorities and hardware/autonomy limits.
+
+## Repository organization
+
+[Architecture, cache lifecycle and migration map](architecture.md). Run `qcopter.ps1 help` from the root.
