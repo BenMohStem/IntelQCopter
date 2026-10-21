@@ -4,6 +4,18 @@
 
 **Review and fit prototype. Physical motor arming remains disabled.** Native KiCad checks establish the carrier geometry and connectivity, not electrical operation or flight readiness. No physical board has been built or measured.
 
+## Ready-to-print PDFs and KiCad download
+
+- [Complete self-contained KiCad package](output/IntelQCopter-ESP32-home-etch-KiCad.zip).
+- [Face-down transfer master, A4 at 1:1](output/pdf/etch-mask-face-down-transfer-A4-1to1.pdf).
+- [Direct solder-side view, A4 at 1:1](output/pdf/etch-mask-direct-solder-view-A4-1to1.pdf).
+
+Print **Actual size / 100%**. Disable fit-to-page, borderless enlargement and printer mirroring. Measure the 20 mm and 100 mm bars on the physical print. Black means copper retained; white means removed. The vector geometry is extracted from the actual KiCad B.Cu and independently compared with the coordinate model (53 tracks, 124 pads).
+
+A face-down toner transfer reverses its printed master. Transparency/contact orientation depends on which film face touches the board. These files have **positive polarity**; negative dry-film photoresist needs inverted polarity. An ordinary inkjet photo printer uses ink, not heat-transfer laser toner. Confirm the resist/transfer method before using the mask. The 100 mm square is only the carrier: scale bars and instructions stay outside it.
+
+Earlier SVG exports accidentally included the KiCad drawing worksheet. They are preserved in `artifacts/hardware/print-mask-20261021/`; the current black-and-white SVG exports explicitly exclude it. Use the PDFs for printing.
+
 ## What to open
 
 - `esp32_home_etch.kicad_pro`: KiCad 10 project, schematic, board and bundled libraries.

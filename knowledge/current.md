@@ -2,11 +2,11 @@
 
 Generated from the validated append-only [ledger](project.json). Edit the ledger through a new revision, then regenerate this view. No transcript or private reasoning is stored.
 
-Ledger SHA-256: `b077a9489fc1e898aa060449a7d6cde0d9aac0ec2dc38b06ac30bc5a9c30128a`.
+Ledger SHA-256: `8bee0ed3a9c55b0de9cfa4085f446d0caf08545b86ba8b52e81fb3e6e5f59da4`.
 
-47 facts · 77 revisions · 83 sources.
+48 facts · 78 revisions · 84 sources.
 
-Status counts: assumed: 1, confirmed: 6, historical: 1, implemented: 18, measured: 15, pending: 6.
+Status counts: assumed: 1, confirmed: 6, historical: 1, implemented: 19, measured: 15, pending: 6.
 
 [Documentation map](../docs/README.md) · [Math](../docs/current-model-and-fc-integration.html) · [PCB](../hardware/home-etched-fc/README.md) · [Search and history commands](README.md)
 
@@ -193,6 +193,14 @@ Sources: [source-hardening-final-host](../artifacts/validation/hardening-final-2
 100x100mm ESP32-S3-DevKitC-1 reference carrier with bottom copper, 13 insulated links, 1mm signals, 1.9mm socket pads and 3.2mm external pads. Native KiCad 10.0.6 reports zero DRC/ERC/unrouted/parity issues; independent comparison matches 35 connected nets. Module/frame fit and electrical/physical flight behavior remain unvalidated. No motor-current path or physical ESC output enable.
 
 Sources: `source-competition-pcb-request` (User confirmed ESP32-S3 + Xbox sensors-only competition carrier, single bottom copper with wire jumpers, internet reference modules; 2026-10-21), [source-pcb-native-cad](../artifacts/hardware/home-etch-20261021/verification-summary.json), [source-pcb-assembly](../hardware/home-etched-fc/README.md).
+
+### etch_mask_print
+
+**implemented · evidence: source · esp32-xbox · revision 1**
+
+Two single-page A4 vector masks at 1:1: face-down transfer master and direct solder-side orientation; positive black-retains-copper polarity. Extracted native B.Cu matches 53 tracks/124 circular pads against coordinate model. Both PDFs rendered and visually inspected. Printer scale, physical module fit and resist/process polarity remain to be checked. Corrected copper SVGs exclude the worksheet; originals preserved.
+
+Sources: [source-etch-mask-print](../artifacts/hardware/print-mask-20261021/print-verification.json), [source-pcb-assembly](../hardware/home-etched-fc/README.md).
 
 ### pcb_measurement_pending
 

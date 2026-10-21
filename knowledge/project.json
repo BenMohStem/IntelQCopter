@@ -426,6 +426,11 @@
       "id": "source-doc-consolidation",
       "kind": "file",
       "locator": "docs/README.md"
+    },
+    {
+      "id": "source-etch-mask-print",
+      "kind": "file",
+      "locator": "artifacts/hardware/print-mask-20261021/print-verification.json"
     }
   ],
   "facts": [
@@ -1655,6 +1660,25 @@
             "source-doc-consolidation"
           ],
           "reason": "User requested continued project consolidation and home-etched competition PCB work."
+        }
+      ]
+    },
+    {
+      "id": "etch_mask_print",
+      "topic": "hardware",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-21",
+          "status": "implemented",
+          "evidence_level": "source",
+          "statement": "Two single-page A4 vector masks at 1:1: face-down transfer master and direct solder-side orientation; positive black-retains-copper polarity. Extracted native B.Cu matches 53 tracks/124 circular pads against coordinate model. Both PDFs rendered and visually inspected. Printer scale, physical module fit and resist/process polarity remain to be checked. Corrected copper SVGs exclude the worksheet; originals preserved.",
+          "sources": [
+            "source-etch-mask-print",
+            "source-pcb-assembly"
+          ],
+          "reason": "User requested downloadable KiCad files and an actual-size photo-printer etch mask before FC work."
         }
       ]
     }

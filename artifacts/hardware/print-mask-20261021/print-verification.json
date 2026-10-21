@@ -1,0 +1,23 @@
+{
+  "engine": "KiCad 10.0.6 pcbnew extraction; ReportLab vector PDF; pypdf page-size validation; Poppler PNG rendering",
+  "source_sha256": "159fed93f2cb781e0abf1f27640acb8c0d3048b14ca0a39a42312ee9773dfef6",
+  "native_coordinate_match": true,
+  "tracks": 53,
+  "pads": 124,
+  "page_mm": [
+    210,
+    297
+  ],
+  "board_mm": [
+    100,
+    100
+  ],
+  "polarity": "positive: black copper kept",
+  "visual_review": "Both PDF renderings inspected; clear white holes, black tracks, no worksheet/silkscreen or text in copper square",
+  "physical_print_verified": false,
+  "physical_fit_verified": false,
+  "pdf_hashes": {
+    "etch-mask-direct-solder-view-A4-1to1.pdf": "f6c8daba0be3a7a923a3ad4ad80dbaee3ee1f6134c520a3a5c8cdd92bb7115a0",
+    "etch-mask-face-down-transfer-A4-1to1.pdf": "80ab832ddbb84519afa56edea21fa4e49fffb21f713f495672d2e890dafb9e58"
+  }
+}
