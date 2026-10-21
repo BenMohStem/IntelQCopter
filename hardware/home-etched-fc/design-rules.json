@@ -29,5 +29,21 @@
     "Available board area and F450 mounting-hole coordinates",
     "5V regulator/current-sensor selection and output limits",
     "Actual drill sizes and copper thickness"
-  ]
+  ],
+  "ground_plane": {
+    "net": "GND",
+    "layer": "B.Cu",
+    "clearance_mm": 0.8,
+    "minimum_fill_width_mm": 0.8,
+    "thermal_spoke_mm": 1.0,
+    "thermal_gap_mm": 0.8,
+    "remove_isolated_islands": true,
+    "edge_inset_mm": 2.5,
+    "antenna_notch_xy_mm": [
+      36,
+      0,
+      67,
+      17
+    ]
+  }
 }

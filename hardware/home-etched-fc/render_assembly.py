@@ -13,9 +13,9 @@ def main():
   name=net.attrib['name'].removeprefix('/');actual[name]=set((n.attrib['ref'],n.attrib['pin']) for n in net.findall('node'))
  actual={k:v for k,v in actual.items() if not k.startswith('unconnected-')}
  mismatch={k:dict(model=sorted(model.get(k,set())),schematic=sorted(actual.get(k,set()))) for k in set(model)|set(actual) if model.get(k,set())!=actual.get(k,set())}
- drc=json.loads((A/'drc-release-candidate.json').read_text());erc=json.loads((A/'erc-bundled.json').read_text())
+ drc=json.loads((R/'artifacts/hardware/print-mask-20261021/drc-ground-plane-01.json').read_text());erc=json.loads((A/'erc-bundled.json').read_text())
  report=dict(engine='KiCad 10.0.6 native DRC/ERC/netlist export; independent model-to-netlist comparison',DRC_violations=len(drc['violations']),unrouted=len(drc['unconnected_items']),schematic_parity_issues=len(drc.get('schematic_parity',[])),ERC_violations=sum(len(x['violations']) for x in erc['sheets']),schematic_matches_pad_nets=not mismatch,mismatches=mismatch,net_count=len(model),component_count=len(data['components']),insulated_links=len(data['wire_links']),assumptions=['Genuine/reference ESP32-S3-DevKitC-1 2x22 header geometry; purchased board must fit paper template','3.3V-compatible external sensor breakouts with mapped pigtails; no assumed clone pin order','External regulated5V; no motor current on PCB','Lidar supply disconnected; current sensor not selected; ADC/HMC/lidar firmware unfinished','100x100mm carrier and its mounting pattern not checked on actual F450 frame','DRC/ERC validate carrier connectivity/geometry; external modules are passive connectors, no voltage-domain or dynamic flight proof'],hashes={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in [D/'esp32_home_etch.kicad_pcb',D/'esp32_home_etch.kicad_sch',D/'generate_board.py',D/'generate_schematic.py']})
- (A/'verification-summary.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf8')
+ (R/'artifacts/hardware/print-mask-20261021/ground-plane-verification-summary.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf8')
  if mismatch:raise RuntimeError('Schematic/model net mismatch: '+str(mismatch))
  with (D/'drill-table.csv').open('w',newline='',encoding='utf8') as f:
   w=csv.writer(f);w.writerow(['Reference','Pin','X_mm','Y_mm','Drill_mm','Net'])
@@ -42,6 +42,10 @@ def main():
  draw.text((55,22),'ESP32-S3 / Xbox competition carrier',(238,247,255),font=font(32))
  draw.text((55,65),'Component-side assembly view • 100 × 100 mm • bottom copper + 13 insulated links',(170,203,222),font=font(20))
  draw.rectangle([xy(0,0),xy(100,100)],fill='#e8d4a9',outline='white',width=2)
+ native=json.loads((D/'output/native-copper-geometry.json').read_text())
+ for zone in native['zones']:
+  draw.polygon([xy(*v) for v in zone['outline']],fill='#b36d24')
+  for hole in zone['holes']:draw.polygon([xy(*v) for v in hole],fill='#e8d4a9')
  draw.rectangle([xy(38.5,6.9),xy(64.36,76.8)],fill='#8b9b9e',outline='#243846',width=3)
  draw.rectangle([xy(38.5,0),xy(64.36,12)],fill='#243846');draw.text(xy(40,3),'ANTENNA',fill='white',font=font(15))
  for s in data['bottom_tracks']:draw.line([xy(*s['start']),xy(*s['end'])],fill='#b36d24',width=max(1,round(s['width']*scale)))

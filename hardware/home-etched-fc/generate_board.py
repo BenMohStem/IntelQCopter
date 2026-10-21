@@ -116,6 +116,17 @@ for i,(x,y) in enumerate([(5,5),(95,5),(5,97),(95,97)]):
 text('PROTOTYPE - NO MOTOR POWER',53,87,1.)
 text('100 x 100 mm / bottom copper only',53,90,1.)
 (D/'fp-lib-table').write_text('(fp_lib_table (version 7) (lib (name "HomeEtch") (type "KiCad") (uri "${KIPRJMOD}/HomeEtch.pretty") (options "") (descr "Project-local enlarged THT pads and insulated links")))',encoding='utf8')
+# Bottom GND plane: keep a wide connected copper area, never floating islands.
+# Notch clears the reference antenna region; actual board/frame RF fit remains unvalidated.
+plane=p.ZONE(board);plane.SetLayer(p.B_Cu);plane.SetNet(net('GND'))
+plane.SetLocalClearance(p.FromMM(.8));plane.SetMinThickness(p.FromMM(.8))
+plane.SetPadConnection(p.ZONE_CONNECTION_THERMAL)
+plane.SetThermalReliefGap(p.FromMM(.8));plane.SetThermalReliefSpokeWidth(p.FromMM(1.0))
+plane.SetIslandRemovalMode(p.ISLAND_REMOVAL_MODE_ALWAYS)
+poly=plane.Outline();poly.NewOutline()
+for x,y in [(2.5,2.5),(36,2.5),(36,17),(67,17),(67,2.5),(97.5,2.5),(97.5,97.5),(2.5,97.5)]:
+ poly.Append(int(p.FromMM(x)),int(p.FromMM(y)))
+board.Add(plane);board.BuildConnectivity();p.ZONE_FILLER(board).Fill(board.Zones())
 output=D/'esp32_home_etch.kicad_pcb';p.SaveBoard(str(output),board)
 (D/'components-and-nets.json').write_text(json.dumps(dict(status='DRAFT prototype; electrical/mechanical/physical review pending',components=components,wire_links=links,bottom_tracks=segments),indent=2)+'\n',encoding='utf8')
 with (D/'wire-links.csv').open('w',newline='',encoding='utf8') as f:

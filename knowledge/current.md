@@ -2,9 +2,9 @@
 
 Generated from the validated append-only [ledger](project.json). Edit the ledger through a new revision, then regenerate this view. No transcript or private reasoning is stored.
 
-Ledger SHA-256: `8bee0ed3a9c55b0de9cfa4085f446d0caf08545b86ba8b52e81fb3e6e5f59da4`.
+Ledger SHA-256: `308b17eb42e114375dc8903d9b2a38b1e4212cb992bafb6fae46fd8e695dfdd3`.
 
-48 facts · 78 revisions · 84 sources.
+48 facts · 80 revisions · 85 sources.
 
 Status counts: assumed: 1, confirmed: 6, historical: 1, implemented: 19, measured: 15, pending: 6.
 
@@ -188,19 +188,19 @@ Sources: [source-hardening-final-host](../artifacts/validation/hardening-final-2
 
 ### competition_pcb
 
-**implemented · evidence: build · esp32-xbox · revision 1**
+**implemented · evidence: build · esp32-xbox · revision 2**
 
-100x100mm ESP32-S3-DevKitC-1 reference carrier with bottom copper, 13 insulated links, 1mm signals, 1.9mm socket pads and 3.2mm external pads. Native KiCad 10.0.6 reports zero DRC/ERC/unrouted/parity issues; independent comparison matches 35 connected nets. Module/frame fit and electrical/physical flight behavior remain unvalidated. No motor-current path or physical ESC output enable.
+Added one connected bottom GND copper zone: 0.8mm isolation/minimum fill width, 1mm thermal spokes, floating zone islands removed, 2.5mm edge inset and antenna-clearance notch. Native KiCad DRC, unrouted and schematic parity counts remain zero. Reference module/frame fit and physical electrical/RF behavior are still unvalidated.
 
-Sources: `source-competition-pcb-request` (User confirmed ESP32-S3 + Xbox sensors-only competition carrier, single bottom copper with wire jumpers, internet reference modules; 2026-10-21), [source-pcb-native-cad](../artifacts/hardware/home-etch-20261021/verification-summary.json), [source-pcb-assembly](../hardware/home-etched-fc/README.md).
+Sources: [source-ground-plane-print](../artifacts/hardware/print-mask-20261021/ground-plane-print-verification.json), [source-pcb-assembly](../hardware/home-etched-fc/README.md).
 
 ### etch_mask_print
 
-**implemented · evidence: source · esp32-xbox · revision 1**
+**implemented · evidence: source · esp32-xbox · revision 2**
 
-Two single-page A4 vector masks at 1:1: face-down transfer master and direct solder-side orientation; positive black-retains-copper polarity. Extracted native B.Cu matches 53 tracks/124 circular pads against coordinate model. Both PDFs rendered and visually inspected. Printer scale, physical module fit and resist/process polarity remain to be checked. Corrected copper SVGs exclude the worksheet; originals preserved.
+Current print deliverable is one text-free A4 vector PDF with three identical 100x100mm face-down toner-transfer masks, positive black-retains-copper polarity including the GND plane. Pypdf confirms one page and no text; rendered sheet inspected. 100% physical printer scale and component fit remain unverified. Earlier labelled two-orientation masks are superseded and preserved.
 
-Sources: [source-etch-mask-print](../artifacts/hardware/print-mask-20261021/print-verification.json), [source-pcb-assembly](../hardware/home-etched-fc/README.md).
+Sources: [source-ground-plane-print](../artifacts/hardware/print-mask-20261021/ground-plane-print-verification.json), [source-pcb-assembly](../hardware/home-etched-fc/README.md).
 
 ### pcb_measurement_pending
 

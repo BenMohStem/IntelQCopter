@@ -431,6 +431,11 @@
       "id": "source-etch-mask-print",
       "kind": "file",
       "locator": "artifacts/hardware/print-mask-20261021/print-verification.json"
+    },
+    {
+      "id": "source-ground-plane-print",
+      "kind": "file",
+      "locator": "artifacts/hardware/print-mask-20261021/ground-plane-print-verification.json"
     }
   ],
   "facts": [
@@ -1624,6 +1629,18 @@
             "source-pcb-assembly"
           ],
           "reason": "User requested continued project consolidation and home-etched competition PCB work."
+        },
+        {
+          "revision": 2,
+          "date": "2026-10-21",
+          "status": "implemented",
+          "evidence_level": "build",
+          "statement": "Added one connected bottom GND copper zone: 0.8mm isolation/minimum fill width, 1mm thermal spokes, floating zone islands removed, 2.5mm edge inset and antenna-clearance notch. Native KiCad DRC, unrouted and schematic parity counts remain zero. Reference module/frame fit and physical electrical/RF behavior are still unvalidated.",
+          "sources": [
+            "source-ground-plane-print",
+            "source-pcb-assembly"
+          ],
+          "reason": "User requested a large retained GND copper area and three masks without any text for iron toner transfer."
         }
       ]
     },
@@ -1679,6 +1696,18 @@
             "source-pcb-assembly"
           ],
           "reason": "User requested downloadable KiCad files and an actual-size photo-printer etch mask before FC work."
+        },
+        {
+          "revision": 2,
+          "date": "2026-10-21",
+          "status": "implemented",
+          "evidence_level": "source",
+          "statement": "Current print deliverable is one text-free A4 vector PDF with three identical 100x100mm face-down toner-transfer masks, positive black-retains-copper polarity including the GND plane. Pypdf confirms one page and no text; rendered sheet inspected. 100% physical printer scale and component fit remain unverified. Earlier labelled two-orientation masks are superseded and preserved.",
+          "sources": [
+            "source-ground-plane-print",
+            "source-pcb-assembly"
+          ],
+          "reason": "User requested a large retained GND copper area and three masks without any text for iron toner transfer."
         }
       ]
     }

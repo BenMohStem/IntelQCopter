@@ -5,7 +5,14 @@ R=Path(__file__).resolve().parents[2];H=R/'hardware/home-etched-fc'
 source=H/'esp32_home_etch.kicad_pcb';b=p.LoadBoard(str(source))
 def xy(point): return [round(p.ToMM(point.x),6),round(p.ToMM(point.y),6)]
 tracks=[];pads=[]
-if b.Zones(): raise RuntimeError('Zone fill export needs a different renderer')
+zones=[]
+for zone in b.Zones():
+    if zone.GetLayer()!=p.B_Cu or zone.GetNetname()!='GND':raise RuntimeError('Unexpected zone layer/net')
+    if not zone.HasFilledPolysForLayer(p.B_Cu):raise RuntimeError('Unfilled GND zone')
+    filled=zone.GetFilledPolysList(p.B_Cu)
+    def points(chain):return [xy(chain.CPoint(i)) for i in range(chain.PointCount())]
+    for i in range(filled.OutlineCount()):
+        zones.append(dict(outline=points(filled.COutline(i)),holes=[points(filled.CHole(i,h)) for h in range(filled.HoleCount(i))]))
 for t in b.GetTracks():
     if t.GetLayer()!=p.B_Cu or type(t)!=p.PCB_TRACK: raise RuntimeError('Only straight B.Cu tracks supported')
     tracks.append(dict(start=xy(t.GetStart()),end=xy(t.GetEnd()),width=p.ToMM(t.GetWidth())))
@@ -27,6 +34,6 @@ if sorted(map(key,tracks))!=sorted(map(key,model['bottom_tracks'])):
     print('model only',set(map(key,model['bottom_tracks']))-set(map(key,tracks)))
     raise RuntimeError('Model and native tracks differ')
 out=H/'output';out.mkdir(exist_ok=True)
-data=dict(source_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),source='esp32_home_etch.kicad_pcb',units='mm',board_size=[100,100],tracks=tracks,pads=pads,geometry_matches_coordinate_model=True)
+data=dict(source_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),source='esp32_home_etch.kicad_pcb',units='mm',board_size=[100,100],tracks=tracks,pads=pads,zones=zones,geometry_matches_coordinate_model=True)
 (out/'native-copper-geometry.json').write_bytes((json.dumps(data,indent=2)+'\n').encode())
-print('Extracted native B.Cu:',len(tracks),'tracks,',len(pads),'circular pads; model agreement PASS')
+print('Extracted native B.Cu:',len(tracks),'tracks,',len(pads),'circular pads;',len(zones),'GND polygons; model agreement PASS')
