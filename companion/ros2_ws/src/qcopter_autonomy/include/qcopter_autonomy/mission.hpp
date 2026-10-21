@@ -11,7 +11,7 @@ class Mission {
   void request_land(const State&s){if(phase_!=Phase::Idle&&phase_!=Phase::Landed){finish_[0]=s.x;finish_[1]=s.y;transition(Phase::Land);}}
  private:
   bool navigation_finish_enabled_=true;
-  Phase phase_=Phase::Idle;std::array<double,3> finish_{};double cruise_=1.5,elapsed_=0,dwell_=0;
+  Phase phase_=Phase::Idle;std::array<double,3> finish_{};double cruise_=1.5,elapsed_=0,dwell_=0,hold_heading_=0;
   void transition(Phase phase){phase_=phase;elapsed_=dwell_=0;}
 };
 }

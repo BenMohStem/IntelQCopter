@@ -1,187 +1,133 @@
-# Fly in Gazebo with your Xbox
+# Flight Station: Xbox, missions and recordings
 
-This guide belongs to **esp32-xbox**. Your RP2350/RP2040 implementation remains on `main`.
+Worktree: **esp32-xbox**, `C:\Users\Mohamed\Desktop\Work\QCopter-ESP32-Xbox`. Main retains RP2350/RP2040. Physical motor outputs remain disabled.
 
-## 1. Open the correct project
-
-In **PowerShell**:
+## Launch
 
 ```powershell
 cd C:\Users\Mohamed\Desktop\Work\QCopter-ESP32-Xbox
 .\qcopter.ps1 xbox-check
+.\qcopter.ps1 play-ros
 ```
 
-Connect the Xbox Series X/S controller to Windows by USB or Bluetooth. Expect `"connected": true`. The simulator reads **real Windows XInput**; an unplugged controller produces no generated commands. This does not exercise the physical ESP32 Bluetooth radio.
+Open **http://127.0.0.1:8087**. This single page contains the flight controls, native cameras, Xbox input monitor and route editor. It activates the existing Pixi/Jazzy overlay with **rmw_cyclonedds_cpp**, domain 64 and simulation time. No base ROS2 installation changes are needed.
 
-Only run one simulation at a time. End the current session before launching the next one.
-
-## 2. Play without a drone ROS2 computer
+For FC-only operation, end the existing session and launch:
 
 ```powershell
-.\qcopter.ps1 play --env env01
+.\qcopter.ps1 play
 ```
 
-Open **http://127.0.0.1:8087**. It shows native Gazebo overview/onboard camera images, connection status, altitude/position and measured simulation speed.
+This starts no ROS2 companion, YOLO or navigation process. The route editor is hidden and navigation selection is rejected. Run only one session at a time.
 
-1. Hold **D-pad Down + A for five seconds**, then release both.
-2. Push the **left stick gently upward** to start simulated thrust and climb.
-3. Centre the left stick to hold height. Lower it to descend.
-4. Move the right stick gently: roll/pitch are **angles**, not horizontal speed. The drone can drift after you centre the stick; there is no horizontal position hold in stable mode.
-5. To land, descend with the left stick or LT, then hold **Down + LT fully for two seconds** after touching the ground.
-6. Disarm is latched: restart the session to fly again.
+## Fly manually
 
-| Input | Stable mode |
+1. Connect and turn on your Xbox. The input monitor shows connection, stick positions, triggers and button bits.
+2. Click **Enable manual flight**. Wait for the five-second gesture progress bar to finish.
+3. Gently push the **left stick up** to start simulated thrust and climb. Centre it to hold height.
+4. The right stick requests roll/pitch **angles**; left horizontal requests yaw **rate**.
+5. Descend with left stick down or LT. After touching down, click **Disarm simulation** or hold **D-pad Down + LT ≥90% for two seconds**.
+
+The simulator mode buttons encode ordinary Xbox HID gestures into the C core. They require a connected controller and are logged as **explicit PC simulator actions**, separately from actual XInput reports. They do not implement physical arming. Xbox Down+A/Down+B held five seconds still selects stable/navigation directly. Actual Xbox disarm input takes priority over a PC mode gesture.
+
+### Gentle controls
+
+The new default **Gentle** profile applies only to simulator input:
+
+| Command | Gentle | Normal |
+|---|---:|---:|
+| Maximum roll/pitch angle | 5° | 35° |
+| Stick vertical-speed request | ±0.5 m/s | ±2 m/s |
+| Stick yaw-rate request | ±45°/s | ±180°/s |
+| Trigger scaling | 20% | 100% |
+| Stick response after 12% deadband | Squared/exponential | Linear |
+
+Half of the active roll/pitch stick travel requests approximately 1.25°, rather than 2.5°. Full Down+LT disarm remains available. Hardware firmware limits and PID gains are unchanged; the physical BLE target does not automatically inherit this Windows simulator profile.
+
+**Why does angle control accelerate the drone?** Near a steady tilted hover, neglecting drag:
+
+\[
+T\cos\theta\approx mg,\qquad m\ddot x\approx T\sin\theta
+\quad\Longrightarrow\quad \ddot x\approx g\tan\theta.
+\]
+
+A held 35° tilt corresponds to about 6.87 m/s² horizontal acceleration; 5° corresponds to about 0.86 m/s² under those assumptions. Centring the stick requests level attitude, **not zero horizontal velocity**. Use small opposite tilt to brake. Gentle reduces commanded acceleration; it is not a horizontal-speed limiter or position-hold autopilot. The FC still has angle outer loops and rate inner loops for roll/pitch, and rate control for yaw.
+
+## Plan start → any intermediate nodes → finish
+
+1. Click **Use drone as start**, then click the map to add nodes. Or click **Load example** for a five-node route.
+2. Drag nodes, edit their x/y values, reorder with arrows, remove a node, undo, or clear. Save/load JSON is available.
+3. Choose cruise COM height, initially **1.25 m**.
+4. Click **Review route**. The first node is start; the last is finish. All intermediate nodes are visited at cruise height, with no intermediate landing.
+5. Check the route summary. Leave **Select navigation automatically in the simulator** enabled unless you prefer the Xbox gesture yourself.
+6. Click **Approve and fly**. This sends the navigation gesture, waits for FC acknowledgement, then sends the route through the real ROS2 service. It does not send motor forces or bypass the C control core.
+7. Watch readable mission phases and node progress. After landing, disarm or reset before another flight.
+
+The service supports **2–64 nodes**, not just two/three. The route is a local metric map, not GPS. Bounds are x∈[-1,9], y∈[-3,3] metres; adjacent nodes must be at least 0.4 m apart. Cruise z must be 0.6–2.5 m and at least 0.4 m above the starting ground COM. Known obstacle clearance can reject a node. A request explains the specific invalid node, missing mode/input/pose, or active mission.
+
+The first node must match the stationary vehicle's current ground position. To choose another start, set the first node and click **Reset scene at first node**. This finalizes the current evidence, starts a new world at that location, and reconnects the station. It is an explicit world setup operation; the running aircraft is not teleported through flight commands. Reset locations overlapping a panel are rejected. The ordinary **Reset scene at origin** button recovers from a crash/disarm/out-of-bounds flight.
+
+Teal shows the current planned path; numbered nodes and dashed lines show the requested route. Orange regions are observed panel clearance estimates. Unobserved obstacles are not supplied to the drone as a hidden map. If no path is available, the UI says so. Switching to stable cancels navigation authority.
+
+## Camera and recording
+
+- **Follow drone**: native attached third-person camera, useful for manual flight.
+- **Garden overview**: fixed native garden camera.
+- **Onboard RGB**: native forward camera.
+- **Recorded composite + HUD**: follow/onboard views and transport diagnostics in live sessions.
+
+New native cameras and MP4 recording target **15 fps in simulation time**. The browser requests live frames up to 15 fps without repeatedly aborting image loads. Older recordings remain at their native 5 fps. No duplicated/interpolated frames are presented as new evidence.
+
+Actual wall-clock responsiveness depends on measured real-time factor. The 500 Hz control/integration step is logical simulation time; slower rendering/inference can reduce wall-clock speed. A static onboard view while stationary is normal. Frame sequence/freshness and the Xbox monitor distinguish stationary scenes from stopped transport.
+
+Each launch/reset creates a new folder under `artifacts/gazebo-suite/`:
+
+| File | Contents |
 |---|---|
-| Left stick horizontal | Yaw rotation rate |
-| Left stick vertical | Vertical speed; centre requests height hold |
-| Right stick horizontal/vertical | Roll/pitch angle |
-| RT / LT | Boost / reduce vertical demand |
-| Down + A, five seconds | Stable mode |
-| Down + LT ≥90%, two seconds | Latched motor disarm |
+| gazebo.mp4 | Original native views/HUD; new recordings 15 fps |
+| flight.csv | Native state, C estimates/demands and contacts; new runs retain 500 Hz, older runs 50 Hz |
+| real-xbox.csv | Actual Windows input, including raw HID bytes |
+| wire-inputs.jsonl | ROS live/suite HID and UART bytes; new live runs distinguish original/scaled/operator input |
+| mapped-xbox.jsonl | Transmitted standalone reports and profile |
+| operator-actions.jsonl | Explicit PC simulator actions |
+| pc-map-missions.jsonl | Original PC requests/replies |
+| perception.jsonl | Original YOLO/PnP observations |
+| engine.log / engine-summary.json | Native engine, parameters, source hashes and whole-session contacts |
+| transport.json / live-summary.json | ROS / standalone session result |
+| reset-request.json | Explicit starting location for the next world |
 
-This launch runs **no ROS2 companion, YOLO or navigation process**. Down+B is rejected. It needs Gazebo and the local vision runtime only for rendering/recording. The initial gate prevents thrust while choosing a mode; it is a simulator feature, not a physical arming implementation. Physical motor outputs remain disabled.
+**End and save video** finalizes the recording. A disarm is latched until reset/restart. Preserve failures and collisions; a successful mission segment does not make an entire session successful if subsequent manual flight crashes.
 
-## 3. Play with the drone ROS2 navigation computer
-
-```powershell
-.\qcopter.ps1 play-ros --env env01
-```
-
-Open these two tabs:
-
-- **http://127.0.0.1:8087** — live native cameras and telemetry.
-- **http://127.0.0.1:8086** — ground-PC mission map.
-
-The launcher starts independent ROS2 C++ mission, YOLO, panel-pose and transport processes. It activates your existing Pixi/Jazzy installation and the project overlay. It selects **Cyclone DDS**, `ROS_DOMAIN_ID=64`, and simulation time. You do not need another `pixi shell` first.
-
-### Two points: start → finish
-
-1. Hold **D-pad Down+B five seconds**, then release. Keep the controller connected throughout the mission.
-2. On the PC map select **Start → finish**.
-3. Click **Use live pose as start**. Click the desired finish on the map.
-4. Leave ground COM height at **0.082 m**, and choose cruise COM height, initially **1.25 m**.
-5. Click **Send route over ROS2**. The response must say accepted.
-6. The drone takes off, follows/replans the route from camera observations, and lands at the finish. After ground contact, use **Down+LT two seconds** to disarm. The live session does not generate that gesture for you.
-
-### Three points: start → middle → finish
-
-Select **Start → middle → finish**, use live pose as start, then click middle and finish **in that order**. Send the route. The middle point is visited at cruise height; it does **not** trigger a landing. Only the finish triggers landing.
-
-Tested example in env01:
-
-```text
-start  = (0.0,  0.0, 0.082) m
-middle = (4.0, -2.4, 0.082) m   # middle's ground location; flown at cruise z
-finish = (8.9,  0.3, 0.082) m
-cruise = 1.25 m
-```
-
-The start must match the vehicle's current location (within 0.25 m horizontally), with low velocity. Selecting a start on the map does not teleport an already running vehicle. Choose a different **initial** ground location before launching:
+## Review and analyse a recording
 
 ```powershell
-.\qcopter.ps1 play-ros --env env01 --start -0.5 -1.0
+.\qcopter.ps1 analyse-recordings --run RUN_FOLDER_NAME --name UNIQUE_REPORT_NAME
 ```
 
-Then use its live pose as the start. Initial spawn points must be inside x∈[-1,9], y∈[-3,3] m and clear of panels. Consecutive route points must be at least 0.4 m apart. Cruise z is limited to 0.6–2.5 m and at least 0.4 m above the start. This is a local metric map, not GPS or an internet satellite map. Choose short, forward routes inside the demonstrated corridor; an arbitrary route is not guaranteed feasible or collision-free.
+Repeat `--run` to compare multiple recordings. The report:
 
-Switch back with **Down+A five seconds**. This cancels ROS2 mission authority and returns to stable control. RT/LT controls described above are for stable mode; navigation supplies vertical demand. Down+LT disarm is still available in either mode.
+- Scans every native video frame and exports per-frame image-change/state data.
+- Provides normal/half-speed playback and previous/next native-frame controls.
+- Creates representative-frame contact sheets and full-telemetry graphs.
+- Exports one-second graph summaries containing means **and extrema**, keeping the original telemetry intact.
+- Measures unwrapped yaw travel/rate, attitude, speed, height-estimate error and contacts, with original-file hashes.
 
-## 4. Change worlds, save video, recover
+This analysis does not infer real mass, thrust or sensor noise from an assumed simulator. It separates the first navigation interval from later manual interaction. Reports state actual sampling rates: 500 Hz for new telemetry, 50 Hz for earlier recordings. Native engine contact totals cover the whole session; sampled contact rows within a segment are a different quantity.
 
-```powershell
-.\qcopter.ps1 play --env env02
-.\qcopter.ps1 play-ros --env env10
-```
+See [recordings and heading comparison](../artifacts/reports/station-analysis-20261021/index.html). The repeatable five-node case shows less unwanted yaw after ROS2 uses intended path velocity and retains arrival heading. It does not establish real-aircraft performance or statistically characterize all environments.
 
-Choose one command; do not launch both concurrently. Ten layouts are defined in `simulation/gazebo/environments.json`. Run names are generated automatically so previous evidence is retained.
+## Scope and physical communication
 
-Click **End and save this session** in the live viewer. Ctrl+C in the launch terminal also stops its child processes, but the viewer button is preferred because it finalizes the recording first. Each run is saved under `artifacts/gazebo-suite/live-<timestamp>-<environment>/`:
+Live flight runs the active C core as a **host DLL**, with native Gazebo 10.5/OGRE2 physics/cameras. QEMU is separate Xtensa CPU testing. The model assumes 1.2 kg, inertia (0.012,0.012,0.022) kg·m², 450 mm diagonal, 6 N/motor and 40 ms lag. Sensors, calibration and localization are synthetic. The garden is illustrative. Ranging is specific to known-size blue panels (1.09×1.69 m inner face on a known flat floor), not arbitrary obstacle depth. The large ground plane supports recovery outside the initial garden; the validated planning corridor remains bounded.
 
-| File | Original evidence |
+The physical companion interface remains **115200 baud, 8N1, CRC-checked UART**, with 3.3 V logic:
+
+| ESP32 provisional pin | Companion |
 |---|---|
-| gazebo.mp4 | Native overview/onboard views and HUD, recorded at 5 frames per simulated second |
-| flight.csv | Gazebo state, FC estimates, motor response and contacts |
-| real-xbox.csv | Actual Windows controller reports; no synthetic fallback |
-| engine.log / engine-summary.json | Native engine log, parameter values, source hashes and contacts |
-| live-boundary.log | Transport and viewer log |
-| transport.json | ROS session counts and final state (companion launch) |
-| live-summary.json | ROS-free session result (standalone launch) |
-| pc-map-missions.jsonl | Original PC requests/replies (companion launch) |
-| perception.jsonl | Original YOLO/PnP products (companion launch) |
-
-Simulation speed is **observed**, not promised: the 2 ms integration step represents 500 Hz in simulation time. If rendering/inference overloads the PC, real-time factor falls below 1. A recorded video's playback follows simulation time, so inspect the reported factor and input timestamps when assessing responsiveness.
-
-If a port is busy, end the previous session. If a log says a node exited, inspect that original node log. After disarm, restart; no hidden rearming action is provided.
-
-## 5. What is actually simulated
-
-```mermaid
-flowchart LR
-  X[Real Xbox / Windows XInput] --> H[16-byte HID report]
-  H --> F[Active ESP32 C flight core / host DLL]
-  F --> G[Native Gazebo physics + motor lag]
-  G --> S[Synthetic IMU and barometer]
-  S --> F
-  P[PC browser: 2 or 3 points] --> D[ROS2 mission/route over Cyclone DDS]
-  G --> C[Gazebo RGB camera]
-  C --> Y[YOLO + known-panel PnP]
-  Y --> D
-  G --> O[Simulated map odometry]
-  O --> D
-  D --> Q[28-byte companion frame]
-  Q --> F
-```
-
-The companion branch of this diagram is absent in standalone mode. Simulation exchanges the same frame bytes through its local transport rather than electrical UART. QEMU separately boots the C core on an emulated Xtensa CPU; **the live flight uses a host DLL, not QEMU and not a physical ESP32**.
-
-Model assumptions remain unmeasured: 1.2 kg, inertia (0.012,0.012,0.022) kg·m², 450 mm diagonal, 6 N per motor, 40 ms thrust lag and synthetic sensor noise/calibration. The garden is illustrative, not a reconstruction of USTHB. RGB distance is specific to known-size blue panels (1.09×1.69 m inner face) on a known flat floor; it is not general obstacle depth. The navigation computer receives simulated localization. Trees/decor are not a validated general-obstacle perception test.
-
-## 6. Physical ESP32 ↔ companion link
-
-The existing portable ROS2 C++ `uart_bridge_node` sends FC setpoints and receives mode/freshness telemetry. The FC does not need ROS2 or micro-ROS installed on it.
-
-| ESP32-S3 provisional pin | Companion connection |
-|---|---|
-| GPIO17 / TX2 | UART RX |
-| GPIO18 / RX2 | UART TX |
+| GPIO17 / TX2 | RX |
+| GPIO18 / RX2 | TX |
 | GND | GND |
 
-Use **3.3 V logic**, crossed TX/RX, common ground, **115200 baud, 8N1**. A suitable USB-to-3.3 V-UART adapter can provide the companion-side serial port. These pins are provisional until the exact board/PCB is checked. Never connect 3S battery voltage to a GPIO. No physical UART, BLE, sensor timing or ESC validation is claimed by the simulation.
+Verify exact board routing before wiring. Never connect 3S battery voltage to a GPIO. The portable ROS2 C++ `uart_bridge_node` accepts a serial `port` (`COM...` or `/dev/tty...`). FC status is not full odometry/battery telemetry. A future companion needs real camera/localization drivers and the existing documented map-velocity frame adapter. Electrical UART, physical BLE/I²C/ESC timing and separate-machine DDS remain unvalidated. See [binary protocol](xbox-ros2-protocol.md).
 
-From the activated ROS2 project environment, the physical bridge command is:
-
-```text
-ros2 run qcopter_autonomy uart_bridge_node --ros-args -r __ns:=/drone -p port:=COM7
-```
-
-Replace COM7 with the actual Windows adapter port; on a future Linux companion it is the appropriate `/dev/tty...` device. The command is provided for later bench wiring, not started automatically against an unknown port. See `docs/xbox-ros2-protocol.md` for the exact CRC/sequence-checked binary format.
-
-- **Companion → FC:** roll/pitch angles, yaw rate, vertical speed, sequence and CRC (28 bytes). Fresh commands are accepted in Xbox-selected navigation mode.
-- **FC → companion:** mode, disarm, pilot/companion freshness, companion capability and accepted Xbox count (16 bytes). This is status telemetry, **not full odometry or battery telemetry**.
-- Navigation commands expire after 150 ms. Pilot reports expire after 250 ms. CRC detects corruption; it does not authenticate a sender.
-- Future real navigation still needs a camera driver and measured local pose/velocity source. The existing internal odometry contract uses map coordinates for pose **and velocity**, including `child_frame_id=map`; a standard physical frame adapter remains needed.
-
-The ground PC talks to the companion over ROS2 DDS; the companion talks to the FC over UART. On separate computers use a shared reachable network, the same ROS domain and compatible Cyclone configuration. Separate-machine discovery/firewalls have not been verified here. The mission service is `/drone/mission/route` (`qcopter_autonomy/srv/RequestRoute`); this task runs the PC/drone roles as separate processes on your one PC.
-
-## 7. Firmware with no companion fitted
-
-```powershell
-.\qcopter.ps1 build-standalone
-```
-
-This compiles environment **esp32-s3-standalone** with `FC_ENABLE_COMPANION=0`. It omits Serial2 activity, rejects companion frames and rejects Down+B navigation selection. Stable control, sensors, calibration storage, Xbox BLE and disarm stay available. The normal `build` target supports an optional companion; stable mode still operates without one. Physical motor arming/output remains disabled in **both** targets, as requested.
-
-## 8. Your ROS2 shell, if needed separately
-
-In **CMD**, your configuration is:
-
-```bat
-cd /d C:\dev
-pixi shell
-call C:\dev\jazzy\install\local_setup.bat
-set RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-set ROS_DOMAIN_ID=64
-call C:\Users\Mohamed\Desktop\Work\QCopter-ESP32-Xbox\build\ros2-install\local_setup.bat
-```
-
-The project launcher does this activation itself. Changes here build only the project overlay; your Jazzy base installation is retained.
+`.\qcopter.ps1 build-standalone` compiles `FC_ENABLE_COMPANION=0`: no Serial2 activity, no navigation selection and no companion commands. `.\qcopter.ps1 build` supports an optional companion. Physical motor arming/output remains disabled in both.

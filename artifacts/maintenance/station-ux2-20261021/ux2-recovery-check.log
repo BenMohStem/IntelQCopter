@@ -1,0 +1,27 @@
+{
+  "scope": "Actual live standalone native Gazebo reset/recording API, real Windows XInput; synthetic sensors and C host core, no physical BLE/UART/ESC.",
+  "standalone_navigation_rejection": {
+    "accepted": false,
+    "reason": "Standalone FC has no navigation computer. Launch play-ros."
+  },
+  "reset_response": {
+    "accepted": true,
+    "message": "Saving current trial and restarting scene at selected start"
+  },
+  "requested_start": [
+    -0.5,
+    -1
+  ],
+  "observed_position": [
+    -0.5,
+    -1.0,
+    0.0799988191252262
+  ],
+  "recovered_run": "live-reset-20261021-125049-env01",
+  "video_fps": 15.0,
+  "video_frames": 19.0,
+  "first_frame_decoded": true,
+  "telemetry_hz": 500,
+  "ROS2_loaded": false,
+  "passed": true
+}

@@ -1,0 +1,58 @@
+{
+  "engine": "Native Gazebo 10.5/OGRE2 + active C host DLL",
+  "video_fps": 15,
+  "recording_view": "native follow + onboard RGB + HUD",
+  "standalone": true,
+  "ROS2_loaded": false,
+  "real_controller_seen": true,
+  "real_hid_reports": 62,
+  "companion_frames": 0,
+  "final_state": {
+    "sim_time_s": 1.26,
+    "position": [
+      -0.5,
+      -1.0,
+      0.0799988191252262
+    ],
+    "quaternion": [
+      -2.9495298882641078e-18,
+      -1.8078492212302543e-18,
+      6.023443206613978e-20,
+      1.0
+    ],
+    "velocity": [
+      1.9484149544627484e-18,
+      -2.0583003754617772e-18,
+      5.603858793730432e-06
+    ],
+    "omega": [
+      1.2410812280155797e-17,
+      2.3964607142157204e-17,
+      4.787646839662495e-19
+    ],
+    "ground_contact": true,
+    "obstacle_contact": false,
+    "environment": "env01",
+    "health": {
+      "motor_demand": [
+        0.4952556788921356,
+        0.5041455030441284,
+        0.5038997530937195,
+        0.49544572830200195
+      ],
+      "sensor_fault": false,
+      "pilot_fresh": true,
+      "gyro_verified": true,
+      "accel_calibrated": true,
+      "barometer_ready": true,
+      "companion_fresh": false,
+      "mode_events": 0
+    },
+    "simulation_actuation": false,
+    "mode": 0,
+    "disarm": false,
+    "mapped_input_packets": 0,
+    "xbox_packets": 62
+  },
+  "scope": "Interactive session, not an autonomous test pass. Synthetic sensors/calibration and assumed model. Physical BLE/I2C/ESC timing unvalidated."
+}

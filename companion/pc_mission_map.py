@@ -1,7 +1,7 @@
 """Local PC map selector -> real ROS2 mission/request service.
 Run in the ROS environment with namespace /drone; open http://127.0.0.1:8086.
 """
-import json,threading,math,argparse,time,zlib
+import json,threading,math,argparse,time,zlib,urllib.request,urllib.error
 from pathlib import Path
 from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 import rclpy
@@ -12,12 +12,13 @@ from geometry_msgs.msg import Point
 from qcopter_autonomy.msg import MetricObstacles
 from std_msgs.msg import String,UInt8MultiArray
 
-HTML='<!doctype html><meta charset="utf-8"><title>IntelQCopter route planner</title>\n<style>body{font:17px system-ui;background:#edf3f7;color:#17324d;max-width:1080px;margin:25px auto;padding:0 15px}canvas{background:white;width:100%;border-radius:12px}button,input,select{padding:10px;font:inherit}pre{white-space:pre-wrap}a{color:#007c91}</style>\n<h1>PC → drone ROS2 route</h1><p><a href="http://127.0.0.1:8087" target="_blank">Live flight cameras</a> · Select navigation on Xbox: Down+B held 5 seconds.</p>\n<label>Route <select id="count" onchange="points=[];draw()"><option value="2">Start → finish</option><option value="3">Start → middle → finish</option></select></label>\n<button onclick="points=[pose.slice()];draw()">Use live pose as start</button><button onclick="points=[];draw()">Clear</button>\n<canvas id="map" width="1000" height="500"></canvas><p id="points"></p>\n<p>Teal: planned path · Orange: observed panel estimates · Purple: current pose. Unobserved space is unknown. The middle node is flown at cruise height; landing occurs only at the finish.</p>\n<label>Ground z <input id="z" type="number" value="0.082" step="0.01" style="width:90px"></label>\n<label>Cruise z <input id="h" type="number" value="1.25" step="0.05" style="width:90px"></label>\n<button onclick="send()">Send route over ROS2</button><pre id="telemetry"></pre><pre id="status"></pre>\n<script>\nlet points=[],pose=[0,0],planned=[],obstacles=[];\nconst c=document.getElementById(\'map\'),ctx=c.getContext(\'2d\'),count=()=>+document.getElementById(\'count\').value;\nfunction xy(p){return[(p[0]+2)*80,250-p[1]*60]}\nfunction draw(){ctx.clearRect(0,0,1000,500);ctx.strokeStyle=\'#d6e1e7\';ctx.font=\'13px system-ui\';ctx.fillStyle=\'#567\';\nfor(let x=-2;x<=10;x++){let a=xy([x,0]);ctx.beginPath();ctx.moveTo(a[0],0);ctx.lineTo(a[0],500);ctx.stroke();ctx.fillText(x+\'m\',a[0]+3,493)}\nfor(let y=-4;y<=4;y++){let a=xy([0,y]);ctx.beginPath();ctx.moveTo(0,a[1]);ctx.lineTo(1000,a[1]);ctx.stroke()}\nctx.strokeStyle=\'#00a1b3\';ctx.lineWidth=2;ctx.beginPath();planned.forEach((p,i)=>{let a=xy(p);i?ctx.lineTo(...a):ctx.moveTo(...a)});ctx.stroke();ctx.lineWidth=1;\nfor(let o of obstacles){let a=xy(o);ctx.fillStyle=\'#de873555\';ctx.beginPath();ctx.ellipse(...a,o[2]*80,o[2]*60,0,0,7);ctx.fill()}\npoints.forEach((p,i)=>{let a=xy(p);ctx.fillStyle=i===0?\'#007f87\':i===count()-1?\'#dc7437\':\'#b08d00\';ctx.beginPath();ctx.arc(...a,8,0,7);ctx.fill();ctx.fillText(i===0?\'Start\':i===count()-1?\'Finish\':\'Middle\',a[0]+10,a[1])});\nlet a=xy(pose);ctx.fillStyle=\'#773fb4\';ctx.fillRect(a[0]-5,a[1]-5,10,10);document.getElementById(\'points\').textContent=JSON.stringify(points)+\' · \'+points.length+\'/\'+count()+\' selected\'}\nc.onclick=e=>{if(points.length===count())points=[];let r=c.getBoundingClientRect(),x=(e.clientX-r.left)*1000/r.width,y=(e.clientY-r.top)*500/r.height;points.push([Math.round((x/80-2)*10)/10,Math.round(((250-y)/60)*10)/10]);draw()};\nasync function send(){if(points.length!==count()){document.getElementById(\'status\').textContent=\'Select all route points first\';return}let z=+document.getElementById(\'z\').value,ps=points.map(p=>[...p,z]),d={points:ps,start:ps[0],finish:ps.at(-1),cruise:+document.getElementById(\'h\').value};try{let r=await fetch(\'/mission\',{method:\'POST\',headers:{\'Content-Type\':\'application/json\'},body:JSON.stringify(d)});document.getElementById(\'status\').textContent=await r.text()}catch(e){document.getElementById(\'status\').textContent=String(e)}}\nsetInterval(async()=>{try{let r=await(await fetch(\'/state\')).json();pose=r.position.slice(0,2);planned=r.path;obstacles=r.obstacles;document.getElementById(\'telemetry\').textContent=\'FC: \'+JSON.stringify(r.fc);draw()}catch{}},500);draw();\n</script>'
+HTML=Path(__file__).with_name('route_planner.html').read_text(encoding='utf8')
 
 class GroundStation(Node):
- def __init__(self):
-    super().__init__('pc_map_mission_client');self.position=[0,0,.082];self.path=[];self.observed=[];self.fc={'mode':'unknown','pilot_fresh':False,'disarmed':False};self.client=self.create_client(RequestMission,'mission/request');self.route_client=self.create_client(RequestRoute,'mission/route')
+ def __init__(self,simulation_controls=False):
+    super().__init__('pc_map_mission_client');self.simulation_controls=simulation_controls;self.mission='';self.position=[0,0,.082];self.path=[];self.observed=[];self.fc={'mode':'unknown','pilot_fresh':False,'disarmed':False};self.client=self.create_client(RequestMission,'mission/request');self.route_client=self.create_client(RequestRoute,'mission/route')
     self.create_subscription(Odometry,'odometry',lambda m:setattr(self,'position',[m.pose.pose.position.x,m.pose.pose.position.y,m.pose.pose.position.z]),10)
+    self.create_subscription(String,'mission/status',lambda m:setattr(self,'mission',m.data),10)
     self.create_subscription(String,'mission/path',self.planned_path,10)
     self.create_subscription(MetricObstacles,'perception/metric_obstacles',self.observations,10)
     self.create_subscription(UInt8MultiArray,'fc/status',self.fc_status,10)
@@ -41,32 +42,57 @@ class GroundStation(Node):
  def request(self,data):
     if 'points' in data:
         points=data['points']
-        if len(points) not in (2,3):return {'accepted':False,'reason':'Choose start/end or start/middle/end'}
+        if not isinstance(points,list) or not 2<=len(points)<=64:return {'accepted':False,'reason':'Choose 2 to 64 nodes; first is start, last is finish'}
+        for i,p in enumerate(points):
+            if not isinstance(p,list) or len(p)!=3 or not all(isinstance(v,(float,int)) and math.isfinite(v) for v in p):return {'accepted':False,'reason':f'Node {i+1}: finite x,y,z required'}
+            if not -1<=p[0]<=9 or abs(p[1])>3:return {'accepted':False,'reason':f'Node {i+1}: x={p[0]}, y={p[1]} outside x=-1..9 m, y=-3..3 m'}
+            if i and math.hypot(p[0]-points[i-1][0],p[1]-points[i-1][1])<.4:return {'accepted':False,'reason':f'Nodes {i} and {i+1} must be at least 0.4 m apart'}
+        if math.hypot(points[0][0]-self.position[0],points[0][1]-self.position[1])>.25:return {'accepted':False,'reason':'First node is not at the drone; use drone as start'}
         client=self.route_client;req=RequestRoute.Request()
         req.points=[Point(x=float(p[0]),y=float(p[1]),z=float(p[2])) for p in points]
     else:
         client=self.client;req=RequestMission.Request();req.start.x,req.start.y,req.start.z=map(float,data['start']);req.finish.x,req.finish.y,req.finish.z=map(float,data['finish'])
+    if data.get('select_navigation'):
+        if not self.simulation_controls:return {'accepted':False,'reason':'PC mode selection is disabled outside the simulator'}
+        if self.fc.get('mode')!='navigation':
+            try:
+                request=urllib.request.Request('http://127.0.0.1:8087/action',data=b'{"action":"navigation"}',headers={'Content-Type':'application/json'})
+                with urllib.request.urlopen(request,timeout=3) as response:answer=json.load(response)
+                if not answer.get('accepted'):return answer
+            except (OSError,urllib.error.URLError) as error:
+                reason=error.read().decode() if isinstance(error,urllib.error.HTTPError) else str(error)
+                return {'accepted':False,'reason':'Cannot select simulator navigation: '+reason}
+            end=time.monotonic()+25
+            while self.fc.get('mode')!='navigation' and time.monotonic()<end:time.sleep(.05)
+            if self.fc.get('mode')!='navigation':return {'accepted':False,'reason':'FC did not acknowledge navigation selection; inspect Xbox and gesture progress'}
     if not client.service_is_ready():return {'accepted':False,'reason':'Drone mission service is unavailable'}
     req.cruise_height_m=float(data['cruise'])
     event=threading.Event();future=client.call_async(req);future.add_done_callback(lambda f:event.set())
     if not event.wait(5):return {'accepted':False,'reason':'ROS2 service response timed out'}
     reply=future.result();return {'accepted':reply.accepted,'reason':reply.reason}
 def main():
- parser=argparse.ArgumentParser();parser.add_argument('--log');args,ros=parser.parse_known_args()
- rclpy.init(args=ros);node=GroundStation()
+ parser=argparse.ArgumentParser();parser.add_argument('--log');parser.add_argument('--simulation-controls',action='store_true');args,ros=parser.parse_known_args()
+ rclpy.init(args=ros);node=GroundStation(args.simulation_controls)
  class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
-        data=node.position if self.path=='/pose' else dict(position=node.position,path=node.path,obstacles=node.observed,fc=node.fc)
+        data=node.position if self.path=='/pose' else dict(position=node.position,path=node.path,obstacles=node.observed,fc=node.fc,mission=node.mission,simulation_controls=node.simulation_controls)
         is_json=self.path in ('/pose','/state')
         body=json.dumps(data).encode() if is_json else HTML.encode()
         self.send_response(200);self.send_header('Content-Type','application/json' if is_json else 'text/html; charset=utf-8');self.end_headers();self.wfile.write(body)
     def do_POST(self):
-        if self.path!='/mission':self.send_error(404);return
+        if self.path not in ('/mission','/reset'):self.send_error(404);return
         if self.headers.get('Origin','http://127.0.0.1:8086') not in ('http://127.0.0.1:8086','http://localhost:8086') or self.headers.get('Content-Type','').split(';')[0]!='application/json':self.send_error(403);return
         try:
             size=int(self.headers.get('Content-Length','0'))
-            if not 0<size<=2048:raise ValueError('Invalid request size')
-            data=json.loads(self.rfile.read(size));result=node.request(data)
+            if not 0<size<=16384:raise ValueError('Invalid request size')
+            data=json.loads(self.rfile.read(size))
+            if self.path=='/reset':
+                if not node.simulation_controls:raise ValueError('Reset is only available in simulation')
+                request=urllib.request.Request('http://127.0.0.1:8087/reset',data=json.dumps(data).encode(),headers={'Content-Type':'application/json'})
+                try:
+                    with urllib.request.urlopen(request,timeout=3) as response:result=json.load(response)
+                except urllib.error.HTTPError as error:result=json.loads(error.read())
+            else:result=node.request(data)
             if args.log:
                 with Path(args.log).open('a',encoding='utf8') as log:log.write(json.dumps(dict(wall_time_s=time.time(),role='ground PC endpoint map',request=data,response=result))+'\n')
         except (ValueError,KeyError,TypeError,IndexError) as e:result={'accepted':False,'reason':str(e)}

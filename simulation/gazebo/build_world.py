@@ -24,7 +24,7 @@ def build(target=None,drop_test=False,spec=None):
         mat=SubElement(visual,'material');SubElement(mat,'ambient').text=' '.join(map(str,[*color,1]));SubElement(mat,'diffuse').text=' '.join(map(str,[*color,1]))
         if collision:geom(SubElement(link,'collision',name='collision'))
         return body,link
-    box('ground',(4,0,-.1),(25,18,.2),tuple(spec.get('ground_color',[.22,.4,.15])))
+    box('ground',(4,0,-.1),(2000,2000,.2),tuple(spec.get('ground_color',[.22,.4,.15])))
     box('path',(4,0,.002),(14,2.6,.004),(.63,.61,.53),False)
     for i,(x,y,yaw) in enumerate(spec.get('panels',[(3.4,.15,-.08),(6,.65,.12)])):
         panel,link=box(f'panel{i}',(x,y,.9),(.08,1.2,1.8),(.93,.93,.9))
@@ -85,11 +85,12 @@ def build(target=None,drop_test=False,spec=None):
         mat=SubElement(v,'material');SubElement(mat,'diffuse').text='1 .05 .05 1' if i<2 else '.95 .95 .9 1'
     def camera(parent,name,pose,width,height,hfov,topic):
         sensor=SubElement(parent,'sensor',name=name,type='camera');SubElement(sensor,'pose').text=pose
-        SubElement(sensor,'always_on').text='true';SubElement(sensor,'update_rate').text='10';SubElement(sensor,'topic').text=topic
+        SubElement(sensor,'always_on').text='true';SubElement(sensor,'update_rate').text='15';SubElement(sensor,'topic').text=topic
         cam=SubElement(sensor,'camera');SubElement(cam,'horizontal_fov').text=str(hfov)
         im=SubElement(cam,'image');SubElement(im,'width').text=str(width);SubElement(im,'height').text=str(height);SubElement(im,'format').text='R8G8B8'
         clip=SubElement(cam,'clip');SubElement(clip,'near').text='.05';SubElement(clip,'far').text='100'
     camera(link,'rgb','.18 0 .02 0 0 0',320,240,2*math.atan(math.tan(math.radians(35))*4/3),'/drone/rgb')
+    camera(link,'follow','-3 0 2.2 0 .62 0',640,360,1.3,'/follow/rgb')
     overview=SubElement(world,'model',name='overview');SubElement(overview,'static').text='true';ol=SubElement(overview,'link',name='camera')
     camera(ol,'camera',f'6 -4.5 7 0 {math.atan2(6.5,math.hypot(-2,4.5))} {math.atan2(4.5,-2)}',640,360,1.3,'/overview/rgb')
     # Theme-specific architecture is decor/physics outside the route; panels change per world.

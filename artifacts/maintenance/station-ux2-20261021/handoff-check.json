@@ -1,0 +1,53 @@
+{
+  "scope": "Final live native flight-station readiness and rejection checks; no physical arming/flight.",
+  "invalid_route_rejections": [
+    {
+      "node_count": 2,
+      "response": {
+        "accepted": false,
+        "reason": "Node 2: x=9.6, y=1.2 outside x=-1..9 m, y=-3..3 m"
+      }
+    },
+    {
+      "node_count": 1,
+      "response": {
+        "accepted": false,
+        "reason": "Choose 2 to 64 nodes; first is start, last is finish"
+      }
+    },
+    {
+      "node_count": 65,
+      "response": {
+        "accepted": false,
+        "reason": "Choose 2 to 64 nodes; first is start, last is finish"
+      }
+    }
+  ],
+  "profile": "gentle",
+  "frame_sequence_before": 1299,
+  "frame_sequence_after": 1313,
+  "real_time_factor": 0.7948247351490307,
+  "controller": {
+    "connected": true,
+    "index": 0,
+    "packet": 5665,
+    "buttons": 0,
+    "LT": 0,
+    "RT": 0,
+    "axes": [
+      0.039,
+      -0.0017,
+      -0.0147,
+      -0.0017
+    ],
+    "wall_time_s": 1792587415.685787
+  },
+  "source_and_binary_sha256": {
+    "companion/ros2_ws/src/qcopter_autonomy/src/navigation.cpp": "dd50b9238df2081d2f2ae4102e6f68878f9591b41d14bcf18f63af2fe6b454a1",
+    "companion/ros2_ws/src/qcopter_autonomy/src/mission.cpp": "177339842ae1e7a4b16ab907f7af0ceaae61262a22616930d7cc6e75458350e5",
+    "companion/ros2_ws/src/qcopter_autonomy/src/pilot_mission_node.cpp": "6e797dec88da7b7b2d79db37ec6e9d8339f6ba6b94441622ba2614376a242500",
+    "build/ros2-install/lib/qcopter_autonomy/pilot_mission_node.exe": "668fc05e7e2335da4f0394ff2d7458cd1d1306787d8bc9b94fb69ea1105e25de",
+    "firmware/src/flight_controller.c": "e52e4a420573ac1420e77f7f97802addfb508058621a4bc1c83ff8216fd145ac",
+    "firmware/include/fc_api.h": "3857dea9d56e7c4ef71542f5e6dc20efd4a09b847d2086880325866097e4659d"
+  }
+}

@@ -48,12 +48,12 @@ class PilotMissionNode:public rclcpp::Node {
     });
     request_=create_service<qcopter_autonomy::srv::RequestMission>("mission/request",[this](qcopter_autonomy::srv::RequestMission::Request::SharedPtr req,qcopter_autonomy::srv::RequestMission::Response::SharedPtr res){
       res->accepted=start_route({{req->start.x,req->start.y,req->start.z},{req->finish.x,req->finish.y,req->finish.z}},req->cruise_height_m);
-      res->reason=res->accepted?"Accepted by drone ROS2 computer":"Require navigation, fresh pilot/pose, current start and valid route";
+      res->reason=res->accepted?"Accepted by drone ROS2 computer":last_route_error_;
     });
     route_request_=create_service<qcopter_autonomy::srv::RequestRoute>("mission/route",[this](qcopter_autonomy::srv::RequestRoute::Request::SharedPtr req,qcopter_autonomy::srv::RequestRoute::Response::SharedPtr res){
       std::vector<std::array<double,3>> points;for(const auto&p:req->points)points.push_back({p.x,p.y,p.z});
       res->accepted=start_route(points,req->cruise_height_m);
-      res->reason=res->accepted?"Route accepted; intermediate waypoint flown before final landing":"Require 2 or 3 valid points, current start, fresh pilot/pose and Xbox navigation mode";
+      res->reason=res->accepted?"Approved route accepted; visiting all intermediate nodes before final landing":last_route_error_;
     });
     odom_=create_subscription<nav_msgs::msg::Odometry>("odometry",10,[this](nav_msgs::msg::Odometry::ConstSharedPtr m){
       if(m->header.frame_id!="map"||m->child_frame_id!="map")return;
@@ -67,13 +67,21 @@ class PilotMissionNode:public rclcpp::Node {
   }
  private:
   bool start_route(const std::vector<std::array<double,3>>&points,double cruise){
-    if(!mode_nav_||disarmed_||!pilot_fresh_||!have_pose_||active_||points.size()<2||points.size()>3)return false;
+    auto reject=[this](const std::string&why){last_route_error_=why;return false;};
+    if(disarmed_)return reject("FC disarm is latched; restart the simulator");
+    if(!mode_nav_)return reject("FC is in stable mode; select navigation or enable simulator navigation selection");
+    if(!pilot_fresh_)return reject("No fresh Xbox pilot reports reach the FC");
+    if(!have_pose_)return reject("Drone odometry is unavailable");
+    if(active_)return reject("A mission is already running; switch to stable mode to cancel it first");
+    if(points.size()<2||points.size()>64)return reject("Choose 2 to 64 nodes");
     for(size_t i=0;i<points.size();i++){
-      const auto&p=points[i];for(double v:p)if(!std::isfinite(v))return false;
-      if(p[0]<-1||p[0]>9||std::abs(p[1])>3||std::abs(p[2]-points.front()[2])>.15)return false;
-      if(i&&std::hypot(p[0]-points[i-1][0],p[1]-points[i-1][1])<.4)return false;
+      const auto&p=points[i];for(double v:p)if(!std::isfinite(v))return reject("Node "+std::to_string(i+1)+": coordinates must be finite");
+      if(p[0]<-1||p[0]>9||std::abs(p[1])>3)return reject("Node "+std::to_string(i+1)+": outside x=-1..9, y=-3..3 metres");
+      if(std::abs(p[2]-points.front()[2])>.15)return reject("All nodes must use the same ground height; intermediate nodes are flown at cruise height");
+      if(i&&std::hypot(p[0]-points[i-1][0],p[1]-points[i-1][1])<.4)return reject("Consecutive nodes must be at least 0.4 metres apart");
+      for(const auto&o:map_)if(i&&std::hypot(p[0]-o.x,p[1]-o.y)<o.radius+.65)return reject("Node "+std::to_string(i+1)+": inside observed obstacle clearance; move it away from the orange region");
     }
-    if(!mission_.request(state_,points.front(),points.back(),cruise))return false;
+    if(!mission_.request(state_,points.front(),points.back(),cruise))return reject("Start must match the stationary drone on the ground; cruise z must be 0.6..2.5m and at least 0.4m above start");
     route_=points;route_index_=1;cruise_=cruise;active_=true;dirty_=true;requests_++;
     finish_={points[1][0],points[1][1],cruise};mission_.enable_finish(route_.size()==2);
     RCLCPP_INFO(get_logger(),"PC_ROUTE_ACCEPTED points=%zu finish=(%.2f,%.2f)",points.size(),points.back()[0],points.back()[1]);return true;
@@ -97,12 +105,13 @@ class PilotMissionNode:public rclcpp::Node {
     float vals[]={float(out.command.roll_deg),float(out.command.pitch_deg),float(out.command.yaw_rate_dps),float((out.command.throttle-.5)*4)};
     for(unsigned i=0;i<4;i++){uint32_t bits;std::memcpy(&bits,vals+i,4);u32(p,8+4*i,bits);}u32(p,24,crc32(p.data(),24));
     frames_->publish(frame);
-    std::ostringstream text;text<<"phase="<<int(out.phase)<<",done="<<out.done<<",mapped="<<map_.size()<<",plans="<<plans_<<",images="<<images_<<",requests="<<requests_<<",camera="<<camera_fresh<<",waypoint="<<route_index_<<",points="<<route_.size();
+    std::ostringstream text;text<<"phase="<<int(out.phase)<<",done="<<out.done<<",mapped="<<map_.size()<<",plans="<<plans_<<",images="<<images_<<",requests="<<requests_<<",camera="<<camera_fresh<<",waypoint="<<route_index_<<",points="<<route_.size()<<",planned="<<planned_;
     std_msgs::msg::String msg;msg.data=text.str();status_->publish(msg);
     if(out.phase!=phase_){RCLCPP_INFO(get_logger(),"MISSION %s",msg.data.c_str());phase_=out.phase;}
     if(out.done)active_=false;
   }
   bool mode_nav_=false,disarmed_=false,pilot_fresh_=false,have_pose_=false,ground_contact_=false,active_=false,dirty_=false,planned_=false;
+  std::string last_route_error_;
   double pose_time_=0,camera_time_=-100,cruise_=1.25;
   size_t route_index_=0;std::vector<std::array<double,3>>route_;
   unsigned sequence_=0,plans_=0,images_=0,requests_=0;

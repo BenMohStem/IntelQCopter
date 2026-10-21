@@ -13,7 +13,8 @@ double clip(double v,double limit){ return std::clamp(v,-limit,limit); }
 bool Navigator::plan(const State& s,const std::array<double,3>& goal,
                       const std::vector<Obstacle>& obstacles) {
   path_.clear(); waypoint_=0; goal_=goal;
-  if(!std::isfinite(s.x)||!std::isfinite(s.y)||!std::isfinite(s.z))return false;
+  if(!std::isfinite(s.x)||!std::isfinite(s.y)||!std::isfinite(s.z)||!std::isfinite(s.yaw))return false;
+  if(!heading_initialized_){heading_target_=s.yaw;heading_initialized_=true;}
   for(double v:goal)if(!std::isfinite(v))return false;
   std::vector<bool> occupied(nx*ny,false);
   for(const auto&o:obstacles)if(!std::isfinite(o.x)||!std::isfinite(o.y)||!std::isfinite(o.radius)||o.radius<0)return false;
@@ -67,7 +68,10 @@ Command Navigator::step(const State&s,bool sensing_fresh){
   double by=-std::sin(s.yaw)*ax+std::cos(s.yaw)*ay;
   c.roll_deg=clip(-std::atan2(by,9.80665)*180.0/3.141592653589793,15.0);
   c.pitch_deg=clip(std::atan2(bx,9.80665)*180.0/3.141592653589793,15.0);
-  c.yaw_rate_dps=clip(-2.0*std::remainder(s.yaw,2*3.141592653589793)*180.0/3.141592653589793,45.0);
+  // Face the intended path velocity, not measured braking drift. Hold the last
+  // heading near a node instead of snapping to zero as speed crosses a threshold.
+  if(std::hypot(vx,vy)>.2)heading_target_=std::atan2(vy,vx);
+  c.yaw_rate_dps=clip(1.2*std::remainder(heading_target_-s.yaw,2*3.141592653589793)*180.0/3.141592653589793,45.0);
   c.throttle=0.5+clip(goal_[2]-s.z,0.6)/4.0;c.active=true;
   c.reached=std::hypot(goal_[0]-s.x,goal_[1]-s.y)<0.2&&std::abs(goal_[2]-s.z)<0.2&&std::hypot(s.vx,s.vy)<0.15;
   return c;

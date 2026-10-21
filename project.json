@@ -146,7 +146,7 @@
       "args": [
         "--with-companion"
       ],
-      "description": "Live Xbox + ROS2 obstacle navigation and 2/3-point map"
+      "description": "Unified Xbox flight station, native cameras and approved 2..64-node ROS2 routes"
     },
     "xbox-check": {
       "runtime": "python",
@@ -174,13 +174,25 @@
       "runtime": "python",
       "path": "simulation/gazebo/check_routes.py",
       "args": [],
-      "description": "Replay a 2/3-point PC route with simulated Xbox and real Gazebo/ROS2"
+      "description": "Replay a 2/3/5-node regression via PC route service and native Gazebo"
     },
     "live-report": {
       "runtime": "python",
       "path": "tools/reports/live_routes_report.py",
       "args": [],
       "description": "Plot original 2/3-point native route trials with video links"
+    },
+    "check-station": {
+      "runtime": "python",
+      "path": "simulation/gazebo/check_station_controls.py",
+      "args": [],
+      "description": "Check PC simulator gestures, actual disarm priority and gentle input shaping"
+    },
+    "analyse-recordings": {
+      "runtime": "python",
+      "path": "tools/reports/analyse_recordings.py",
+      "args": [],
+      "description": "Review native video frames, telemetry, yaw/height metrics and graph summaries"
     }
   }
 }

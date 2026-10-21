@@ -16,5 +16,6 @@ class Navigator {
   std::vector<std::array<double,2>> path_;
   std::array<double,3> goal_{};
   std::size_t waypoint_=0;
+  double heading_target_=0;bool heading_initialized_=false;
 };
 }

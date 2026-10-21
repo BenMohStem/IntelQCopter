@@ -281,6 +281,36 @@
       "id": "source-live-route3",
       "kind": "file",
       "locator": "artifacts/gazebo-suite/route3-cyclone-20261021-env01-nav/route-check.json"
+    },
+    {
+      "id": "source-station-guide",
+      "kind": "file",
+      "locator": "docs/live-xbox-and-companion.md"
+    },
+    {
+      "id": "source-station-checks",
+      "kind": "file",
+      "locator": "artifacts/maintenance/station-ux2-20261021/checks.json"
+    },
+    {
+      "id": "source-station-recovery",
+      "kind": "file",
+      "locator": "artifacts/maintenance/station-ux2-20261021/recovery-check.json"
+    },
+    {
+      "id": "source-station-analysis",
+      "kind": "file",
+      "locator": "artifacts/reports/station-analysis-20261021/summary.json"
+    },
+    {
+      "id": "source-station-inputs",
+      "kind": "file",
+      "locator": "artifacts/validation/ux2-soft-sticks-20261021/summary.json"
+    },
+    {
+      "id": "source-station-browser",
+      "kind": "file",
+      "locator": "artifacts/maintenance/station-ux2-20261021/browser-in-flight.png"
     }
   ],
   "facts": [
@@ -1156,6 +1186,19 @@
           ],
           "evidence_level": "simulated",
           "reason": "Live Xbox / optional companion and selectable-route setup. Original evidence and previous revisions retained."
+        },
+        {
+          "revision": 4,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "Reviewed PC route editor accepts 2 to 64 nodes, with first=start and last=finish, node editing/reordering, JSON save/load and explicit approval. Browser-approved five-node mission visited all intermediate nodes and landed before subsequent manual collision. Bounds errors now name the invalid node; explicit scene reset can place the vehicle at the first node.",
+          "sources": [
+            "source-station-guide",
+            "source-station-browser",
+            "source-station-recovery"
+          ],
+          "evidence_level": "simulated",
+          "reason": "User-reported UI/input/navigation failure, manual sensitivity correction and 15 fps analysis request. Original failures retained."
         }
       ]
     },
@@ -1176,6 +1219,18 @@
           ],
           "evidence_level": "simulated",
           "reason": "User requested live real Xbox and optional companion architecture."
+        },
+        {
+          "revision": 2,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "Actual Xbox stick input produced native Gazebo flight. Initial joint-mode gesture was absent, so mode-selection buttons now explicitly emit labelled PC simulator gestures through the C parser. The browser displays native follow/overview/onboard cameras and readiness. A later manual collision is retained, not counted as a successful session.",
+          "sources": [
+            "source-station-browser",
+            "source-station-checks"
+          ],
+          "evidence_level": "simulated",
+          "reason": "User-reported UI/input/navigation failure, manual sensitivity correction and 15 fps analysis request. Original failures retained."
         }
       ]
     },
@@ -1196,6 +1251,63 @@
           ],
           "evidence_level": "emulated",
           "reason": "User requested live real Xbox and optional companion architecture."
+        }
+      ]
+    },
+    {
+      "id": "gentle_simulator",
+      "topic": "simulation",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "Gentle simulation input uses squared sticks after deadband, 5-degree roll/pitch limits, 0.5m/s vertical and 45deg/s yaw requests, and reduced triggers. Normal remains available; full Down-LT disarm is preserved. This is not horizontal speed/position hold. Physical firmware gains and limits are unchanged.",
+          "sources": [
+            "source-station-inputs",
+            "source-station-guide"
+          ],
+          "evidence_level": "simulated",
+          "reason": "User-requested control, software and evidence improvements."
+        }
+      ]
+    },
+    {
+      "id": "path_heading_hold",
+      "topic": "companion",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "ROS2 uses intended path velocity for yaw and holds heading near waypoints/landing. Same five-node before/after simulated cases passed; yaw travel decreased 57.03% and yaw-rate RMS 39.53%. This single-case comparison does not characterize hardware or all layouts. A separate 15fps five-node run passed.",
+          "sources": [
+            "source-station-analysis",
+            "source-station-checks"
+          ],
+          "evidence_level": "simulated",
+          "reason": "User-requested control, software and evidence improvements."
+        }
+      ]
+    },
+    {
+      "id": "native_recording_analysis",
+      "topic": "evidence",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "New native cameras/video target 15fps and telemetry is retained at 500Hz; earlier 5fps/50Hz files remain intact. The analysis tool scans every native frame, enables frame stepping, exports graph means/min/max and evaluates navigation separately from later manual collisions. Off-origin reset and a ROS-free 15fps recording were verified.",
+          "sources": [
+            "source-station-analysis",
+            "source-station-recovery"
+          ],
+          "evidence_level": "simulated",
+          "reason": "User-requested control, software and evidence improvements."
         }
       ]
     }

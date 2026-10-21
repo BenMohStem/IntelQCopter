@@ -104,7 +104,7 @@ The simulator emits this format over ROS2; it does not emulate Bluetooth radio.
 ## Live sessions and selectable routes
 
 See [live Xbox and companion guide](live-xbox-and-companion.md). The additional
-`mission/route` service accepts 2 or 3 geometry points and a cruise height. Middle
+`mission/route` service accepts 2 to 64 geometry points and a cruise height. Middle
 points are visited at cruise height before the final landing. The legacy
 `mission/request` service remains available for two endpoints.
 

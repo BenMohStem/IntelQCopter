@@ -25,7 +25,7 @@ class Controller:
         for index in ([self.index] if self.index is not None else range(4)):
             state=State()
             if self.dll.XInputGetState(index,c.byref(state))==0:
-                return encode(state.gamepad),dict(connected=True,index=index,packet=int(state.packet),buttons=int(state.gamepad.buttons),LT=int(state.gamepad.lt),RT=int(state.gamepad.rt))
+                return encode(state.gamepad),dict(connected=True,index=index,packet=int(state.packet),buttons=int(state.gamepad.buttons),LT=int(state.gamepad.lt),RT=int(state.gamepad.rt),axes=[round((v-32768)/32768,4) for v in struct.unpack('<4H',encode(state.gamepad)[:8])])
         return None,dict(connected=False,index=self.index)
 
 if __name__=='__main__':

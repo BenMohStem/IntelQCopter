@@ -55,31 +55,34 @@ def main():
  out=ROOT/'artifacts/gazebo-suite'/args.run;out.mkdir(parents=True,exist_ok=True)
  node.trace=(out/'perception.jsonl').open('w',encoding='utf8')
  wire=(out/'wire-inputs.jsonl').open('w',encoding='utf8')
- client.send({'op':'state'});state=client.recv();start=state['sim_time_s'];last_camera=last_video=-99.;next_wall=time.monotonic();rows=[];done_at=None;count=0;hid_count=uart_count=0;success=False
+ client.send({'op':'state'});state=client.recv();start=state['sim_time_s'];last_camera=last_video=-99.;next_wall=time.monotonic();next_camera=state['sim_time_s'];next_video=state['sim_time_s'];rows=[];done_at=None;count=0;hid_count=uart_count=0;success=False
  ffmpeg=ffmpeg_path()
- recorder=subprocess.Popen([str(ffmpeg),'-y','-f','rawvideo','-pix_fmt','rgb24','-s','960x540','-r','5','-i','-','-an','-c:v','libx264','-preset','ultrafast','-crf','27','-pix_fmt','yuv420p','-movflags','+faststart',str(out/'gazebo.mp4')],stdin=subprocess.PIPE,stdout=subprocess.DEVNULL,stderr=(out/'ffmpeg.log').open('w'))
+ recorder=subprocess.Popen([str(ffmpeg),'-y','-f','rawvideo','-pix_fmt','rgb24','-s','960x540','-r','15','-i','-','-an','-c:v','libx264','-preset','ultrafast','-crf','27','-pix_fmt','yuv420p','-movflags','+faststart',str(out/'gazebo.mp4')],stdin=subprocess.PIPE,stdout=subprocess.DEVNULL,stderr=(out/'ffmpeg.log').open('w'))
  viewer=None;wall_start=time.monotonic()
  if args.live:
   from live_view import Viewer
-  viewer=Viewer()
+  from session_controls import SessionControls
+  viewer=Viewer(log_path=out/'operator-actions.jsonl');controls=SessionControls(viewer)
  rgb=np.zeros((240,320,3),np.uint8);overview=np.zeros((360,640,3),np.uint8)
  print('BOUNDARY READY: real ROS2 DDS; native Gazebo sensors; raw HID and companion UART input only',flush=True)
  try:
   while state['sim_time_s']-start<args.timeout:
     if viewer and (viewer.stopped.is_set() or (args.duration and time.monotonic()-wall_start>=args.duration)):break
     t=state['sim_time_s']
-    if t-last_camera>=.099:
-        client.send({'op':'camera','topic':'/drone/rgb'});w,h,data=client.recv();rgb=np.frombuffer(data,np.uint8).reshape(h,w,3).copy();last_camera=t;image=rgb
+    if t+1e-8>=next_camera:
+        client.send({'op':'camera','topic':'/drone/rgb'});w,h,data=client.recv();rgb=np.frombuffer(data,np.uint8).reshape(h,w,3).copy();last_camera=t;next_camera+=1/15;image=rgb
     else:image=None
     node.sensors(state,image)
     # Allow independent DDS processes to handle this clock and publish their inputs.
     deadline=time.monotonic()+.006
     while time.monotonic()<deadline:rclpy.spin_once(node,timeout_sec=.001)
     hid,uart=node.hid,node.uart;node.hid=[];node.uart=[];hid_count+=len(hid);uart_count+=len(uart)
-    wire.write(json.dumps(dict(time_s=t,xbox=[p.hex() for p in hid],companion=[p.hex() for p in uart]))+'\n');wire.flush()
+    original_hid=list(hid);gesture={};pc_action=False
+    if viewer:hid,gesture,pc_action=controls.step(hid,t,json.loads(node.pilot or '{}'))
+    wire.write(json.dumps(dict(time_s=t,xbox=[p.hex() for p in hid],companion=[p.hex() for p in uart],input_source='explicit PC simulator gesture' if pc_action else 'ROS pilot reports',input_profile=viewer.profile if viewer else 'normal',unmapped_xbox=[p.hex() for p in original_hid]))+'\n');wire.flush()
     client.send({'op':'step','hid':hid,'companion':uart});state=client.recv();count+=1
     rows.append([state['sim_time_s'],*state['position']])
-    if t-last_video>=.199:
+    if t+1e-8>=next_video:
         client.send({'op':'camera','topic':'/overview/rgb'});w,h,data=client.recv();overview=np.frombuffer(data,np.uint8).reshape(h,w,3)
         canvas=np.full((540,960,3),[20,28,40],np.uint8);canvas[:360,:640]=overview;canvas[:240,640:]=rgb
         if 0<=t-node.box_time<.3:
@@ -88,17 +91,22 @@ def main():
                 cv2.putText(canvas,f"YOLO panel {box['confidence']:.2f}",(640+x1,max(12,y1)),cv2.FONT_HERSHEY_SIMPLEX,.32,(70,245,130),1)
         texts=[f'Gazebo | {args.run} | t={t-start:.1f}s',f'Xbox mode={state["mode"]} | disarm={state["disarm"]}',f'DDS HID packets={hid_count} | UART={uart_count}',node.mission[:90],f'YOLO frames={node.semantics} | PnP frames={node.metric_frames}']
         for i,text in enumerate(texts):cv2.putText(canvas,text,(15,382+27*i),cv2.FONT_HERSHEY_SIMPLEX,.48,(230,240,245),1,cv2.LINE_AA)
-        recorder.stdin.write(canvas.tobytes());last_video=t
-        if viewer:viewer.update(canvas,dict(sim_time_s=t-start,real_time_factor=(t-start)/max(.001,time.monotonic()-wall_start),fc_mode=state['mode'],disarmed=state['disarm'],position=state['position'],pilot=node.pilot,mission=node.mission,simulation_actuation=state.get('simulation_actuation'),YOLO_frames=node.semantics,PnP_frames=node.metric_frames,standalone=False))
+        if viewer:
+            client.send({'op':'camera','topic':'/follow/rgb'});fw,fh,fd=client.recv();follow=np.frombuffer(fd,np.uint8).reshape(fh,fw,3)
+            canvas[:360,:640]=follow
+            viewer.update(canvas,dict(environment=state.get('environment'),sim_time_s=t-start,real_time_factor=(t-start)/max(.001,time.monotonic()-wall_start),health=state.get('health',{}),velocity=state['velocity'],gesture=gesture,fc_mode=state['mode'],disarmed=state['disarm'],position=state['position'],pilot=node.pilot,mission=node.mission,simulation_actuation=state.get('simulation_actuation'),YOLO_frames=node.semantics,PnP_frames=node.metric_frames,standalone=False),follow=follow,overview=overview)
+        recorder.stdin.write(canvas.tobytes());last_video=t;next_video+=1/15
         if count%250<10:print(f'PROGRESS t={t-start:.1f}s position={state["position"]} mode={state["mode"]} {node.mission}',flush=True)
     if node.done and done_at is None:done_at=t
     if done_at is not None and t-done_at>.3:break
     next_wall+=.02;time.sleep(max(0,min(.02,next_wall-time.monotonic())))
   success=bool(node.done and state['disarm'] and state['ground_contact'])
-  summary=dict(interactive=args.live,session_ended_cleanly=True,completed=success,timeout=not node.done and not args.live,simulated_seconds=state['sim_time_s']-start,hid_packets=hid_count,companion_packets=uart_count,yolo_frames=node.semantics,pnp_frames=node.metric_frames,mission_status=node.mission,final_state={k:v for k,v in state.items() if k!='fc'},scope='Native Gazebo physics and cameras; real ROS2 DDS; ESP32 C core host build. C++ mission/YOLO/PnP enabled only for navigation cases. Not Xtensa emulation or physical BLE.')
+  summary=dict(video_fps=15,recording_view='native follow + onboard RGB + HUD' if args.live else 'native overview + onboard RGB + HUD',interactive=args.live,session_ended_cleanly=True,completed=success,timeout=not node.done and not args.live,simulated_seconds=state['sim_time_s']-start,hid_packets=hid_count,companion_packets=uart_count,yolo_frames=node.semantics,pnp_frames=node.metric_frames,mission_status=node.mission,final_state={k:v for k,v in state.items() if k!='fc'},scope='Native Gazebo physics and cameras; real ROS2 DDS; ESP32 C core host build. C++ mission/YOLO/PnP enabled only for navigation cases. Not Xtensa emulation or physical BLE.')
   (out/'transport.json').write_text(json.dumps(summary,indent=2)+'\n');print('BOUNDARY RESULT',json.dumps(summary),flush=True)
  finally:
-  if viewer:viewer.close()
+  if viewer:
+   if viewer.restart_spawn is not None:(out/'reset-request.json').write_text(json.dumps(dict(start=viewer.restart_spawn))+'\n')
+   viewer.close()
   wire.close();node.trace.close()
   recorder.stdin.close();recorder.wait(timeout=30)
   client.send({'op':'close'});client.recv();client.close();node.destroy_node();rclpy.shutdown()

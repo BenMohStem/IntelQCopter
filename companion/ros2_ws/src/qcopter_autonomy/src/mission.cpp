@@ -10,7 +10,7 @@ bool Mission::request(const State&s,const std::array<double,3>&start,const std::
      ||std::hypot(s.vx,s.vy)>.15||std::abs(s.vz)>.15||cruise<.6||cruise>2.5
      ||start[0]<-1||start[0]>9||std::abs(start[1])>3||std::abs(finish[2]-start[2])>.15||cruise<start[2]+.4
      ||finish[0]<-1||finish[0]>9||std::abs(finish[1])>3)return false;
-  navigation_finish_enabled_=true;finish_=finish;cruise_=cruise;transition(Phase::Spool);return true;
+  navigation_finish_enabled_=true;hold_heading_=s.yaw;finish_=finish;cruise_=cruise;transition(Phase::Spool);return true;
 }
 MissionOutput Mission::step(const State&s,const Command&nav,bool odometry_fresh,bool perception_fresh,bool contact,double dt){
   MissionOutput o;o.phase=phase_;
@@ -27,7 +27,7 @@ MissionOutput Mission::step(const State&s,const Command&nav,bool odometry_fresh,
   const double ay=std::clamp((landing_hold?1.2*(finish_[1]-s.y):0)-1.8*s.vy,-1.,1.);
   const double bx=std::cos(s.yaw)*ax+std::sin(s.yaw)*ay,by=-std::sin(s.yaw)*ax+std::cos(s.yaw)*ay;
   o.command.roll_deg=-std::atan2(by,9.80665)*todeg;o.command.pitch_deg=std::atan2(bx,9.80665)*todeg;
-  o.command.yaw_rate_dps=std::clamp(-2*std::remainder(s.yaw,2*3.141592653589793)*todeg,-45.,45.);
+  o.command.yaw_rate_dps=std::clamp(1.2*std::remainder(hold_heading_-s.yaw,2*3.141592653589793)*todeg,-45.,45.);
   double vz=std::clamp(1.0*(cruise_-s.z),-.45,.45);
   switch(phase_){
    case Phase::Spool:o.spool=std::clamp(elapsed_,0.,1.);vz=0;if(elapsed_>=1)transition(Phase::Takeoff);break;
@@ -37,10 +37,7 @@ MissionOutput Mission::step(const State&s,const Command&nav,bool odometry_fresh,
    case Phase::Navigate:
      if(perception_fresh&&nav.active){
        o.command=nav;
-       if(std::hypot(s.vx,s.vy)>.15) {
-         const double heading=std::atan2(s.vy,s.vx);
-         o.command.yaw_rate_dps=std::clamp(2*std::remainder(heading-s.yaw,2*3.141592653589793)*todeg,-45.,45.);
-       }
+       hold_heading_=s.yaw; // retain arrival heading for approach/landing
      }
      if(navigation_finish_enabled_&&std::hypot(s.x-finish_[0],s.y-finish_[1])<.18&&std::hypot(s.vx,s.vy)<.15)transition(Phase::Approach);
      break;

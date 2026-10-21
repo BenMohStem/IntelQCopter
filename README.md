@@ -18,11 +18,15 @@ radio endpoints with a commercial Xbox controller connected directly to the ESP3
 .\qcopter.ps1 xbox-check
 .\qcopter.ps1 play       # standalone FC, no ROS2 companion
 # OR, after ending that session:
-.\qcopter.ps1 play-ros   # ROS2 obstacle navigation + 2/3-point PC map
+.\qcopter.ps1 play-ros   # ROS2 obstacle navigation + 2–64-node PC route editor
 ```
 
 Live native cameras: **http://127.0.0.1:8087**. PC route map: **http://127.0.0.1:8086** (companion launch).
-Hold Down+A five seconds for stable; Down+B five seconds for navigation.
+Use the station’s **Enable manual flight** button or **Review → Approve and fly** route workflow.
+The default Gentle simulator profile uses 5° maximum tilt and soft sticks.
+New native recordings are 15 fps; new telemetry is 500 Hz.
+[Original recordings and heading analysis](artifacts/reports/station-analysis-20261021/index.html).
+Xbox mode gestures remain available.
 [Complete launch, control, route and UART guide](docs/live-xbox-and-companion.md).
 The live simulator uses the active C host DLL, synthetic sensors and an assumed aircraft model; physical outputs remain disabled.
 

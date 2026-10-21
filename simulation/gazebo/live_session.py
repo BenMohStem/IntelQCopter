@@ -32,7 +32,7 @@ def main():
             for label,target,extra,marker in [('drone-mission','pilot_mission_node',[],'READY:'),('drone-yolo','yolo_node',['-p',f'onnx_model:={PANEL_MODEL}','-p','input_size:=320'],'READY_RGB:'),('drone-pnp','panel_pose_node',['-p','known_fixture_model_confirmed:=true'],'READY_PNP:')]:
                 proc=launch(label,[str(exe/(target+'.exe')),*rosargs,*extra],rosenv);ready(proc,label,marker)
             xbox=launch('real-xbox',[ROS_PYTHON,'-u','simulation/gazebo/live_xbox_node.py','--log',str(out/'real-xbox.csv'),*index,*rosargs],rosenv);ready(xbox,'real-xbox','LIVE XBOX READY')
-            pc=launch('pc-map',[ROS_PYTHON,'-u','companion/pc_mission_map.py','--log',str(out/'pc-map-missions.jsonl'),*rosargs],rosenv);ready(pc,'pc-map','PC map available')
+            pc=launch('pc-map',[ROS_PYTHON,'-u','companion/pc_mission_map.py','--log',str(out/'pc-map-missions.jsonl'),'--simulation-controls',*rosargs],rosenv);ready(pc,'pc-map','PC map available')
             boundary=launch('live-boundary',[ROS_PYTHON,'-u','simulation/gazebo/ros_bridge.py','--run',name,'--timeout','86400','--live','--duration',str(args.duration),*rosargs],rosenv)
         else:
             vision=CONFIG.get('python') or os.environ.get('QCOPTER_PYTHON') or __import__('sys').executable
@@ -55,4 +55,14 @@ def main():
             try:proc.wait(timeout=5)
             except subprocess.TimeoutExpired:proc.kill();proc.wait()
         for log in logs:log.close()
+    if (out/'reset-request.json').exists():
+        import sys
+        spawn=json.loads((out/'reset-request.json').read_text())['start']
+        next_name='live-reset-'+datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S')+'-'+args.env
+        command=[sys.executable,'-u',str(Path(__file__).resolve()),'--env',args.env,'--run',next_name,'--start',*[format(float(v),'.6f') for v in spawn]]
+        if args.with_companion:command+=['--with-companion']
+        if args.controller is not None:command+=['--controller',str(args.controller)]
+        if args.duration:command+=['--duration',str(args.duration)]
+        print('Resetting scene; previous original trial retained at',out,flush=True)
+        os.execv(sys.executable,command)
 if __name__=='__main__':main()

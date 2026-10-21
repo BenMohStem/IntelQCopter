@@ -15,7 +15,7 @@ class Xbox(Node):
         self.create_timer(.02,self.poll,clock=Clock(clock_type=ClockType.STEADY_TIME))
         print('LIVE XBOX READY rmw='+rclpy.get_rmw_implementation_identifier(),flush=True)
     def poll(self):
-        raw,info=self.controller.poll()
+        raw,info=self.controller.poll();info['wall_time_s']=time.time()
         if raw:self.pub.publish(UInt8MultiArray(data=list(raw)))
         self.info.publish(String(data=json.dumps(info)));self.writer.writerow([time.monotonic(),info['connected'],info['index'],raw.hex() if raw else '']);self.file.flush()
         if self.last!=info['connected']:print('XBOX',json.dumps(info),flush=True);self.last=info['connected']

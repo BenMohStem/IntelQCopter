@@ -1,0 +1,35 @@
+{
+  "scope": "Source/frontend checks, host C-core input checks and original native Gazebo evidence; no physical flight claim.",
+  "python_files_parsed": 18,
+  "frontend_scripts_checked": 2,
+  "controller_checks_passed": true,
+  "reset_passed": true,
+  "route_comparison": {
+    "before": "yaw-baseline-20261021-env01-nav",
+    "after": "yaw-path-heading-20261021-env01-nav",
+    "yaw_travel_change_percent": -57.0266248739104,
+    "yaw_rate_rms_change_percent": -39.53160599366712,
+    "scope": "Single repeatable simulated case per version; not confidence bounds or measured aircraft improvement."
+  },
+  "all_three_isolated_routes_passed": true,
+  "source_sha256": {
+    "simulation/gazebo/build_world.py": "e1da7a37537aa20896eb06e592258573bb8569aac750c79448348b9695e4bd94",
+    "simulation/gazebo/check_routes.py": "2592b9bad5d236a6c885f9483b6da9f731321fbab8eee537b3c0927f5ec900a4",
+    "simulation/gazebo/check_station_controls.py": "8db2377d45abc49a16a64ecd01aa38bf18c29b870fa80505011d54dc85a9cfb3",
+    "simulation/gazebo/engine.py": "44e014af09ea16de577fae4710c3dc9cd2dce2cf3653d068bfb191e812113ac8",
+    "simulation/gazebo/fc_binding.py": "6018bb04eb70b5167c8ad859c19b2fe5c6d7e4112d265c8bee957b1cb5fec2e9",
+    "simulation/gazebo/live_controls_check.py": "d59dd7b05e33d4738fe3172bf83ef031224b06f8512bd1670ad4bf0d3478d788",
+    "simulation/gazebo/live_session.py": "44878394ca09f3696adc9bff71b94eb0d3616b3fca56ac8a59e811922dc7bedc",
+    "simulation/gazebo/live_standalone.py": "ec019c138f13633619eb0da773ce644072119498b74c744b21238e9e01f012df",
+    "simulation/gazebo/live_view.py": "5d9d27ace6477760db66db913c8ef3a5a603eb931aa4b90123b164526435a5ec",
+    "simulation/gazebo/live_xbox_node.py": "e201987ee5583e820ff972cd2f81c5078e7b60904741050623bfa6095ce356fa",
+    "simulation/gazebo/pc_station.py": "94ee821060fdd4ea5714820f251315061833e4e96954b5dde0a63ccab7419b2a",
+    "simulation/gazebo/ros_bridge.py": "aa7eb6f7058744c109db7325f1c2fa1843fd21125e841d40860e5e4c1017aad6",
+    "simulation/gazebo/runtime_paths.py": "2ce4b3c0b1a58a939411530012c1fec6307e13588475970e774c232ba992f11a",
+    "simulation/gazebo/run_suite.py": "30c5fd3a0c100e4e60614e59b4e553bf1e87819c6688491751b97cd47b77edbf",
+    "simulation/gazebo/session_controls.py": "74e498e7b35dacf7f359edf05b59123b2454e35a65c2f64917199a2056605bda",
+    "simulation/gazebo/xinput_controller.py": "b886790bea67bd9c2d0452510d2cd718f1a6be75453845c4d72c8d400532e547",
+    "companion/pc_mission_map.py": "7baa4d84569ad552c278456472c0467ed8af7f4d0e36fae624d6dd82a3ddd80d",
+    "tools/reports/analyse_recordings.py": "f4153f58c4a2811908c8da345cc4ce051ba83da7dc6181f700666ae383c4affc"
+  }
+}

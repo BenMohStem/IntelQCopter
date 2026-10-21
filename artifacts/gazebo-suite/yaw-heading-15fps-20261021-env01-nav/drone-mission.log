@@ -1,0 +1,14 @@
+[INFO] [1792586797.712024400] [drone.drone_mission_computer]: READY: endpoints via mission/request; authority via Xbox FC mode; raw UART frames on fc/companion_tx
+[INFO] [1792586800.735133500] [drone.drone_mission_computer]: RGB_OBSTACLE x=2.832 y=0.162 r=0.882 count=1
+[INFO] [1792586806.831080900] [drone.drone_mission_computer]: PC_ROUTE_ACCEPTED points=5 finish=(8.90,0.30)
+[INFO] [1792586806.836114300] [drone.drone_mission_computer]: MISSION phase=1,done=0,mapped=1,plans=1,images=79,requests=1,camera=1,waypoint=1,points=5,planned=1
+[INFO] [1792586807.834626000] [drone.drone_mission_computer]: MISSION phase=2,done=0,mapped=1,plans=1,images=93,requests=1,camera=1,waypoint=1,points=5,planned=1
+[INFO] [1792586810.575040600] [drone.drone_mission_computer]: MISSION phase=3,done=0,mapped=1,plans=1,images=134,requests=1,camera=1,waypoint=1,points=5,planned=1
+[INFO] [1792586811.685283100] [drone.drone_mission_computer]: MISSION phase=4,done=0,mapped=1,plans=1,images=150,requests=1,camera=1,waypoint=1,points=5,planned=1
+[INFO] [1792586818.028735500] [drone.drone_mission_computer]: ROUTE_WAYPOINT_REACHED index=1 x=1.963 y=-2.333
+[INFO] [1792586820.751730200] [drone.drone_mission_computer]: RGB_OBSTACLE x=6.717 y=0.276 r=0.910 count=2
+[INFO] [1792586822.967676200] [drone.drone_mission_computer]: ROUTE_WAYPOINT_REACHED index=2 x=3.948 y=-2.389
+[INFO] [1792586828.436426400] [drone.drone_mission_computer]: ROUTE_WAYPOINT_REACHED index=3 x=6.010 y=-2.196
+[INFO] [1792586840.716065800] [drone.drone_mission_computer]: MISSION phase=5,done=0,mapped=2,plans=7,images=566,requests=1,camera=1,waypoint=4,points=5,planned=1
+[INFO] [1792586846.777174900] [drone.drone_mission_computer]: MISSION phase=6,done=0,mapped=2,plans=7,images=651,requests=1,camera=1,waypoint=4,points=5,planned=1
+[INFO] [1792586854.314892100] [drone.drone_mission_computer]: MISSION phase=7,done=1,mapped=2,plans=7,images=758,requests=1,camera=1,waypoint=4,points=5,planned=1

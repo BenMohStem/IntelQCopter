@@ -1,0 +1,4 @@
+usage: live_session.py [-h] [--with-companion] [--env ENV] [--run RUN]
+                       [--controller {0,1,2,3}] [--duration DURATION]
+                       [--start X Y]
+live_session.py: error: argument --start: expected 2 arguments

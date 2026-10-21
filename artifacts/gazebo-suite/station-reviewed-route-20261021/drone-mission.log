@@ -1,0 +1,15 @@
+[INFO] [1792586060.324862800] [drone.drone_mission_computer]: READY: endpoints via mission/request; authority via Xbox FC mode; raw UART frames on fc/companion_tx
+[INFO] [1792586063.266698500] [drone.drone_mission_computer]: RGB_OBSTACLE x=2.832 y=0.162 r=0.882 count=1
+[INFO] [1792586095.646177800] [drone.drone_mission_computer]: PC_ROUTE_ACCEPTED points=5 finish=(8.80,0.30)
+[INFO] [1792586095.654675500] [drone.drone_mission_computer]: MISSION phase=1,done=0,mapped=1,plans=1,images=301,requests=1,camera=1,waypoint=1,points=5,planned=1
+[INFO] [1792586096.553277100] [drone.drone_mission_computer]: MISSION phase=2,done=0,mapped=1,plans=1,images=311,requests=1,camera=1,waypoint=1,points=5,planned=1
+[INFO] [1792586099.101108200] [drone.drone_mission_computer]: MISSION phase=3,done=0,mapped=1,plans=1,images=338,requests=1,camera=1,waypoint=1,points=5,planned=1
+[INFO] [1792586100.313882900] [drone.drone_mission_computer]: MISSION phase=4,done=0,mapped=1,plans=1,images=350,requests=1,camera=1,waypoint=1,points=5,planned=1
+[INFO] [1792586106.910715400] [drone.drone_mission_computer]: ROUTE_WAYPOINT_REACHED index=1 x=1.952 y=-2.326
+[INFO] [1792586110.671241600] [drone.drone_mission_computer]: RGB_OBSTACLE x=6.715 y=0.298 r=0.910 count=2
+[INFO] [1792586112.115965200] [drone.drone_mission_computer]: ROUTE_WAYPOINT_REACHED index=2 x=3.949 y=-2.363
+[INFO] [1792586117.662013700] [drone.drone_mission_computer]: ROUTE_WAYPOINT_REACHED index=3 x=5.996 y=-2.185
+[INFO] [1792586126.265095100] [drone.drone_mission_computer]: MISSION phase=5,done=0,mapped=2,plans=5,images=603,requests=1,camera=1,waypoint=4,points=5,planned=1
+[INFO] [1792586132.569688700] [drone.drone_mission_computer]: MISSION phase=6,done=0,mapped=2,plans=5,images=669,requests=1,camera=1,waypoint=4,points=5,planned=1
+[INFO] [1792586139.622289500] [drone.drone_mission_computer]: MISSION phase=7,done=1,mapped=2,plans=5,images=741,requests=1,camera=1,waypoint=4,points=5,planned=1
+[INFO] [1792586191.473425400] [drone.drone_mission_computer]: RGB_OBSTACLE x=4.783 y=0.680 r=0.910 count=3

@@ -11,11 +11,15 @@
 - ROS2 C++ drone mission/perception/UART software and a PC endpoint map are implemented. PC supplies endpoints over DDS; the drone plans/replans from RGB YOLO and known-size panel PnP observations.
 - Initial Windows DLL mismatch, recording serializer failure, gesture timing gap, occlusion-distance failure and interrupted trials are retained. No failing check or native contact is suppressed.
 
-## Live Xbox update
+## Flight station, recordings and analysis
 
-[Launch instructions and wiring](live-xbox-and-companion.md). Actual Windows XInput was detected and received by both live standalone and ROS2 launches. The ROS2 launch reports Cyclone DDS and processes native RGB frames. Two-point and three-point PC route regressions passed using simulated Xbox mode selection; these are separate evidence categories from real controller startup. Original shutdown-race failure is retained. User-controlled flight performance has not yet been established.
+[Current instructions](live-xbox-and-companion.md). The unified station contains native follow/overview/onboard cameras, actual Xbox input monitoring, explicit simulator mode buttons, readiness reasons, preserved-trial reset and a reviewed 2–64-node PC editor. Gentle simulation input uses 5° maximum tilt, ±0.5 m/s vertical command, ±45°/s yaw and a squared stick curve. This is not horizontal position/speed hold; physical firmware gains/limits are unchanged.
 
-A separate ESP32-S3 standalone hardware target builds with companion authority/UART disabled. Physical outputs remain disabled.
+The initial human session remained on the ground because no joint five-second mode gesture reached the FC; x=9.6 m was also outside the allowed route boundary. Original rejection/inputs are retained. A later browser-approved five-node mission completed before subsequent manual collisions; the whole session must not be described as contact-free. The reset scientific-notation failure and corrected recovery evidence are preserved.
+
+New recordings target native 15 fps with 500 Hz telemetry. Earlier 5 fps / 50 Hz evidence remains intact. The recording-analysis tool scans each original frame, retains numerical metrics, and provides frame stepping and graph means/min/max. [Original report](../artifacts/reports/station-analysis-20261021/index.html).
+
+ROS2 heading now follows intended path velocity and holds its target near nodes/landing. On one repeatable five-node comparison, total yaw travel fell 57.0% and yaw-rate RMS fell 39.5%; both routes passed. The separate 15 fps route also passed. These are simulated-case results, not hardware confidence bounds. Original failures, collision episodes and baseline sources remain available.
 
 ## Evidence categories
 

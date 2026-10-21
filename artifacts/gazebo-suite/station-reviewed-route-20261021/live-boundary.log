@@ -1,0 +1,41 @@
+LIVE VIEW READY http://127.0.0.1:8087
+BOUNDARY READY: real ROS2 DDS; native Gazebo sensors; raw HID and companion UART input only
+PROGRESS t=0.0s position=[2.1561832030058578e-20, -1.9059504229954456e-20, 0.07985757992983432] mode=0 
+PROGRESS t=5.0s position=[1.4796783239048753e-18, -4.618279992641984e-19, 0.07999981982562351] mode=0 
+PROGRESS t=10.0s position=[1.4796783239048753e-18, -4.618279992641984e-19, 0.07999981982562351] mode=0 
+PROGRESS t=15.0s position=[1.4796783239048753e-18, -4.618279992641984e-19, 0.07999981982562351] mode=0 
+PROGRESS t=20.0s position=[1.4796783239048753e-18, -4.618279992641984e-19, 0.07999981982562351] mode=0 
+PROGRESS t=25.0s position=[1.4796783239048753e-18, -4.618279992641984e-19, 0.07999981982562351] mode=0 
+PROGRESS t=30.0s position=[1.4796783239048753e-18, -4.618279992641984e-19, 0.07999981982562351] mode=0 
+PROGRESS t=35.0s position=[0.00033043263677357427, -0.0003571322378783535, 1.1897251629621786] mode=1 phase=4,done=0,mapped=1,plans=1,images=350,requests=1,camera=1,waypoint=1,points=5,planned=1
+PROGRESS t=40.0s position=[1.779725763753063, -1.9206285024685863, 1.2490738181403263] mode=1 phase=4,done=0,mapped=1,plans=1,images=400,requests=1,camera=1,waypoint=1,points=5,planned=1
+PROGRESS t=45.0s position=[3.4396355054285426, -2.464028610596179, 1.250161914250877] mode=1 phase=4,done=0,mapped=2,plans=3,images=450,requests=1,camera=1,waypoint=2,points=5,planned=1
+PROGRESS t=50.0s position=[5.348987836410963, -2.3526631274578973, 1.2506387282992308] mode=1 phase=4,done=0,mapped=2,plans=4,images=500,requests=1,camera=1,waypoint=3,points=5,planned=1
+PROGRESS t=55.0s position=[7.083174122789848, -1.3524156513250187, 1.2513697880983825] mode=1 phase=4,done=0,mapped=2,plans=5,images=550,requests=1,camera=1,waypoint=4,points=5,planned=1
+PROGRESS t=60.0s position=[8.726926367301925, 0.24476682293140142, 1.2480501782977296] mode=1 phase=4,done=0,mapped=2,plans=5,images=600,requests=1,camera=1,waypoint=4,points=5,planned=1
+PROGRESS t=65.0s position=[8.65486904839726, 0.3362684825602155, 1.2558517042964275] mode=1 phase=5,done=0,mapped=2,plans=5,images=650,requests=1,camera=1,waypoint=4,points=5,planned=1
+PROGRESS t=70.0s position=[8.786091204904121, 0.3237444577967397, 0.46017205931313065] mode=1 phase=6,done=0,mapped=2,plans=5,images=700,requests=1,camera=1,waypoint=4,points=5,planned=1
+PROGRESS t=75.0s position=[8.80591595616254, 0.3095055767484676, 0.0799998068109316] mode=1 phase=7,done=1,mapped=2,plans=5,images=741,requests=1,camera=1,waypoint=4,points=5,planned=1
+PROGRESS t=80.0s position=[8.805914555487739, 0.3095052100408131, 0.07999883870991287] mode=1 phase=7,done=1,mapped=2,plans=5,images=741,requests=1,camera=1,waypoint=4,points=5,planned=1
+PROGRESS t=85.0s position=[8.80591387032178, 0.30950527060794597, 0.07999998482000804] mode=1 phase=7,done=1,mapped=2,plans=5,images=741,requests=1,camera=1,waypoint=4,points=5,planned=1
+PROGRESS t=90.0s position=[8.805913310878724, 0.3095053387624773, 0.07999857019293473] mode=1 phase=7,done=1,mapped=2,plans=5,images=741,requests=1,camera=1,waypoint=4,points=5,planned=1
+PROGRESS t=95.0s position=[8.814092919086503, 0.2943184806807057, 0.12186999911318269] mode=0 phase=7,done=1,mapped=2,plans=5,images=741,requests=1,camera=1,waypoint=4,points=5,planned=1
+PROGRESS t=100.0s position=[8.847911594871475, 0.26167870115208, 0.22294538006908096] mode=0 phase=7,done=1,mapped=2,plans=5,images=741,requests=1,camera=1,waypoint=4,points=5,planned=1
+PROGRESS t=105.0s position=[8.887819052262131, 0.26628912013693096, 0.4881764138009946] mode=0 phase=7,done=1,mapped=2,plans=5,images=741,requests=1,camera=1,waypoint=4,points=5,planned=1
+PROGRESS t=110.0s position=[8.890763707721254, 0.3420111759751923, 0.460552352599181] mode=0 phase=7,done=1,mapped=2,plans=5,images=741,requests=1,camera=1,waypoint=4,points=5,planned=1
+PROGRESS t=115.0s position=[8.839513568251848, 0.40792412459478056, 0.46465259218377014] mode=0 phase=7,done=1,mapped=2,plans=5,images=741,requests=1,camera=1,waypoint=4,points=5,planned=1
+PROGRESS t=120.0s position=[7.410568840557704, -2.2532176568725064, 0.45954073865503864] mode=0 phase=7,done=1,mapped=2,plans=5,images=741,requests=1,camera=1,waypoint=4,points=5,planned=1
+PROGRESS t=125.0s position=[1.5490902087049188, -2.7296552413006006, 0.4661706554177547] mode=0 phase=7,done=1,mapped=2,plans=5,images=741,requests=1,camera=1,waypoint=4,points=5,planned=1
+PROGRESS t=130.0s position=[-9.747500706268239, -2.8007743357394372, 1.0516990562717208] mode=0 phase=7,done=1,mapped=2,plans=5,images=741,requests=1,camera=1,waypoint=4,points=5,planned=1
+PROGRESS t=135.0s position=[-4.778043831436, -3.8147528215055333, 0.650346803868021] mode=0 phase=7,done=1,mapped=2,plans=5,images=741,requests=1,camera=1,waypoint=4,points=5,planned=1
+PROGRESS t=140.0s position=[6.439041824345548, -2.0568331394679613, 0.8266712878360162] mode=0 phase=7,done=1,mapped=2,plans=5,images=741,requests=1,camera=1,waypoint=4,points=5,planned=1
+PROGRESS t=145.0s position=[21.476463929605757, -4.456779172481148, 1.0946856044417344] mode=0 phase=7,done=1,mapped=2,plans=5,images=741,requests=1,camera=1,waypoint=4,points=5,planned=1
+PROGRESS t=150.0s position=[24.805251381821684, -6.9715885803558315, 2.4292175168318697] mode=0 phase=7,done=1,mapped=2,plans=5,images=741,requests=1,camera=1,waypoint=4,points=5,planned=1
+PROGRESS t=155.0s position=[6.773539921440245, -0.26938158534927786, 0.7962693652513992] mode=0 phase=7,done=1,mapped=2,plans=5,images=741,requests=1,camera=1,waypoint=4,points=5,planned=1
+PROGRESS t=160.0s position=[6.7734987330748275, -0.2694603524344205, 0.3399999617454518] mode=0 phase=7,done=1,mapped=2,plans=5,images=741,requests=1,camera=1,waypoint=4,points=5,planned=1
+PROGRESS t=165.0s position=[6.7734987330748275, -0.2694603524344205, 0.3399999617454518] mode=0 phase=7,done=1,mapped=2,plans=5,images=741,requests=1,camera=1,waypoint=4,points=5,planned=1
+PROGRESS t=170.0s position=[6.7734987330748275, -0.2694603524344205, 0.3399999617454518] mode=0 phase=7,done=1,mapped=2,plans=5,images=741,requests=1,camera=1,waypoint=4,points=5,planned=1
+PROGRESS t=175.0s position=[6.7734987330748275, -0.2694603524344205, 0.3399999617454518] mode=0 phase=7,done=1,mapped=2,plans=5,images=741,requests=1,camera=1,waypoint=4,points=5,planned=1
+PROGRESS t=180.0s position=[6.7734987330748275, -0.2694603524344205, 0.3399999617454518] mode=1 phase=7,done=1,mapped=2,plans=5,images=741,requests=1,camera=1,waypoint=4,points=5,planned=1
+PROGRESS t=185.0s position=[6.7734987330748275, -0.2694603524344205, 0.3399999617454518] mode=1 phase=7,done=1,mapped=2,plans=5,images=741,requests=1,camera=1,waypoint=4,points=5,planned=1
+BOUNDARY RESULT {"interactive": true, "session_ended_cleanly": true, "completed": false, "timeout": false, "simulated_seconds": 187.94, "hid_packets": 9634, "companion_packets": 2199, "yolo_frames": 1879, "pnp_frames": 1879, "mission_status": "phase=7,done=1,mapped=2,plans=5,images=741,requests=1,camera=1,waypoint=4,points=5,planned=1", "final_state": {"sim_time_s": 187.96, "position": [6.7734987330748275, -0.2694603524344205, 0.3399999617454518], "quaternion": [-0.6950753744216424, 0.1298832311107212, 0.7045705204175063, -0.059841055367171145], "velocity": [-0.0015769877730898365, -0.00014997167305049432, -9.359491837046529e-05], "omega": [-0.00010870129145877964, 0.0028452358476107335, -0.005666682060681728], "ground_contact": true, "obstacle_contact": true, "environment": "env01", "health": {"motor_demand": [0.5891095399856567, 1.0, 0.5899749994277954, 0.17069503664970398], "sensor_fault": false, "pilot_fresh": true, "gyro_verified": true, "accel_calibrated": true, "barometer_ready": true, "companion_fresh": false, "mode_events": 3}, "simulation_actuation": true, "mode": 1, "disarm": false, "mapped_input_packets": 2199, "xbox_packets": 9599}, "scope": "Native Gazebo physics and cameras; real ROS2 DDS; ESP32 C core host build. C++ mission/YOLO/PnP enabled only for navigation cases. Not Xtensa emulation or physical BLE."}

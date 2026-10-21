@@ -1,0 +1,303 @@
+{
+  "scope": "Native-frame video review + numerical analysis of preserved simulation CSVs.\n\nNo new flight, frame interpolation, or physical parameter identification is performed.\n",
+  "runs": [
+    {
+      "name": "yaw-baseline-20261021-env01-nav",
+      "scope": "Native Gazebo / active C host core / ROS2 Cyclone DDS. Synthetic sensors/localization and unmeasured F450 plant. First contiguous navigation-mode interval evaluated separately from later manual interaction.",
+      "telemetry_hz": 50.000000000001066,
+      "segment_start_s": 5.04,
+      "segment_end_s": 64.56,
+      "yaw_travel_deg": 855.6109179618422,
+      "yaw_rate_rms_dps": 23.28971004616297,
+      "peak_yaw_rate_dps": 54.8748286696319,
+      "max_abs_roll_pitch_deg": 4.273061074973225,
+      "sampled_panel_contact_rows": 0,
+      "max_horizontal_speed_mps": 0.6831206301910097,
+      "height_estimate_rmse_m": 0.011278250931916438,
+      "whole_session_native_contact_steps": 0,
+      "assumed_parameters": {
+        "status": "ASSUMED complete-vehicle simulation model; not measured hardware",
+        "mass_kg": 1.2,
+        "inertia_kg_m2": [
+          0.012,
+          0.012,
+          0.022
+        ],
+        "motor_diagonal_m": 0.45,
+        "maximum_thrust_per_motor_n": 6.0,
+        "reaction_torque_per_thrust_m": 0.015,
+        "thrust_time_constant_s": 0.04,
+        "linear_drag_ns_per_m": 0.12,
+        "gravity_mps2": 9.80665,
+        "physics_dt_s": 0.002,
+        "barometer_hz": 50,
+        "barometer_sigma_m": 0.008,
+        "gyro_sigma_dps": 0.02,
+        "accel_sigma_g": 0.001,
+        "robot_collision_radius_m": 0.34,
+        "perception_mode": "Native RGB -> C++ YOLO panel detector -> known-size PnP -> observed obstacle map; simulated local odometry",
+        "hardware_known": {
+          "frame": "F450/Q450",
+          "battery": "3S 4200mAh 120C; mass ~150g unverified",
+          "motor": "1400KV exact model unknown",
+          "propeller": "9047"
+        },
+        "scenarios": "simulation/gazebo/environments.json"
+      },
+      "route_passed": true,
+      "landing_error_m": 0.004708967939879621,
+      "waypoints": [
+        {
+          "index": 1,
+          "error_m": 0.05580887208857,
+          "height_m": 1.2494457123981342,
+          "acknowledged": true,
+          "passed": true
+        },
+        {
+          "index": 2,
+          "error_m": 0.03669354877550129,
+          "height_m": 1.2489254740007074,
+          "acknowledged": true,
+          "passed": true
+        },
+        {
+          "index": 3,
+          "error_m": 0.01112151723169185,
+          "height_m": 1.2490679354317569,
+          "acknowledged": true,
+          "passed": true
+        }
+      ],
+      "native_video_fps": 5.0,
+      "video_frames": 327,
+      "video_seconds": 65.4,
+      "analysed_video_frames": 327,
+      "original_sha256": {
+        "flight.csv": "fde5be11438751396621e22140e8ed415e4e02d82daf9fe3809072e5bd1b520c",
+        "gazebo.mp4": "c34f30b8f8708b3ab657807dea73def41fbbdba8127a4c4c41c70d1a354602aa",
+        "engine.log": "1b9bd0da6d2a3862abca4700f64e8c964aeab47fcff73c10712f66472b5e2dab",
+        "world.sdf": "0bb62318f0520b1100a8abf7aebd9e826450a7e7ded47aaed3b95c49ac27f7fa"
+      }
+    },
+    {
+      "name": "yaw-path-heading-20261021-env01-nav",
+      "scope": "Native Gazebo / active C host core / ROS2 Cyclone DDS. Synthetic sensors/localization and unmeasured F450 plant. First contiguous navigation-mode interval evaluated separately from later manual interaction.",
+      "telemetry_hz": 499.99999999999955,
+      "segment_start_s": 5.022,
+      "segment_end_s": 52.6,
+      "yaw_travel_deg": 367.68488939552117,
+      "yaw_rate_rms_dps": 14.082913633646317,
+      "peak_yaw_rate_dps": 53.15539457934603,
+      "max_abs_roll_pitch_deg": 3.822165808082799,
+      "sampled_panel_contact_rows": 0,
+      "max_horizontal_speed_mps": 0.6943099521529907,
+      "height_estimate_rmse_m": 0.002855709079630178,
+      "whole_session_native_contact_steps": 0,
+      "assumed_parameters": {
+        "status": "ASSUMED complete-vehicle simulation model; not measured hardware",
+        "mass_kg": 1.2,
+        "inertia_kg_m2": [
+          0.012,
+          0.012,
+          0.022
+        ],
+        "motor_diagonal_m": 0.45,
+        "maximum_thrust_per_motor_n": 6.0,
+        "reaction_torque_per_thrust_m": 0.015,
+        "thrust_time_constant_s": 0.04,
+        "linear_drag_ns_per_m": 0.12,
+        "gravity_mps2": 9.80665,
+        "physics_dt_s": 0.002,
+        "barometer_hz": 50,
+        "barometer_sigma_m": 0.008,
+        "gyro_sigma_dps": 0.02,
+        "accel_sigma_g": 0.001,
+        "robot_collision_radius_m": 0.34,
+        "perception_mode": "Native RGB -> C++ YOLO panel detector -> known-size PnP -> observed obstacle map; simulated local odometry",
+        "hardware_known": {
+          "frame": "F450/Q450",
+          "battery": "3S 4200mAh 120C; mass ~150g unverified",
+          "motor": "1400KV exact model unknown",
+          "propeller": "9047"
+        },
+        "scenarios": "simulation/gazebo/environments.json"
+      },
+      "route_passed": true,
+      "landing_error_m": 0.015524700879036039,
+      "waypoints": [
+        {
+          "index": 1,
+          "error_m": 0.044960716505394904,
+          "height_m": 1.249548121988662,
+          "acknowledged": true,
+          "passed": true
+        },
+        {
+          "index": 2,
+          "error_m": 0.016267406542887407,
+          "height_m": 1.2492747262354453,
+          "acknowledged": true,
+          "passed": true
+        },
+        {
+          "index": 3,
+          "error_m": 0.005613348159556147,
+          "height_m": 1.2492203397862676,
+          "acknowledged": true,
+          "passed": true
+        }
+      ],
+      "native_video_fps": 5.0,
+      "video_frames": 267,
+      "video_seconds": 53.4,
+      "analysed_video_frames": 267,
+      "original_sha256": {
+        "flight.csv": "5391141997376ebb90c24ba3cc595ad246a09c1c58be036ec1b9ea9d25799fdf",
+        "gazebo.mp4": "2d9a4be5f888ce9bdd43e8156eac405ea5f56ea3d82cdfef77151a27dbaa4558",
+        "engine.log": "34d2daa64cfe6b68fc3abcf78659cd575bbb39875af9357b92099038eef35573",
+        "world.sdf": "0bb62318f0520b1100a8abf7aebd9e826450a7e7ded47aaed3b95c49ac27f7fa"
+      }
+    },
+    {
+      "name": "yaw-heading-15fps-20261021-env01-nav",
+      "scope": "Native Gazebo / active C host core / ROS2 Cyclone DDS. Synthetic sensors/localization and unmeasured F450 plant. First contiguous navigation-mode interval evaluated separately from later manual interaction.",
+      "telemetry_hz": 499.99999999999955,
+      "segment_start_s": 5.022,
+      "segment_end_s": 52.64,
+      "yaw_travel_deg": 366.0343212428874,
+      "yaw_rate_rms_dps": 14.00782353718151,
+      "peak_yaw_rate_dps": 53.43265703064526,
+      "max_abs_roll_pitch_deg": 3.8268891319430707,
+      "sampled_panel_contact_rows": 0,
+      "max_horizontal_speed_mps": 0.6917216302969903,
+      "height_estimate_rmse_m": 0.0029158422655085397,
+      "whole_session_native_contact_steps": 0,
+      "assumed_parameters": {
+        "status": "ASSUMED complete-vehicle simulation model; not measured hardware",
+        "mass_kg": 1.2,
+        "inertia_kg_m2": [
+          0.012,
+          0.012,
+          0.022
+        ],
+        "motor_diagonal_m": 0.45,
+        "maximum_thrust_per_motor_n": 6.0,
+        "reaction_torque_per_thrust_m": 0.015,
+        "thrust_time_constant_s": 0.04,
+        "linear_drag_ns_per_m": 0.12,
+        "gravity_mps2": 9.80665,
+        "physics_dt_s": 0.002,
+        "barometer_hz": 50,
+        "barometer_sigma_m": 0.008,
+        "gyro_sigma_dps": 0.02,
+        "accel_sigma_g": 0.001,
+        "robot_collision_radius_m": 0.34,
+        "perception_mode": "Native RGB -> C++ YOLO panel detector -> known-size PnP -> observed obstacle map; simulated local odometry",
+        "hardware_known": {
+          "frame": "F450/Q450",
+          "battery": "3S 4200mAh 120C; mass ~150g unverified",
+          "motor": "1400KV exact model unknown",
+          "propeller": "9047"
+        },
+        "scenarios": "simulation/gazebo/environments.json"
+      },
+      "route_passed": true,
+      "landing_error_m": 0.015979465213462964,
+      "waypoints": [
+        {
+          "index": 1,
+          "error_m": 0.0450366524613957,
+          "height_m": 1.2497094210386386,
+          "acknowledged": true,
+          "passed": true
+        },
+        {
+          "index": 2,
+          "error_m": 0.016184595143470076,
+          "height_m": 1.249242260095896,
+          "acknowledged": true,
+          "passed": true
+        },
+        {
+          "index": 3,
+          "error_m": 0.005721243833908126,
+          "height_m": 1.2494265519511836,
+          "acknowledged": true,
+          "passed": true
+        }
+      ],
+      "native_video_fps": 15.0,
+      "video_frames": 801,
+      "video_seconds": 53.4,
+      "analysed_video_frames": 801,
+      "original_sha256": {
+        "flight.csv": "fb2ce33e20ba299e261bc9be0236ac6285c461958a4cc25a2c728d5d4a4ba75a",
+        "gazebo.mp4": "a63801ae9328953cf1e08180d7541ad0844a392530743a38b93d5301ace2051c",
+        "engine.log": "3674a5ce1de9f3ff2f9f2030812281165cbfdd574dff1f7ffe14948f4c17d1f2",
+        "world.sdf": "c2ff420a5dd01c6ed6a5a548b8ab70260630faf6d55dfd9cb70c4dbdc6ecd087"
+      }
+    },
+    {
+      "name": "station-reviewed-route-20261021",
+      "scope": "Native Gazebo / active C host core / ROS2 Cyclone DDS. Synthetic sensors/localization and unmeasured F450 plant. First contiguous navigation-mode interval evaluated separately from later manual interaction.",
+      "telemetry_hz": 50.000000000001066,
+      "segment_start_s": 30.12,
+      "segment_end_s": 90.54,
+      "yaw_travel_deg": 497.28168771388255,
+      "yaw_rate_rms_dps": 16.087233290067157,
+      "peak_yaw_rate_dps": 54.65161465381765,
+      "max_abs_roll_pitch_deg": 3.1279297202107674,
+      "sampled_panel_contact_rows": 0,
+      "max_horizontal_speed_mps": 0.6790184538959737,
+      "height_estimate_rmse_m": 0.0021613136179198366,
+      "whole_session_native_contact_steps": 17681,
+      "assumed_parameters": {
+        "status": "ASSUMED complete-vehicle simulation model; not measured hardware",
+        "mass_kg": 1.2,
+        "inertia_kg_m2": [
+          0.012,
+          0.012,
+          0.022
+        ],
+        "motor_diagonal_m": 0.45,
+        "maximum_thrust_per_motor_n": 6.0,
+        "reaction_torque_per_thrust_m": 0.015,
+        "thrust_time_constant_s": 0.04,
+        "linear_drag_ns_per_m": 0.12,
+        "gravity_mps2": 9.80665,
+        "physics_dt_s": 0.002,
+        "barometer_hz": 50,
+        "barometer_sigma_m": 0.008,
+        "gyro_sigma_dps": 0.02,
+        "accel_sigma_g": 0.001,
+        "robot_collision_radius_m": 0.34,
+        "perception_mode": "Native RGB -> C++ YOLO panel detector -> known-size PnP -> observed obstacle map; simulated local odometry",
+        "hardware_known": {
+          "frame": "F450/Q450",
+          "battery": "3S 4200mAh 120C; mass ~150g unverified",
+          "motor": "1400KV exact model unknown",
+          "propeller": "9047"
+        },
+        "scenarios": "simulation/gazebo/environments.json"
+      },
+      "native_video_fps": 5.0,
+      "video_frames": 940,
+      "video_seconds": 188.0,
+      "analysed_video_frames": 940,
+      "original_sha256": {
+        "flight.csv": "8575ea0ffb68daf27a6cf3070036c021506851ab246eb2077484148e3fcd38cb",
+        "gazebo.mp4": "3dc5f8e37a658e9d17652fcef039cee60d519d11a7ce14dc8f0778c881d583bd",
+        "engine.log": "c2ef22dfe8c3074c6ac3f856d5f4c6144fbdca89edacf0ac92beac6477dcb00c",
+        "world.sdf": "7eb1bf01a44628aba034db54f1a3a84a40b50293e2936e7d8a0fdd9a04790eb4"
+      }
+    }
+  ],
+  "comparison": {
+    "before": "yaw-baseline-20261021-env01-nav",
+    "after": "yaw-path-heading-20261021-env01-nav",
+    "yaw_travel_change_percent": -57.0266248739104,
+    "yaw_rate_rms_change_percent": -39.53160599366712,
+    "scope": "Single repeatable simulated case per version; not confidence bounds or measured aircraft improvement."
+  }
+}
