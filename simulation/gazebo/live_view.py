@@ -35,7 +35,7 @@ class Viewer:
             def do_POST(self):
                 origin=self.headers.get('Origin',f'http://127.0.0.1:{port}')
                 if origin not in (f'http://127.0.0.1:{port}',f'http://localhost:{port}'):self.reply(b'{"reason":"Foreign origin rejected"}',code=403);return
-                if self.path=='/stop':owner.stopped.set();self.reply(b'{"message":"Saving video and original logs"}');return
+                if self.path=='/stop':owner.stopped.set();self.reply(b'{"message":"Ending session; automatic recording is being finalized"}');return
                 try:
                     size=int(self.headers.get('Content-Length','0'))
                     if not 0<size<=16384:raise ValueError('Invalid request size')
@@ -85,7 +85,7 @@ class Viewer:
             ok,encoded=cv2.imencode('.jpg',cv2.cvtColor(follow,cv2.COLOR_RGB2BGR),[cv2.IMWRITE_JPEG_QUALITY,88])
             if ok:frames['follow']=encoded.tobytes()
         with self.lock:
-            self.sequence+=1;self.frames=frames;self.state=dict(state,profile=self.profile,frame_sequence=self.sequence,camera_wall_time_s=time.time())
+            self.sequence+=1;self.frames=frames;self.state=dict(state,profile=self.profile,frame_sequence=self.sequence,camera_wall_time_s=time.time(),recording_automatic=True,recording_run=Path(self.log_path).parent.name if self.log_path else None)
         if self.telemetry_file:
             self.telemetry_file.write(json.dumps(self.state)+'\n');self.telemetry_file.flush()
             if time.monotonic()-self.last_snapshot>2:

@@ -23,6 +23,7 @@ class FlightCore:
         self.dll.fc_cal_load.argtypes=[c.POINTER(c.c_uint8)];self.dll.fc_cal_load.restype=c.c_bool
         self.dll.fc_cal_take_pending.argtypes=[c.POINTER(c.c_uint8)];self.dll.fc_cal_take_pending.restype=c.c_bool
         self.dll.fc_status_frame.argtypes=[c.POINTER(Status),c.POINTER(c.c_uint8)]
+        self.dll.fc_horizontal_observation.argtypes=[c.POINTER(c.c_float),c.c_uint64];self.dll.fc_horizontal_observation.restype=c.c_bool
         self.dll.fc_init(0x3200);self.rng=np.random.default_rng(seed);self.last_velocity=np.zeros(3);self.acc=np.zeros(3)
         self.parameters=settings['model'] if settings else json.loads((ROOT/'simulation/model/parameters.json').read_text())
         self.status=Status();self.pressure_sequence=0;self.tick=0;self.pressure=101325.
@@ -67,11 +68,18 @@ class FlightCore:
             h=max(-1,state['position'][2]-.082)+self.rng.normal(0,self.parameters['barometer_sigma_m'])
             self.pressure=101325*(1-h/44330)**(1/.190294957)
         raw.pressure_sequence=self.pressure_sequence;raw.pressure_pa=self.pressure
+        # Explicit synthetic localization SENSOR input. The C FC computes all
+        # braking/hold angles; Python never alters the aircraft pose or velocity.
+        if not getattr(self,'disable_horizontal_aiding',False):
+            q=state['quaternion'] if 'quaternion' in state else None
+            yaw=float(np.arctan2(2*(q[3]*q[2]+q[0]*q[1]),1-2*(q[1]**2+q[2]**2))) if q else 0.
+            obs=(c.c_float*5)(state['position'][0],state['position'][1],velocity[0],velocity[1],yaw)
+            assert self.dll.fc_horizontal_observation(obs,int(now*1e6)+self.time_offset_us)
         self.dll.fc_control_step(c.byref(raw),int(now*1e6)+self.time_offset_us,.002,c.byref(self.status))
         return np.array(self.status.motor_demand)
     def observe(self):
-        keys=['roll_est','pitch_est','height_est','vz_est','roll_sigma','pitch_sigma','height_sigma','vz_sigma','roll_K','pitch_K','height_K','velocity_K','roll_innovation','pitch_innovation','height_innovation','height_S','roll_bias','pitch_bias','roll_command','pitch_command','yaw_rate_command','vz_command','fc_calls']
-        out=(c.c_float*23)();assert self.dll.fc_sim_observe(out,23)==23
+        keys=['roll_est','pitch_est','height_est','vz_est','roll_sigma','pitch_sigma','height_sigma','vz_sigma','roll_K','pitch_K','height_K','velocity_K','roll_innovation','pitch_innovation','height_innovation','height_S','roll_bias','pitch_bias','roll_command','pitch_command','yaw_rate_command','vz_command','fc_calls','xy_hold_active','xy_aiding_fresh','xy_target_x','xy_target_y','xy_x','xy_y','xy_vx','xy_vy','xy_acceleration_norm','angle_gravity_correction']
+        out=(c.c_float*33)();assert self.dll.fc_sim_observe(out,33)==33
         return dict(zip(keys,map(float,out)))
     def frame(self):
         out=(c.c_uint8*16)();self.dll.fc_status_frame(c.byref(self.status),out);return bytes(out)

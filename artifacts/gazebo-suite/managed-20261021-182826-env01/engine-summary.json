@@ -1,0 +1,148 @@
+{
+  "engine": "Native Gazebo 10.5 + OGRE2 RGB; ESP32 C core host build",
+  "environment": {
+    "id": "env01",
+    "name": "campus_garden",
+    "seed": 3200,
+    "panels": [
+      [
+        2.8,
+        0.15,
+        -0.06
+      ],
+      [
+        4.8,
+        0.6,
+        0.08
+      ],
+      [
+        6.7,
+        0.2,
+        -0.1
+      ]
+    ],
+    "decor": [
+      [
+        1.0,
+        3.6,
+        1.0,
+        0.4,
+        0.6,
+        2.0
+      ],
+      [
+        4.0,
+        3.8,
+        1.0,
+        0.4,
+        0.6,
+        2.0
+      ],
+      [
+        7.0,
+        -3.7,
+        1.0,
+        0.4,
+        0.6,
+        2.0
+      ]
+    ],
+    "ground_color": [
+      0.22,
+      0.4,
+      0.15
+    ],
+    "decor_color": [
+      0.3,
+      0.35,
+      0.4
+    ],
+    "start": [
+      0.0,
+      0.0,
+      0.082
+    ],
+    "finish": [
+      8.9,
+      -0.3,
+      0.082
+    ],
+    "cruise": 1.25,
+    "spawn": [
+      0.0,
+      0.0
+    ]
+  },
+  "assumed_parameters": {
+    "status": "ASSUMED complete-vehicle simulation model; not measured hardware",
+    "mass_kg": 1.2,
+    "inertia_kg_m2": [
+      0.012,
+      0.012,
+      0.022
+    ],
+    "motor_diagonal_m": 0.45,
+    "maximum_thrust_per_motor_n": 6.0,
+    "reaction_torque_per_thrust_m": 0.015,
+    "thrust_time_constant_s": 0.04,
+    "linear_drag_ns_per_m": 0.12,
+    "gravity_mps2": 9.80665,
+    "physics_dt_s": 0.002,
+    "barometer_hz": 50,
+    "barometer_sigma_m": 0.008,
+    "gyro_sigma_dps": 0.02,
+    "accel_sigma_g": 0.001,
+    "robot_collision_radius_m": 0.34,
+    "perception_mode": "Native RGB -> C++ YOLO panel detector -> known-size PnP -> observed obstacle map; simulated local odometry",
+    "hardware_known": {
+      "frame": "F450/Q450",
+      "battery": "3S 4200mAh 120C; mass ~150g unverified",
+      "motor": "1400KV exact model unknown",
+      "propeller": "9047"
+    },
+    "scenarios": "simulation/gazebo/environments.json"
+  },
+  "sha256": {
+    "firmware/src/flight_controller.c": "0d17ef87178e3060088ef5fd099220b59031f72ac6f29f9aaa2ab112d389a1fb",
+    "firmware/include/fc_api.h": "057d0c912942007255d3f701115cb7d15b4a15e29f85063ab6901a91794ea4de",
+    "build/sitl/esp32_flight_core.dll": "7dc2b01e83a29fb3bba8bda954ea54bbc684ee1c9fc9e93a822ecc400b2c6f6c"
+  },
+  "steps": 31570,
+  "obstacle_contact_steps": 0,
+  "min_evaluated_clearance_m": 2.4059669108466553,
+  "xbox_packets": 0,
+  "companion_packets": 0,
+  "final_state": {
+    "sim_time_s": 63.16,
+    "position": [
+      1.4796783239048753e-18,
+      -4.618279992641984e-19,
+      0.07999981982562351
+    ],
+    "quaternion": [
+      -4.062922841784875e-18,
+      8.434674858081022e-18,
+      -1.3782213374590767e-19,
+      1.0
+    ],
+    "velocity": [
+      1.960530530623381e-18,
+      -5.898456918184111e-19,
+      5.498154642021025e-07
+    ],
+    "omega": [
+      -3.422705655666078e-17,
+      4.491711030283466e-17,
+      1.6670642212457772e-18
+    ],
+    "ground_contact": true,
+    "obstacle_contact": false
+  },
+  "standalone": false,
+  "interactive": true,
+  "telemetry_hz": 500,
+  "calibration": "Synthetic six-face sensor bench; no real coefficients",
+  "horizontal_aiding": "Perfect Gazebo x/y/vx/vy/yaw delivered to the C FC as synthetic localization; unavailable on real hardware until a driver exists",
+  "hardware_motor_arming": false,
+  "simulation_motor_gate": "Completed mode gesture, fresh pilot/calibrated sensors, plus upward stick/RT in stable or fresh companion in navigation; latched for this interactive session; physical outputs remain disabled"
+}

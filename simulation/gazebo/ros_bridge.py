@@ -97,7 +97,7 @@ def main():
         if viewer:
             client.send({'op':'camera','topic':'/follow/rgb'});fw,fh,fd=client.recv();follow=np.frombuffer(fd,np.uint8).reshape(fh,fw,3)
             canvas[:360,:640]=follow
-            viewer.update(canvas,dict(environment=state.get('environment'),sim_time_s=t-start,real_time_factor=(t-start)/max(.001,time.monotonic()-wall_start),telemetry=state.get('telemetry',{}),motor_actual=state.get('motor_actual',[]),health=state.get('health',{}),velocity=state['velocity'],gesture=gesture,fc_mode=state['mode'],disarmed=state['disarm'],position=state['position'],pilot=node.pilot,mission=node.mission,simulation_actuation=state.get('simulation_actuation'),YOLO_frames=node.semantics,PnP_frames=node.metric_frames,standalone=False),follow=follow,overview=overview)
+            viewer.update(canvas,dict(environment=state.get('environment'),sim_time_s=t-start,real_time_factor=(t-start)/max(.001,time.monotonic()-wall_start),localization_source=state.get('localization_source'),telemetry=state.get('telemetry',{}),motor_actual=state.get('motor_actual',[]),health=state.get('health',{}),velocity=state['velocity'],gesture=gesture,fc_mode=state['mode'],disarmed=state['disarm'],position=state['position'],pilot=node.pilot,mission=node.mission,simulation_actuation=state.get('simulation_actuation'),YOLO_frames=node.semantics,PnP_frames=node.metric_frames,standalone=False),follow=follow,overview=overview)
         recorder.stdin.write(canvas.tobytes());last_video=t;next_video+=1/15
         if count%250<10:print(f'PROGRESS t={t-start:.1f}s position={state["position"]} mode={state["mode"]} {node.mission}',flush=True)
     if args.authority_proof and 'done=1' in node.mission and state['disarm'] and state['ground_contact']:node.done=True
@@ -113,6 +113,7 @@ def main():
    viewer.close()
   wire.close();node.trace.close()
   recorder.stdin.close();recorder.wait(timeout=30)
+  (out/'recording-complete.json').write_text(json.dumps(dict(complete=recorder.returncode==0,run=args.run,automatic=True,file='gazebo.mp4',encoder_returncode=recorder.returncode))+'\n',encoding='utf8')
   client.send({'op':'close'});client.recv();client.close();node.destroy_node();rclpy.shutdown()
  raise SystemExit(0 if success or args.live else 2)
 if __name__=='__main__':main()

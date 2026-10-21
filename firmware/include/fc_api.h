@@ -38,6 +38,11 @@ typedef struct {
     bool user_disarm,companion_fresh;
     uint32_t xbox_reports,mode_events;
 } fc_status_t;
+/* Optional horizontal localization input: world x/y (m), vx/vy (m/s),
+ * body yaw (rad), acquisition time in the FC clock. Control-task owned.
+ * No production hardware driver supplies this yet; simulation labels truth aiding.
+ * NULL/invalid input revokes aiding; >100ms old observations cannot hold position. */
+FC_API bool fc_horizontal_observation(const float world_xy_vxy_yaw[5],uint64_t acquired_us);
 FC_API void fc_init(uint64_t board_id);
 FC_API void fc_step(const fc_sample_t*,const fc_pilot_t*,uint64_t now_us,float dt,fc_status_t*);
 FC_API bool fc_cal_load(const uint8_t record[FC_CAL_RECORD_BYTES]);

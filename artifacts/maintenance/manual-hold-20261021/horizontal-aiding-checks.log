@@ -1,0 +1,16 @@
+Synthetic sensor bench calibration complete; not physical calibration.
+{
+  "passed": true,
+  "checks": {
+    "fresh_localization_enables_hold": true,
+    "out_of_order_observation_rejected": true,
+    "NaN_revokes_aiding": true,
+    "invalid_aiding_clears_hold": true,
+    "finite_observation_accepted": true,
+    "fresh_again_recaptures_hold": true,
+    "older_than_100ms_expires": true,
+    "expiry_returns_to_neutral_angle_commands": true,
+    "NULL_revokes_aiding": true
+  },
+  "scope": "C API validation/freshness checks. Synthetic sensor bench, no flight physics."
+}

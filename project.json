@@ -249,6 +249,24 @@
       "path": "simulation/gazebo/audit_real_manual.py",
       "args": [],
       "description": "Compare original real HID shaping and unchanged standalone replay against native movement"
+    },
+    "check-manual-hold": {
+      "runtime": "python",
+      "path": "simulation/gazebo/check_manual_hold.py",
+      "args": [],
+      "description": "Native Gazebo predetermined angle/release-braking/yaw test; --run NAME, optional --no-aiding ablation"
+    },
+    "check-horizontal-aiding": {
+      "runtime": "python",
+      "path": "simulation/gazebo/check_horizontal_aiding.py",
+      "args": [],
+      "description": "Validate C horizontal observation rejection, hold entry and 100ms expiry"
+    },
+    "manual-control-report": {
+      "runtime": "python",
+      "path": "tools/reports/manual_control_report.py",
+      "args": [],
+      "description": "Render original sustained-angle, release-braking and yaw evidence with preserved failures"
     }
   }
 }

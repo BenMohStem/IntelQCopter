@@ -1,0 +1,128 @@
+{
+  "passed": true,
+  "expected_negative_control": false,
+  "checks": {
+    "pitch_angle_tracks_5deg": true,
+    "pitch_brakes_and_holds": true,
+    "roll_angle_tracks_5deg": true,
+    "roll_brakes_and_holds": true,
+    "yaw-left_correct_sign": true,
+    "yaw-right_correct_sign": true,
+    "C_only_no_ROS2_or_companion": true,
+    "final_disarm": true,
+    "all_hold_sensor_labels_explicit": true
+  },
+  "metrics": {
+    "pitch": {
+      "release_speed_mps": 0.8281705732695022,
+      "final_speed_mps": 0.005489260238494918,
+      "release_point_error_m": 0.023445111589215598,
+      "final_angle_deg": -0.014596496019810876,
+      "held_angle_mean_deg": 5.841814648238951,
+      "max_braking_angle_deg": 6.344966654602977
+    },
+    "roll": {
+      "release_speed_mps": 0.8240607489564692,
+      "final_speed_mps": 0.005050085752539505,
+      "release_point_error_m": 0.02276416084393879,
+      "final_angle_deg": -0.012959709877096732,
+      "held_angle_mean_deg": 5.835383757935429,
+      "max_braking_angle_deg": 6.322503118389608
+    },
+    "yaw-left": {
+      "delta_deg": 42.66781163575295
+    },
+    "yaw-right": {
+      "delta_deg": -42.78153302546381
+    }
+  },
+  "engine": "Native Gazebo 10.5 / OGRE2 and actual C host DLL",
+  "localization": "Perfect Gazebo x/y/vx/vy/yaw observation to C FC; synthetic external localization",
+  "policy": "Fixed predetermined HID sequence, no feedback pilot and no ROS2. Only C FC computes braking commands from synthetic localization.",
+  "source_sha256": "25ac6b7eb7ab5b72ea0b153d15f6293149c38e02d630fd9b69a00d7e1a9c687c",
+  "phases": [
+    [
+      "select-stable",
+      5.4,
+      {
+        "down": true,
+        "a": true
+      }
+    ],
+    [
+      "takeoff",
+      3,
+      {
+        "vertical": 0.25
+      }
+    ],
+    [
+      "hover",
+      2,
+      {}
+    ],
+    [
+      "pitch-angle",
+      1.2,
+      {
+        "pitch": 0.14285714285714285
+      }
+    ],
+    [
+      "pitch-release-brake-hold",
+      8,
+      {}
+    ],
+    [
+      "roll-angle",
+      1.2,
+      {
+        "roll": 0.14285714285714285
+      }
+    ],
+    [
+      "roll-release-brake-hold",
+      8,
+      {}
+    ],
+    [
+      "yaw-left",
+      1,
+      {
+        "yaw": -0.25
+      }
+    ],
+    [
+      "yaw-left-release",
+      2,
+      {}
+    ],
+    [
+      "yaw-right",
+      1,
+      {
+        "yaw": 0.25
+      }
+    ],
+    [
+      "yaw-right-release",
+      2,
+      {}
+    ],
+    [
+      "descend",
+      4,
+      {
+        "vertical": -0.25
+      }
+    ],
+    [
+      "disarm",
+      2.4,
+      {
+        "down": true,
+        "lt": 1
+      }
+    ]
+  ]
+}

@@ -140,3 +140,10 @@ RGB distance is specific to known panel fixtures; physical interfaces remain unv
 Use `.\qcopter.ps1 station` → http://127.0.0.1:8088 for start/stop, automatic recordings, next-launch FC/Kalman/model/ROS2 settings and a mathematical guide. Live cameras, route approval and actual C telemetry graphs are on port 8087 during a session.
 
 [Control workshop guide](docs/control-workbench.md) · [Seven-node original video, graphs and authority audit](artifacts/reports/authority-20261021/index.html). Native Gazebo + actual C host core + ROS2; synthetic calibration/sensors and perfect simulated localization. Physical ESC output remains disabled. Old failed trials are retained.
+
+
+### Manual control and automatic session tabs
+
+Recording starts automatically. Home Start opens the flight in a new tab; End session finalizes the recording and closes that tab. Manual roll/pitch command tilt angles, then the C FC brakes and holds the release position using explicit simulated horizontal localization. Yaw direction is corrected. Real IMU/barometer alone cannot provide horizontal position hold; physical outputs remain disabled.
+
+[Current angle/braking/yaw video and graphs, including preserved failure](artifacts/reports/manual-control-20261021/index.html). Native Gazebo/C host tests and 54 QEMU checks passed; no physical-flight claim.

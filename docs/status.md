@@ -65,3 +65,14 @@ logs, failed trials and videos are evidence rather than disposable cache.
 - Engine: native Gazebo 10.5/OGRE2 plus C host DLL for physics trials; separate Xtensa QEMU replay. Model remains assumed (1.2kg, J=.012/.012/.022kg·m², 6N/motor, 40ms lag). Synthetic IMU/barometer/calibration and perfect Gazebo localization remain. Real BLE/I2C/UART/ESC and hardware timing unvalidated; physical arming disabled.
 
 [Original video, graphs and audit](../artifacts/reports/authority-20261021/index.html) · [Settings/code/math guide](control-workbench.html). The 199MB original manual-session CSV is retained locally; its verified lossless gzip and SHA256 manifest are versioned beside it.
+
+
+## Current manual angle/hold and automatic lifecycle — 2026-10-21
+
+- Recording starts automatically. Home Start opens a new simulation tab; End session stops the flight/recording and closes that script-created tab after encoder completion. Home remains open; manually opened tabs follow browser closure restrictions. Original encoder marker and browser screenshots are retained.
+- Manual roll/pitch remain angle requests. Fresh explicit localization enables C FC release-point capture, bounded braking and position hold; manual yaw is reversed once in the Xbox decoder. Without real horizontal localization, IMU/barometer alone cannot hold XY. Physical localization drivers and arming are not enabled.
+- Sustained-angle test exposed a real estimator defect: translational acceleration treated as gravity caused angle creep and a failed trial. With fresh localization velocity, manual dynamic gravity corrections are now withheld while gyro prediction/covariance continue. Navigation policy remains separate. Original failed video/logs preserved.
+- Final four-second 5° holds measured 5.059° pitch / 5.066° roll. After 14 seconds of release settling, point error ≤3.12cm, speed <0.019m/s, angle <0.024°. Short-step test error ≤5.18cm. These are assumed-model/perfect-localization simulation results, not measured hardware accuracy or instantaneous stopping.
+- Final seven-node ROS2/C FC regression completed every intermediate node with zero panel contact steps. QEMU 54/54; both firmware builds pass; host aiding validation/expiry tests pass.
+
+[Current original video, graphs and failures](../artifacts/reports/manual-control-20261021/index.html) · [Updated math/code guide](control-workbench.html).

@@ -346,6 +346,36 @@
       "id": "source-qemu-fifty",
       "kind": "file",
       "locator": "artifacts/emulation/authority-workbench-20261021/summary.json"
+    },
+    {
+      "id": "source-manual-control-final",
+      "kind": "file",
+      "locator": "artifacts/reports/manual-control-20261021/summary.json"
+    },
+    {
+      "id": "source-manual-control-before",
+      "kind": "file",
+      "locator": "artifacts/gazebo-suite/manual-long-angle-before-20261021/result.json"
+    },
+    {
+      "id": "source-manual-nav-final",
+      "kind": "file",
+      "locator": "artifacts/maintenance/manual-hold-20261021/navigation-final-check.json"
+    },
+    {
+      "id": "source-manual-qemu-final",
+      "kind": "file",
+      "locator": "artifacts/emulation/manual-angle-final-20261021/summary.json"
+    },
+    {
+      "id": "source-manual-aiding-final",
+      "kind": "file",
+      "locator": "artifacts/maintenance/manual-hold-20261021/manual-final-aiding-checks.log"
+    },
+    {
+      "id": "source-manual-tabs-original",
+      "kind": "file",
+      "locator": "artifacts/gazebo-suite/managed-20261021-154305-env06/recording-complete.json"
     }
   ],
   "facts": [
@@ -1077,6 +1107,18 @@
           ],
           "evidence_level": "emulated",
           "reason": "Requested multi-node fault diagnosis, actual command-authority tests and next-start settings/recording UI; original prior trials retained."
+        },
+        {
+          "revision": 5,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "The final C FC compiled for Xtensa passes 54 QEMU checks, including finite/out-of-order/NaN/NULL horizontal observation handling. Both ESP32 firmware variants compile. Host tests verify localization expiry after 100ms and fallback from hold to angle commands. Inputs and timing are synthetic; physical BLE, I2C/UART, ESCs and deadlines remain unvalidated and physical arming disabled.",
+          "sources": [
+            "source-manual-qemu-final",
+            "source-manual-aiding-final"
+          ],
+          "evidence_level": "emulated",
+          "reason": "User requested true manual angle behavior, braking/hold on release, reversed yaw, and automatic recording/new-tab/end-close lifecycle; original failures retained."
         }
       ]
     },
@@ -1391,6 +1433,20 @@
           ],
           "evidence_level": "simulated",
           "reason": "Requested multi-node fault diagnosis, actual command-authority tests and next-start settings/recording UI; original prior trials retained."
+        },
+        {
+          "revision": 2,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "Manual roll/pitch still command angle. With fresh explicit horizontal localization, the C FC captures the release point, brakes with bounded counter-tilt then holds XY; yaw decoding is reversed. Sustained-angle testing found false accelerometer gravity correction during translation; skipping that correction during measured manual acceleration while preserving gyro prediction/covariance changed 4-second 5deg requests from failed means 12.26/14.70deg to 5.059/5.066deg. Final long test settled within 3.12cm with <0.019m/s residual speed; short test within 5.18cm. No-localization control failed position hold as expected. This uses perfect simulated position/velocity/yaw as a sensor input; no real localization driver, IMU-only horizontal hold or physical flight validation is claimed. Six existing PID loops plus two optional outer XY PD corrections remain in the single C runtime. Navigation regression completed all nodes with no panel contacts.",
+          "sources": [
+            "source-manual-control-final",
+            "source-manual-control-before",
+            "source-manual-aiding-final",
+            "source-manual-nav-final"
+          ],
+          "evidence_level": "simulated",
+          "reason": "User requested true manual angle behavior, braking/hold on release, reversed yaw, and automatic recording/new-tab/end-close lifecycle; original failures retained."
         }
       ]
     },
@@ -1411,6 +1467,18 @@
           ],
           "evidence_level": "simulated",
           "reason": "Requested multi-node fault diagnosis, actual command-authority tests and next-start settings/recording UI; original prior trials retained."
+        },
+        {
+          "revision": 2,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "Live recording starts automatically without Save. Home Start opens a script-created tab synchronously; it waits for readiness then loads the live station. End session requests stop, waits for MP4 encoder completion and closes the flight tab; home stays open. Browser verification confirmed auto-open/auto-close and encoder return code 0. A manually opened tab may require manual closing under browser policy. Current guide and plots expose ideal localization and gravity-observation gating.",
+          "sources": [
+            "source-manual-tabs-original",
+            "source-manual-control-final"
+          ],
+          "evidence_level": "simulated",
+          "reason": "User requested true manual angle behavior, braking/hold on release, reversed yaw, and automatic recording/new-tab/end-close lifecycle; original failures retained."
         }
       ]
     }

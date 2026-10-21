@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "completed": true,
+  "simulated_seconds": 88.08,
+  "intermediate_nodes": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "obstacle_contact_steps": 0,
+  "source_matches_final": true,
+  "scope": "Final native Gazebo/C host DLL/real ROS2 one-request, neutral-pilot navigation regression; perfect localization and synthetic sensors, not hardware flight"
+}

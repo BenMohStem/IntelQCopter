@@ -1,0 +1,16 @@
+{
+  "scope": "Browser lifecycle and automatic native Gazebo recording check on ground; Xbox disconnected; no manual-flight claim",
+  "manager_running": false,
+  "run": "managed-20261021-182826-env01",
+  "home_remains_open": true,
+  "automatically_opened_flight_tab": true,
+  "passed": true,
+  "recording": {
+    "complete": true,
+    "run": "managed-20261021-182826-env01",
+    "automatic": true,
+    "file": "gazebo.mp4",
+    "encoder_returncode": 0
+  },
+  "automatically_closed_flight_tab": true
+}

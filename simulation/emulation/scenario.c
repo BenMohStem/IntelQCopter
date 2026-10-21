@@ -178,6 +178,11 @@ void run_scenario(void) {
     uart[3]=3;seal(uart);check("navigation_completion_request_accepted",fc_companion_report(uart,28,input_time));
     fc_control_step(&sample,input_time,.002f,&status);
     check("navigation_completion_disarms_FC",status.user_disarm&&zero_outputs());
+    float xy[5]={0,0,0,0,0};
+    check("horizontal_observation_finite_accepted",fc_horizontal_observation(xy,input_time));
+    check("horizontal_observation_old_rejected",!fc_horizontal_observation(xy,input_time-1));
+    xy[0]=NAN;check("horizontal_observation_NaN_rejected",!fc_horizontal_observation(xy,input_time+1));
+    check("horizontal_observation_NULL_revokes",!fc_horizontal_observation(NULL,input_time+2));
     printf("QCOPTER_EMU_END,checks=%u,failures=%u,ticks=%u\n",checks,failures,ticks);
     fflush(stdout);
 }

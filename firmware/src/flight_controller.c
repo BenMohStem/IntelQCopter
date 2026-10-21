@@ -725,6 +725,15 @@ static fc_pid_t altitude_pid = {
 static float sim_commands[4];
 static uint32_t sim_control_calls;
 #endif
+/* A localization observation is a sensor input, never a motor/pose override.
+ * Horizontal control stays here in the C FC, including in FC-only simulation.
+ * The real IMU/barometer alone cannot supply this drift-free observation. */
+static struct {
+    float x,y,vx,vy,yaw,target_x,target_y,ax,ay;
+    uint64_t acquired_us;
+    bool present,holding,fresh;
+} horizontal;
+static bool accel_angle_correction_enabled=true;
 static float altitude_hold_reference_m;
 static float hover_collective = FC_HOVER_THROTTLE_PLACEHOLDER;
 static float boost_state;
@@ -744,6 +753,7 @@ static void pid_reset(fc_pid_t *pid) {
 }
 
 static void reset_control_state(void) {
+    horizontal.holding=false;
     boost_state=0;
     pid_reset(&roll_angle_pid);
     pid_reset(&pitch_angle_pid);
@@ -802,6 +812,14 @@ static void angle_kf_update(angle_kf_t *kf, float gyro_dps,
     kf->p10=c-dt*d-qb*dt*dt/2.0f;
     kf->p11=d+qb*dt;
     kf->innovation_variance=kf->p00+kf->accel_noise;
+    kf->innovation=accel_angle_deg-kf->angle_deg;
+    /* An accelerometer measures gravity PLUS translation. During measured
+     * manual horizontal acceleration, treating it as gravity makes a held
+     * angle slowly creep. Keep gyro prediction/covariance propagation, but
+     * withhold the invalid gravity correction until translation settles.
+     * This relies on explicitly fresh external localization; no IMU-only
+     * drift-free attitude/position claim is made. Navigation is unaffected. */
+    if(!accel_angle_correction_enabled){kf->gain_angle=kf->gain_bias=0;return;}
     kf->gain_angle=kf->p00/kf->innovation_variance;
     kf->gain_bias=kf->p10/kf->innovation_variance;
     kf->innovation=accel_angle_deg-kf->angle_deg;
@@ -1016,7 +1034,25 @@ static bool imu_fit_valid(const imu_calibration_t *c) {
     }
     return true;
 }
+bool fc_horizontal_observation(const float v[5],uint64_t acquired_us) {
+    if(!v){horizontal.present=horizontal.holding=horizontal.fresh=false;return false;}
+    for(unsigned i=0;i<5;i++)if(!isfinite(v[i])){
+        horizontal.present=horizontal.holding=horizontal.fresh=false;return false;
+    }
+    if(fabsf(v[0])>100000 || fabsf(v[1])>100000 || fabsf(v[2])>50 || fabsf(v[3])>50
+       || fabsf(v[4])>100000 || (horizontal.present && acquired_us<horizontal.acquired_us))return false;
+    if(horizontal.present && acquired_us>horizontal.acquired_us) {
+        const float h=(acquired_us-horizontal.acquired_us)*1e-6f;
+        if(h<=.1f) {
+            horizontal.ax+=.25f*(clampf((v[2]-horizontal.vx)/h,-20,20)-horizontal.ax);
+            horizontal.ay+=.25f*(clampf((v[3]-horizontal.vy)/h,-20,20)-horizontal.ay);
+        } else horizontal.ax=horizontal.ay=0;
+    }
+    horizontal.x=v[0];horizontal.y=v[1];horizontal.vx=v[2];horizontal.vy=v[3];horizontal.yaw=v[4];
+    horizontal.acquired_us=acquired_us;horizontal.present=true;return true;
+}
 void fc_init(uint64_t board_id) {
+    memset(&horizontal,0,sizeof(horizontal));accel_angle_correction_enabled=true;
     calibration_board_id=board_id;
 #ifdef FC_BUILD_DLL
     sim_control_calls=0;memset(sim_commands,0,sizeof(sim_commands));
@@ -1163,6 +1199,28 @@ void fc_step(const fc_sample_t *raw,const fc_pilot_t *pilot,uint64_t now,float d
         && isfinite(pilot->vertical) && isfinite(pilot->boost) && isfinite(pilot->reduce);
     pilot_command_t cmd={.roll_deg=35*pilot->roll,.pitch_deg=35*pilot->pitch,
         .yaw_rate_dps=180*pilot->yaw,.throttle=.5f+.5f*pilot->vertical,.boost=pilot->boost,.reduce=pilot->reduce,.valid=fresh};
+    horizontal.fresh=horizontal.present && now>=horizontal.acquired_us
+        && now-horizontal.acquired_us<=100000u;
+    /* A deflected right stick still commands ANGLE, not horizontal speed/rate.
+     * On release capture the current point, briefly counter-tilt to brake,
+     * then hold that point. No instantaneous stopping/position reset is used.
+     * Yaw and vertical commands retain their own control loops while holding XY. */
+    accel_angle_correction_enabled=!(selected_mode==0 && horizontal.fresh
+        && hypotf(horizontal.ax,horizontal.ay)>.25f);
+    const bool centered=fabsf(pilot->roll)<.001f && fabsf(pilot->pitch)<.001f;
+    if(selected_mode==0 && fresh && !user_disarm_latched && gyro_verified
+       && s.imu_calibrated && horizontal.fresh && altitude_estimator.height_m>.15f) {
+        if(!centered)horizontal.holding=false;
+        else {
+            if(!horizontal.holding){horizontal.target_x=horizontal.x;horizontal.target_y=horizontal.y;horizontal.holding=true;}
+            const float ax=clampf(.9f*(horizontal.target_x-horizontal.x)-1.9f*horizontal.vx,-1.2f,1.2f);
+            const float ay=clampf(.9f*(horizontal.target_y-horizontal.y)-1.9f*horizontal.vy,-1.2f,1.2f);
+            const float cy=cosf(horizontal.yaw),sy=sinf(horizontal.yaw);
+            const float bx=cy*ax+sy*ay,by=-sy*ax+cy*ay;
+            cmd.roll_deg=clampf(-atan2f(by,9.80665f)/FC_DEG_TO_RAD,-7,7);
+            cmd.pitch_deg=clampf(atan2f(bx,9.80665f)/FC_DEG_TO_RAD,-7,7);
+        }
+    } else horizontal.holding=false;
     control_output_t result=flight_control_step(&s,&cmd,dt);
     memcpy(status->motor_demand,result.motor,sizeof(status->motor_demand));
     status->roll_deg=roll_estimator.angle_deg; status->pitch_deg=pitch_estimator.angle_deg;
@@ -1189,7 +1247,7 @@ bool fc_xbox_report(const uint8_t *p,unsigned length,uint64_t now) {
     if(!p || length!=16u || qcopter_get_u16(p+8)>1023 || qcopter_get_u16(p+10)>1023 || p[12]>8)return false;
     bool continuous=received_reports && now>=previous_report_us && now-previous_report_us<=100000u;
     fc_pilot_t next={.roll=xbox_axis(qcopter_get_u16(p+4)),.pitch=-xbox_axis(qcopter_get_u16(p+6)),
-        .yaw=xbox_axis(qcopter_get_u16(p)),.vertical=-xbox_axis(qcopter_get_u16(p+2)),
+        .yaw=-xbox_axis(qcopter_get_u16(p)),.vertical=-xbox_axis(qcopter_get_u16(p+2)),
         .boost=qcopter_get_u16(p+10)/1023.0f,.reduce=qcopter_get_u16(p+8)/1023.0f,
         .received_us=now,.connected=true};
     bool down=p[12]>=4 && p[12]<=6;
@@ -1271,6 +1329,12 @@ FC_API unsigned fc_sim_observe(float *v,unsigned n) {
       roll_estimator.gain_angle,pitch_estimator.gain_angle,altitude_estimator.gain_height,altitude_estimator.gain_velocity,
       roll_estimator.innovation,pitch_estimator.innovation,altitude_estimator.innovation,altitude_estimator.innovation_variance,
       roll_estimator.gyro_bias_dps,pitch_estimator.gyro_bias_dps,sim_commands[0],sim_commands[1],sim_commands[2],sim_commands[3],(float)sim_control_calls};
-    memcpy(v,values,sizeof(values));return 23;
+    memcpy(v,values,sizeof(values));
+    if(n>=31){float extra[]={horizontal.holding?1.f:0.f,horizontal.fresh?1.f:0.f,
+        horizontal.target_x,horizontal.target_y,horizontal.x,horizontal.y,horizontal.vx,horizontal.vy};
+        memcpy(v+23,extra,sizeof(extra));
+        if(n>=33){v[31]=hypotf(horizontal.ax,horizontal.ay);v[32]=accel_angle_correction_enabled?1.f:0.f;return 33;}
+        return 31;}
+    return 23;
 }
 #endif

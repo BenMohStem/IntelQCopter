@@ -1,8 +1,8 @@
 """Persistent local launcher, experiment editor and original recording library."""
-import argparse,json,os,subprocess,threading,time,urllib.request,urllib.error,webbrowser,mimetypes
+import argparse,json,os,re,subprocess,threading,time,urllib.request,urllib.error,webbrowser,mimetypes
 from pathlib import Path
 from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
-from urllib.parse import urlparse,unquote
+from urllib.parse import urlparse,unquote,parse_qs
 from experiment_settings import defaults,validate,fields
 from runtime_paths import ROOT,CONFIG
 
@@ -18,12 +18,21 @@ def main():
  class Handler(BaseHTTPRequestHandler):
   def log_message(self,*args):pass
   def reply(self,data,code=200,kind='application/json'):
-   body=data if isinstance(data,bytes) else json.dumps(data).encode();self.send_response(code);self.send_header('Content-Type',kind);self.send_header('Cache-Control','no-store');self.send_header('Content-Length',str(len(body)));self.end_headers()
+   body=data if isinstance(data,bytes) else json.dumps(data).encode();self.send_response(code);self.send_header('Content-Type',kind);self.send_header('Cache-Control','no-store');self.send_header('Content-Length',str(len(body)))
+   origin=self.headers.get('Origin','')
+   if urlparse(self.path).path in ('/recording-status','/status') and origin=='http://127.0.0.1:8087':self.send_header('Access-Control-Allow-Origin',origin)
+   self.end_headers()
    try:self.wfile.write(body)
    except (BrokenPipeError,ConnectionResetError):pass
   def do_GET(self):
    path=unquote(urlparse(self.path).path)
    if path=='/':self.reply(Path(__file__).with_name('station_manager.html').read_bytes(),kind='text/html; charset=utf-8');return
+   if path=='/launching':self.reply(Path(__file__).with_name('launching.html').read_bytes(),kind='text/html; charset=utf-8');return
+   if path=='/recording-status':
+    run=parse_qs(urlparse(self.path).query).get('run',[''])[0]
+    if not re.fullmatch(r'[A-Za-z0-9_-]{1,80}',run):self.reply(dict(error='Invalid run'),400);return
+    marker=sessions/run/'recording-complete.json'
+    self.reply(json.loads(marker.read_text(encoding='utf8')) if marker.exists() else dict(complete=False,run=run));return
    if path=='/settings':
     try:settings=validate(json.loads(profile.read_text())) if profile.exists() else defaults()
     except ValueError:settings=defaults()
@@ -61,6 +70,10 @@ def main():
        self.wfile.write(b);remaining-=len(b)
     except (BrokenPipeError,ConnectionResetError):pass
     return
+   if path in ('/manual-proof/','/manual-proof/summary.json','/manual-proof/control-graphs.png'):
+    file='index.html' if path=='/manual-proof/' else path.rsplit('/',1)[1];body=(ROOT/'artifacts/reports/manual-control-20261021'/file).read_bytes()
+    if file=='index.html':body=body.replace(b'../../gazebo-suite/',b'/recordings/')
+    self.reply(body,kind=mimetypes.guess_type(file)[0] or 'application/octet-stream');return
    if path in ('/proof/','/proof/summary.json','/proof/trajectory-and-control.png'):
     file='index.html' if path=='/proof/' else path.rsplit('/',1)[1];target=ROOT/'artifacts/reports/authority-20261021'/file;body=target.read_bytes()
     if file=='index.html':body=body.replace(b'../../gazebo-suite/',b'/recordings/')

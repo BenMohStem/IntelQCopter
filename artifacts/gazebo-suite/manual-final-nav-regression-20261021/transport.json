@@ -1,0 +1,108 @@
+{
+  "video_fps": 15,
+  "recording_view": "native overview + onboard RGB + HUD",
+  "interactive": false,
+  "session_ended_cleanly": true,
+  "completed": true,
+  "timeout": false,
+  "simulated_seconds": 88.08,
+  "hid_packets": 4404,
+  "companion_packets": 4115,
+  "yolo_frames": 1310,
+  "pnp_frames": 1310,
+  "mission_status": "phase=7,done=1,mapped=3,plans=19,images=1305,requests=1,camera=1,waypoint=6,points=7,planned=1,planner_reason=OK",
+  "final_state": {
+    "sim_time_s": 88.1,
+    "position": [
+      -0.5784239261860613,
+      -0.04641312513667852,
+      0.07999128962543475
+    ],
+    "quaternion": [
+      3.508770317623171e-05,
+      -4.939799452359746e-05,
+      0.8995052131344985,
+      0.4369100226277161
+    ],
+    "velocity": [
+      -3.932510503545078e-08,
+      1.5562513005315035e-07,
+      0.00025136156222857123
+    ],
+    "omega": [
+      -1.9455386259726844e-06,
+      -4.916204779444317e-07,
+      3.1217978618923242e-15
+    ],
+    "ground_contact": true,
+    "obstacle_contact": false,
+    "telemetry": {
+      "roll_est": 0.04081203415989876,
+      "pitch_est": -0.006924124900251627,
+      "height_est": -0.0016077413456514478,
+      "vz_est": 0.0003511552349664271,
+      "roll_sigma": 0.062168195843696594,
+      "pitch_sigma": 0.062168195843696594,
+      "height_sigma": 0.1802639216184616,
+      "vz_sigma": 0.10461244732141495,
+      "roll_K": 0.0009662210941314697,
+      "pitch_K": 0.0009662210941314697,
+      "height_K": 0.016247540712356567,
+      "velocity_K": 0.006653587333858013,
+      "roll_innovation": -0.09078971296548843,
+      "pitch_innovation": -0.0771656259894371,
+      "height_innovation": 0.0036178024020045996,
+      "height_S": 2.033031702041626,
+      "roll_bias": 0.0026127451565116644,
+      "pitch_bias": 0.015518113039433956,
+      "roll_command": 0.07515902072191238,
+      "pitch_command": 0.0005517937825061381,
+      "yaw_rate_command": -0.0019354092655703425,
+      "vz_command": -0.10000002384185791,
+      "fc_calls": 45140.0,
+      "xy_hold_active": 0.0,
+      "xy_aiding_fresh": 1.0,
+      "xy_target_x": 0.0,
+      "xy_target_y": 0.0,
+      "xy_x": -0.5784239172935486,
+      "xy_y": -0.0464131236076355,
+      "xy_vx": -3.9325104950194145e-08,
+      "xy_vy": 1.5562513056011085e-07,
+      "xy_acceleration_norm": 0.01606043055653572,
+      "angle_gravity_correction": 1.0,
+      "roll_true": -0.00333502513078902,
+      "pitch_true": -0.006089859648927784,
+      "yaw_true": 128.18621208362637,
+      "yaw_rate_true": 1.1422507528136314e-09
+    },
+    "motor_actual": [
+      9.65210599733155e-05,
+      9.643520641429277e-05,
+      9.644604698202644e-05,
+      9.649154047592117e-05
+    ],
+    "localization_source": "Perfect Gazebo x/y/vx/vy/yaw observation to C FC; synthetic external localization",
+    "environment": "env01",
+    "health": {
+      "motor_demand": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sensor_fault": false,
+      "pilot_fresh": true,
+      "gyro_verified": true,
+      "accel_calibrated": true,
+      "barometer_ready": true,
+      "companion_fresh": false,
+      "mode_events": 1
+    },
+    "simulation_actuation": true,
+    "mode": 1,
+    "disarm": true,
+    "mapped_input_packets": 4115,
+    "xbox_packets": 4404
+  },
+  "scope": "Native Gazebo physics and cameras; real ROS2 DDS; ESP32 C core host build. C++ mission/YOLO/PnP enabled only for navigation cases. Not Xtensa emulation or physical BLE."
+}

@@ -1,0 +1,19 @@
+PASS default profile valid
+PASS reject NaN
+PASS reject inertia triangle
+PASS reject unknown field
+Synthetic sensor bench calibration complete; not physical calibration.
+PASS host boot profile accepted
+PASS invalid C values rejected
+PASS invalid config leaves estimator unchanged
+PASS neutral HID accepted
+PASS tuning rejected after pilot reports
+Synthetic sensor bench calibration complete; not physical calibration.
+PASS changed profile loads before pilot
+Synthetic sensor bench calibration complete; not physical calibration.
+PASS edited measurement variance changes actual C gain
+{
+  "default_gain": 0.0024328469298779964,
+  "edited_gain": 0.009660877287387848,
+  "scope": "C host DLL; no physical output"
+}

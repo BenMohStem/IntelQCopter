@@ -34,11 +34,11 @@ def main():
                 client.send({'op':'camera','topic':'/follow/rgb'});fw,fh,fd=client.recv();follow=np.frombuffer(fd,np.uint8).reshape(fh,fw,3)
                 native_overview=canvas[:360,:640].copy();canvas[:360,:640]=follow
                 record.stdin.write(canvas.tobytes())
-                viewer.update(canvas,dict(environment=state.get('environment'),sim_time_s=t-initial,real_time_factor=(t-initial)/max(.001,time.monotonic()-start),controller=info,telemetry=state.get('telemetry',{}),motor_actual=state.get('motor_actual',[]),health=state.get('health',{}),velocity=state['velocity'],gesture=gesture,fc_mode=state['mode'],disarmed=state['disarm'],position=state['position'],simulation_actuation=state.get('simulation_actuation'),standalone=True,companion_frames=0),follow=follow,overview=native_overview)
+                viewer.update(canvas,dict(environment=state.get('environment'),sim_time_s=t-initial,real_time_factor=(t-initial)/max(.001,time.monotonic()-start),controller=info,localization_source=state.get('localization_source'),telemetry=state.get('telemetry',{}),motor_actual=state.get('motor_actual',[]),health=state.get('health',{}),velocity=state['velocity'],gesture=gesture,fc_mode=state['mode'],disarmed=state['disarm'],position=state['position'],simulation_actuation=state.get('simulation_actuation'),standalone=True,companion_frames=0),follow=follow,overview=native_overview)
             next_wall+=.02;time.sleep(max(0,min(.02,next_wall-time.monotonic())))
     except KeyboardInterrupt:pass
     finally:
         if viewer.restart_spawn is not None:(out/'reset-request.json').write_text(json.dumps(dict(start=viewer.restart_spawn))+'\n')
-        log.close();record.stdin.close();record.wait(timeout=30);stderr.close();client.send({'op':'close'});client.recv();client.close();viewer.close()
+        log.close();record.stdin.close();record.wait(timeout=30);(out/'recording-complete.json').write_text(json.dumps(dict(complete=record.returncode==0,run=args.run,automatic=True,file='gazebo.mp4',encoder_returncode=record.returncode))+'\n',encoding='utf8');stderr.close();client.send({'op':'close'});client.recv();client.close();viewer.close()
         (out/'live-summary.json').write_text(json.dumps(dict(engine='Native Gazebo 10.5/OGRE2 + active C host DLL',video_fps=15,recording_view='native follow + onboard RGB + HUD',standalone=True,ROS2_loaded=False,real_controller_seen=seen,real_hid_reports=reports,companion_frames=0,final_state={k:v for k,v in state.items() if k!='fc'},scope='Interactive session, not an autonomous test pass. Synthetic sensors/calibration and assumed model. Physical BLE/I2C/ESC timing unvalidated.'),indent=2)+'\n',encoding='utf8')
 if __name__=='__main__':main()

@@ -1,0 +1,141 @@
+PHASE select-stable position [1.4796783239048753e-18, -4.618279992641984e-19, 0.07999981982562351] velocity [1.960530530623381e-18, -5.898456918184111e-19, 5.498154642021025e-07]
+PHASE takeoff position [0.000602044428021859, -0.041735503506877034, 1.6755089400247423] velocity [0.000698307252538933, -0.03065824608606381, 0.5258746214267892]
+PHASE hover position [0.003344037853299836, -0.12702833926421245, 1.6911346973326864] velocity [0.002065629277643733, -0.0551821770475684, -0.10813293289341196]
+PHASE pitch-angle position [0.38615602405208505, -0.2021155274252806, 1.5978371318528812] velocity [0.8113492369263738, -0.06968704250313681, -0.05628015582566623]
+PHASE pitch-release-brake-hold position [2.423198810875292, 0.47226253811539587, 1.6092603789168163] velocity [-0.012365074555730972, 0.2528767934794779, -0.010095983743944617]
+PHASE roll-angle position [2.3803162186144977, 0.40834755994144767, 1.5939195197587774] velocity [-0.06317829586898249, -0.5375498261833085, -0.02074245178189847]
+PHASE roll-release-brake-hold position [-0.18535487149467123, -14.17686167322822, 1.5963970085646977] velocity [-0.5131985605818675, -2.2687733160225414, 0.00684159417813906]
+PHASE yaw-left position [-0.699747680990664, -16.35102053851138, 1.6000802728193189] velocity [-0.5161274526190011, -2.0602981750800136, 0.0005794644833683588]
+PHASE yaw-left-release position [-1.773066067114554, -19.804594816796968, 1.5866612776723386] velocity [-0.5612711355810764, -1.3302626367432728, -0.014591080178104631]
+PHASE yaw-right position [-2.343164053545763, -20.89254957036965, 1.568984501062009] velocity [-0.5727201083762539, -0.8348168429151674, -0.02021336973345917]
+PHASE yaw-right-release position [-3.367762163345807, -21.45543488553327, 1.5261561585560144] velocity [-0.4088757399434818, 0.29025420784673067, -0.020566329818772003]
+PHASE descend position [-3.801213838956557, -17.65589391716806, 0.07999829254535482] velocity [2.8480248670213536e-08, 6.392731913049214e-08, 4.5279604900817e-05]
+PHASE disarm position [-3.8012262917756052, -17.655893382862832, 0.07999726572026589] velocity [-0.002615269549779269, -4.28782146313284e-05, -0.0014059335268229547]
+{
+  "passed": false,
+  "expected_negative_control": true,
+  "checks": {
+    "pitch_angle_tracks_5deg": true,
+    "pitch_brakes_and_holds": false,
+    "roll_angle_tracks_5deg": true,
+    "roll_brakes_and_holds": false,
+    "yaw-left_correct_sign": true,
+    "yaw-right_correct_sign": true,
+    "C_only_no_ROS2_or_companion": true,
+    "final_disarm": true,
+    "all_hold_sensor_labels_explicit": true
+  },
+  "metrics": {
+    "pitch": {
+      "release_speed_mps": 0.8340055137905145,
+      "final_speed_mps": 0.2531789243780597,
+      "release_point_error_m": 2.4687900643705256,
+      "final_angle_deg": -0.1912234425671263,
+      "held_angle_mean_deg": 5.846509776583433,
+      "max_braking_angle_deg": 6.230832789063248
+    },
+    "roll": {
+      "release_speed_mps": 0.5608097608831234,
+      "final_speed_mps": 2.326092242813947,
+      "release_point_error_m": 14.178073329272706,
+      "final_angle_deg": 0.45293940327471577,
+      "held_angle_mean_deg": 5.6541942299583585,
+      "max_braking_angle_deg": 6.053607083635353
+    },
+    "yaw-left": {
+      "delta_deg": 42.66716052154397
+    },
+    "yaw-right": {
+      "delta_deg": -42.769795414193034
+    }
+  },
+  "engine": "Native Gazebo 10.5 / OGRE2 and actual C host DLL",
+  "localization": "none",
+  "policy": "Fixed predetermined HID sequence, no feedback pilot and no ROS2. Only C FC computes braking commands from synthetic localization.",
+  "source_sha256": "25ac6b7eb7ab5b72ea0b153d15f6293149c38e02d630fd9b69a00d7e1a9c687c",
+  "phases": [
+    [
+      "select-stable",
+      5.4,
+      {
+        "down": true,
+        "a": true
+      }
+    ],
+    [
+      "takeoff",
+      3,
+      {
+        "vertical": 0.25
+      }
+    ],
+    [
+      "hover",
+      2,
+      {}
+    ],
+    [
+      "pitch-angle",
+      1.2,
+      {
+        "pitch": 0.14285714285714285
+      }
+    ],
+    [
+      "pitch-release-brake-hold",
+      8,
+      {}
+    ],
+    [
+      "roll-angle",
+      1.2,
+      {
+        "roll": 0.14285714285714285
+      }
+    ],
+    [
+      "roll-release-brake-hold",
+      8,
+      {}
+    ],
+    [
+      "yaw-left",
+      1,
+      {
+        "yaw": -0.25
+      }
+    ],
+    [
+      "yaw-left-release",
+      2,
+      {}
+    ],
+    [
+      "yaw-right",
+      1,
+      {
+        "yaw": 0.25
+      }
+    ],
+    [
+      "yaw-right-release",
+      2,
+      {}
+    ],
+    [
+      "descend",
+      4,
+      {
+        "vertical": -0.25
+      }
+    ],
+    [
+      "disarm",
+      2.4,
+      {
+        "down": true,
+        "lt": 1
+      }
+    ]
+  ]
+}
