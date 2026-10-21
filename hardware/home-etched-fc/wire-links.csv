@@ -11,3 +11,4 @@ W15,"(30, 49.56)",GPIO9,"(18.16, 39)",I2C_SDA,15.9,Shared I2C data
 W18,"(34, 57.18)",GPIO12,"(69, 60)",GPIO12_ESC,35.1,FL signal via 220R
 W20,"(34, 62.26)",GPIO14,"(69, 70)",GPIO14_ESC,35.8,RL signal via 220R
 W21,"(30, 64.8)",5V_MCU,"(20, 89)",5V_EXT,26.2,REMOVABLE POWER LINK: remove for USB power
+W23,"(19, 87)",5V_EXT,"(81.5, 53.5)",LIDAR_5V,70.9,TOFSense-F2 Mini regulated 5V supply; UART signals remain 3.3V

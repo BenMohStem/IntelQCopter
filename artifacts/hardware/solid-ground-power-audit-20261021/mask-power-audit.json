@@ -1,0 +1,23 @@
+{
+  "engine": "Poppler 300dpi PDF + SciPy connected black pixels + explicit jumper graph + independent reference power-pin table",
+  "scope": "Digital copper and carrier wiring only; component internals, regulator operation, manufactured board, sensor variants and fit unvalidated",
+  "passed": true,
+  "copper_nets": 60,
+  "pads": 124,
+  "ground_pads_solid": 19,
+  "white_drill_centres_verified": 372,
+  "all_nets_continuous_on_mask": true,
+  "no_different_copper_nets_short": true,
+  "wire_links": 13,
+  "assembled_GND_3V3_5V_pack_separate": true,
+  "usb_W21_isolation_verified": true,
+  "expected_power_pins_checked": 20,
+  "pdf_sha256": "c60bc0233830480c980209251c573929985f7fc782c89d1843bf1226415cf091",
+  "board_sha256": "d7d0e23ebb92ebd87ca332843ac2e44960576c0ade027a965d1d02f379e57816",
+  "assumptions": [
+    "All thirteen insulated jumpers fitted as wire-links.csv; W21 removed for USB power",
+    "No resistors, capacitors or DevKit regulator are modelled as zero-ohm wires",
+    "Exact genuine DevKitC-1 and TOFSense-F2 Mini reference pinouts; pigtail adapters mapped by signal",
+    "No physical voltage, current, insulation, thermal, RF or flight test performed"
+  ]
+}

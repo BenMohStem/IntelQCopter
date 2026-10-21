@@ -24,7 +24,7 @@ def fp(ref,value,items,diameter=3.2,drill=1.2):
   pad=p.PAD(f);pad.SetNumber(str(num));pad.SetShape(p.PAD_SHAPE_CIRCLE);pad.SetAttribute(p.PAD_ATTRIB_PTH)
   pad.SetSize(vec(diameter,diameter));pad.SetDrillSize(vec(drill,drill));pad.SetLayerSet(p.PAD.PTHMask());pad.SetPosition(vec(x,y))
   pad.SetNet(net(name if name else 'unconnected-('+ref+'-Pad'+str(num)+')'))
-  if role in ('U1L','U1R') and name=='GND':pad.SetLocalZoneConnection(p.ZONE_CONNECTION_FULL)
+  if name=='GND':pad.SetLocalZoneConnection(p.ZONE_CONNECTION_FULL)
   f.Add(pad);pads[(ref,str(num))]=(x,y,name)
  f.SetFPIDAsString('HomeEtch:'+ref);f.SetPath(p.KIID_PATH('/'+uid('root')+'/'+uid(ref)))
  clone=p.FOOTPRINT(f);clone.SetPosition(vec(0,0));clone.Reference().SetText('REF**')
@@ -44,7 +44,7 @@ def line(a,b,layer=p.Edge_Cuts,width=.1):
 
 for a,b in [((0,0),(100,0)),((100,0),(100,100)),((100,100),(0,100)),((0,100),(0,0))]:line(a,b)
 # Socket numbering is the actual two header rows, viewed FROM COMPONENT SIDE.
-L=['3V3','','','GPIO4','GPIO5','GPIO6','GPIO7','','','GPIO17','GPIO18','GPIO8','','','GPIO9','','','GPIO12','','GPIO14','5V_MCU','GND']
+L=['3V3','3V3','','GPIO4','GPIO5','GPIO6','GPIO7','','','GPIO17','GPIO18','GPIO8','','','GPIO9','','','GPIO12','','GPIO14','5V_MCU','GND']
 R=['GND','','','GPIO1','GPIO2','','','','','','','','','','','','','','','','','']
 R[20]=R[21]='GND'
 fp('U1L','DevKitC-1 LEFT 1x22',[(i+1,40,14+i*2.54,n) for i,n in enumerate(L)],1.9,1.)
@@ -87,11 +87,11 @@ route('GPIO2',[(69,30),(73,30)])
 fp('J_ROS','OPTIONAL 3V3 UART',[(1,89,40,'COMP_TX'),(2,89,45.08,'COMP_RX'),(3,89,50.16,'GND')])
 route('COMP_TX',[(78,40),(89,40)]);route('COMP_RX',[(78,45.08),(89,45.08)]);route('GND',[(89,50.16),(94.08,50.16)])
 text('ROS TX / RX / G',86,36,1.)
-# Future lidar UART: VCC deliberately not tied to either supply yet.
-fp('J_LIDAR','F2 MINI: VCC TBD',[(1,73,40,'GND'),(2,73,45.08,''),(3,73,50.16,'LIDAR_RX_FC'),(4,73,55.24,'LIDAR_TX_FC')])
+# Exact TOFSense-F2 Mini: 4.3-5.2V supply, 3.3V UART (official V1.0 datasheet).
+fp('J_LIDAR','F2 MINI: REG 5V',[(1,73,40,'GND'),(2,73,45.08,'LIDAR_5V'),(3,73,50.16,'LIDAR_RX_FC'),(4,73,55.24,'LIDAR_TX_FC')])
 route('GND',[(73,40),(73,36.8),(94.08,36.8)])
 route('LIDAR_RX_FC',[(68,50.16),(73,50.16)]);route('LIDAR_TX_FC',[(68,55.24),(73,55.24)])
-text('LIDAR VCC OPEN',75,64,1.)
+text('LIDAR REG 5V',75,64,1.)
 # Current-sense SIGNAL connector; external current sensor/PDB not designed here.
 fp('J_CURRENT','0-2.5V current input',[(1,15,83,'GND'),(2,20.08,83,'SENS_3V3'),(3,25.16,83,'CURRENT_IN')])
 route('GND',[(15,83),(8,83)])
@@ -119,6 +119,13 @@ route('GND',[(62.86,14),(94.08,14),(94.08,20)],1.5)
 route('GND',[(62.86,64.8),(66,64.8),(66,67.34),(62.86,67.34)],1.5)
 route('GND',[(56,67.34),(66,67.34)],2.5)
 
+# Both reference DevKit 3V3 header pins share copper.
+route('3V3',[(40,14),(40,16.54)],1.)
+# Insulated top link supplies lidar from external regulated5V, never 3V3.
+wire('W23',(19,87),'5V_EXT',(81.5,53.5),'LIDAR_5V','TOFSense-F2 Mini regulated 5V supply; UART signals remain 3.3V')
+route('5V_EXT',[(20,89),(19,87)],1.5)
+route('LIDAR_5V',[(73,45.08),(75.5,47.8),(81.5,47.8),(81.5,53.5)],1.)
+
 # Only mounting holes; physical F450 matching is not assumed.
 for i,(x,y) in enumerate([(5,5),(95,5),(5,97),(95,97)]):
  f=p.FOOTPRINT(board);f.SetAttributes(p.FP_BOARD_ONLY);f.SetReference('H'+str(i+1));f.SetPosition(vec(x,y));f.Reference().SetVisible(False);f.Value().SetVisible(False);board.Add(f)
@@ -130,7 +137,7 @@ text('100 x 100 mm / bottom copper only',53,90,1.)
 # Notch clears the reference antenna region; actual board/frame RF fit remains unvalidated.
 plane=p.ZONE(board);plane.SetLayer(p.B_Cu);plane.SetNet(net('GND'))
 plane.SetLocalClearance(p.FromMM(.8));plane.SetMinThickness(p.FromMM(.8))
-plane.SetPadConnection(p.ZONE_CONNECTION_THERMAL)
+plane.SetPadConnection(p.ZONE_CONNECTION_FULL) # Solid GND: no cross-shaped thermal reliefs.
 plane.SetThermalReliefGap(p.FromMM(.8));plane.SetThermalReliefSpokeWidth(p.FromMM(1.0))
 plane.SetIslandRemovalMode(p.ISLAND_REMOVAL_MODE_ALWAYS)
 poly=plane.Outline();poly.NewOutline()

@@ -1,0 +1,26 @@
+{
+  "engine": "KiCad 10.0.6 native DRC/ERC/netlist export; independent model-to-netlist comparison",
+  "DRC_violations": 0,
+  "unrouted": 0,
+  "schematic_parity_issues": 0,
+  "ERC_violations": 0,
+  "schematic_matches_pad_nets": true,
+  "mismatches": {},
+  "net_count": 35,
+  "component_count": 37,
+  "insulated_links": 13,
+  "assumptions": [
+    "Genuine/reference ESP32-S3-DevKitC-1 2x22 header geometry; purchased board must fit paper template",
+    "3.3V-compatible external sensor breakouts with mapped pigtails; no assumed clone pin order",
+    "External regulated5V; no motor current on PCB",
+    "Exact F2 Mini uses regulated5V via W23 and 3.3V UART; current sensor not selected; ADC/HMC/lidar firmware unfinished",
+    "100x100mm carrier and its mounting pattern not checked on actual F450 frame",
+    "DRC/ERC validate carrier connectivity/geometry; external modules are passive connectors, no voltage-domain or dynamic flight proof"
+  ],
+  "hashes": {
+    "esp32_home_etch.kicad_pcb": "d7d0e23ebb92ebd87ca332843ac2e44960576c0ade027a965d1d02f379e57816",
+    "esp32_home_etch.kicad_sch": "d7def32e2deb3a3deccf6641867cab5a15c8d1bcef202cd765d8223760818bc1",
+    "generate_board.py": "1f7599b32bdbc9a248ecc19feb3268d885b345bf63ba7e86290e7a84f1e00a35",
+    "generate_schematic.py": "cfb7b61b94c13b0532af88067fc2335855119913c38d238be2e6cd4a491a1797"
+  }
+}

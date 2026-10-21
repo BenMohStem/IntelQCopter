@@ -7,7 +7,7 @@ D=Path(__file__).resolve().parent
 def uid(s):return str(uuid.uuid5(uuid.NAMESPACE_URL,'intelqcopter/home-etch/'+s))
 def q(s):return json.dumps(str(s))
 data=json.loads((D/'components-and-nets.json').read_text(encoding='utf8'));root=uid('root')
-out=[f'(kicad_sch (version 20250114) (generator "eeschema") (uuid "{root}") (paper "A2") (title_block (title "ESP32-S3 single-sided prototype carrier") (comment 1 "Module connectors only; physical arming disabled") (comment 2 "Lidar power open; external motor PDB; no LoRa/CC1101")) (lib_symbols']
+out=[f'(kicad_sch (version 20250114) (generator "eeschema") (uuid "{root}") (paper "A2") (title_block (title "ESP32-S3 single-sided prototype carrier") (comment 1 "Module connectors only; physical arming disabled") (comment 2 "Lidar regulated5V; external motor PDB; no LoRa/CC1101")) (lib_symbols']
 for n in sorted({len(c['pads']) for c in data['components']}):
  out.append(f'(symbol "HomeEtch:Block_{n}" (pin_names (offset 0.5) hide) (in_bom yes) (on_board yes) (property "Reference" "J" (at 8 3 0) (effects (font (size 1.27 1.27)))) (property "Value" "Block{n}" (at 8 1 0) (effects (font (size 1 1)))) (symbol "Block_{n}_0_1" (rectangle (start 0 0) (end 18 {-2.54*(n+1)}) (stroke (width .254) (type default)) (fill (type background)))) (symbol "Block_{n}_1_1"')
  for i in range(1,n+1):out.append(f'(pin passive line (at -5.08 {-2.54*i:.2f} 0) (length 5.08) (name "{i}" (effects (font (size 1 1)))) (number "{i}" (effects (font (size 1 1)))) )')

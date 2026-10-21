@@ -18,7 +18,7 @@
           "number": "2",
           "x": 40,
           "y": 16.54,
-          "net": ""
+          "net": "3V3"
         },
         {
           "number": "3",
@@ -706,7 +706,7 @@
     {
       "ref": "J13",
       "role": "J_LIDAR",
-      "value": "F2 MINI: VCC TBD",
+      "value": "F2 MINI: REG 5V",
       "pad_diameter_mm": 3.2,
       "drill_mm": 1.2,
       "pads": [
@@ -720,7 +720,7 @@
           "number": "2",
           "x": 73,
           "y": 45.08,
-          "net": ""
+          "net": "LIDAR_5V"
         },
         {
           "number": "3",
@@ -1056,6 +1056,27 @@
           "net": "5V_EXT"
         }
       ]
+    },
+    {
+      "ref": "W23",
+      "role": "W23",
+      "value": "INSULATED_WIRE",
+      "pad_diameter_mm": 2.8,
+      "drill_mm": 1.2,
+      "pads": [
+        {
+          "number": "1",
+          "x": 19,
+          "y": 87,
+          "net": "5V_EXT"
+        },
+        {
+          "number": "2",
+          "x": 81.5,
+          "y": 53.5,
+          "net": "LIDAR_5V"
+        }
+      ]
     }
   ],
   "wire_links": [
@@ -1238,6 +1259,21 @@
       "to_net": "5V_EXT",
       "minimum_straight_length_mm": 26.2,
       "instruction": "REMOVABLE POWER LINK: remove for USB power"
+    },
+    {
+      "ref": "W23",
+      "from_xy_mm": [
+        19,
+        87
+      ],
+      "from_net": "5V_EXT",
+      "to_xy_mm": [
+        81.5,
+        53.5
+      ],
+      "to_net": "LIDAR_5V",
+      "minimum_straight_length_mm": 70.9,
+      "instruction": "TOFSense-F2 Mini regulated 5V supply; UART signals remain 3.3V"
     }
   ],
   "bottom_tracks": [
@@ -1960,6 +1996,66 @@
         67.34
       ],
       "width": 2.5
+    },
+    {
+      "net": "3V3",
+      "start": [
+        40,
+        14
+      ],
+      "end": [
+        40,
+        16.54
+      ],
+      "width": 1.0
+    },
+    {
+      "net": "5V_EXT",
+      "start": [
+        20,
+        89
+      ],
+      "end": [
+        19,
+        87
+      ],
+      "width": 1.5
+    },
+    {
+      "net": "LIDAR_5V",
+      "start": [
+        73,
+        45.08
+      ],
+      "end": [
+        75.5,
+        47.8
+      ],
+      "width": 1.0
+    },
+    {
+      "net": "LIDAR_5V",
+      "start": [
+        75.5,
+        47.8
+      ],
+      "end": [
+        81.5,
+        47.8
+      ],
+      "width": 1.0
+    },
+    {
+      "net": "LIDAR_5V",
+      "start": [
+        81.5,
+        47.8
+      ],
+      "end": [
+        81.5,
+        53.5
+      ],
+      "width": 1.0
     }
   ]
 }

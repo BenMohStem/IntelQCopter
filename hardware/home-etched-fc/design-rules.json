@@ -49,7 +49,10 @@
     "direct_routes_mm": [
       1.5,
       2.5
-    ]
+    ],
+    "all_ground_pad_connection": "solid; no thermal spokes; round drill openings only",
+    "pad_connection": "solid",
+    "thermal_parameters_active": false
   },
-  "wire_jumpers": 12
+  "wire_jumpers": 13
 }
