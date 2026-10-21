@@ -1,5 +1,7 @@
 # Flight Station: Xbox, missions and recordings
 
+**Start here:** [Current step-by-step simulation launch guide](run-simulation.md).
+
 Worktree: **esp32-xbox**, `C:\Users\Mohamed\Desktop\Work\QCopter-ESP32-Xbox`. Main retains RP2350/RP2040. Physical motor outputs remain disabled.
 
 ## Launch
@@ -32,17 +34,17 @@ The simulator mode buttons encode ordinary Xbox HID gestures into the C core. Th
 
 ### Gentle controls
 
-The new default **Gentle** profile applies only to simulator input:
+The default **Gentle** profile is implemented in physical C firmware and in the simulator input mapper. The host decoder explicitly avoids shaping it a second time:
 
 | Command | Gentle | Normal |
 |---|---:|---:|
 | Maximum roll/pitch angle | 5° | 35° |
 | Stick vertical-speed request | ±0.5 m/s | ±2 m/s |
 | Stick yaw-rate request | ±45°/s | ±180°/s |
-| Trigger scaling | 20% | 100% |
+| Trigger scaling | 100% | 100% |
 | Stick response after 12% deadband | Squared/exponential | Linear |
 
-Half of the active roll/pitch stick travel requests approximately 1.25°, rather than 2.5°. Full Down+LT disarm remains available. Hardware firmware limits and PID gains are unchanged; the physical BLE target does not automatically inherit this Windows simulator profile.
+Half of the active roll/pitch stick travel requests approximately 1.25°, rather than 2.5°. Full Down+LT disarm remains available. The physical C decoder now defaults to the same Gentle curve. Full RT permits at most 0.8 collective (1800 µs equivalent), with differential PID motor headroom; LT reduces the allowance. This is mathematical demand allocation, not an enabled ESC pulse driver.
 
 **Why does angle control accelerate the drone?** Near a steady tilted hover, neglecting drag:
 
@@ -51,7 +53,7 @@ T\cos\theta\approx mg,\qquad m\ddot x\approx T\sin\theta
 \quad\Longrightarrow\quad \ddot x\approx g\tan\theta.
 \]
 
-A held 35° tilt corresponds to about 6.87 m/s² horizontal acceleration; 5° corresponds to about 0.86 m/s² under those assumptions. Centring the stick requests level attitude, **not zero horizontal velocity**. Use small opposite tilt to brake. Gentle reduces commanded acceleration; it is not a horizontal-speed limiter or position-hold autopilot. The FC still has angle outer loops and rate inner loops for roll/pitch, and rate control for yaw.
+A held 35° tilt corresponds to about 6.87 m/s² horizontal acceleration; 5° corresponds to about 0.86 m/s² under those assumptions. Zero tilt alone does not stop horizontal velocity. In this simulator, centring instead lets the C FC briefly counter-tilt to brake and hold the release point using explicit ideal localization, then level. Stopping takes time and can overshoot. Without horizontal localization, only angle leveling is available. Gentle reduces stick-commanded tilt; it is not a hard horizontal-speed limiter. The FC still has angle outer loops and rate inner loops for roll/pitch, and rate control for yaw.
 
 ## Plan start → any intermediate nodes → finish
 
@@ -96,7 +98,7 @@ Each launch/reset creates a new folder under `artifacts/gazebo-suite/`:
 | transport.json / live-summary.json | ROS / standalone session result |
 | reset-request.json | Explicit starting location for the next world |
 
-**End and save video** finalizes the recording. A disarm is latched until reset/restart. Preserve failures and collisions; a successful mission segment does not make an entire session successful if subsequent manual flight crashes.
+**End session** stops the simulation, finalizes its automatic recording and closes the flight tab opened by the workshop. A disarm is latched until reset/restart. Preserve failures and collisions; a successful mission segment does not make an entire session successful if subsequent manual flight crashes.
 
 ## Review and analyse a recording
 
@@ -135,7 +137,7 @@ Verify exact board routing before wiring. Never connect 3S battery voltage to a 
 
 ## Persistent workshop, live graphs and navigation authority evidence (2026-10-21)
 
-Run `.\qcopter.ps1 station` in this ESP32 checkout, then open http://127.0.0.1:8088. Start either FC-only or ROS2 navigation, open the live station on 8087, and use End and save before the next launch. `station-stop` requests the same graceful save. The workshop remains available after a flight stops. Recordings, original logs/CSV/JSONL and each immutable `settings.json` are available in its recording library. Settings apply only at the next launch; defaults preserve the previous flight feel. The live station now plots actual C estimator gains/covariances, resolved commands, true attitude/velocity, motor demands and applied fractions in a bounded 60-second history. The original 500Hz CSV and 15fps recording remain available independently of browser history.
+Run `.\qcopter.ps1 station` in this ESP32 checkout, then open http://127.0.0.1:8088. Start either FC-only or ROS2 navigation, open the live station on 8087, and use End session before the next launch. `station-stop` requests the same graceful save. The workshop remains available after a flight stops. Recordings, original logs/CSV/JSONL and each immutable `settings.json` are available in its recording library. Settings apply only at the next launch; defaults preserve the previous flight feel. The live station now plots actual C estimator gains/covariances, resolved commands, true attitude/velocity, motor demands and applied fractions in a bounded 60-second history. The original 500Hz CSV and 15fps recording remain available independently of browser history.
 
 See [the settings/code/math guide](control-workbench.html) and [the seven-node authority proof](../artifacts/reports/authority-20261021/index.html). The PC in that test sends one approved route and then neutral pilot keepalives; actual onboard C++ ROS2 plans and sends QN frames to the actual C FC host DLL. Perfect simulated odometry remains an explicit simplification. A deliberate UART-loss trial does not complete; it demonstrates loss of navigation authority, not safe horizontal braking or position hold. Physical motor arming remains disabled.
 

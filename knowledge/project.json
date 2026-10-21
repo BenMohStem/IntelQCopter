@@ -401,6 +401,11 @@
       "id": "source-hardening-guide",
       "kind": "file",
       "locator": "docs/debugging-and-flight-readiness.md"
+    },
+    {
+      "id": "source-github-simulation-launch-guide",
+      "kind": "file",
+      "locator": "docs/run-simulation.md"
     }
   ],
   "facts": [
@@ -1563,6 +1568,17 @@
           ],
           "evidence_level": "simulated",
           "reason": "User requested true manual angle behavior, braking/hold on release, reversed yaw, and automatic recording/new-tab/end-close lifecycle; original failures retained."
+        },
+        {
+          "revision": 3,
+          "date": "2026-10-21",
+          "status": "implemented",
+          "statement": "GitHub README now gives the configured Windows simulation quick start via qcopter.ps1 station, manual mode/takeoff, 2..64-node route approval, automatic recordings/end-tab behavior and build-host versus hardware-build distinction. New docs/run-simulation.md documents another-PC prerequisites, ignored config paths, missing external ONNX model, hardcoded ROS2 wrappers, direct launch, saved evidence and troubleshooting. Older Gentle-only simulator/20-percent trigger text is corrected. This is documentation checked against project source, not a new flight test.",
+          "sources": [
+            "source-github-simulation-launch-guide"
+          ],
+          "evidence_level": "source",
+          "reason": "User requested GitHub instructions for running the current simulation."
         }
       ]
     }

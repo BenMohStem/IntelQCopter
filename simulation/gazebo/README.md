@@ -1,5 +1,7 @@
 # ESP32/Xbox + ROS2 + native Gazebo
 
+**For interactive flight, start with [the current simulation launch guide](../../docs/run-simulation.md).** Use the workshop on port 8088 for manual/ROS2 mode selection, live graphs and automatic recording. The suite commands below are batch-test workflows, separate from live Xbox play.
+
 ## What actually runs
 
 | Role | Runtime | Allowed flight inputs |

@@ -12,23 +12,50 @@ radio endpoints with a commercial Xbox controller connected directly to the ESP3
 **Start here:** [Illustrated F450 linear/discrete guide](docs/current-model-and-fc-integration.html) ·
 [Run the ESP32-S3 emulator](simulation/emulation/README.md) · [Code map](docs/code-map.md).
 
-## Play live with your Xbox
+## Run the simulation
+
+**[Complete step-by-step launch guide →](docs/run-simulation.md)** — manual Xbox flight, 2–64-node navigation, automatic recordings, fresh-clone prerequisites and troubleshooting.
+
+### Quick start on the configured Windows PC
+
+Connect your Xbox Series X/S controller. Open **PowerShell in the ESP32 checkout**, then run:
 
 ```powershell
+cd C:\Users\Mohamed\Desktop\Work\QCopter-ESP32-Xbox
 .\qcopter.ps1 xbox-check
-.\qcopter.ps1 play       # standalone FC, no ROS2 companion
-# OR, after ending that session:
-.\qcopter.ps1 play-ros   # ROS2 obstacle navigation + 2–64-node PC route editor
+.\qcopter.ps1 station
 ```
 
-Live native cameras: **http://127.0.0.1:8087**. PC route map: **http://127.0.0.1:8086** (companion launch).
-Use the station’s **Enable manual flight** button or **Review → Approve and fly** route workflow.
-The default Gentle simulator profile uses 5° maximum tilt and soft sticks.
-New native recordings are 15 fps; new telemetry is 500 Hz.
-[Original recordings and heading analysis](artifacts/reports/station-analysis-20261021/index.html).
-Xbox mode gestures remain available.
-[Complete launch, control, route and UART guide](docs/live-xbox-and-companion.md).
-The live simulator uses the active C host DLL, synthetic sensors and an assumed aircraft model; physical outputs remain disabled.
+1. Open **[http://127.0.0.1:8088/](http://127.0.0.1:8088/)**.
+2. Choose **FC only · real Xbox** or **FC + onboard ROS2 navigation**, then choose a garden.
+3. Click **Start simulation**. The flight opens automatically in a new tab when ready.
+4. **Manual:** select **Enable manual flight**, wait for the mode gesture, then gently push the **left stick up**. The right stick controls roll/pitch angles. Gentle is the default.
+5. **Navigation:** add start → any intermediate nodes → finish in the embedded route planner, then **Review route → Approve and fly**. The drone's ROS2 computer handles the mission through the C FC.
+6. Click **End session** when finished. Recording is automatic; the video finalizes, the flight tab closes and the home page remains ready for another run. Closing a tab alone does not stop the simulator.
+
+Only one simulation runs at a time. Startup may take up to 90 seconds. No physical drone/ESP32 board is needed; physical motor outputs remain disabled.
+
+| Local page | Purpose |
+|---|---|
+| [8088 — workshop](http://127.0.0.1:8088/) | Start/end, scene selection, next-launch settings and recording library |
+| [8087 — flight station](http://127.0.0.1:8087/) | Live cameras, Xbox controls, graphs and embedded route planner during a session |
+| [Current proof report](http://127.0.0.1:8088/hardening-proof/) | Final videos, measured graphs, command-authority audit and fault tests |
+
+These localhost links work on the PC running the server. GitHub itself does not run the simulation or interactive HTML reports.
+
+### Rebuild after code changes
+
+End the active simulation first, then:
+
+```powershell
+.\qcopter.ps1 build-host       # FC Windows DLL used by Gazebo
+.\qcopter.ps1 build-companion  # ROS2 C++ nodes; only needed for companion changes/navigation
+.\qcopter.ps1 station
+```
+
+For a **fresh clone**, first use the [dependency/configuration instructions](docs/run-simulation.md#6-fresh-clone--another-pc). Installed environments, build outputs and the trained panel ONNX model are not bundled. Manual-only mode does not need ROS2 or YOLO. The Windows wrappers contain workstation-specific paths that must be adapted on another PC. TensorFlow and Isaac Sim are not needed.
+
+The engine is **native Gazebo + the active C FC host build**. The ESP32-S3 CPU emulator is a separate workflow. Simulated sensors/calibration, ideal localization and assumed aircraft parameters do not establish physical flight readiness.
 
 ## What is active
 
@@ -41,7 +68,7 @@ The live simulator uses the active C host DLL, synthetic sensors and an assumed 
 | Control mode | Roll/pitch angle cascades, yaw rate, vertical-speed throttle with height hold |
 | Scheduling | 2 ms timer requests; measured elapsed time; missed/late cycles and execution time reported |
 | Calibration | Stationary gyro verification, six-face accel capture, versioned/CRC/board-bound NVS record |
-| CPU emulation | Espressif QEMU ESP32-S3; 44 passing checks on the active C core with synthetic inputs |
+| CPU emulation | Espressif QEMU ESP32-S3; 63 passing checks on the current C core with synthetic inputs |
 | Battery policy | 35% estimated-SOC warning, 20% latched disarm; voltage/current acquisition unfinished |
 
 ## Controls
@@ -89,14 +116,18 @@ Use `.\qcopter.ps1 help` for the command catalog. See [architecture and migratio
 Open `IntelQCopter.code-workspace` for an editor view focused on active files.
 Generated tools, firmware images and the searchable SQLite index live in ignored `build/`.
 
-## Build evidence
+## Current and historical build evidence
 
-The latest ESP32-S3 hardware firmware compiles successfully: **31,836 bytes static RAM** and
+Current standard, standalone and level-3 debug firmware builds pass; QEMU passes **63 checks**. [Current raw build logs](artifacts/maintenance/hardening-20261021/) · [Current emulator UART log](artifacts/emulation/hardening-final-20261021/uart.log).
+
+The following size figures and baseline logs are historical snapshots.
+
+An earlier ESP32-S3 hardware firmware build compiled successfully: **31,836 bytes static RAM** and
 **590,573 bytes reported program flash**. These size figures do not include every
 runtime heap/task allocation. [Latest compiler and interface logs](artifacts/validation/2026-10-21/).
 No flashing, pairing, physical calibration or flight has been performed.
 
-QEMU passed 39 checks in the current input replay. [Latest original UART log](artifacts/emulation/uart-mode-gestures-2026-10-21/uart.log).
+An earlier QEMU input replay passed 39 checks. [Latest original UART log](artifacts/emulation/uart-mode-gestures-2026-10-21/uart.log).
 The original baseline executed 4,982 logical steps and passed 19 checks. [Original UART log](artifacts/emulation/verified-replay/uart.log) ·
 [Recorded samples](artifacts/emulation/verified-replay/telemetry.png).
 The replay uses stationary synthetic sensors; motor demands do not drive a flight plant.
@@ -114,7 +145,7 @@ The ground PC sends Xbox-format reports or a ROS2 endpoint request. The drone
 C++ companion handles navigation and RGB perception. Physical ESC outputs stay disabled.
 CPU emulation and host flight simulation are separate evidence categories.
 
-## Verified simulation evidence · 21 October 2026
+## Earlier 10-world suite evidence · 21 October 2026
 
 | Check | Result |
 |---|---|
