@@ -133,3 +133,10 @@ CPU emulation and host flight simulation are separate evidence categories.
 Mean simulated landing error: **9.49 cm manual**, **1.53 cm navigation**. This
 uses unmeasured aircraft parameters, synthetic sensors and simulated localization.
 RGB distance is specific to known panel fixtures; physical interfaces remain unvalidated.
+
+
+### Simulation workshop and seven-node authority audit
+
+Use `.\qcopter.ps1 station` → http://127.0.0.1:8088 for start/stop, automatic recordings, next-launch FC/Kalman/model/ROS2 settings and a mathematical guide. Live cameras, route approval and actual C telemetry graphs are on port 8087 during a session.
+
+[Control workshop guide](docs/control-workbench.md) · [Seven-node original video, graphs and authority audit](artifacts/reports/authority-20261021/index.html). Native Gazebo + actual C host core + ROS2; synthetic calibration/sensors and perfect simulated localization. Physical ESC output remains disabled. Old failed trials are retained.

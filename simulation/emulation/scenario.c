@@ -162,6 +162,22 @@ void run_scenario(void) {
     check("standalone_telemetry_capability_off",(telemetry[7]&1)==0);
     fc_configure_companion(true);fc_status_frame(&status,telemetry);
     check("companion_telemetry_capability_on",(telemetry[7]&1)==1);
+    // Completion/disarm is a CRC-protected companion request, scoped to nav.
+    fc_init(0x3200);fc_configure_companion(true);input_time=1000000;
+    memset(hid,0,sizeof(hid));for(unsigned i=0;i<4;i++){hid[2*i]=0;hid[2*i+1]=0x80;}
+    memset(uart,0,sizeof(uart));uart[0]='Q';uart[1]='N';uart[2]=1;uart[3]=3;put32(uart+4,1);seal(uart);
+    check("UART_completion_flag_valid",fc_companion_report(uart,28,input_time));
+    fc_control_step(&sample,input_time,.002f,&status);
+    check("stable_ignores_companion_disarm",!status.user_disarm);
+    hid[12]=5;hid[13]=2;
+    for(unsigned i=0;i<260;i++){fc_xbox_report(hid,16,input_time);input_time+=20000;}
+    fc_control_step(&sample,input_time,.002f,&status);
+    check("completion_test_navigation_selected",status.flight_mode==1);
+    uart[3]=7;put32(uart+4,2);seal(uart);
+    check("UART_unknown_flags_rejected",!fc_companion_report(uart,28,input_time));
+    uart[3]=3;seal(uart);check("navigation_completion_request_accepted",fc_companion_report(uart,28,input_time));
+    fc_control_step(&sample,input_time,.002f,&status);
+    check("navigation_completion_disarms_FC",status.user_disarm&&zero_outputs());
     printf("QCOPTER_EMU_END,checks=%u,failures=%u,ticks=%u\n",checks,failures,ticks);
     fflush(stdout);
 }

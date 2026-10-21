@@ -311,6 +311,41 @@
       "id": "source-station-browser",
       "kind": "file",
       "locator": "artifacts/maintenance/station-ux2-20261021/browser-in-flight.png"
+    },
+    {
+      "id": "source-authority-final",
+      "kind": "file",
+      "locator": "artifacts/reports/authority-20261021/summary.json"
+    },
+    {
+      "id": "source-authority-repeat",
+      "kind": "file",
+      "locator": "artifacts/reports/authority-20261021/repeat-comparison.json"
+    },
+    {
+      "id": "source-manual-authority",
+      "kind": "file",
+      "locator": "artifacts/gazebo-suite/authority-real-manual-flight-20261021/manual-audit.json"
+    },
+    {
+      "id": "source-workbench-lifecycle",
+      "kind": "file",
+      "locator": "artifacts/maintenance/workbench-authority-20261021/settings-lifecycle-checks.json"
+    },
+    {
+      "id": "source-workbench-api",
+      "kind": "file",
+      "locator": "artifacts/maintenance/workbench-authority-20261021/backend-checks.json"
+    },
+    {
+      "id": "source-workbench-guide",
+      "kind": "file",
+      "locator": "docs/control-workbench.md"
+    },
+    {
+      "id": "source-qemu-fifty",
+      "kind": "file",
+      "locator": "artifacts/emulation/authority-workbench-20261021/summary.json"
     }
   ],
   "facts": [
@@ -1031,6 +1066,17 @@
           ],
           "evidence_level": "emulated",
           "reason": "Live Xbox / optional companion and selectable-route setup. Original evidence and previous revisions retained."
+        },
+        {
+          "revision": 4,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "Active flight_controller.c compiled for Xtensa and passed 50 QEMU checks, including CRC-protected navigation completion/disarm, unknown-flag rejection, stable-mode isolation and standalone companion rejection. Both physical firmware variants compile. QEMU uses synthetic replay and does not establish BLE, real sensors, ESC output, hardware flash persistence or physical timing.",
+          "sources": [
+            "source-qemu-fifty"
+          ],
+          "evidence_level": "emulated",
+          "reason": "Requested multi-node fault diagnosis, actual command-authority tests and next-start settings/recording UI; original prior trials retained."
         }
       ]
     },
@@ -1308,6 +1354,63 @@
           ],
           "evidence_level": "simulated",
           "reason": "User-requested control, software and evidence improvements."
+        }
+      ]
+    },
+    {
+      "id": "navigation_authority",
+      "topic": "simulation",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "Two isolated seven-node native Gazebo/ROS2/C-host trials completed with five intermediate acknowledgements each, zero obstacle contact steps, and final XY errors 8.14mm and 16.76mm. One PC route request was followed only by neutral HID; the onboard mission node was the sole companion publisher. A start inside newly enlarged soft clearance is allowed to exit outward outside the observed obstacle plus aircraft radius, failed plans retry and expose reasons. Perfect simulated localization, synthetic sensors and known-panel PnP remain explicit simplifications. Deliberately removing UART at 25s prevented completion and produced stale companion status and horizontal drift; this is not safe position hold.",
+          "sources": [
+            "source-authority-final",
+            "source-authority-repeat"
+          ],
+          "evidence_level": "simulated",
+          "reason": "Requested multi-node fault diagnosis, actual command-authority tests and next-start settings/recording UI; original prior trials retained."
+        }
+      ]
+    },
+    {
+      "id": "manual_authority",
+      "topic": "simulation",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "A 45-second interval of the user's real recorded Xbox input was replayed unchanged through standalone C FC/native Gazebo, with no ROS2, no companion frames and no feedback pilot. All 1993 non-PC-gesture rows exactly matched documented stick shaping, and 2670 HID reports produced takeoff and horizontal motion. This was an open-loop input replay, not a new live human flight or landing success; substantial drift occurred. The earlier preflight-only replay is retained separately.",
+          "sources": [
+            "source-manual-authority"
+          ],
+          "evidence_level": "simulated",
+          "reason": "Requested multi-node fault diagnosis, actual command-authority tests and next-start settings/recording UI; original prior trials retained."
+        }
+      ]
+    },
+    {
+      "id": "control_workshop",
+      "topic": "simulation",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "Persistent local workshop on 8088 starts/stops sessions, saves next-start validated profiles and immutable settings snapshots, streams saved recordings and links the offline MathML guide. Live station plots bounded history of actual C filter covariance/gains and setpoints plus native truth/velocity/motor fractions. Automatic 15fps fragmented MP4 and telemetry journals save alongside original 500Hz CSV and raw inputs. A saved 0.65m/s setting left the active 0.8m/s run unchanged and was observed in the next ROS2 startup log; defaults were restored. UI validation used a disconnected Xbox and is not a manual flight claim.",
+          "sources": [
+            "source-workbench-lifecycle",
+            "source-workbench-api",
+            "source-workbench-guide"
+          ],
+          "evidence_level": "simulated",
+          "reason": "Requested multi-node fault diagnosis, actual command-authority tests and next-start settings/recording UI; original prior trials retained."
         }
       ]
     }

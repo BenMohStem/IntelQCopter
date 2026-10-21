@@ -4,9 +4,9 @@ from pathlib import Path
 from xml.etree.ElementTree import Element,SubElement,tostring
 ROOT=Path(__file__).resolve().parents[2]
 
-def build(target=None,drop_test=False,spec=None):
+def build(target=None,drop_test=False,spec=None,model=None):
     spec=spec or {}
-    model=json.loads((ROOT/'simulation/model/parameters.json').read_text())
+    model=model or json.loads((ROOT/'simulation/model/parameters.json').read_text())
     sdf=Element('sdf',version='1.10');world=SubElement(sdf,'world',name='intelqcopter')
     SubElement(world,'gravity').text='0 0 -9.80665'
     physics=SubElement(world,'physics',name='fixed500',type='ignored')

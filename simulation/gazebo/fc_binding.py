@@ -13,7 +13,7 @@ class Status(c.Structure):
        ('faces_done',c.c_uint8),('capturing_face',c.c_int8),('flight_mode',c.c_uint8),('user_disarm',c.c_bool),('companion_fresh',c.c_bool),('xbox_reports',c.c_uint32),('mode_events',c.c_uint32)]
 
 class FlightCore:
-    def __init__(self,seed,companion=True):
+    def __init__(self,seed,companion=True,settings=None):
         self.dll=c.CDLL(str(ROOT/'build/sitl/esp32_flight_core.dll'))
         self.dll.fc_init.argtypes=[c.c_uint64]
         self.dll.fc_control_step.argtypes=[c.POINTER(Sample),c.c_uint64,c.c_float,c.POINTER(Status)]
@@ -24,7 +24,7 @@ class FlightCore:
         self.dll.fc_cal_take_pending.argtypes=[c.POINTER(c.c_uint8)];self.dll.fc_cal_take_pending.restype=c.c_bool
         self.dll.fc_status_frame.argtypes=[c.POINTER(Status),c.POINTER(c.c_uint8)]
         self.dll.fc_init(0x3200);self.rng=np.random.default_rng(seed);self.last_velocity=np.zeros(3);self.acc=np.zeros(3)
-        self.parameters=json.loads((ROOT/'simulation/model/parameters.json').read_text())
+        self.parameters=settings['model'] if settings else json.loads((ROOT/'simulation/model/parameters.json').read_text())
         self.status=Status();self.pressure_sequence=0;self.tick=0;self.pressure=101325.
         sample=Sample();sample.imu_valid=sample.pressure_valid=True;sample.pressure_pa=101325.;sample.accel_g[2]=1
         def bench(n):
@@ -42,6 +42,13 @@ class FlightCore:
         assert self.status.gyro_verified and self.status.accel_calibrated and self.status.barometer_ready
         self.dll.fc_configure_companion.argtypes=[c.c_bool]
         self.dll.fc_configure_companion(companion)
+        if settings:
+            from experiment_settings import defaults,fc_values
+            if settings['fc']!=defaults()['fc']:
+                values=fc_values(settings['fc']);buf=(c.c_float*len(values))(*values)
+                self.dll.fc_sim_configure.argtypes=[c.POINTER(c.c_float),c.c_uint];self.dll.fc_sim_configure.restype=c.c_bool
+                if not self.dll.fc_sim_configure(buf,len(values)):raise ValueError('C core rejected boot-only tuning')
+        self.dll.fc_sim_observe.argtypes=[c.POINTER(c.c_float),c.c_uint];self.dll.fc_sim_observe.restype=c.c_uint
         self.tick=0;self.time_offset_us=20_000_000
         print('Synthetic sensor bench calibration complete; not physical calibration.',flush=True)
     def report(self,data,companion,now):
@@ -62,5 +69,9 @@ class FlightCore:
         raw.pressure_sequence=self.pressure_sequence;raw.pressure_pa=self.pressure
         self.dll.fc_control_step(c.byref(raw),int(now*1e6)+self.time_offset_us,.002,c.byref(self.status))
         return np.array(self.status.motor_demand)
+    def observe(self):
+        keys=['roll_est','pitch_est','height_est','vz_est','roll_sigma','pitch_sigma','height_sigma','vz_sigma','roll_K','pitch_K','height_K','velocity_K','roll_innovation','pitch_innovation','height_innovation','height_S','roll_bias','pitch_bias','roll_command','pitch_command','yaw_rate_command','vz_command','fc_calls']
+        out=(c.c_float*23)();assert self.dll.fc_sim_observe(out,23)==23
+        return dict(zip(keys,map(float,out)))
     def frame(self):
         out=(c.c_uint8*16)();self.dll.fc_status_frame(c.byref(self.status),out);return bytes(out)

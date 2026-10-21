@@ -1,0 +1,91 @@
+{
+  "schema": 1,
+  "model": {
+    "status": "ASSUMED complete-vehicle simulation model; not measured hardware",
+    "mass_kg": 1.2,
+    "inertia_kg_m2": [
+      0.012,
+      0.012,
+      0.022
+    ],
+    "motor_diagonal_m": 0.45,
+    "maximum_thrust_per_motor_n": 6.0,
+    "reaction_torque_per_thrust_m": 0.015,
+    "thrust_time_constant_s": 0.04,
+    "linear_drag_ns_per_m": 0.12,
+    "gravity_mps2": 9.80665,
+    "physics_dt_s": 0.002,
+    "barometer_hz": 50,
+    "barometer_sigma_m": 0.008,
+    "gyro_sigma_dps": 0.02,
+    "accel_sigma_g": 0.001,
+    "robot_collision_radius_m": 0.34,
+    "perception_mode": "Native RGB -> C++ YOLO panel detector -> known-size PnP -> observed obstacle map; simulated local odometry",
+    "hardware_known": {
+      "frame": "F450/Q450",
+      "battery": "3S 4200mAh 120C; mass ~150g unverified",
+      "motor": "1400KV exact model unknown",
+      "propeller": "9047"
+    },
+    "scenarios": "simulation/gazebo/environments.json"
+  },
+  "fc": {
+    "pids": {
+      "roll_angle": [
+        3.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "pitch_angle": [
+        3.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "roll_rate": [
+        0.000829338,
+        0.003870245,
+        0.0,
+        15.0
+      ],
+      "pitch_rate": [
+        0.000829338,
+        0.003870245,
+        0.0,
+        15.0
+      ],
+      "yaw_rate": [
+        0.005375614,
+        0.008362066,
+        0.0,
+        8.0
+      ],
+      "altitude": [
+        0.108045,
+        0.03087,
+        0.1225,
+        2.0
+      ]
+    },
+    "angle_kf": [
+      0.04,
+      0.0001,
+      4.0
+    ],
+    "altitude_kf": [
+      1.5,
+      2.0
+    ],
+    "hover_collective": 0.5
+  },
+  "ros": {
+    "position_gain": 1.0,
+    "velocity_gain": 1.8,
+    "max_speed_mps": 0.65,
+    "max_acceleration_mps2": 1.4,
+    "max_angle_deg": 15.0,
+    "heading_gain": 1.2,
+    "max_yaw_rate_dps": 45.0
+  }
+}

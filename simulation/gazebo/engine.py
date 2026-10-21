@@ -17,16 +17,19 @@ from fc_binding import FlightCore
 
 parser=argparse.ArgumentParser();parser.add_argument('--env',required=True);parser.add_argument('--run',required=True);parser.add_argument('--port',type=int,default=9251)
 parser.add_argument('--standalone',action='store_true');parser.add_argument('--interactive',action='store_true')
-parser.add_argument('--spawn',type=float,nargs=2,default=[0,0]);parser.add_argument('--telemetry-hz',type=int,choices=[50,500],default=500);args=parser.parse_args()
+parser.add_argument('--spawn',type=float,nargs=2,default=[0,0]);parser.add_argument('--telemetry-hz',type=int,choices=[50,500],default=500);parser.add_argument('--settings');args=parser.parse_args()
 spec=next(s for s in json.loads((ROOT/'simulation/gazebo/environments.json').read_text()) if s['id']==args.env)
 if not all(math.isfinite(v) for v in args.spawn) or not (-1<=args.spawn[0]<=9 and abs(args.spawn[1])<=3):raise SystemExit('Spawn outside map bounds')
 for x,y,yaw in spec['panels']:
     dx,dy=args.spawn[0]-x,args.spawn[1]-y;c,s=math.cos(yaw),math.sin(yaw)
     if math.hypot(max(abs(c*dx+s*dy)-.04,0),max(abs(-s*dx+c*dy)-.6,0))<.45:raise SystemExit('Spawn overlaps panel clearance')
 spec['spawn']=args.spawn
-parameters=json.loads((ROOT/'simulation/model/parameters.json').read_text())
+from experiment_settings import defaults,load
+settings=load(args.settings) if args.settings else defaults()
+parameters=settings['model']
 out=ROOT/'artifacts/gazebo-suite'/args.run;out.mkdir(parents=True,exist_ok=True)
-world_path=build(ROOT/'build/gazebo'/f'{args.run}.sdf',spec=spec)
+world_path=build(ROOT/'build/gazebo'/f'{args.run}.sdf',spec=spec,model=parameters)
+(out/'settings.json').write_text(json.dumps(settings,indent=2)+'\n',encoding='utf8')
 shutil.copy2(world_path,out/'world.sdf')
 frames={};contact_names=[];contact_time=-99.;names={};node=Node();callbacks=[]
 for topic in ['/drone/rgb','/overview/rgb','/follow/rgb']:
@@ -88,7 +91,7 @@ for _ in range(100):
     if state and len(frames)==3:break
     time.sleep(.02)
 assert state and len(frames)==3,'Gazebo physics/cameras unavailable'
-core=FlightCore(spec['seed'],companion=not args.standalone)
+core=FlightCore(spec['seed'],companion=not args.standalone,settings=settings)
 print(f"READY GAZEBO {args.env} {spec['name']} port={args.port}; actual physics + OGRE2; input=HID/UART only",flush=True)
 with Listener(('127.0.0.1',args.port),authkey=b'intelqcopter-esp32') as listener:
  with listener.accept() as client:
@@ -105,7 +108,7 @@ with Listener(('127.0.0.1',args.port),authkey=b'intelqcopter-esp32') as listener
         for data in message.get('companion',[]):companion_packets+=int(core.report(data,True,now))
         assert server.run(True,10,False)
     elif op!='state':raise ValueError('Only sensor/clock, raw HID and UART operations are allowed')
-    reply=dict(state);reply['environment']=args.env;reply['health']={k:(list(getattr(core.status,k)) if k=='motor_demand' else bool(getattr(core.status,k)) if k!='mode_events' else int(core.status.mode_events)) for k in ['motor_demand','sensor_fault','pilot_fresh','gyro_verified','accel_calibrated','barometer_ready','companion_fresh','mode_events']};reply.update(simulation_actuation=bool(interactive_started if args.interactive else core.status.mode_events),fc=core.frame(),mode=int(core.status.flight_mode),disarm=bool(core.status.user_disarm),mapped_input_packets=companion_packets,xbox_packets=xbox_packets)
+    reply=dict(state);reply['telemetry']=core.observe();reply['telemetry'].update(roll_true=math.degrees(math.atan2(2*(state['quaternion'][3]*state['quaternion'][0]+state['quaternion'][1]*state['quaternion'][2]),1-2*(state['quaternion'][0]**2+state['quaternion'][1]**2))),pitch_true=math.degrees(math.asin(max(-1,min(1,2*(state['quaternion'][3]*state['quaternion'][1]-state['quaternion'][2]*state['quaternion'][0]))))),yaw_true=math.degrees(math.atan2(2*(state['quaternion'][3]*state['quaternion'][2]+state['quaternion'][0]*state['quaternion'][1]),1-2*(state['quaternion'][1]**2+state['quaternion'][2]**2))),yaw_rate_true=float((rotation(state['quaternion']).T@np.array(state['omega']))[2]*180/math.pi));reply['motor_actual']=actual.tolist();reply['environment']=args.env;reply['health']={k:(list(getattr(core.status,k)) if k=='motor_demand' else bool(getattr(core.status,k)) if k!='mode_events' else int(core.status.mode_events)) for k in ['motor_demand','sensor_fault','pilot_fresh','gyro_verified','accel_calibrated','barometer_ready','companion_fresh','mode_events']};reply.update(simulation_actuation=bool(interactive_started if args.interactive else core.status.mode_events),fc=core.frame(),mode=int(core.status.flight_mode),disarm=bool(core.status.user_disarm),mapped_input_packets=companion_packets,xbox_packets=xbox_packets)
     client.send(reply);csvfile.flush()
 csvfile.close()
 summary=dict(engine='Native Gazebo 10.5 + OGRE2 RGB; ESP32 C core host build',environment=spec,assumed_parameters=parameters,sha256={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in ['firmware/src/flight_controller.c','firmware/include/fc_api.h','build/sitl/esp32_flight_core.dll']},steps=count,obstacle_contact_steps=hits,min_evaluated_clearance_m=minimum_clearance,xbox_packets=xbox_packets,companion_packets=companion_packets,final_state=state,

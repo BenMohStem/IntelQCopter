@@ -1,0 +1,28 @@
+[INFO] [1792590958.142201400] [drone.drone_mission_computer]: NAV_CONFIG position_gain=1 velocity_gain=1.8 max_speed_mps=0.8 max_acceleration_mps2=1.4 max_angle_deg=15 heading_gain=1.2 max_yaw_rate_dps=45
+[INFO] [1792590958.146084500] [drone.drone_mission_computer]: READY: endpoints via mission/request; authority via Xbox FC mode; raw UART frames on fc/companion_tx
+[INFO] [1792590960.106402800] [drone.drone_mission_computer]: RGB_OBSTACLE x=2.832 y=0.162 r=0.882 count=1
+[INFO] [1792590965.815073600] [drone.drone_mission_computer]: PC_ROUTE_ACCEPTED points=7 finish=(-0.57,-0.04)
+[INFO] [1792590965.837973400] [drone.drone_mission_computer]: PLANNER waypoint=1 planned=1 reason=OK
+[INFO] [1792590965.838337200] [drone.drone_mission_computer]: MISSION phase=1,done=0,mapped=1,plans=1,images=81,requests=1,camera=1,waypoint=1,points=7,planned=1,planner_reason=OK
+[INFO] [1792590966.813661400] [drone.drone_mission_computer]: MISSION phase=2,done=0,mapped=1,plans=1,images=95,requests=1,camera=1,waypoint=1,points=7,planned=1,planner_reason=OK
+[INFO] [1792590969.743951300] [drone.drone_mission_computer]: MISSION phase=3,done=0,mapped=1,plans=1,images=135,requests=1,camera=1,waypoint=1,points=7,planned=1,planner_reason=OK
+[INFO] [1792590970.916445200] [drone.drone_mission_computer]: MISSION phase=4,done=0,mapped=1,plans=1,images=153,requests=1,camera=1,waypoint=1,points=7,planned=1,planner_reason=OK
+[INFO] [1792590971.460748500] [drone.drone_mission_computer]: PLANNER waypoint=1 planned=1 reason=OK
+[INFO] [1792590971.487740400] [drone.drone_mission_computer]: PLANNER waypoint=1 planned=1 reason=OK
+[INFO] [1792590977.157871900] [drone.drone_mission_computer]: RGB_OBSTACLE x=6.718 y=0.339 r=0.910 count=2
+[INFO] [1792590977.168237400] [drone.drone_mission_computer]: PLANNER waypoint=1 planned=1 reason=OK
+[INFO] [1792590991.704186200] [drone.drone_mission_computer]: ROUTE_WAYPOINT_REACHED index=1 x=8.306 y=0.262
+[INFO] [1792590991.704311500] [drone.drone_mission_computer]: PLANNER waypoint=2 planned=1 reason=OK
+[INFO] [1792590996.719938900] [drone.drone_mission_computer]: RGB_OBSTACLE x=4.812 y=0.520 r=0.836 count=3
+[INFO] [1792590996.723221800] [drone.drone_mission_computer]: PLANNER waypoint=2 planned=1 reason=ESCAPING_CLEARANCE_MARGIN
+[INFO] [1792590998.848084900] [drone.drone_mission_computer]: ROUTE_WAYPOINT_REACHED index=2 x=7.132 y=1.570
+[INFO] [1792590998.848300600] [drone.drone_mission_computer]: PLANNER waypoint=3 planned=1 reason=ESCAPING_CLEARANCE_MARGIN
+[INFO] [1792591008.512253000] [drone.drone_mission_computer]: ROUTE_WAYPOINT_REACHED index=3 x=4.927 y=2.309
+[INFO] [1792591008.512389900] [drone.drone_mission_computer]: PLANNER waypoint=4 planned=1 reason=OK
+[INFO] [1792591013.621454300] [drone.drone_mission_computer]: ROUTE_WAYPOINT_REACHED index=4 x=2.950 y=2.206
+[INFO] [1792591013.621632300] [drone.drone_mission_computer]: PLANNER waypoint=5 planned=1 reason=OK
+[INFO] [1792591027.481798500] [drone.drone_mission_computer]: ROUTE_WAYPOINT_REACHED index=5 x=2.995 y=-2.545
+[INFO] [1792591027.482204900] [drone.drone_mission_computer]: PLANNER waypoint=6 planned=1 reason=OK
+[INFO] [1792591037.626249000] [drone.drone_mission_computer]: MISSION phase=5,done=0,mapped=3,plans=10,images=1122,requests=1,camera=1,waypoint=6,points=7,planned=1,planner_reason=OK
+[INFO] [1792591040.308691900] [drone.drone_mission_computer]: MISSION phase=6,done=0,mapped=3,plans=10,images=1163,requests=1,camera=1,waypoint=6,points=7,planned=1,planner_reason=OK
+[INFO] [1792591048.176245600] [drone.drone_mission_computer]: MISSION phase=7,done=1,mapped=3,plans=10,images=1271,requests=1,camera=1,waypoint=6,points=7,planned=1,planner_reason=OK

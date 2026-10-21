@@ -1,0 +1,62 @@
+{
+  "video_fps": 15,
+  "recording_view": "native follow + onboard RGB + HUD",
+  "interactive": true,
+  "session_ended_cleanly": true,
+  "completed": false,
+  "timeout": false,
+  "simulated_seconds": 77.98,
+  "hid_packets": 4615,
+  "companion_packets": 2442,
+  "yolo_frames": 1169,
+  "pnp_frames": 1169,
+  "mission_status": "phase=4,done=0,mapped=2,plans=12,images=1169,requests=1,camera=1,waypoint=2,points=7,planned=0",
+  "final_state": {
+    "sim_time_s": 78.0,
+    "position": [
+      8.18778160891052,
+      -0.227199492864849,
+      1.2503400917285064
+    ],
+    "quaternion": [
+      1.2724967045537427e-06,
+      1.466604955311663e-05,
+      0.6938934774348087,
+      0.7200776636979629
+    ],
+    "velocity": [
+      0.00023391322970190773,
+      -0.00017030787033535166,
+      -0.0006419557362318306
+    ],
+    "omega": [
+      8.982151594125507e-05,
+      -6.809013939607543e-05,
+      -1.4332144693459165e-05
+    ],
+    "ground_contact": false,
+    "obstacle_contact": false,
+    "environment": "env01",
+    "health": {
+      "motor_demand": [
+        0.49050915241241455,
+        0.49044474959373474,
+        0.4904215633869171,
+        0.49042809009552
+      ],
+      "sensor_fault": false,
+      "pilot_fresh": true,
+      "gyro_verified": true,
+      "accel_calibrated": true,
+      "barometer_ready": true,
+      "companion_fresh": true,
+      "mode_events": 1
+    },
+    "simulation_actuation": true,
+    "mode": 1,
+    "disarm": false,
+    "mapped_input_packets": 2442,
+    "xbox_packets": 4540
+  },
+  "scope": "Native Gazebo physics and cameras; real ROS2 DDS; ESP32 C core host build. C++ mission/YOLO/PnP enabled only for navigation cases. Not Xtensa emulation or physical BLE."
+}

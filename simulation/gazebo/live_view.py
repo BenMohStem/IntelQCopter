@@ -25,6 +25,7 @@ class Viewer:
             def do_GET(self):
                 if self.path.startswith('/planner'):self.proxy('GET');return
                 parsed=urlparse(self.path)
+                if parsed.path=='/live_graphs.js':self.reply(Path(__file__).with_name('live_graphs.js').read_bytes(),'text/javascript; charset=utf-8');return
                 with owner.lock:
                     if parsed.path=='/frame.jpg':
                         view=parse_qs(parsed.query).get('view',['overview'])[0];body=owner.frames.get(view,b'');kind='image/jpeg'
@@ -69,6 +70,8 @@ class Viewer:
                     self.reply(json.dumps(dict(accepted=True,message='Simulator '+action+' gesture queued; physical outputs remain disabled')).encode())
                 except (ValueError,KeyError,TypeError,queue.Full) as e:self.reply(json.dumps(dict(accepted=False,reason=str(e) or 'An action is already queued')).encode(),code=409)
         self.server=ThreadingHTTPServer(('127.0.0.1',port),Handler);threading.Thread(target=self.server.serve_forever,daemon=True).start()
+        self.telemetry_file=(Path(log_path).parent/'telemetry.jsonl').open('a',encoding='utf8') if log_path else None
+        self.last_snapshot=0
         print(f'LIVE VIEW READY http://127.0.0.1:{port}',flush=True)
     def next_action(self):
         try:return self.actions.get_nowait()
@@ -83,4 +86,10 @@ class Viewer:
             if ok:frames['follow']=encoded.tobytes()
         with self.lock:
             self.sequence+=1;self.frames=frames;self.state=dict(state,profile=self.profile,frame_sequence=self.sequence,camera_wall_time_s=time.time())
-    def close(self):self.server.shutdown();self.server.server_close()
+        if self.telemetry_file:
+            self.telemetry_file.write(json.dumps(self.state)+'\n');self.telemetry_file.flush()
+            if time.monotonic()-self.last_snapshot>2:
+                path=Path(self.log_path).parent/'latest-state.json';temp=path.with_suffix('.tmp');temp.write_text(json.dumps(self.state),encoding='utf8');temp.replace(path);self.last_snapshot=time.monotonic()
+    def close(self):
+        if self.telemetry_file:self.telemetry_file.close()
+        self.server.shutdown();self.server.server_close()

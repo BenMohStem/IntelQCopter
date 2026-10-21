@@ -53,3 +53,15 @@ ROS2/Gazebo installation files were not changed by this task.
 
 Prior project history remains recoverable through `archive/README.md`. Original
 logs, failed trials and videos are evidence rather than disposable cache.
+
+
+## Multi-node fix, authority audit and workshop — 2026-10-21
+
+- Seven-node route reproduced from the user's failed session now completes twice with one PC request, neutral pilot afterward, five intermediate acknowledgements and zero native obstacle contact steps. Final XY errors: 8.14 mm / 16.76 mm. The final repeat took 85.12 simulation seconds. Source/binary hashes, DDS publisher identity and raw CRC/sequence audit are retained.
+- Planner start-in-clearance deadlock fixed by conservative outward recovery; hard obstacles remain blocked, invalid goals report a reason, failed plans retry. Deliberate UART loss prevented completion and caused horizontal drift; no position-hold failsafe is claimed.
+- Recorded human HID replay in standalone mode used the same FC DLL, no ROS2 and no feedback pilot. It took off and moved; it is not a new human flight or successful landing test. The earlier preflight-only replay remains preserved.
+- `station` opens the persistent launcher/settings/recording library on port 8088; `station-stop` gracefully saves. Live C telemetry graphs appear below the current station. Settings are host-simulation experiments applied at next launch only. Defaults restored after verification.
+- QEMU: 50/50 checks; both firmware variants and the ROS2 overlay compile. Planner regressions, C tuning validation, profile isolation, native 15fps video decoding and HTTP video seeking passed.
+- Engine: native Gazebo 10.5/OGRE2 plus C host DLL for physics trials; separate Xtensa QEMU replay. Model remains assumed (1.2kg, J=.012/.012/.022kg·m², 6N/motor, 40ms lag). Synthetic IMU/barometer/calibration and perfect Gazebo localization remain. Real BLE/I2C/UART/ESC and hardware timing unvalidated; physical arming disabled.
+
+[Original video, graphs and audit](../artifacts/reports/authority-20261021/index.html) · [Settings/code/math guide](control-workbench.html). The 199MB original manual-session CSV is retained locally; its verified lossless gzip and SHA256 manifest are versioned beside it.

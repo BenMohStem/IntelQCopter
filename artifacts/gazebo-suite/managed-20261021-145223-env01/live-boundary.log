@@ -1,0 +1,24 @@
+LIVE VIEW READY http://127.0.0.1:8087
+BOUNDARY READY: real ROS2 DDS; native Gazebo sensors; raw HID and companion UART input only
+PROGRESS t=0.0s position=[2.1561832030058578e-20, -1.9059504229954456e-20, 0.07985757992983432] mode=0 
+PROGRESS t=0.1s position=[9.085004637210808e-20, -1.2474698649663008e-20, 0.07990470139619757] mode=0 
+PROGRESS t=0.1s position=[1.5641704660938518e-19, -6.5090843684051075e-21, 0.07992948902881612] mode=0 
+PROGRESS t=5.0s position=[1.4796783239048753e-18, -4.618279992641984e-19, 0.07999981982562351] mode=0 
+PROGRESS t=5.1s position=[1.4796783239048753e-18, -4.618279992641984e-19, 0.07999981982562351] mode=0 
+PROGRESS t=5.1s position=[1.4796783239048753e-18, -4.618279992641984e-19, 0.07999981982562351] mode=0 
+PROGRESS t=10.0s position=[1.4796783239048753e-18, -4.618279992641984e-19, 0.07999981982562351] mode=0 
+PROGRESS t=10.1s position=[1.4796783239048753e-18, -4.618279992641984e-19, 0.07999981982562351] mode=0 
+PROGRESS t=10.1s position=[1.4796783239048753e-18, -4.618279992641984e-19, 0.07999981982562351] mode=0 
+PROGRESS t=15.0s position=[1.4796783239048753e-18, -4.618279992641984e-19, 0.07999981982562351] mode=0 
+PROGRESS t=15.1s position=[1.4796783239048753e-18, -4.618279992641984e-19, 0.07999981982562351] mode=0 
+PROGRESS t=15.1s position=[1.4796783239048753e-18, -4.618279992641984e-19, 0.07999981982562351] mode=0 
+PROGRESS t=20.0s position=[1.4796783239048753e-18, -4.618279992641984e-19, 0.07999981982562351] mode=0 
+PROGRESS t=20.1s position=[1.4796783239048753e-18, -4.618279992641984e-19, 0.07999981982562351] mode=0 
+PROGRESS t=20.1s position=[1.4796783239048753e-18, -4.618279992641984e-19, 0.07999981982562351] mode=0 
+PROGRESS t=25.0s position=[1.4796783239048753e-18, -4.618279992641984e-19, 0.07999981982562351] mode=0 
+PROGRESS t=25.1s position=[1.4796783239048753e-18, -4.618279992641984e-19, 0.07999981982562351] mode=0 
+PROGRESS t=25.1s position=[1.4796783239048753e-18, -4.618279992641984e-19, 0.07999981982562351] mode=0 
+PROGRESS t=30.0s position=[1.4796783239048753e-18, -4.618279992641984e-19, 0.07999981982562351] mode=0 
+PROGRESS t=30.1s position=[1.4796783239048753e-18, -4.618279992641984e-19, 0.07999981982562351] mode=0 
+PROGRESS t=30.1s position=[1.4796783239048753e-18, -4.618279992641984e-19, 0.07999981982562351] mode=0 
+BOUNDARY RESULT {"video_fps": 15, "recording_view": "native follow + onboard RGB + HUD", "interactive": true, "session_ended_cleanly": true, "completed": false, "timeout": false, "simulated_seconds": 34.22, "hid_packets": 0, "companion_packets": 0, "yolo_frames": 513, "pnp_frames": 513, "mission_status": "", "final_state": {"sim_time_s": 34.24, "position": [1.4796783239048753e-18, -4.618279992641984e-19, 0.07999981982562351], "quaternion": [-4.062922841784875e-18, 8.434674858081022e-18, -1.3782213374590767e-19, 1.0], "velocity": [1.960530530623381e-18, -5.898456918184111e-19, 5.498154642021025e-07], "omega": [-3.422705655666078e-17, 4.491711030283466e-17, 1.6670642212457772e-18], "ground_contact": true, "obstacle_contact": false, "telemetry": {"roll_est": 0.0002551266807131469, "pitch_est": -0.0008148503839038312, "height_est": -0.0023682937026023865, "vz_est": 0.0005418066284619272, "roll_sigma": 0.062168195843696594, "pitch_sigma": 0.062168195843696594, "height_sigma": 0.1802639216184616, "vz_sigma": 0.10461242496967316, "roll_K": 0.0009662210941314697, "pitch_K": 0.0009662210941314697, "height_K": 0.016247542575001717, "velocity_K": 0.006653605494648218, "roll_innovation": 0.010563261806964874, "pitch_innovation": -0.0008462584228254855, "height_innovation": 0.00968027114868164, "height_S": 2.033031702041626, "roll_bias": -0.0007273522787727416, "pitch_bias": 0.00016721992869861424, "roll_command": 0.0, "pitch_command": 0.0, "yaw_rate_command": 0.0, "vz_command": 0.0, "fc_calls": 18210.0, "roll_true": -4.655766626431441e-16, "pitch_true": 9.665425418662984e-16, "yaw_true": -1.579325317425614e-17, "yaw_rate_true": 9.551574405464632e-17}, "motor_actual": [0.0, 0.0, 0.0, 0.0], "environment": "env01", "health": {"motor_demand": [0.0, 0.0, 0.0, 0.0], "sensor_fault": true, "pilot_fresh": false, "gyro_verified": true, "accel_calibrated": true, "barometer_ready": true, "companion_fresh": false, "mode_events": 0}, "simulation_actuation": false, "mode": 0, "disarm": false, "mapped_input_packets": 0, "xbox_packets": 0}, "scope": "Native Gazebo physics and cameras; real ROS2 DDS; ESP32 C core host build. C++ mission/YOLO/PnP enabled only for navigation cases. Not Xtensa emulation or physical BLE."}

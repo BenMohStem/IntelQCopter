@@ -50,14 +50,14 @@ class Boundary(Node):
         info=CameraInfo();info.header=image.header;info.height=image.height;info.width=image.width;f=240/(2*math.tan(math.radians(35)));info.k=[f,0.,160.,0.,f,120.,0.,0.,1.];info.d=[0.]*5;info.distortion_model='plumb_bob';self.cam.publish(info)
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('--run',required=True);p.add_argument('--port',type=int,default=9251);p.add_argument('--timeout',type=float,default=100);p.add_argument('--live',action='store_true');p.add_argument('--duration',type=float,default=0);args,ros=p.parse_known_args()
+ p=argparse.ArgumentParser();p.add_argument('--drop-companion-after',type=float,default=0);p.add_argument('--authority-proof',action='store_true');p.add_argument('--run',required=True);p.add_argument('--port',type=int,default=9251);p.add_argument('--timeout',type=float,default=100);p.add_argument('--live',action='store_true');p.add_argument('--duration',type=float,default=0);args,ros=p.parse_known_args()
  rclpy.init(args=ros);node=Boundary();client=Client(('127.0.0.1',args.port),authkey=b'intelqcopter-esp32')
  out=ROOT/'artifacts/gazebo-suite'/args.run;out.mkdir(parents=True,exist_ok=True)
  node.trace=(out/'perception.jsonl').open('w',encoding='utf8')
  wire=(out/'wire-inputs.jsonl').open('w',encoding='utf8')
  client.send({'op':'state'});state=client.recv();start=state['sim_time_s'];last_camera=last_video=-99.;next_wall=time.monotonic();next_camera=state['sim_time_s'];next_video=state['sim_time_s'];rows=[];done_at=None;count=0;hid_count=uart_count=0;success=False
  ffmpeg=ffmpeg_path()
- recorder=subprocess.Popen([str(ffmpeg),'-y','-f','rawvideo','-pix_fmt','rgb24','-s','960x540','-r','15','-i','-','-an','-c:v','libx264','-preset','ultrafast','-crf','27','-pix_fmt','yuv420p','-movflags','+faststart',str(out/'gazebo.mp4')],stdin=subprocess.PIPE,stdout=subprocess.DEVNULL,stderr=(out/'ffmpeg.log').open('w'))
+ recorder=subprocess.Popen([str(ffmpeg),'-y','-f','rawvideo','-pix_fmt','rgb24','-s','960x540','-r','15','-i','-','-an','-c:v','libx264','-preset','ultrafast','-crf','27','-pix_fmt','yuv420p','-g','30','-movflags','+frag_keyframe+empty_moov+default_base_moof',str(out/'gazebo.mp4')],stdin=subprocess.PIPE,stdout=subprocess.DEVNULL,stderr=(out/'ffmpeg.log').open('w'))
  viewer=None;wall_start=time.monotonic()
  if args.live:
   from live_view import Viewer
@@ -76,10 +76,13 @@ def main():
     # Allow independent DDS processes to handle this clock and publish their inputs.
     deadline=time.monotonic()+.006
     while time.monotonic()<deadline:rclpy.spin_once(node,timeout_sec=.001)
-    hid,uart=node.hid,node.uart;node.hid=[];node.uart=[];hid_count+=len(hid);uart_count+=len(uart)
+    hid,uart=node.hid,node.uart;node.hid=[];node.uart=[]
     original_hid=list(hid);gesture={};pc_action=False
     if viewer:hid,gesture,pc_action=controls.step(hid,t,json.loads(node.pilot or '{}'))
-    wire.write(json.dumps(dict(time_s=t,xbox=[p.hex() for p in hid],companion=[p.hex() for p in uart],input_source='explicit PC simulator gesture' if pc_action else 'ROS pilot reports',input_profile=viewer.profile if viewer else 'normal',unmapped_xbox=[p.hex() for p in original_hid]))+'\n');wire.flush()
+    generated_uart=list(uart)
+    if args.drop_companion_after and t-start>=args.drop_companion_after:uart=[]
+    wire.write(json.dumps(dict(time_s=t,deliberately_dropped_companion=[p.hex() for p in generated_uart] if len(uart)!=len(generated_uart) else [],xbox=[p.hex() for p in hid],companion=[p.hex() for p in uart],input_source='explicit PC simulator gesture' if pc_action else 'ROS pilot reports',input_profile=viewer.profile if viewer else 'normal',unmapped_xbox=[p.hex() for p in original_hid]))+'\n');wire.flush()
+    hid_count+=len(hid);uart_count+=len(uart)
     client.send({'op':'step','hid':hid,'companion':uart});state=client.recv();count+=1
     rows.append([state['sim_time_s'],*state['position']])
     if t+1e-8>=next_video:
@@ -94,9 +97,10 @@ def main():
         if viewer:
             client.send({'op':'camera','topic':'/follow/rgb'});fw,fh,fd=client.recv();follow=np.frombuffer(fd,np.uint8).reshape(fh,fw,3)
             canvas[:360,:640]=follow
-            viewer.update(canvas,dict(environment=state.get('environment'),sim_time_s=t-start,real_time_factor=(t-start)/max(.001,time.monotonic()-wall_start),health=state.get('health',{}),velocity=state['velocity'],gesture=gesture,fc_mode=state['mode'],disarmed=state['disarm'],position=state['position'],pilot=node.pilot,mission=node.mission,simulation_actuation=state.get('simulation_actuation'),YOLO_frames=node.semantics,PnP_frames=node.metric_frames,standalone=False),follow=follow,overview=overview)
+            viewer.update(canvas,dict(environment=state.get('environment'),sim_time_s=t-start,real_time_factor=(t-start)/max(.001,time.monotonic()-wall_start),telemetry=state.get('telemetry',{}),motor_actual=state.get('motor_actual',[]),health=state.get('health',{}),velocity=state['velocity'],gesture=gesture,fc_mode=state['mode'],disarmed=state['disarm'],position=state['position'],pilot=node.pilot,mission=node.mission,simulation_actuation=state.get('simulation_actuation'),YOLO_frames=node.semantics,PnP_frames=node.metric_frames,standalone=False),follow=follow,overview=overview)
         recorder.stdin.write(canvas.tobytes());last_video=t;next_video+=1/15
         if count%250<10:print(f'PROGRESS t={t-start:.1f}s position={state["position"]} mode={state["mode"]} {node.mission}',flush=True)
+    if args.authority_proof and 'done=1' in node.mission and state['disarm'] and state['ground_contact']:node.done=True
     if node.done and done_at is None:done_at=t
     if done_at is not None and t-done_at>.3:break
     next_wall+=.02;time.sleep(max(0,min(.02,next_wall-time.monotonic())))

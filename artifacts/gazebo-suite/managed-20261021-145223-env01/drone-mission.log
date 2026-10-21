@@ -1,0 +1,3 @@
+[INFO] [1792590748.773014400] [drone.drone_mission_computer]: NAV_CONFIG position_gain=1 velocity_gain=1.8 max_speed_mps=0.65 max_acceleration_mps2=1.4 max_angle_deg=15 heading_gain=1.2 max_yaw_rate_dps=45
+[INFO] [1792590748.777031400] [drone.drone_mission_computer]: READY: endpoints via mission/request; authority via Xbox FC mode; raw UART frames on fc/companion_tx
+[INFO] [1792590751.315480500] [drone.drone_mission_computer]: RGB_OBSTACLE x=2.832 y=0.162 r=0.882 count=1

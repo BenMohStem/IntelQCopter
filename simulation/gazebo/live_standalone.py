@@ -13,7 +13,7 @@ def main():
     out=ROOT/'artifacts/gazebo-suite'/args.run;controller=Controller(args.controller);viewer=Viewer(log_path=out/'operator-actions.jsonl');controls=SessionControls(viewer);client=Client(('127.0.0.1',9251),authkey=b'intelqcopter-esp32')
     client.send({'op':'state'});state=client.recv();initial=state['sim_time_s'];start=time.monotonic();next_wall=start;last_frame=-99;next_video=state['sim_time_s'];reports=0;seen=False
     log=(out/'real-xbox.csv').open('w',newline='',encoding='utf8');writer=csv.writer(log);writer.writerow(['wall_monotonic_s','sim_time_s','connected','index','raw_hid_hex'])
-    stderr=(out/'ffmpeg.log').open('w');record=subprocess.Popen([ffmpeg(),'-y','-f','rawvideo','-pix_fmt','rgb24','-s','960x540','-r','15','-i','-','-an','-c:v','libx264','-preset','ultrafast','-crf','27','-pix_fmt','yuv420p',str(out/'gazebo.mp4')],stdin=subprocess.PIPE,stdout=subprocess.DEVNULL,stderr=stderr)
+    stderr=(out/'ffmpeg.log').open('w');record=subprocess.Popen([ffmpeg(),'-y','-f','rawvideo','-pix_fmt','rgb24','-s','960x540','-r','15','-i','-','-an','-c:v','libx264','-preset','ultrafast','-crf','27','-pix_fmt','yuv420p','-g','30','-movflags','+frag_keyframe+empty_moov+default_base_moof',str(out/'gazebo.mp4')],stdin=subprocess.PIPE,stdout=subprocess.DEVNULL,stderr=stderr)
     print('STANDALONE READY: no ROS2 imported, no companion process; actual XInput only',flush=True)
     try:
         while not viewer.stopped.is_set() and (not args.duration or time.monotonic()-start<args.duration):
@@ -34,7 +34,7 @@ def main():
                 client.send({'op':'camera','topic':'/follow/rgb'});fw,fh,fd=client.recv();follow=np.frombuffer(fd,np.uint8).reshape(fh,fw,3)
                 native_overview=canvas[:360,:640].copy();canvas[:360,:640]=follow
                 record.stdin.write(canvas.tobytes())
-                viewer.update(canvas,dict(environment=state.get('environment'),sim_time_s=t-initial,real_time_factor=(t-initial)/max(.001,time.monotonic()-start),controller=info,health=state.get('health',{}),velocity=state['velocity'],gesture=gesture,fc_mode=state['mode'],disarmed=state['disarm'],position=state['position'],simulation_actuation=state.get('simulation_actuation'),standalone=True,companion_frames=0),follow=follow,overview=native_overview)
+                viewer.update(canvas,dict(environment=state.get('environment'),sim_time_s=t-initial,real_time_factor=(t-initial)/max(.001,time.monotonic()-start),controller=info,telemetry=state.get('telemetry',{}),motor_actual=state.get('motor_actual',[]),health=state.get('health',{}),velocity=state['velocity'],gesture=gesture,fc_mode=state['mode'],disarmed=state['disarm'],position=state['position'],simulation_actuation=state.get('simulation_actuation'),standalone=True,companion_frames=0),follow=follow,overview=native_overview)
             next_wall+=.02;time.sleep(max(0,min(.02,next_wall-time.monotonic())))
     except KeyboardInterrupt:pass
     finally:

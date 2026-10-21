@@ -193,6 +193,62 @@
       "path": "tools/reports/analyse_recordings.py",
       "args": [],
       "description": "Review native video frames, telemetry, yaw/height metrics and graph summaries"
+    },
+    "station": {
+      "runtime": "powershell",
+      "path": "tools/simulation/start_station.ps1",
+      "description": "Open persistent launch/settings/recording workshop on port 8088",
+      "args": []
+    },
+    "station-stop": {
+      "runtime": "python",
+      "path": "simulation/gazebo/station_manager.py",
+      "description": "Gracefully end current flight and save video/data",
+      "args": [
+        "--stop"
+      ]
+    },
+    "authority-proof": {
+      "runtime": "python",
+      "path": "simulation/gazebo/run_authority.py",
+      "description": "Run isolated one-request/neutral-pilot onboard navigation proof",
+      "args": []
+    },
+    "check-workbench": {
+      "runtime": "python",
+      "path": "simulation/gazebo/check_workbench.py",
+      "args": [],
+      "description": "Verify validated boot-only profiles against the actual C host library"
+    },
+    "check-planner": {
+      "runtime": "cmd",
+      "path": "tools/validation/check_navigation_windows.cmd",
+      "args": [],
+      "description": "Compile/run observed-clearance and blocked-goal planner regressions"
+    },
+    "check-workshop-api": {
+      "runtime": "python",
+      "path": "simulation/gazebo/check_workshop_api.py",
+      "args": [],
+      "description": "Check local workshop API, original recordings and offline guide"
+    },
+    "audit-authority": {
+      "runtime": "python",
+      "path": "simulation/gazebo/audit_authority.py",
+      "args": [],
+      "description": "Audit original HID/UART and onboard mission evidence and generate plots"
+    },
+    "replay-manual-input": {
+      "runtime": "python",
+      "path": "simulation/gazebo/replay_real_manual.py",
+      "args": [],
+      "description": "Replay unchanged recorded human HID through standalone C FC / native Gazebo; no feedback pilot"
+    },
+    "audit-manual-input": {
+      "runtime": "python",
+      "path": "simulation/gazebo/audit_real_manual.py",
+      "args": [],
+      "description": "Compare original real HID shaping and unchanged standalone replay against native movement"
     }
   }
 }

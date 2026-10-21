@@ -1,0 +1,82 @@
+{
+  "passed": true,
+  "checks": {
+    "one_route_request": true,
+    "neutral_HID_after_mode_selection": true,
+    "no_PC_pose_or_image_subscription": true,
+    "sole_companion_publisher_is_drone": true,
+    "all_intermediate_nodes_acknowledged": true,
+    "all_companion_frames_valid": true,
+    "companion_setpoints_within_FC_limits": true,
+    "companion_sequence_strictly_increases": true,
+    "landing_disarm_originated_in_drone_command": true,
+    "completed_on_ground_near_final_node": true,
+    "zero_native_obstacle_contact_steps": true,
+    "UART_loss_prevents_completion": true
+  },
+  "run": "authority-seven-20261021-a",
+  "node_count": 7,
+  "acknowledged_intermediate_indices": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "route_requests": 1,
+  "neutral_reports": 3960,
+  "UART_frames": 3943,
+  "landing_error_m": 0.008135710643850545,
+  "simulated_seconds": 84.62,
+  "obstacle_contact_steps": 0,
+  "minimum_evaluated_clearance_m": 0.44400457818562894,
+  "loss_control": {
+    "counter_note": "This original trial transport counter counts generated DDS frames before the deliberate drop; delivered frames are in wire-inputs and engine-summary. Future counter is corrected.",
+    "delivered_frames": 978,
+    "run": "authority-uart-loss-20261021-a",
+    "completed": false,
+    "companion_fresh": false,
+    "dropped_frames": 1000,
+    "final_position": [
+      -1.829914004816958,
+      -1.7620371783053537,
+      1.2277102243061282
+    ]
+  },
+  "engine": "Native Gazebo 10.5 + OGRE2 RGB; ESP32 C core host build",
+  "assumed_parameters": {
+    "status": "ASSUMED complete-vehicle simulation model; not measured hardware",
+    "mass_kg": 1.2,
+    "inertia_kg_m2": [
+      0.012,
+      0.012,
+      0.022
+    ],
+    "motor_diagonal_m": 0.45,
+    "maximum_thrust_per_motor_n": 6.0,
+    "reaction_torque_per_thrust_m": 0.015,
+    "thrust_time_constant_s": 0.04,
+    "linear_drag_ns_per_m": 0.12,
+    "gravity_mps2": 9.80665,
+    "physics_dt_s": 0.002,
+    "barometer_hz": 50,
+    "barometer_sigma_m": 0.008,
+    "gyro_sigma_dps": 0.02,
+    "accel_sigma_g": 0.001,
+    "robot_collision_radius_m": 0.34,
+    "perception_mode": "Native RGB -> C++ YOLO panel detector -> known-size PnP -> observed obstacle map; simulated local odometry",
+    "hardware_known": {
+      "frame": "F450/Q450",
+      "battery": "3S 4200mAh 120C; mass ~150g unverified",
+      "motor": "1400KV exact model unknown",
+      "propeller": "9047"
+    },
+    "scenarios": "simulation/gazebo/environments.json"
+  },
+  "limitations": [
+    "C host DLL, not Xtensa execution in this physics run",
+    "Perfect Gazebo localization; synthetic sensors and calibration",
+    "YOLO/PnP uses recognizable known-size panels; not general depth",
+    "Physical BLE, UART wiring, sensor drivers, ESC outputs and deadlines unvalidated"
+  ]
+}

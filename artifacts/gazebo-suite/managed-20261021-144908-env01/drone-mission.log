@@ -1,0 +1,2 @@
+[INFO] [1792590553.166616400] [drone.drone_mission_computer]: READY: endpoints via mission/request; authority via Xbox FC mode; raw UART frames on fc/companion_tx
+[INFO] [1792590555.802193600] [drone.drone_mission_computer]: RGB_OBSTACLE x=2.832 y=0.162 r=0.882 count=1

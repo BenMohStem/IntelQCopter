@@ -1,0 +1,11 @@
+from pathlib import Path
+import json,csv,sys,math,hashlib
+R=Path(__file__).resolve().parents[2];sys.path.insert(0,str(R/'simulation/gazebo'))
+from session_controls import shape_report
+import argparse
+parser=argparse.ArgumentParser();parser.add_argument('--run',required=True);run=parser.parse_args().run;d=R/'artifacts/gazebo-suite'/run;result=json.loads((d/'manual-replay.json').read_text());src=R/'artifacts/gazebo-suite'/result['source'];original=[json.loads(x) for x in (src/'wire-inputs.jsonl').read_text().splitlines()];replayed=[json.loads(x) for x in (d/'replayed-wire.jsonl').read_text().splitlines()];original=original[:len(replayed)]
+normal=[r for r in original if r['input_source']!='explicit PC simulator gesture'];matches=[r['xbox']==[shape_report(bytes.fromhex(h),r['input_profile']).hex() for h in r['unmapped_xbox']] for r in normal]
+with (d/'flight.csv').open() as f:rows=list(csv.DictReader(f))
+checks=dict(all_replayed_HID_identical=all(a['xbox']==b['xbox'] for a,b in zip(original,replayed)),all_non_gesture_HID_matches_recorded_stick_shaping=bool(matches) and all(matches),no_companion_packets=all(not r['companion'] for r in replayed),no_feedback_pilot=result['feedback_policy'] is False,ROS2_absent=result['ROS2_processes']==0,standalone_engine=json.loads((d/'engine-summary.json').read_text())['standalone'],actual_takeoff=max(float(r['z']) for r in rows)>.3,actual_horizontal_motion=max(math.hypot(float(r['x']),float(r['y'])) for r in rows)>.5)
+summary=dict(passed=all(checks.values()),checks=checks,run=run,source=result['source'],raw_reports=result['raw_reports_replayed'],PC_gesture_rows=sum(r['input_source']=='explicit PC simulator gesture' for r in original),non_gesture_rows_checked=len(matches),max_height_m=max(float(r['z']) for r in rows),max_distance_from_start_m=max(math.hypot(float(r['x']),float(r['y'])) for r in rows),native_obstacle_contact_steps=json.loads((d/'engine-summary.json').read_text())['obstacle_contact_steps'],scope='45s open-loop replay of real human input, not a new live human flight or successful landing/navigation test. Explicit PC mode gesture retained and labelled. Motion may drift; no horizontal position hold or hidden brake. Synthetic sensors and C host DLL.')
+(d/'manual-audit.json').write_text(json.dumps(summary,indent=2)+'\n');print(json.dumps(summary,indent=2));assert summary['passed']

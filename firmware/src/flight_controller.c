@@ -721,6 +721,10 @@ static fc_pid_t altitude_pid = {
     .kp = 0.108045f, .ki = 0.03087f, .kd = 0.1225f,
     .integrator_limit = 2.0f, .output_limit = 0.35f
 };
+#ifdef FC_BUILD_DLL
+static float sim_commands[4];
+static uint32_t sim_control_calls;
+#endif
 static float altitude_hold_reference_m;
 static float hover_collective = FC_HOVER_THROTTLE_PLACEHOLDER;
 static float boost_state;
@@ -938,6 +942,10 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
     altitude_hold_reference_m += pilot_vertical_speed * dt;
     altitude_hold_reference_m=clampf(altitude_hold_reference_m,
         altitude_estimator.height_m-2.0f,altitude_estimator.height_m+2.0f);
+#ifdef FC_BUILD_DLL
+    sim_commands[0]=roll_setpoint;sim_commands[1]=pitch_setpoint;
+    sim_commands[2]=yaw_rate_setpoint;sim_commands[3]=pilot_vertical_speed;
+#endif
     const float collective_correction=altitude_pid_update(altitude_hold_reference_m,
         altitude_estimator.height_m,pilot_vertical_speed,altitude_estimator.velocity_mps,dt);
     const float tilt_factor=fmaxf(0.5f,cosf(roll_estimator.angle_deg*FC_DEG_TO_RAD)
@@ -1010,6 +1018,12 @@ static bool imu_fit_valid(const imu_calibration_t *c) {
 }
 void fc_init(uint64_t board_id) {
     calibration_board_id=board_id;
+#ifdef FC_BUILD_DLL
+    sim_control_calls=0;memset(sim_commands,0,sizeof(sim_commands));
+    const float baseline[6][4]={{3,0,0,0},{3,0,0,0},{.000829338f,.003870245f,0,15},{.000829338f,.003870245f,0,15},{.005375614f,.008362066f,0,8},{.108045f,.03087f,.1225f,2}};
+    fc_pid_t *reset_pids[]={&roll_angle_pid,&pitch_angle_pid,&roll_rate_pid,&pitch_rate_pid,&yaw_rate_pid,&altitude_pid};
+    for(unsigned i=0;i<6;i++){reset_pids[i]->kp=baseline[i][0];reset_pids[i]->ki=baseline[i][1];reset_pids[i]->kd=baseline[i][2];reset_pids[i]->integrator_limit=baseline[i][3];}
+#endif
     roll_estimator=angle_estimator_defaults;
     pitch_estimator=angle_estimator_defaults;
     altitude_estimator=altitude_estimator_defaults;
@@ -1197,7 +1211,7 @@ void fc_configure_companion(bool enabled) {
 }
 bool fc_companion_report(const uint8_t *p,unsigned length,uint64_t now) {
     if(!companion_enabled)return false;
-    if(!p || length!=FC_COMPANION_FRAME_BYTES || p[0]!='Q' || p[1]!='N' || p[2]!=1 || p[3]!=1
+    if(!p || length!=FC_COMPANION_FRAME_BYTES || p[0]!='Q' || p[1]!='N' || p[2]!=1 || (p[3]!=1 && p[3]!=3)
         || record_u32(p+24)!=record_crc(p,24))return false;
     uint32_t seq=record_u32(p+4);
     if(have_companion && now>=companion_received_us && now-companion_received_us<1000000u
@@ -1206,9 +1220,13 @@ bool fc_companion_report(const uint8_t *p,unsigned length,uint64_t now) {
     for(unsigned i=0;i<4;i++){uint32_t bits=record_u32(p+8+4*i);memcpy(values+i,&bits,4);if(!isfinite(values[i]))return false;}
     if(fabsf(values[0])>35 || fabsf(values[1])>35 || fabsf(values[2])>180 || fabsf(values[3])>3)return false;
     memcpy(companion_values,values,sizeof(values));companion_sequence=seq;companion_received_us=now;have_companion=true;
+    if((p[3]&2u) && selected_mode==1){user_disarm_latched=true;reset_control_state();}
     return true;
 }
 void fc_control_step(const fc_sample_t *raw,uint64_t now,float dt,fc_status_t *status) {
+#ifdef FC_BUILD_DLL
+    sim_control_calls++;
+#endif
     fc_pilot_t pilot=received_pilot;
     bool fresh=have_companion && now>=companion_received_us && now-companion_received_us<=150000u;
     if(selected_mode==1) {
@@ -1224,3 +1242,35 @@ void fc_status_frame(const fc_status_t *s,uint8_t p[16]) {
     p[4]=s->user_disarm;p[5]=s->pilot_fresh;p[6]=s->companion_fresh;p[7]=companion_enabled?1:0;
     record_put32(p+8,s->xbox_reports);record_put32(p+12,record_crc(p,12));
 }
+
+#ifdef FC_BUILD_DLL
+/* Simulator workbench only. Refuse changes after the first pilot packet.
+ * 6*(Kp,Ki,Kd,integral bound), 3 angle-KF noises, 2 altitude-KF noises, hover.
+ * Configuration is validated completely before any state is modified. */
+FC_API bool fc_sim_configure(const float *v,unsigned n) {
+    if(!v || n!=30 || received_reports)return false;
+    for(unsigned i=0;i<n;i++)if(!isfinite(v[i])||v[i]<0)return false;
+    for(unsigned i=0;i<6;i++){
+        for(unsigned j=0;j<3;j++)if(v[4*i+j]>(i<2?20.0f:i==5?5.0f:1.0f))return false;
+        if(v[4*i+3]>1000)return false;
+    }
+    for(unsigned i=24;i<29;i++)if(v[i]<=0||v[i]>1000)return false;
+    if(v[29]<.1f||v[29]>.8f)return false;
+    fc_pid_t *pids[]={&roll_angle_pid,&pitch_angle_pid,&roll_rate_pid,&pitch_rate_pid,&yaw_rate_pid,&altitude_pid};
+    for(unsigned i=0;i<6;i++){pids[i]->kp=v[4*i];pids[i]->ki=v[4*i+1];pids[i]->kd=v[4*i+2];pids[i]->integrator_limit=v[4*i+3];}
+    roll_estimator.gyro_noise=pitch_estimator.gyro_noise=v[24];
+    roll_estimator.bias_walk=pitch_estimator.bias_walk=v[25];
+    roll_estimator.accel_noise=pitch_estimator.accel_noise=v[26];
+    altitude_estimator.accel_noise=v[27];altitude_estimator.baro_noise=v[28];hover_collective=v[29];
+    reset_control_state();return true;
+}
+FC_API unsigned fc_sim_observe(float *v,unsigned n) {
+    if(!v||n<23)return 0;
+    float values[]={roll_estimator.angle_deg,pitch_estimator.angle_deg,altitude_estimator.height_m,altitude_estimator.velocity_mps,
+      sqrtf(fmaxf(0,roll_estimator.p00)),sqrtf(fmaxf(0,pitch_estimator.p00)),sqrtf(fmaxf(0,altitude_estimator.p00)),sqrtf(fmaxf(0,altitude_estimator.p11)),
+      roll_estimator.gain_angle,pitch_estimator.gain_angle,altitude_estimator.gain_height,altitude_estimator.gain_velocity,
+      roll_estimator.innovation,pitch_estimator.innovation,altitude_estimator.innovation,altitude_estimator.innovation_variance,
+      roll_estimator.gyro_bias_dps,pitch_estimator.gyro_bias_dps,sim_commands[0],sim_commands[1],sim_commands[2],sim_commands[3],(float)sim_control_calls};
+    memcpy(v,values,sizeof(values));return 23;
+}
+#endif

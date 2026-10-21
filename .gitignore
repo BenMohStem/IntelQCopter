@@ -46,3 +46,6 @@ compile_commands.json
 
 # Native Gazebo dependency environment
 /simulation/gazebo/.pixi/
+
+# Original retained locally; lossless gzip + SHA256 manifest versioned alongside it.
+/artifacts/gazebo-suite/live-reset-20261021-130025-env01/flight.csv

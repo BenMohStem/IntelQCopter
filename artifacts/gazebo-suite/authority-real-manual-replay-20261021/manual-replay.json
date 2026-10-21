@@ -1,0 +1,111 @@
+{
+  "engine": "Native Gazebo 10.5 / OGRE2 + standalone C host DLL",
+  "recording": "Replay of original human XInput/mapped HID; not a newly live human flight",
+  "ROS2_processes": 0,
+  "companion_frames": 0,
+  "raw_reports_replayed": 2882,
+  "reports_unchanged": true,
+  "feedback_policy": false,
+  "video_fps": 15,
+  "source": "station-ready-15fps-20261021",
+  "simulated_seconds": 45.0,
+  "final_state": {
+    "sim_time_s": 45.02,
+    "position": [
+      1.4796783239048753e-18,
+      -4.618279992641984e-19,
+      0.07999981982562351
+    ],
+    "quaternion": [
+      -4.062922841784875e-18,
+      8.434674858081022e-18,
+      -1.3782213374590767e-19,
+      1.0
+    ],
+    "velocity": [
+      1.960530530623381e-18,
+      -5.898456918184111e-19,
+      5.498154642021025e-07
+    ],
+    "omega": [
+      -3.422705655666078e-17,
+      4.491711030283466e-17,
+      1.6670642212457772e-18
+    ],
+    "ground_contact": true,
+    "obstacle_contact": false,
+    "telemetry": {
+      "roll_est": -0.0014601856237277389,
+      "pitch_est": 0.002506756456568837,
+      "height_est": -0.0026442361995577812,
+      "vz_est": 0.00031558025511913,
+      "roll_sigma": 0.062168195843696594,
+      "pitch_sigma": 0.062168195843696594,
+      "height_sigma": 0.1802639216184616,
+      "vz_sigma": 0.10461298376321793,
+      "roll_K": 0.0009662210359238088,
+      "pitch_K": 0.0009662210359238088,
+      "height_K": 0.016247540712356567,
+      "velocity_K": 0.006653587333858013,
+      "roll_innovation": 0.07813216000795364,
+      "pitch_innovation": 0.004161053337156773,
+      "height_innovation": 0.003349077422171831,
+      "height_S": 2.033031702041626,
+      "roll_bias": 0.0002053443604381755,
+      "pitch_bias": -0.0010336084524169564,
+      "roll_command": 0.0,
+      "pitch_command": -0.0,
+      "yaw_rate_command": 0.0,
+      "vz_command": 0.0,
+      "fc_calls": 23600.0,
+      "roll_true": -4.655766626431441e-16,
+      "pitch_true": 9.665425418662984e-16,
+      "yaw_true": -1.579325317425614e-17,
+      "yaw_rate_true": 9.551574405464632e-17
+    },
+    "motor_actual": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "environment": "env01",
+    "health": {
+      "motor_demand": [
+        0.5015350580215454,
+        0.5043907165527344,
+        0.5046979188919067,
+        0.5019371509552002
+      ],
+      "sensor_fault": false,
+      "pilot_fresh": true,
+      "gyro_verified": true,
+      "accel_calibrated": true,
+      "barometer_ready": true,
+      "companion_fresh": false,
+      "mode_events": 0
+    },
+    "simulation_actuation": false,
+    "mode": 0,
+    "disarm": false,
+    "mapped_input_packets": 0,
+    "xbox_packets": 2882
+  },
+  "source_sha256": {
+    "wire-inputs.jsonl": "f0b0f84f8723026108a136d80e8d03e5657f4bb7b00a3ca6f03b654d2c14eecb",
+    "real-xbox.csv": "b2e0d009897549b7e09c9322b9db8fc37b14f59ea531ba085812853356092346",
+    "operator-actions.jsonl": "de6bcde69c50109921684e2ddc44907aa74bf07e93eb83356618cdb78e2959e3"
+  },
+  "command": [
+    "C:\\Users\\Mohamed\\Desktop\\Work\\QCopter\\sim\\gazebo\\.pixi\\envs\\default\\python.exe",
+    "-u",
+    "simulation/gazebo/engine.py",
+    "--env",
+    "env01",
+    "--run",
+    "authority-real-manual-replay-20261021",
+    "--standalone",
+    "--interactive"
+  ],
+  "limitations": "Synthetic sensors/calibration, assumed vehicle and C host DLL; not physical BLE/ESC or Xtensa timing. PC mode gesture remains explicitly labelled in original/replayed wire."
+}

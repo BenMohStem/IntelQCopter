@@ -48,6 +48,10 @@ FC_API void fc_set_estimated_soc(float percent); /* Future calibrated battery mo
 FC_API bool fc_xbox_report(const uint8_t *report, unsigned length, uint64_t now_us);
 FC_API bool fc_companion_report(const uint8_t *frame, unsigned length, uint64_t now_us);
 FC_API void fc_control_step(const fc_sample_t*,uint64_t now_us,float dt,fc_status_t*);
+#ifdef FC_BUILD_DLL
+FC_API bool fc_sim_configure(const float *values,unsigned count);
+FC_API unsigned fc_sim_observe(float *values,unsigned capacity);
+#endif
 #define FC_COMPANION_FRAME_BYTES 28u
 FC_API void fc_status_frame(const fc_status_t*,uint8_t frame[16]);
 #ifdef __cplusplus

@@ -1,0 +1,2 @@
+usage: check_station_controls.py [-h] --name NAME
+check_station_controls.py: error: the following arguments are required: --name

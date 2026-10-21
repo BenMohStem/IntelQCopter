@@ -111,3 +111,8 @@ points are visited at cruise height before the final landing. The legacy
 `FC_ENABLE_COMPANION=0` rejects Down+B and QN frames and disables Serial2 activity.
 QS byte 7 advertises this capability; its previous reserved-zero use is superseded.
 Status telemetry does not provide the full pose or velocity needed for navigation.
+
+
+## Navigation completion/disarm extension
+
+QN byte 3 accepts `1` (active command) or `3` (active command plus latched disarm request). Other bits are rejected. CRC, finite-value/range and sequence validation apply before either is accepted. Flag 3 latches disarm only in navigation mode; stable mode ignores its disarm bit. Standalone rejects all companion frames. The simulated ROS2 mission emits flag 3 after its landed/contact dwell completes; it does not rely on a ground-PC test pilot to disarm. The ground-contact topic is synthetic in Gazebo, not a validated real landing sensor. Physical ESC outputs remain disabled. QEMU checks cover valid completion, unknown flags, stable isolation and navigation disarm.
