@@ -11,14 +11,14 @@ assert len(runs)==15 and summary['manual_passed']==5 and summary['navigation_pas
 assert len({r['environment'] for r in runs if r['kind']=='navigation'})==10
 assert len({json.dumps(r['engine']['environment']['panels']) for r in runs if r['kind']=='navigation'})==10
 sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
-core_sha=sha(ROOT/'firmware/src/flight_controller.c');dll_sha=sha(ROOT/'build/sitl/esp32_flight_core.dll')
+core_sha=sha(ROOT/'firmware/src/flight_controller.cpp');dll_sha=sha(ROOT/'build/sitl/esp32_flight_core.dll')
 checks=[]
 for r in runs:
     folder=ROOT/'artifacts/gazebo-suite'/r['name'];tr=r['transport'];engine=r['engine']
     assert r['passed'] and tr['completed'] and not tr['timeout'],r['name']
     assert tr['final_state']['ground_contact'] and tr['final_state']['disarm']
     assert engine['obstacle_contact_steps']==0 and r['arrival_error_m']<.2
-    assert engine['sha256']['firmware/src/flight_controller.c']==core_sha
+    assert engine['sha256'].get('firmware/src/flight_controller.cpp',engine['sha256'].get('firmware/src/flight_controller.c'))==core_sha
     assert engine['sha256']['build/sitl/esp32_flight_core.dll']==dll_sha
     pc=json.loads((folder/'pc-mission.json').read_text(encoding='utf8'))
     if r['kind']=='manual':

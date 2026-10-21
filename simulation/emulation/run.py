@@ -52,8 +52,8 @@ with (output/'telemetry.csv').open('w', newline='',encoding='utf8') as f:
     writer=csv.writer(f)
     writer.writerow(['time_us','phase','roll_deg','pitch_deg','height_m','FL','FR','RR','RL','fault','warn','disarm'])
     writer.writerows(rows)
-files = ['firmware/src/flight_controller.c','firmware/include/fc_api.h',
-         'simulation/emulation/scenario.c','simulation/emulation/main.cpp','simulation/emulation/flight_core.c','simulation/emulation/platformio.ini',
+files = ['firmware/src/flight_controller.cpp','firmware/include/fc_api.h',
+         'simulation/emulation/scenario.c','simulation/emulation/main.cpp','simulation/emulation/flight_core.cpp','simulation/emulation/platformio.ini',
          'build/emulation-pio/esp32-s3-qemu/firmware.elf','build/emulation-flash.bin',
          'build/qemu/qemu/bin/qemu-system-xtensa.exe']
 summary={'engine':'Espressif QEMU ESP32-S3','command':command,'completed':completed,

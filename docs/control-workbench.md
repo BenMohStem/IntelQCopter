@@ -195,7 +195,7 @@ The seven-node stall occurred when a later visual observation enlarged an obstac
 
 | Question | Source to inspect |
 |---|---|
-| Angle/rate/height control, estimators, calibration | `firmware/src/flight_controller.c` |
+| Angle/rate/height control, estimators, calibration | `firmware/src/flight_controller.cpp` |
 | Public FC ABI and UART protocol | `firmware/include/fc_api.h` |
 | Route acceptance and intermediate-node transitions | `companion/ros2_ws/src/qcopter_autonomy/src/pilot_mission_node.cpp` |
 | A*, observed obstacle clearance, velocity feedback | `companion/ros2_ws/src/qcopter_autonomy/src/navigation.cpp` |

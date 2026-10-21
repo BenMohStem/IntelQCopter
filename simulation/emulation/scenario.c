@@ -38,6 +38,12 @@ static void row(const char *phase) {
         (double)status.motor_demand[2], (double)status.motor_demand[3],
         status.sensor_fault, status.battery_warning, status.battery_disarm);
 }
+/* Valid neutral UART presence, matching the idle ROS2 heartbeat. */
+static uint32_t heartbeat_sequence=1000;
+static void emulate_companion(uint64_t now) {
+    uint8_t h[28]={'Q','N',1,1};put32(h+4,++heartbeat_sequence);seal(h);
+    (void)fc_companion_report(h,28,now);
+}
 void run_scenario(void) {
     printf("QCOPTER_EMU_BEGIN,ESP32-S3,synthetic-input-replay,dt_us=2000\n");
     printf("FIELDS,time_us,phase,roll_deg,pitch_deg,height_m,FL,FR,RR,RL,fault,warn,disarm\n");
@@ -107,19 +113,19 @@ void run_scenario(void) {
     uint8_t hid[16]={0};for(unsigned i=0;i<4;i++){hid[2*i]=0;hid[2*i+1]=128;}
     hid[12]=5;hid[13]=2;
     uint64_t input_time=30000000u;
-    for(unsigned i=0;i<250;i++){fc_xbox_report(hid,16,input_time);fc_control_step(&sample,input_time,.002f,&status);input_time+=20000;}
+    for(unsigned i=0;i<250;i++){emulate_companion(input_time);fc_xbox_report(hid,16,input_time);fc_control_step(&sample,input_time,.002f,&status);input_time+=20000;}
     check("navigation_requires_full_five_seconds",status.flight_mode==0);
-    fc_xbox_report(hid,16,input_time);fc_control_step(&sample,input_time,.002f,&status);
+    emulate_companion(input_time);fc_xbox_report(hid,16,input_time);fc_control_step(&sample,input_time,.002f,&status);
     check("down_B_selects_navigation_after_five_seconds",status.flight_mode==1 && status.mode_events==1);
-    for(unsigned i=0;i<50;i++){input_time+=20000;fc_xbox_report(hid,16,input_time);}
+    for(unsigned i=0;i<50;i++){input_time+=20000;emulate_companion(input_time);fc_xbox_report(hid,16,input_time);}
     fc_control_step(&sample,input_time,.002f,&status);
     check("held_gesture_fires_once",status.mode_events==1);
-    hid[13]=1;input_time+=20000;fc_xbox_report(hid,16,input_time);
-    input_time+=200000;fc_xbox_report(hid,16,input_time); // Report gap resets the hold.
-    for(unsigned i=0;i<249;i++){input_time+=20000;fc_xbox_report(hid,16,input_time);}
+    hid[13]=1;input_time+=20000;emulate_companion(input_time);fc_xbox_report(hid,16,input_time);
+    input_time+=200000;emulate_companion(input_time);fc_xbox_report(hid,16,input_time); // Report gap resets the hold.
+    for(unsigned i=0;i<249;i++){input_time+=20000;emulate_companion(input_time);fc_xbox_report(hid,16,input_time);}
     fc_control_step(&sample,input_time,.002f,&status);
     check("report_gap_restarts_mode_hold",status.flight_mode==1);
-    input_time+=20000;fc_xbox_report(hid,16,input_time);fc_control_step(&sample,input_time,.002f,&status);
+    input_time+=20000;emulate_companion(input_time);fc_xbox_report(hid,16,input_time);fc_control_step(&sample,input_time,.002f,&status);
     check("down_A_selects_stable",status.flight_mode==0 && status.mode_events==2);
     hid[13]=0;hid[8]=0xff;hid[9]=3;
     input_time+=20000;fc_xbox_report(hid,16,input_time);
@@ -134,6 +140,7 @@ void run_scenario(void) {
     hid[12]=9;check("invalid_hat_rejected",!fc_xbox_report(hid,16,input_time));
     uint8_t telemetry[16];fc_status_frame(&status,telemetry);
     check("UART_telemetry_identifies_mode_and_disarm",telemetry[0]=='Q' && telemetry[1]=='S' && telemetry[3]==0 && telemetry[4]==1);
+    fc_configure_companion(false);fc_configure_companion(true); /* Reset protocol sequence test session. */
     uint8_t uart[28]={'Q','N',1,1};put32(uart+4,1);seal(uart);
     check("UART_valid_command_accepted",fc_companion_report(uart,28,input_time));
     check("UART_duplicate_sequence_rejected",!fc_companion_report(uart,28,input_time+1000));
@@ -170,10 +177,10 @@ void run_scenario(void) {
     fc_control_step(&sample,input_time,.002f,&status);
     check("stable_ignores_companion_disarm",!status.user_disarm);
     hid[12]=5;hid[13]=2;
-    for(unsigned i=0;i<260;i++){fc_xbox_report(hid,16,input_time);input_time+=20000;}
+    for(unsigned i=0;i<260;i++){emulate_companion(input_time);fc_xbox_report(hid,16,input_time);input_time+=20000;}
     fc_control_step(&sample,input_time,.002f,&status);
     check("completion_test_navigation_selected",status.flight_mode==1);
-    uart[3]=7;put32(uart+4,2);seal(uart);
+    uart[3]=7;put32(uart+4,++heartbeat_sequence);seal(uart);
     check("UART_unknown_flags_rejected",!fc_companion_report(uart,28,input_time));
     uart[3]=3;seal(uart);check("navigation_completion_request_accepted",fc_companion_report(uart,28,input_time));
     fc_control_step(&sample,input_time,.002f,&status);
@@ -197,6 +204,17 @@ void run_scenario(void) {
     check("deadline_histogram_boundary",d.deadline_misses==1&&d.max_execution_us==2001);
     fc_control_step(NULL,1000000,.002f,&status);
     check("null_sample_faults_zero_demands",status.sensor_fault&&zero_outputs());
+    fc_init(0x3200);memset(hid,0,sizeof(hid));for(unsigned i=0;i<4;i++)hid[2*i+1]=0x80;
+    hid[12]=5;hid[13]=2;input_time=60000000u;
+    for(unsigned i=0;i<260;i++){fc_xbox_report(hid,16,input_time);fc_control_step(&sample,input_time,.002f,&status);input_time+=20000;}
+    check("absent_ROS_cannot_select_navigation",status.flight_mode==0);
+    for(unsigned i=0;i<260;i++){emulate_companion(input_time);fc_xbox_report(hid,16,input_time);fc_control_step(&sample,input_time,.002f,&status);input_time+=20000;}
+    check("fresh_ROS_allows_explicit_navigation",status.flight_mode==1);
+    hid[12]=hid[13]=0;input_time+=200000;fc_xbox_report(hid,16,input_time);fc_control_step(&sample,input_time,.002f,&status);
+    fc_link_stats_t links;fc_link_snapshot(&links);
+    check("lost_ROS_falls_back_to_stable",status.flight_mode==0 && links.stable_fallbacks==1);
+    input_time+=20000;emulate_companion(input_time);fc_xbox_report(hid,16,input_time);fc_control_step(&sample,input_time,.002f,&status);
+    check("reconnected_ROS_does_not_seize_control",status.flight_mode==0 && status.companion_fresh);
     printf("QCOPTER_EMU_END,checks=%u,failures=%u,ticks=%u\n",checks,failures,ticks);
     fflush(stdout);
 }

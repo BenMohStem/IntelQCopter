@@ -32,7 +32,7 @@ flowchart TD
 On main, `sim/` is the existing simulation domain. It keeps that name so existing
 engine integration and installed companion assets have a stable reference. The
 ESP32 branch uses `simulation/`, including `simulation/emulation/`. ROS2 packages
-retain their standard workspace structure. Each firmware runtime remains one C file.
+retain their standard workspace structure. The ESP32 application is one C-style flight_controller.cpp; the separate Pico branch retains one C file per runtime.
 
 ## Durable files versus disposable files
 

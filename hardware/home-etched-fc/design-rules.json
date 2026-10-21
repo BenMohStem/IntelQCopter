@@ -44,6 +44,12 @@
       0,
       67,
       17
+    ],
+    "esp32_pad_connection": "solid, common GND: J1.22 J2.1 J2.21 J2.22; direct copper, W22 removed",
+    "direct_routes_mm": [
+      1.5,
+      2.5
     ]
-  }
+  },
+  "wire_jumpers": 12
 }

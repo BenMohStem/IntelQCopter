@@ -58,7 +58,7 @@ def main():
   pump(1.0,'valid',fc=False,camera=True);cut=len(frames);pump(.3,'valid',fc=False,camera=True)
   check('Stale FC status stops companion commands',len(frames)==cut)
   pump(.2,'valid',mode=0,camera=True);cut=len(frames);pump(.2,'valid',mode=0,camera=True)
-  check('Stable mode cancels mission and sends no commands',len(frames)==cut)
+  check('Stable mode cancels mission and sends only neutral link heartbeats',len(frames)>cut and all(b[3]==1 and struct.unpack('<4f',b[8:24])==(0.,0.,0.,0.) for _,b in frames[cut:]))
   pump(.2,'valid',camera=True);pump(.35,kind=None,camera=True);check('Stale last pose cannot start a mission',not request())
   pump(2.2,'NaN',camera=True);check('Wall-clock diagnostics published with rejection counts',any('clock=steady_wall' in x and 'rejected=0,' not in x for x in profiles))
  finally:

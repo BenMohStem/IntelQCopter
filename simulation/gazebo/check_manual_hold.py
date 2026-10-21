@@ -61,7 +61,7 @@ def main():
   checks['C_only_no_ROS2_or_companion']=state['mapped_input_packets']==0
   checks['final_disarm']=state['disarm'];checks['all_hold_sensor_labels_explicit']=a.no_aiding or 'Perfect Gazebo' in state['localization_source']
   engine_summary=json.loads((out/'engine-summary.json').read_text(encoding='utf8'));checks['zero_native_obstacle_contacts']=engine_summary['obstacle_contact_steps']==0
-  result=dict(open_space=a.open_space,long_angle=a.long_angle,native_obstacle_contacts=engine_summary['obstacle_contact_steps'],passed=all(checks.values()),expected_negative_control=a.no_aiding,checks=checks,metrics=metrics,engine='Native Gazebo 10.5 / OGRE2 and actual C host DLL',localization=state['localization_source'],policy='Fixed predetermined HID sequence, no feedback pilot and no ROS2. Only C FC computes braking commands from synthetic localization.',source_sha256=hashlib.sha256((ROOT/'firmware/src/flight_controller.c').read_bytes()).hexdigest(),phases=PHASES)
+  result=dict(open_space=a.open_space,long_angle=a.long_angle,native_obstacle_contacts=engine_summary['obstacle_contact_steps'],passed=all(checks.values()),expected_negative_control=a.no_aiding,checks=checks,metrics=metrics,engine='Native Gazebo 10.5 / OGRE2 and actual C host DLL',localization=state['localization_source'],policy='Fixed predetermined HID sequence, no feedback pilot and no ROS2. Only C FC computes braking commands from synthetic localization.',source_sha256=hashlib.sha256((ROOT/'firmware/src/flight_controller.cpp').read_bytes()).hexdigest(),phases=PHASES)
   (out/'result.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))
  finally:
   if rec:rec.stdin.close();rec.wait(timeout=30)

@@ -308,6 +308,18 @@
       "path": "tools/validation/check_fc_optimization.py",
       "args": [],
       "description": "Compare isolated baseline/optimized C DLL replay and profile accounting; --before DLL --after DLL --name UNIQUE"
+    },
+    "pcb-check-mask": {
+      "runtime": "python",
+      "path": "tools/hardware/check_mask_connectivity.py",
+      "args": [],
+      "description": "Verify actual rendered mask ground continuity; --image PNG --output evidence-folder"
+    },
+    "check-optional-ros-link": {
+      "runtime": "cmd",
+      "path": "tools/validation/check_optional_ros_link_windows.cmd",
+      "args": [],
+      "description": "Actual ROS2 + host FC discovery/loss/restart proof; --dll DLL --name UNIQUE"
     }
   }
 }

@@ -2,11 +2,11 @@
 
 Generated from the validated append-only [ledger](project.json). Edit the ledger through a new revision, then regenerate this view. No transcript or private reasoning is stored.
 
-Ledger SHA-256: `e8526292b8cbc604608722b21b1ad5377299d99aabdaa338a66d47b3b127a91f`.
+Ledger SHA-256: `7edd7362b40a761f4eca68f07688bcfb95bd7d1f75298b301a4a80d6931cfdc3`.
 
-49 facts · 81 revisions · 86 sources.
+49 facts · 86 revisions · 89 sources.
 
-Status counts: assumed: 1, confirmed: 6, historical: 1, implemented: 19, measured: 16, pending: 6.
+Status counts: assumed: 1, confirmed: 6, historical: 1, implemented: 20, measured: 15, pending: 6.
 
 [Documentation map](../docs/README.md) · [Math](../docs/current-model-and-fc-integration.html) · [PCB](../hardware/home-etched-fc/README.md) · [Search and history commands](README.md)
 
@@ -22,11 +22,11 @@ Sources: `source-002` (User request and clarification, 2026-10-20).
 
 ### language
 
-**implemented · evidence: source · esp32-xbox · revision 1**
+**implemented · evidence: build · esp32-xbox · revision 2**
 
-Flight math/calibration in one C file; minimal C++ adapter required by existing Arduino/Xbox/sensor APIs.
+Per user request, the ESP32 application implementation is now one firmware/src/flight_controller.cpp. Control, estimation, calibration and protocol math retain C-style data/functions; the final guarded section contains the minimal Arduino/Xbox/sensor/NVS C++ calls. fc_api.h remains declarations only. Host and QEMU compile the same .cpp core with FC_CORE_ONLY; hardware compiles the complete translation unit.
 
-Sources: [source-010](../firmware/src/flight_controller.c), [source-007](../firmware/src/esp32_platform.cpp).
+Sources: [source-single-cpp-firmware](../firmware/src/flight_controller.cpp), [source-single-cpp-report](../artifacts/validation/single-cpp-optional-ros-20261021/README.md).
 
 ## Battery
 
@@ -64,7 +64,7 @@ Sources: [source-build-20261021](../artifacts/validation/2026-10-21/hardware-con
 
 500-sample stationary gyro verification; six 200-sample accelerometer faces with geometry/noise gates; no real coefficients captured.
 
-Sources: [source-010](../firmware/src/flight_controller.c).
+Sources: [source-010](https://github.com/BenMohStem/IntelQCopter/blob/7c6951526a9d736d1a3d7422cba150f7f6f5ba4f/firmware/src/flight_controller.c).
 
 ### nvs
 
@@ -86,11 +86,11 @@ Sources: [source-companion](../companion/ros2_ws/src/qcopter_autonomy/src/pilot_
 
 ### companion_protocol
 
-**implemented · evidence: source · esp32-xbox · revision 1**
+**implemented · evidence: build · esp32-xbox · revision 2**
 
-Version-1 UART uses QN 28-byte bounded/CRC/sequence-checked setpoints and QS 16-byte FC mode/freshness/disarm telemetry. ROS2 UART bridge supports Windows/POSIX but has no hardware transport proof.
+Version-1 28-byte QN CRC/sequence-checked setpoints and 16-byte QS status remain compatible. Neutral sequence-numbered QN heartbeat establishes presence only; stable mode ignores its command values. Independent idle timer works before odometry. LINK snapshot/logs expose presence, denied selection holds and loss fallbacks. Hardware UART is 115200 3.3V TX17/RX18/common GND; physical transport remains unvalidated.
 
-Sources: [source-protocol-v1](../docs/xbox-ros2-protocol.md), [source-qemu39](../artifacts/emulation/final-39-checks-2026-10-21/summary.json).
+Sources: [source-single-cpp-firmware](../firmware/src/flight_controller.cpp), [source-single-cpp-report](../artifacts/validation/single-cpp-optional-ros-20261021/README.md).
 
 ### ground_pc_map
 
@@ -116,7 +116,7 @@ Sources: [source-station-analysis](../artifacts/reports/station-analysis-2026102
 
 Six C controller objects: roll/pitch outer-angle P and inner-rate PI, yaw-rate PI, altitude PID. All gains remain provisional.
 
-Sources: [source-010](../firmware/src/flight_controller.c).
+Sources: [source-010](https://github.com/BenMohStem/IntelQCopter/blob/7c6951526a9d736d1a3d7422cba150f7f6f5ba4f/firmware/src/flight_controller.c).
 
 ### timing
 
@@ -154,7 +154,7 @@ Sources: [source-hardening-final-qemu](../artifacts/emulation/hardening-final-20
 
 Independent angle/bias filters approximate Euler rates; gravity removal uses the previous estimate. Full quaternion/heading fusion remains future work.
 
-Sources: [source-010](../firmware/src/flight_controller.c), [source-014](../docs/status.md).
+Sources: [source-010](https://github.com/BenMohStem/IntelQCopter/blob/7c6951526a9d736d1a3d7422cba150f7f6f5ba4f/firmware/src/flight_controller.c), [source-014](../docs/status.md).
 
 ### estimator_reset
 
@@ -178,29 +178,29 @@ Sources: [source-station-analysis](../artifacts/reports/station-analysis-2026102
 
 ### fc_optimization
 
-**measured · evidence: emulated · esp32-xbox · revision 1**
+**measured · evidence: emulated · esp32-xbox · revision 2**
 
-Behavior-preserving single-C optimizations skip zero-Kd derivatives, cache gyro sigmas and reuse trigonometry. Invalid direct API inputs fail closed/reset integrators. New integer timing statistics publish through the slow adapter. Paired 20000-step synthetic host replay records zero state/output delta; 28 stress checks, 63 ESP32-S3 QEMU checks and 3 hardware builds pass. Host medians both 1.3us: no demonstrated speedup or physical deadline claim. Current six PIDs and position-aided braking remain; requested multilinear removal scope is still unclear.
+Unified the ESP32 application into one C-style flight_controller.cpp with minimal C++ Xbox/sensor/Arduino boundary. Final evidence: 67 QEMU checks, 28 host stress checks, 8 paired replay/API checks with zero manual-state/output delta, 12 actual ROS2 fault checks, 9 actual FC/ROS2 presence/loss/restart checks, and 3 hardware builds pass. Paired host medians remain 1.3us: no demonstrated median speedup or physical deadline proof. Original odometry-dependent-heartbeat failure retained. Physical motor outputs stay disabled.
 
-Sources: [source-fc-optimization](../artifacts/validation/fc-optimization-20261021/README.md).
+Sources: [source-single-cpp-report](../artifacts/validation/single-cpp-optional-ros-20261021/README.md), [source-single-cpp-firmware](../firmware/src/flight_controller.cpp).
 
 ### standalone_companion
 
-**measured · evidence: simulated · esp32-xbox · revision 2**
+**implemented · evidence: build · esp32-xbox · revision 3**
 
-The standard companion-capable FC runs Stable without ROS2/UART, receives optional companion data without granting Stable authority, and retains pilot gesture mode selection. Regressions cover optional enable/disable and actual ROS2 stale-status/pose and Stable cancellation. UART bridge has bounded partial transmit, expiry and configured-port retry; real serial/Linux behavior is unvalidated.
+The standard firmware boots in stable Xbox mode without ROS2. Actual CRC-valid UART presence enables the explicit Down+B five-second navigation gesture. Idle ROS2 presence runs on an independent 20ms wall timer, without requiring odometry/camera. After 150ms without valid traffic, navigation falls back to stable fresh-Xbox control; reconnect never automatically resumes navigation. Compile-time standalone rejects all companion frames. Physical BLE/UART wiring and timing remain unvalidated.
 
-Sources: [source-hardening-final-host](../artifacts/validation/hardening-final-20261021/summary.json), [source-hardening-final-ros](../artifacts/validation/hardening-ros-final-20261021/summary.json), [source-hardening-guide](../docs/debugging-and-flight-readiness.md).
+Sources: [source-single-cpp-firmware](../firmware/src/flight_controller.cpp), [source-single-cpp-report](../artifacts/validation/single-cpp-optional-ros-20261021/README.md).
 
 ## Hardware
 
 ### competition_pcb
 
-**implemented · evidence: build · esp32-xbox · revision 2**
+**implemented · evidence: build · esp32-xbox · revision 3**
 
-Added one connected bottom GND copper zone: 0.8mm isolation/minimum fill width, 1mm thermal spokes, floating zone islands removed, 2.5mm edge inset and antenna-clearance notch. Native KiCad DRC, unrouted and schematic parity counts remain zero. Reference module/frame fit and physical electrical/RF behavior are still unvalidated.
+Corrected ESP32 grounds: carrier J1.22 and J2.1/21/22 are all common GND with solid B.Cu zone connections and explicit 1.5–2.5mm routes. Removed GND_MCU and W22. 12 other insulated links remain. Native KiCad DRC/ERC/unrouted/parity checks pass; independent raster continuity proves all four ground pads connect to input GND and no non-GND pad is shorted to its printed region. Reference-module fit, etched copper and physical behavior remain unmeasured.
 
-Sources: [source-ground-plane-print](../artifacts/hardware/print-mask-20261021/ground-plane-print-verification.json), [source-pcb-assembly](../hardware/home-etched-fc/README.md).
+Sources: [source-direct-common-ground](../artifacts/hardware/direct-common-ground-20261021/mask-ground-continuity.json), [source-pcb-assembly](../hardware/home-etched-fc/README.md).
 
 ### etch_mask_print
 
@@ -234,7 +234,7 @@ Sources: [source-003](../archive/reference-drone/platformio.ini), `source-004` (
 
 BLE callback queues raw 16-byte Xbox reports and actual receive timestamps. The C control task owns decoding, hold timers and authority; companion frames also carry receive timestamps across the queue.
 
-Sources: [source-007](../firmware/src/esp32_platform.cpp), [source-protocol-v1](../docs/xbox-ros2-protocol.md).
+Sources: [source-007](https://github.com/BenMohStem/IntelQCopter/blob/7c6951526a9d736d1a3d7422cba150f7f6f5ba4f/firmware/src/esp32_platform.cpp), [source-protocol-v1](../docs/xbox-ros2-protocol.md).
 
 ### controls
 
@@ -336,7 +336,7 @@ Sources: [knowledge-design](../knowledge/README.md), [knowledge-checks](../artif
 
 Keep physical arming disabled. Motor pins remain inputs; no servo/ESC output driver is included.
 
-Sources: `source-012` (User retained instruction), [source-007](../firmware/src/esp32_platform.cpp).
+Sources: `source-012` (User retained instruction), [source-007](https://github.com/BenMohStem/IntelQCopter/blob/7c6951526a9d736d1a3d7422cba150f7f6f5ba4f/firmware/src/esp32_platform.cpp).
 
 ## Perception
 
@@ -366,7 +366,7 @@ Sources: [source-020](../archive/reference-drone/src/main.cpp), [source-021](../
 
 BMP280 factory compensation with 100-reading session ground reference; pressure-age checking. Actual correlated noise and delay remain unmeasured.
 
-Sources: [source-007](../firmware/src/esp32_platform.cpp), [source-010](../firmware/src/flight_controller.c).
+Sources: [source-007](https://github.com/BenMohStem/IntelQCopter/blob/7c6951526a9d736d1a3d7422cba150f7f6f5ba4f/firmware/src/esp32_platform.cpp), [source-010](https://github.com/BenMohStem/IntelQCopter/blob/7c6951526a9d736d1a3d7422cba150f7f6f5ba4f/firmware/src/flight_controller.c).
 
 ### extra_sensors
 
@@ -382,7 +382,7 @@ Sources: `source-015` (User sensor requirements), [source-014](../docs/status.md
 
 MPU6050 at 0x68, 8g/500dps, 42Hz DLPF, nominal 500Hz sampling; data-ready and complete burst checks. Mount transform remains unverified identity.
 
-Sources: [source-007](../firmware/src/esp32_platform.cpp).
+Sources: [source-007](https://github.com/BenMohStem/IntelQCopter/blob/7c6951526a9d736d1a3d7422cba150f7f6f5ba4f/firmware/src/esp32_platform.cpp).
 
 ## Simulation
 

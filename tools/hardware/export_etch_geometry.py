@@ -22,7 +22,7 @@ for f in b.GetFootprints():
         if not a.IsOnLayer(p.B_Cu) or a.GetShape()!=p.PAD_SHAPE_CIRCLE: raise RuntimeError('Only circular B.Cu pads supported')
         size=xy(a.GetSize());drill=xy(a.GetDrillSize())
         if size[0]!=size[1] or drill[0]!=drill[1]: raise RuntimeError('Noncircular pad/drill')
-        pads.append(dict(ref=f.GetReference(),pin=a.GetNumber(),xy=xy(a.GetPosition()),diameter=size[0],drill=drill[0]))
+        pads.append(dict(ref=f.GetReference(),pin=a.GetNumber(),net=a.GetNetname(),xy=xy(a.GetPosition()),diameter=size[0],drill=drill[0]))
 # Independent match against the original coordinate model: do not print stale geometry.
 model=json.loads((H/'components-and-nets.json').read_text())
 expected={(c['ref'],a['number']):(a['x'],a['y'],c['pad_diameter_mm'],c['drill_mm']) for c in model['components'] for a in c['pads']}

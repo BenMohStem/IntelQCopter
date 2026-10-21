@@ -1,7 +1,7 @@
 # ESP32-S3 CPU emulation
 
 This is the official **Espressif QEMU ESP32-S3 machine**, running an Xtensa build
-of the active `firmware/src/flight_controller.c`. The harness replaces the hardware
+of the active `firmware/src/flight_controller.cpp`. The harness replaces the hardware
 adapter with deterministic inputs. It boots through the emulated ROM and a real
 Arduino/ESP-IDF bootloader. No real board is connected or flashed.
 
@@ -26,7 +26,7 @@ flash image. `run.py` prints **live original UART output** and stores each run i
 Expected final marker for the current scenario:
 
 ```text
-QCOPTER_EMU_END,checks=39,failures=0,ticks=4982
+QCOPTER_EMU_END,checks=67,failures=0,ticks=4982
 ```
 
 The baseline uses 4,982 logical 2 ms control steps. Additional gesture tests use a separate synthetic report timeline with explicit five/two-second holds. QEMU may
@@ -94,3 +94,5 @@ cache and are not copied into the public project source.
 ## Optional companion regression (2026-10-21)
 
 Latest replay: 44 checks passed. Five additional checks cover standalone mode selection, rejection of companion frames/navigation gesture, and QS capability bits. Original UART and source hashes: `artifacts/emulation/live-companion-policy-20261021/`. These are synthetic C-core CPU tests, not real BLE/UART/ESC or live flight.
+
+The current harness verifies fresh companion traffic before navigation, absence rejection, link-loss fallback and reconnect isolation. No physical BLE/UART connection is emulated.

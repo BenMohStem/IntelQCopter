@@ -2,9 +2,9 @@
 
 | Domain | Active source |
 |---|---|
-| Flight control, calibration, estimators, battery math | firmware/src/flight_controller.c |
+| Flight control, calibration, estimators, battery math | firmware/src/flight_controller.cpp |
 | Public platform boundary | firmware/include/fc_api.h |
-| I²C, Xbox, scheduling, telemetry and NVS | firmware/src/esp32_platform.cpp |
+| I²C, Xbox, scheduling, telemetry and NVS | firmware/src/flight_controller.cpp |
 | Xtensa CPU replay | simulation/emulation/ |
 | Native flight plant, worlds and input transport | simulation/gazebo/ |
 | Drone ROS2 mission/perception/UART | companion/ros2_ws/src/qcopter_autonomy/ |
@@ -16,8 +16,7 @@
 | PlatformIO dependency adaptation | tools/platformio/ |
 | Historical snapshot index and cache recovery | archive/ and tools/archive/ |
 
-One C file holds flight math, grouped into seven numbered sections. C++ handles
-existing hardware library interfaces. The emulator compiles that same C source;
+One `flight_controller.cpp` holds C-style flight math and the minimal C++ hardware-library boundary. The emulator compiles that same C++ source with the hardware boundary excluded;
 it does not maintain a separate flight-controller implementation.
 
 `project.json` declares domains and commands. Run `qcopter.ps1 help` to list them.

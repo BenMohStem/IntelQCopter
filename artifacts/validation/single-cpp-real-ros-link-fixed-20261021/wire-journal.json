@@ -1,0 +1,5814 @@
+[
+  {
+    "wall_s": 0.0,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.030999999999039574,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.06199999999807915,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.09400000000096043,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.125,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.15599999999903957,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.18699999999807915,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.21900000000096043,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.25,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.2809999999990396,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.31199999999807915,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.3440000000009604,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.375,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.4530000000013388,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.48400000000037835,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.5159999999996217,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.5469999999986612,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.5780000000013388,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.6090000000003783,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.6409999999996217,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.6719999999986612,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.7190000000009604,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.7340000000003783,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010100000000000000000000000000000000000000fbde7f7e",
+    "accepted": true
+  },
+  {
+    "wall_s": 0.75,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.7659999999996217,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010102000000000000000000000000000000000000003193d6d1",
+    "accepted": true
+  },
+  {
+    "wall_s": 0.7809999999990396,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.7809999999990396,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101030000000000000000000000000000000000000077a8b1b4",
+    "accepted": true
+  },
+  {
+    "wall_s": 0.7969999999986612,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010400000000000000000000000000000000000000e40ef555",
+    "accepted": true
+  },
+  {
+    "wall_s": 0.8119999999980791,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.8119999999980791,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010500000000000000000000000000000000000000a2359230",
+    "accepted": true
+  },
+  {
+    "wall_s": 0.8280000000013388,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101060000000000000000000000000000000000000068783b9f",
+    "accepted": true
+  },
+  {
+    "wall_s": 0.8440000000009604,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.8590000000003783,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010107000000000000000000000000000000000000002e435cfa",
+    "accepted": true
+  },
+  {
+    "wall_s": 0.875,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.875,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010108000000000000000000000000000000000000000f33c386",
+    "accepted": true
+  },
+  {
+    "wall_s": 0.8909999999996217,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010109000000000000000000000000000000000000004908a4e3",
+    "accepted": true
+  },
+  {
+    "wall_s": 0.9059999999990396,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.9059999999990396,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010a0000000000000000000000000000000000000083450d4c",
+    "accepted": true
+  },
+  {
+    "wall_s": 0.9219999999986612,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010b00000000000000000000000000000000000000c57e6a29",
+    "accepted": true
+  },
+  {
+    "wall_s": 0.9530000000013388,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.9690000000009604,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010c0000000000000000000000000000000000000056d82ec8",
+    "accepted": true
+  },
+  {
+    "wall_s": 0.9840000000003783,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 0.9840000000003783,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010d0000000000000000000000000000000000000010e349ad",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.0,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010e00000000000000000000000000000000000000daaee002",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.0159999999996217,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.0159999999996217,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010f000000000000000000000000000000000000009c958767",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.0309999999990396,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011000000000000000000000000000000000000000984edefb",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.0469999999986612,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.0619999999980791,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011100000000000000000000000000000000000000de75b99e",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.0780000000013388,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.0780000000013388,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101120000000000000000000000000000000000000014381031",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.0940000000009604,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101130000000000000000000000000000000000000052037754",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.1090000000003783,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.1090000000003783,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011400000000000000000000000000000000000000c1a533b5",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.125,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011500000000000000000000000000000000000000879e54d0",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.1409999999996217,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.1559999999990396,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010116000000000000000000000000000000000000004dd3fd7f",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.1719999999986612,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.1719999999986612,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010117000000000000000000000000000000000000000be89a1a",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.1869999999980791,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010118000000000000000000000000000000000000002a980566",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.2030000000013388,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.2030000000013388,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010119000000000000000000000000000000000000006ca36203",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.2340000000003783,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.2340000000003783,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011a00000000000000000000000000000000000000a6eecbac",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.2659999999996217,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.2659999999996217,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011b00000000000000000000000000000000000000e0d5acc9",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.2809999999990396,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011c000000000000000000000000000000000000007373e828",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.2969999999986612,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.2969999999986612,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011d0000000000000000000000000000000000000035488f4d",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.3119999999980791,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011e00000000000000000000000000000000000000ff0526e2",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.3280000000013388,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.3280000000013388,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011f00000000000000000000000000000000000000b93e4187",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.3590000000003783,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.3590000000003783,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012000000000000000000000000000000000000000b6b5e401",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.375,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012100000000000000000000000000000000000000f08e8364",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.3909999999996217,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.3909999999996217,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010122000000000000000000000000000000000000003ac32acb",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.4059999999990396,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010123000000000000000000000000000000000000007cf84dae",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.4219999999986612,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.4219999999986612,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012400000000000000000000000000000000000000ef5e094f",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.4530000000013388,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.4690000000009604,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012500000000000000000000000000000000000000a9656e2a",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.4840000000003783,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.4840000000003783,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010126000000000000000000000000000000000000006328c785",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.5,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010127000000000000000000000000000000000000002513a0e0",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.5159999999996217,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.5159999999996217,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101280000000000000000000000000000000000000004633f9c",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.5469999999986612,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.5469999999986612,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012900000000000000000000000000000000000000425858f9",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.5619999999980791,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012a000000000000000000000000000000000000008815f156",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.5780000000013388,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.5780000000013388,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012b00000000000000000000000000000000000000ce2e9633",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.5940000000009604,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012c000000000000000000000000000000000000005d88d2d2",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.6090000000003783,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.6090000000003783,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012d000000000000000000000000000000000000001bb3b5b7",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.625,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012e00000000000000000000000000000000000000d1fe1c18",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.6409999999996217,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.6559999999990396,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012f0000000000000000000000000000000000000097c57b7d",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.6719999999986612,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.6719999999986612,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01013000000000000000000000000000000000000000931e22e1",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.6869999999980791,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01013100000000000000000000000000000000000000d5254584",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.7030000000013388,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.7190000000009604,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010132000000000000000000000000000000000000001f68ec2b",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.7340000000003783,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.7340000000003783,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101330000000000000000000000000000000000000059538b4e",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.7659999999996217,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.7659999999996217,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01013400000000000000000000000000000000000000caf5cfaf",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.7809999999990396,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010135000000000000000000000000000000000000008ccea8ca",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.7969999999986612,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.7969999999986612,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101360000000000000000000000000000000000000046830165",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.8119999999980791,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101370000000000000000000000000000000000000000b86600",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.8280000000013388,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.8280000000013388,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101380000000000000000000000000000000000000021c8f97c",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.8590000000003783,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.8590000000003783,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101390000000000000000000000000000000000000067f39e19",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.875,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01013a00000000000000000000000000000000000000adbe37b6",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.8909999999996217,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.8909999999996217,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01013b00000000000000000000000000000000000000eb8550d3",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.9059999999990396,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01013c0000000000000000000000000000000000000078231432",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.9219999999986612,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.9369999999980791,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01013d000000000000000000000000000000000000003e187357",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.9530000000013388,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.9690000000009604,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01013e00000000000000000000000000000000000000f455daf8",
+    "accepted": true
+  },
+  {
+    "wall_s": 1.9840000000003783,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 1.9840000000003783,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01013f00000000000000000000000000000000000000b26ebd9d",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.0,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014000000000000000000000000000000000000000ab45e02e",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.0159999999996217,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.0159999999996217,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014100000000000000000000000000000000000000ed7e874b",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.0309999999990396,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101420000000000000000000000000000000000000027332ee4",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.0469999999986612,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.061999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101430000000000000000000000000000000000000061084981",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.0780000000013388,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.0780000000013388,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014400000000000000000000000000000000000000f2ae0d60",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.0940000000009604,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014500000000000000000000000000000000000000b4956a05",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.1090000000003783,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.1090000000003783,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010146000000000000000000000000000000000000007ed8c3aa",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.125,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101470000000000000000000000000000000000000038e3a4cf",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.1409999999996217,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.1559999999990396,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101480000000000000000000000000000000000000019933bb3",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.1719999999986612,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.1719999999986612,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010149000000000000000000000000000000000000005fa85cd6",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.186999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014a0000000000000000000000000000000000000095e5f579",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.2030000000013388,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.2030000000013388,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014b00000000000000000000000000000000000000d3de921c",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.2340000000003783,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.2340000000003783,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014c000000000000000000000000000000000000004078d6fd",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.2659999999996217,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.2659999999996217,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014d000000000000000000000000000000000000000643b198",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.2809999999990396,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014e00000000000000000000000000000000000000cc0e1837",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.2969999999986612,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.2969999999986612,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014f000000000000000000000000000000000000008a357f52",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.311999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010150000000000000000000000000000000000000008eee26ce",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.3280000000013388,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.3280000000013388,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01015100000000000000000000000000000000000000c8d541ab",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.3590000000003783,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.3590000000003783,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010152000000000000000000000000000000000000000298e804",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.375,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101530000000000000000000000000000000000000044a38f61",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.3909999999996217,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.3909999999996217,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01015400000000000000000000000000000000000000d705cb80",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.4059999999990396,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01015500000000000000000000000000000000000000913eace5",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.4219999999986612,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.4219999999986612,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010156000000000000000000000000000000000000005b73054a",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.4530000000013388,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.4530000000013388,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010157000000000000000000000000000000000000001d48622f",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.4840000000003783,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.4840000000003783,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010158000000000000000000000000000000000000003c38fd53",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.5,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010159000000000000000000000000000000000000007a039a36",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.5159999999996217,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.5159999999996217,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01015a00000000000000000000000000000000000000b04e3399",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.5309999999990396,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01015b00000000000000000000000000000000000000f67554fc",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.5469999999986612,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.561999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01015c0000000000000000000000000000000000000065d3101d",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.5780000000013388,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.5780000000013388,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01015d0000000000000000000000000000000000000023e87778",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.5940000000009604,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01015e00000000000000000000000000000000000000e9a5ded7",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.6090000000003783,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.6090000000003783,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01015f00000000000000000000000000000000000000af9eb9b2",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.6409999999996217,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.6409999999996217,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016000000000000000000000000000000000000000a0151c34",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.6559999999990396,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016100000000000000000000000000000000000000e62e7b51",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.6719999999986612,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.6719999999986612,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010162000000000000000000000000000000000000002c63d2fe",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.686999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010163000000000000000000000000000000000000006a58b59b",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.7190000000009604,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.7190000000009604,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016400000000000000000000000000000000000000f9fef17a",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.7340000000003783,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016500000000000000000000000000000000000000bfc5961f",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.75,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.7659999999996217,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101660000000000000000000000000000000000000075883fb0",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.7809999999990396,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.7809999999990396,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101670000000000000000000000000000000000000033b358d5",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.7969999999986612,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101680000000000000000000000000000000000000012c3c7a9",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.811999999998079,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.811999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101690000000000000000000000000000000000000054f8a0cc",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.8280000000013388,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016a000000000000000000000000000000000000009eb50963",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.8440000000009604,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.8590000000003783,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016b00000000000000000000000000000000000000d88e6e06",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.875,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.875,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016c000000000000000000000000000000000000004b282ae7",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.8909999999996217,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016d000000000000000000000000000000000000000d134d82",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.9059999999990396,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.9059999999990396,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016e00000000000000000000000000000000000000c75ee42d",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.9219999999986612,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016f0000000000000000000000000000000000000081658348",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.9530000000013388,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.9690000000009604,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101700000000000000000000000000000000000000085bedad4",
+    "accepted": true
+  },
+  {
+    "wall_s": 2.9840000000003783,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 2.9840000000003783,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01017100000000000000000000000000000000000000c385bdb1",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.0,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101720000000000000000000000000000000000000009c8141e",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.0159999999996217,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.0159999999996217,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010173000000000000000000000000000000000000004ff3737b",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.0309999999990396,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01017400000000000000000000000000000000000000dc55379a",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.0469999999986612,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.061999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010175000000000000000000000000000000000000009a6e50ff",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.0780000000013388,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010176000000000000000000000000000000000000005023f950",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.0780000000013388,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.0940000000009604,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101770000000000000000000000000000000000000016189e35",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.1090000000003783,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.1090000000003783,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101780000000000000000000000000000000000000037680149",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.1409999999996217,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.1409999999996217,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010179000000000000000000000000000000000000007153662c",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.1559999999990396,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01017a00000000000000000000000000000000000000bb1ecf83",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.1719999999986612,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.1719999999986612,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01017b00000000000000000000000000000000000000fd25a8e6",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.2030000000013388,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.2030000000013388,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01017c000000000000000000000000000000000000006e83ec07",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.2190000000009604,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01017d0000000000000000000000000000000000000028b88b62",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.2340000000003783,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.2340000000003783,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01017e00000000000000000000000000000000000000e2f522cd",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.2659999999996217,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.2659999999996217,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01017f00000000000000000000000000000000000000a4ce45a8",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.2809999999990396,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101800000000000000000000000000000000000000091a5e970",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.2969999999986612,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.2969999999986612,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01018100000000000000000000000000000000000000d79e8e15",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.311999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010182000000000000000000000000000000000000001dd327ba",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.3280000000013388,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.3280000000013388,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010183000000000000000000000000000000000000005be840df",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.3590000000003783,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.3590000000003783,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01018400000000000000000000000000000000000000c84e043e",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.375,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010185000000000000000000000000000000000000008e75635b",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.3909999999996217,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.3909999999996217,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010186000000000000000000000000000000000000004438caf4",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.4059999999990396,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010187000000000000000000000000000000000000000203ad91",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.4219999999986612,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.4219999999986612,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01018800000000000000000000000000000000000000237332ed",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.4530000000013388,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.4530000000013388,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101890000000000000000000000000000000000000065485588",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.4840000000003783,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.4840000000003783,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01018a00000000000000000000000000000000000000af05fc27",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.5,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01018b00000000000000000000000000000000000000e93e9b42",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.5159999999996217,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.5159999999996217,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01018c000000000000000000000000000000000000007a98dfa3",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.5309999999990396,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01018d000000000000000000000000000000000000003ca3b8c6",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.5469999999986612,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.561999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01018e00000000000000000000000000000000000000f6ee1169",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.5780000000013388,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.5780000000013388,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01018f00000000000000000000000000000000000000b0d5760c",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.5940000000009604,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01019000000000000000000000000000000000000000b40e2f90",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.6090000000003783,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.6090000000003783,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01019100000000000000000000000000000000000000f23548f5",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.6409999999996217,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.6409999999996217,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010192000000000000000000000000000000000000003878e15a",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.6559999999990396,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010193000000000000000000000000000000000000007e43863f",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.6719999999986612,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.6719999999986612,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01019400000000000000000000000000000000000000ede5c2de",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.7030000000013388,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01019500000000000000000000000000000000000000abdea5bb",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.7030000000013388,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.7190000000009604,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101960000000000000000000000000000000000000061930c14",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.7340000000003783,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.75,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101970000000000000000000000000000000000000027a86b71",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.7659999999996217,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.7659999999996217,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101980000000000000000000000000000000000000006d8f40d",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.7809999999990396,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101990000000000000000000000000000000000000040e39368",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.7969999999986612,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.7969999999986612,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01019a000000000000000000000000000000000000008aae3ac7",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.811999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01019b00000000000000000000000000000000000000cc955da2",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.8280000000013388,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.8280000000013388,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01019c000000000000000000000000000000000000005f331943",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.8590000000003783,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.8590000000003783,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01019d0000000000000000000000000000000000000019087e26",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.875,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01019e00000000000000000000000000000000000000d345d789",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.8909999999996217,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.8909999999996217,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01019f00000000000000000000000000000000000000957eb0ec",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.9059999999990396,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101a0000000000000000000000000000000000000009af5156a",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.9219999999986612,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.936999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101a100000000000000000000000000000000000000dcce720f",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.9530000000013388,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.9530000000013388,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101a2000000000000000000000000000000000000001683dba0",
+    "accepted": true
+  },
+  {
+    "wall_s": 3.9840000000003783,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 3.9840000000003783,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101a30000000000000000000000000000000000000050b8bcc5",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.0,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101a400000000000000000000000000000000000000c31ef824",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.015999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.015999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101a50000000000000000000000000000000000000085259f41",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.03099999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101a6000000000000000000000000000000000000004f6836ee",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.046999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.061999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101a7000000000000000000000000000000000000000953518b",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.078000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101a8000000000000000000000000000000000000002823cef7",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.078000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.09400000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101a9000000000000000000000000000000000000006e18a992",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.109000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.109000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101aa00000000000000000000000000000000000000a455003d",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.125,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101ab00000000000000000000000000000000000000e26e6758",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.140999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.140999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101ac0000000000000000000000000000000000000071c823b9",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.186999999998079,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.186999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101ad0000000000000000000000000000000000000037f344dc",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.203000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101ae00000000000000000000000000000000000000fdbeed73",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.21900000000096,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.21900000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101af00000000000000000000000000000000000000bb858a16",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.234000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101b000000000000000000000000000000000000000bf5ed38a",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.25,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.265999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101b100000000000000000000000000000000000000f965b4ef",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.28099999999904,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.28099999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101b20000000000000000000000000000000000000033281d40",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.296999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101b30000000000000000000000000000000000000075137a25",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.311999999998079,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.311999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101b400000000000000000000000000000000000000e6b53ec4",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.328000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101b500000000000000000000000000000000000000a08e59a1",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.34400000000096,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.359000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101b6000000000000000000000000000000000000006ac3f00e",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.375,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.375,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101b7000000000000000000000000000000000000002cf8976b",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.390999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101b8000000000000000000000000000000000000000d880817",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.40599999999904,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.40599999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101b9000000000000000000000000000000000000004bb36f72",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.436999999998079,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.436999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101ba0000000000000000000000000000000000000081fec6dd",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.46900000000096,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.46900000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101bb00000000000000000000000000000000000000c7c5a1b8",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.484000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101bc000000000000000000000000000000000000005463e559",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.5,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.5,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101bd000000000000000000000000000000000000001258823c",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.515999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101be00000000000000000000000000000000000000d8152b93",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.53099999999904,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.53099999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101bf000000000000000000000000000000000000009e2e4cf6",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.561999999998079,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.561999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101c00000000000000000000000000000000000000087051145",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.578000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101c100000000000000000000000000000000000000c13e7620",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.59400000000096,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.59400000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101c2000000000000000000000000000000000000000b73df8f",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.609000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101c3000000000000000000000000000000000000004d48b8ea",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.625,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.640999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101c400000000000000000000000000000000000000deeefc0b",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.65599999999904,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.65599999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101c50000000000000000000000000000000000000098d59b6e",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.671999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101c600000000000000000000000000000000000000529832c1",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.686999999998079,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.686999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101c70000000000000000000000000000000000000014a355a4",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.71900000000096,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.71900000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101c80000000000000000000000000000000000000035d3cad8",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.75,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.75,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101c90000000000000000000000000000000000000073e8adbd",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.765999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101ca00000000000000000000000000000000000000b9a50412",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.78099999999904,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.78099999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101cb00000000000000000000000000000000000000ff9e6377",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.796999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101cc000000000000000000000000000000000000006c382796",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.811999999998079,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.811999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101cd000000000000000000000000000000000000002a0340f3",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.84400000000096,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.84400000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101ce00000000000000000000000000000000000000e04ee95c",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.859000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101cf00000000000000000000000000000000000000a6758e39",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.875,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.875,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101d000000000000000000000000000000000000000a2aed7a5",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.890999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101d100000000000000000000000000000000000000e495b0c0",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.90599999999904,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.90599999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101d2000000000000000000000000000000000000002ed8196f",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.921999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101d30000000000000000000000000000000000000068e37e0a",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.953000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 4.96900000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101d400000000000000000000000000000000000000fb453aeb",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.96900000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101d500000000000000000000000000000000000000bd7e5d8e",
+    "accepted": true
+  },
+  {
+    "wall_s": 4.984000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.0,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101d6000000000000000000000000000000000000007733f421",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.015999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.015999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101d70000000000000000000000000000000000000031089344",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.03099999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101d80000000000000000000000000000000000000010780c38",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.046999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.061999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101d90000000000000000000000000000000000000056436b5d",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.078000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.078000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101da000000000000000000000000000000000000009c0ec2f2",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.109000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.109000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101db00000000000000000000000000000000000000da35a597",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.109000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101dc000000000000000000000000000000000000004993e176",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.140999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.140999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101dd000000000000000000000000000000000000000fa88613",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.15599999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101de00000000000000000000000000000000000000c5e52fbc",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.171999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.171999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101df0000000000000000000000000000000000000083de48d9",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.186999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101e0000000000000000000000000000000000000008c55ed5f",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.203000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.21900000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101e100000000000000000000000000000000000000ca6e8a3a",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.234000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.234000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101e20000000000000000000000000000000000000000232395",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.25,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101e300000000000000000000000000000000000000461844f0",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.265999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.28099999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101e400000000000000000000000000000000000000d5be0011",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.296999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.296999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101e50000000000000000000000000000000000000093856774",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.311999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101e60000000000000000000000000000000000000059c8cedb",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.328000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.328000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101e7000000000000000000000000000000000000001ff3a9be",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.359000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.359000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101e8000000000000000000000000000000000000003e8336c2",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.375,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101e90000000000000000000000000000000000000078b851a7",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.390999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.390999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101ea00000000000000000000000000000000000000b2f5f808",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.40599999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101eb00000000000000000000000000000000000000f4ce9f6d",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.421999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.421999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101ec000000000000000000000000000000000000006768db8c",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.453000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.453000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101ed000000000000000000000000000000000000002153bce9",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.46900000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101ee00000000000000000000000000000000000000eb1e1546",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.484000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.5,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101ef00000000000000000000000000000000000000ad257223",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.515999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.515999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101f000000000000000000000000000000000000000a9fe2bbf",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.53099999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101f100000000000000000000000000000000000000efc54cda",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.546999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.561999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101f2000000000000000000000000000000000000002588e575",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.578000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.578000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101f30000000000000000000000000000000000000063b38210",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.59400000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101f400000000000000000000000000000000000000f015c6f1",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.609000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.609000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101f500000000000000000000000000000000000000b62ea194",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.640999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.640999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101f6000000000000000000000000000000000000007c63083b",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.65599999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101f7000000000000000000000000000000000000003a586f5e",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.671999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.671999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101f8000000000000000000000000000000000000001b28f022",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.703000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101f9000000000000000000000000000000000000005d139747",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.703000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.71900000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101fa00000000000000000000000000000000000000975e3ee8",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.734000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.734000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101fb00000000000000000000000000000000000000d165598d",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.765999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.765999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101fc0000000000000000000000000000000000000042c31d6c",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.78099999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101fd0000000000000000000000000000000000000004f87a09",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.796999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.796999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101fe00000000000000000000000000000000000000ceb5d3a6",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.811999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101ff00000000000000000000000000000000000000888eb4c3",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.828000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.828000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010001000000000000000000000000000000000000e565facc",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.859000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.859000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010101000000000000000000000000000000000000a35e9da9",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.875,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101020100000000000000000000000000000000000069133406",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.890999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.890999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010103010000000000000000000000000000000000002f285363",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.90599999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010401000000000000000000000000000000000000bc8e1782",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.921999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.921999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010501000000000000000000000000000000000000fab570e7",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.953000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.953000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101060100000000000000000000000000000000000030f8d948",
+    "accepted": true
+  },
+  {
+    "wall_s": 5.984000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 5.984000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101070100000000000000000000000000000000000076c3be2d",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.0,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101080100000000000000000000000000000000000057b32151",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.015999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.015999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101090100000000000000000000000000000000000011884634",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.03099999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010a01000000000000000000000000000000000000dbc5ef9b",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.046999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.046999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010b010000000000000000000000000000000000009dfe88fe",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.078000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.078000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010c010000000000000000000000000000000000000e58cc1f",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.09400000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010d010000000000000000000000000000000000004863ab7a",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.109000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.109000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010e01000000000000000000000000000000000000822e02d5",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.140999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.140999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010f01000000000000000000000000000000000000c41565b0",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.15599999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011001000000000000000000000000000000000000c0ce3c2c",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.171999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.186999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101110100000000000000000000000000000000000086f55b49",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.203000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.203000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010112010000000000000000000000000000000000004cb8f2e6",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.21900000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010113010000000000000000000000000000000000000a839583",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.234000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.234000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010114010000000000000000000000000000000000009925d162",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.265999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.265999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011501000000000000000000000000000000000000df1eb607",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.28099999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101160100000000000000000000000000000000000015531fa8",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.296999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.296999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011701000000000000000000000000000000000000536878cd",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.311999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010118010000000000000000000000000000000000007218e7b1",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.328000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.328000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011901000000000000000000000000000000000000342380d4",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.359000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.359000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011a01000000000000000000000000000000000000fe6e297b",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.375,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011b01000000000000000000000000000000000000b8554e1e",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.390999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.390999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011c010000000000000000000000000000000000002bf30aff",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.40599999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011d010000000000000000000000000000000000006dc86d9a",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.421999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.436999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011e01000000000000000000000000000000000000a785c435",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.453000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.46900000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011f01000000000000000000000000000000000000e1bea350",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.484000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.484000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012001000000000000000000000000000000000000ee3506d6",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.5,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012101000000000000000000000000000000000000a80e61b3",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.515999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.515999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010122010000000000000000000000000000000000006243c81c",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.546999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.546999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010123010000000000000000000000000000000000002478af79",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.561999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012401000000000000000000000000000000000000b7deeb98",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.578000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.578000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012501000000000000000000000000000000000000f1e58cfd",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.59400000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010126010000000000000000000000000000000000003ba82552",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.609000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.609000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010127010000000000000000000000000000000000007d934237",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.625,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010128010000000000000000000000000000000000005ce3dd4b",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.640999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.65599999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010129010000000000000000000000000000000000001ad8ba2e",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.671999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.671999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012a01000000000000000000000000000000000000d0951381",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.703000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012b0100000000000000000000000000000000000096ae74e4",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.703000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.71900000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012c0100000000000000000000000000000000000005083005",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.734000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.734000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012d0100000000000000000000000000000000000043335760",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.765999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.765999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012e01000000000000000000000000000000000000897efecf",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.78099999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012f01000000000000000000000000000000000000cf4599aa",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.796999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.796999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01013001000000000000000000000000000000000000cb9ec036",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.811999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010131010000000000000000000000000000000000008da5a753",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.828000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.828000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101320100000000000000000000000000000000000047e80efc",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.859000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.859000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101330100000000000000000000000000000000000001d36999",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.875,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101340100000000000000000000000000000000000092752d78",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.890999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.890999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01013501000000000000000000000000000000000000d44e4a1d",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.90599999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010136010000000000000000000000000000000000001e03e3b2",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.921999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.921999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01013701000000000000000000000000000000000000583884d7",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.953000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.96900000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101380100000000000000000000000000000000000079481bab",
+    "accepted": true
+  },
+  {
+    "wall_s": 6.984000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 6.984000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010139010000000000000000000000000000000000003f737cce",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.0,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01013a01000000000000000000000000000000000000f53ed561",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.015999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.015999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01013b01000000000000000000000000000000000000b305b204",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.03099999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01013c0100000000000000000000000000000000000020a3f6e5",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.046999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.061999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01013d0100000000000000000000000000000000000066989180",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.078000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.078000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01013e01000000000000000000000000000000000000acd5382f",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.09400000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01013f01000000000000000000000000000000000000eaee5f4a",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.109000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.109000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014001000000000000000000000000000000000000f3c502f9",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.125,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014101000000000000000000000000000000000000b5fe659c",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.140999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.15599999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010142010000000000000000000000000000000000007fb3cc33",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.171999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.186999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010143010000000000000000000000000000000000003988ab56",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.203000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.203000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014401000000000000000000000000000000000000aa2eefb7",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.21900000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014501000000000000000000000000000000000000ec1588d2",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.234000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.234000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010146010000000000000000000000000000000000002658217d",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.265999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.265999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101470100000000000000000000000000000000000060634618",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.28099999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010148010000000000000000000000000000000000004113d964",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.296999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.296999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010149010000000000000000000000000000000000000728be01",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.311999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014a01000000000000000000000000000000000000cd6517ae",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.328000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.328000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014b010000000000000000000000000000000000008b5e70cb",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.359000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.359000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014c0100000000000000000000000000000000000018f8342a",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.375,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014d010000000000000000000000000000000000005ec3534f",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.390999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.390999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014e01000000000000000000000000000000000000948efae0",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.40599999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014f01000000000000000000000000000000000000d2b59d85",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.421999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.436999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01015001000000000000000000000000000000000000d66ec419",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.453000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.46900000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010151010000000000000000000000000000000000009055a37c",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.46900000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010152010000000000000000000000000000000000005a180ad3",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.484000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.5,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010153010000000000000000000000000000000000001c236db6",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.515999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.53099999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010154010000000000000000000000000000000000008f852957",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.546999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01015501000000000000000000000000000000000000c9be4e32",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.546999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.561999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101560100000000000000000000000000000000000003f3e79d",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.578000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.578000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101570100000000000000000000000000000000000045c880f8",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.59400000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101580100000000000000000000000000000000000064b81f84",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.609000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.625,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01015901000000000000000000000000000000000000228378e1",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.625,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01015a01000000000000000000000000000000000000e8ced14e",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.640999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.640999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01015b01000000000000000000000000000000000000aef5b62b",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.671999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.671999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01015c010000000000000000000000000000000000003d53f2ca",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.686999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01015d010000000000000000000000000000000000007b6895af",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.703000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.71900000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01015e01000000000000000000000000000000000000b1253c00",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.75,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.75,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01015f01000000000000000000000000000000000000f71e5b65",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.765999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016001000000000000000000000000000000000000f895fee3",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.78099999999904,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.78099999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016101000000000000000000000000000000000000beae9986",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.796999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101620100000000000000000000000000000000000074e33029",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.811999999998079,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.811999999998079,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101630100000000000000000000000000000000000032d8574c",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.828000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016401000000000000000000000000000000000000a17e13ad",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.84400000000096,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.859000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016501000000000000000000000000000000000000e74574c8",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.875,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.875,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010166010000000000000000000000000000000000002d08dd67",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.890999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010167010000000000000000000000000000000000006b33ba02",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.90599999999904,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.90599999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010168010000000000000000000000000000000000004a43257e",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.921999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010169010000000000000000000000000000000000000c78421b",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.953000000001339,
+    "kind": "actual_FC_status",
+    "mode": 1,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.953000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016a01000000000000000000000000000000000000c635ebb4",
+    "accepted": true
+  },
+  {
+    "wall_s": 7.984000000000378,
+    "kind": "actual_FC_status",
+    "mode": 1,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 7.984000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016b01000000000000000000000000000000000000800e8cd1",
+    "accepted": true
+  },
+  {
+    "wall_s": 8.0,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016c0100000000000000000000000000000000000013a8c830",
+    "accepted": true
+  },
+  {
+    "wall_s": 8.015999999999622,
+    "kind": "actual_FC_status",
+    "mode": 1,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.015999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016d010000000000000000000000000000000000005593af55",
+    "accepted": true
+  },
+  {
+    "wall_s": 8.03099999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016e010000000000000000000000000000000000009fde06fa",
+    "accepted": true
+  },
+  {
+    "wall_s": 8.046999999998661,
+    "kind": "actual_FC_status",
+    "mode": 1,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.046999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016f01000000000000000000000000000000000000d9e5619f",
+    "accepted": true
+  },
+  {
+    "wall_s": 8.078000000001339,
+    "kind": "actual_FC_status",
+    "mode": 1,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.078000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01017001000000000000000000000000000000000000dd3e3803",
+    "accepted": true
+  },
+  {
+    "wall_s": 8.09400000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010171010000000000000000000000000000000000009b055f66",
+    "accepted": true
+  },
+  {
+    "wall_s": 8.109000000000378,
+    "kind": "actual_FC_status",
+    "mode": 1,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.109000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010172010000000000000000000000000000000000005148f6c9",
+    "accepted": true
+  },
+  {
+    "wall_s": 8.125,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01017301000000000000000000000000000000000000177391ac",
+    "accepted": true
+  },
+  {
+    "wall_s": 8.140999999999622,
+    "kind": "actual_FC_status",
+    "mode": 1,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.15599999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101740100000000000000000000000000000000000084d5d54d",
+    "accepted": true
+  },
+  {
+    "wall_s": 8.171999999998661,
+    "kind": "actual_FC_status",
+    "mode": 1,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.171999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01017501000000000000000000000000000000000000c2eeb228",
+    "accepted": true
+  },
+  {
+    "wall_s": 8.18699999999808,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101760100000000000000000000000000000000000008a31b87",
+    "accepted": true
+  },
+  {
+    "wall_s": 8.21900000000096,
+    "kind": "actual_FC_status",
+    "mode": 1,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.21900000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010177010000000000000000000000000000000000004e987ce2",
+    "accepted": true
+  },
+  {
+    "wall_s": 8.234000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010178010000000000000000000000000000000000006fe8e39e",
+    "accepted": true
+  },
+  {
+    "wall_s": 8.25,
+    "kind": "actual_FC_status",
+    "mode": 1,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.265999999999622,
+    "kind": "actual_FC_status",
+    "mode": 1,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.265999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101790100000000000000000000000000000000000029d384fb",
+    "accepted": true
+  },
+  {
+    "wall_s": 8.296999999998661,
+    "kind": "actual_FC_status",
+    "mode": 1,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.328000000001339,
+    "kind": "actual_FC_status",
+    "mode": 1,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.359000000000378,
+    "kind": "actual_FC_status",
+    "mode": 1,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.390999999999622,
+    "kind": "actual_FC_status",
+    "mode": 1,
+    "available": true,
+    "fallbacks": 0,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.421999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.453000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.484000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.515999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.546999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.578000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.609000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.640999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.671999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.703000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.734000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.765999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.796999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.828000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.859000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.875,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.90599999999904,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.953000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.953000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010100000000000000000000000000000000000000fbde7f7e",
+    "accepted": false
+  },
+  {
+    "wall_s": 8.984000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 8.984000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010102000000000000000000000000000000000000003193d6d1",
+    "accepted": false
+  },
+  {
+    "wall_s": 9.0,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101030000000000000000000000000000000000000077a8b1b4",
+    "accepted": false
+  },
+  {
+    "wall_s": 9.015999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.015999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010400000000000000000000000000000000000000e40ef555",
+    "accepted": false
+  },
+  {
+    "wall_s": 9.046999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.046999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010500000000000000000000000000000000000000a2359230",
+    "accepted": false
+  },
+  {
+    "wall_s": 9.06199999999808,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101060000000000000000000000000000000000000068783b9f",
+    "accepted": false
+  },
+  {
+    "wall_s": 9.078000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.078000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010107000000000000000000000000000000000000002e435cfa",
+    "accepted": false
+  },
+  {
+    "wall_s": 9.09400000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010108000000000000000000000000000000000000000f33c386",
+    "accepted": false
+  },
+  {
+    "wall_s": 9.109000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.125,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010109000000000000000000000000000000000000004908a4e3",
+    "accepted": false
+  },
+  {
+    "wall_s": 9.140999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.140999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010a0000000000000000000000000000000000000083450d4c",
+    "accepted": false
+  },
+  {
+    "wall_s": 9.15599999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010b00000000000000000000000000000000000000c57e6a29",
+    "accepted": false
+  },
+  {
+    "wall_s": 9.171999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010c0000000000000000000000000000000000000056d82ec8",
+    "accepted": false
+  },
+  {
+    "wall_s": 9.171999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.203000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.203000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010d0000000000000000000000000000000000000010e349ad",
+    "accepted": false
+  },
+  {
+    "wall_s": 9.21900000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010e00000000000000000000000000000000000000daaee002",
+    "accepted": false
+  },
+  {
+    "wall_s": 9.234000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.234000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01010f000000000000000000000000000000000000009c958767",
+    "accepted": false
+  },
+  {
+    "wall_s": 9.28099999999904,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.28099999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011000000000000000000000000000000000000000984edefb",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.296999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011100000000000000000000000000000000000000de75b99e",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.31199999999808,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.31199999999808,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101120000000000000000000000000000000000000014381031",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.34400000000096,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.34400000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101130000000000000000000000000000000000000052037754",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.359000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011400000000000000000000000000000000000000c1a533b5",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.375,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.375,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011500000000000000000000000000000000000000879e54d0",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.390999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010116000000000000000000000000000000000000004dd3fd7f",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.40599999999904,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.421999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010117000000000000000000000000000000000000000be89a1a",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.453000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.453000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010118000000000000000000000000000000000000002a980566",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.46900000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010119000000000000000000000000000000000000006ca36203",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.484000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.484000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011a00000000000000000000000000000000000000a6eecbac",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.5,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011b00000000000000000000000000000000000000e0d5acc9",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.515999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.53099999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011c000000000000000000000000000000000000007373e828",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.546999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.546999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011d0000000000000000000000000000000000000035488f4d",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.56199999999808,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011e00000000000000000000000000000000000000ff0526e2",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.578000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.578000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01011f00000000000000000000000000000000000000b93e4187",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.59400000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012000000000000000000000000000000000000000b6b5e401",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.609000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.625,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012100000000000000000000000000000000000000f08e8364",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.640999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.640999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010122000000000000000000000000000000000000003ac32acb",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.65599999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010123000000000000000000000000000000000000007cf84dae",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.671999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.671999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012400000000000000000000000000000000000000ef5e094f",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.703000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.703000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012500000000000000000000000000000000000000a9656e2a",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.71900000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010126000000000000000000000000000000000000006328c785",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.734000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.75,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010127000000000000000000000000000000000000002513a0e0",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.765999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.765999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101280000000000000000000000000000000000000004633f9c",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.78099999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012900000000000000000000000000000000000000425858f9",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.796999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.796999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012a000000000000000000000000000000000000008815f156",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.828000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.828000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012b00000000000000000000000000000000000000ce2e9633",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.84400000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012c000000000000000000000000000000000000005d88d2d2",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.859000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.859000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012d000000000000000000000000000000000000001bb3b5b7",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.875,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012e00000000000000000000000000000000000000d1fe1c18",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.890999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.890999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01012f0000000000000000000000000000000000000097c57b7d",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.921999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.921999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01013000000000000000000000000000000000000000931e22e1",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.953000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01013100000000000000000000000000000000000000d5254584",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.953000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.953000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010132000000000000000000000000000000000000001f68ec2b",
+    "accepted": true
+  },
+  {
+    "wall_s": 9.984000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 9.984000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101330000000000000000000000000000000000000059538b4e",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.0,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01013400000000000000000000000000000000000000caf5cfaf",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.015999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.03099999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010135000000000000000000000000000000000000008ccea8ca",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.03099999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101360000000000000000000000000000000000000046830165",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.046999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.06199999999808,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101370000000000000000000000000000000000000000b86600",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.078000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.078000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101380000000000000000000000000000000000000021c8f97c",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.09400000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101390000000000000000000000000000000000000067f39e19",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.109000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.125,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01013a00000000000000000000000000000000000000adbe37b6",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.140999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.140999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01013b00000000000000000000000000000000000000eb8550d3",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.15599999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01013c0000000000000000000000000000000000000078231432",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.171999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.171999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01013d000000000000000000000000000000000000003e187357",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.203000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.203000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01013e00000000000000000000000000000000000000f455daf8",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.234000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.234000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01013f00000000000000000000000000000000000000b26ebd9d",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.25,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014000000000000000000000000000000000000000ab45e02e",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.265999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.265999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014100000000000000000000000000000000000000ed7e874b",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.28099999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101420000000000000000000000000000000000000027332ee4",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.296999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.296999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101430000000000000000000000000000000000000061084981",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.328000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.328000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014400000000000000000000000000000000000000f2ae0d60",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.34400000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014500000000000000000000000000000000000000b4956a05",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.359000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.359000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010146000000000000000000000000000000000000007ed8c3aa",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.375,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101470000000000000000000000000000000000000038e3a4cf",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.390999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.390999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101480000000000000000000000000000000000000019933bb3",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.421999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.421999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010149000000000000000000000000000000000000005fa85cd6",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.453000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014a0000000000000000000000000000000000000095e5f579",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.453000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.46900000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014b00000000000000000000000000000000000000d3de921c",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.484000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.484000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014c000000000000000000000000000000000000004078d6fd",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.515999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.515999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014d000000000000000000000000000000000000000643b198",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.53099999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014e00000000000000000000000000000000000000cc0e1837",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.546999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.546999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01014f000000000000000000000000000000000000008a357f52",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.56199999999808,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010150000000000000000000000000000000000000008eee26ce",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.578000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.578000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01015100000000000000000000000000000000000000c8d541ab",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.59400000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010152000000000000000000000000000000000000000298e804",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.609000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.625,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101530000000000000000000000000000000000000044a38f61",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.640999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.640999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01015400000000000000000000000000000000000000d705cb80",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.65599999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01015500000000000000000000000000000000000000913eace5",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.671999999998661,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.671999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010156000000000000000000000000000000000000005b73054a",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.703000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.703000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010157000000000000000000000000000000000000001d48622f",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.734000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010158000000000000000000000000000000000000003c38fd53",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.734000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.734000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010159000000000000000000000000000000000000007a039a36",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.75,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01015a00000000000000000000000000000000000000b04e3399",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.78099999999904,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.78099999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01015b00000000000000000000000000000000000000f67554fc",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.796999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01015c0000000000000000000000000000000000000065d3101d",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.81199999999808,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.828000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01015d0000000000000000000000000000000000000023e87778",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.84400000000096,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.84400000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01015e00000000000000000000000000000000000000e9a5ded7",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.859000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01015f00000000000000000000000000000000000000af9eb9b2",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.875,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.875,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016000000000000000000000000000000000000000a0151c34",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.890999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016100000000000000000000000000000000000000e62e7b51",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.90599999999904,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.921999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010162000000000000000000000000000000000000002c63d2fe",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.93699999999808,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.953000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010163000000000000000000000000000000000000006a58b59b",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.953000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016400000000000000000000000000000000000000f9fef17a",
+    "accepted": true
+  },
+  {
+    "wall_s": 10.96900000000096,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 10.984000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016500000000000000000000000000000000000000bfc5961f",
+    "accepted": true
+  },
+  {
+    "wall_s": 11.0,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 11.0,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101660000000000000000000000000000000000000075883fb0",
+    "accepted": true
+  },
+  {
+    "wall_s": 11.03099999999904,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 11.03099999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101670000000000000000000000000000000000000033b358d5",
+    "accepted": true
+  },
+  {
+    "wall_s": 11.046999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101680000000000000000000000000000000000000012c3c7a9",
+    "accepted": true
+  },
+  {
+    "wall_s": 11.06199999999808,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": true,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 11.06199999999808,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101690000000000000000000000000000000000000054f8a0cc",
+    "accepted": true
+  },
+  {
+    "wall_s": 11.078000000001339,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 11.078000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016a000000000000000000000000000000000000009eb50963",
+    "accepted": false
+  },
+  {
+    "wall_s": 11.09400000000096,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016b00000000000000000000000000000000000000d88e6e06",
+    "accepted": false
+  },
+  {
+    "wall_s": 11.109000000000378,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 11.125,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016c000000000000000000000000000000000000004b282ae7",
+    "accepted": false
+  },
+  {
+    "wall_s": 11.140999999999622,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 11.140999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016d000000000000000000000000000000000000000d134d82",
+    "accepted": false
+  },
+  {
+    "wall_s": 11.15599999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016e00000000000000000000000000000000000000c75ee42d",
+    "accepted": false
+  },
+  {
+    "wall_s": 11.18699999999808,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 11.18699999999808,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01016f0000000000000000000000000000000000000081658348",
+    "accepted": false
+  },
+  {
+    "wall_s": 11.203000000001339,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101700000000000000000000000000000000000000085bedad4",
+    "accepted": false
+  },
+  {
+    "wall_s": 11.21900000000096,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 11.234000000000378,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01017100000000000000000000000000000000000000c385bdb1",
+    "accepted": false
+  },
+  {
+    "wall_s": 11.25,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 11.25,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e0101720000000000000000000000000000000000000009c8141e",
+    "accepted": false
+  },
+  {
+    "wall_s": 11.265999999999622,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010173000000000000000000000000000000000000004ff3737b",
+    "accepted": false
+  },
+  {
+    "wall_s": 11.28099999999904,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  },
+  {
+    "wall_s": 11.28099999999904,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e01017400000000000000000000000000000000000000dc55379a",
+    "accepted": false
+  },
+  {
+    "wall_s": 11.296999999998661,
+    "kind": "UART_from_actual_ROS2_cpp",
+    "frame": "514e010175000000000000000000000000000000000000009a6e50ff",
+    "accepted": false
+  },
+  {
+    "wall_s": 11.31199999999808,
+    "kind": "actual_FC_status",
+    "mode": 0,
+    "available": false,
+    "fallbacks": 1,
+    "pilot_fresh": true
+  }
+]

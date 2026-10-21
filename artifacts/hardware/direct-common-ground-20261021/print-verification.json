@@ -1,0 +1,35 @@
+{
+  "engine": "KiCad 10.0.6 filled B.Cu extraction + ReportLab vector paths + pypdf",
+  "source_sha256": "e4a04512dc75a7ac6d1092da27b9a8f99d464e2bd626fbfde9fa9dec2285617d",
+  "pdf_sha256": "3b5b1e9984725f819c1bdec953ae8611a9066a1d350965978a3c6fb11f4eda14",
+  "page_mm": [
+    210,
+    297
+  ],
+  "board_mm": [
+    100,
+    100
+  ],
+  "copies": 3,
+  "placements_mm": [
+    [
+      5,
+      160
+    ],
+    [
+      105,
+      160
+    ],
+    [
+      55,
+      50
+    ]
+  ],
+  "text_characters": 0,
+  "mirroring": "component view; face-down toner transfer reverses once",
+  "polarity": "black = retained copper; white = removed copper",
+  "connected_ground_polygons": 1,
+  "tracks": 60,
+  "pads": 122,
+  "physical_fit_and_print_scale_verified": false
+}

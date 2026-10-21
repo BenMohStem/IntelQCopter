@@ -1,0 +1,49 @@
+{
+  "passed": true,
+  "FC_source_sha256": "79e66ede67434a11ae2c1a08f5572c51dbb14380b4a417fcd9b6f9a93888d7fe",
+  "scope": "One C-style C++ FC source; actual host DLL and ROS2 C++ processes; synthetic sensor/HID replay; QEMU Xtensa execution; no aircraft physics or physical timing/interfaces.",
+  "evidence": {
+    "replay": {
+      "path": "artifacts/validation/single-cpp-final-comparison-20261021/summary.json",
+      "checks": 8
+    },
+    "stress": {
+      "path": "artifacts/validation/single-cpp-final-stress-20261021/summary.json",
+      "checks": 28
+    },
+    "link": {
+      "path": "artifacts/validation/single-cpp-real-ros-link-release-20261021/summary.json",
+      "checks": 9
+    },
+    "ros_faults": {
+      "path": "artifacts/validation/single-cpp-ros-faults-final-20261021/summary.json",
+      "checks": 12
+    },
+    "qemu": {
+      "path": "artifacts/emulation/single-cpp-release-20261021/summary.json",
+      "checks": 67
+    }
+  },
+  "host_api_us": {
+    "baseline": {
+      "mean": 1.27978,
+      "median": 1.3,
+      "p95": 1.4,
+      "p99": 1.8,
+      "max": 26.7
+    },
+    "optimized": {
+      "mean": 1.27107,
+      "median": 1.3,
+      "p95": 1.4,
+      "p99": 1.7,
+      "max": 7.8
+    }
+  },
+  "maximum_manual_replay_delta": 0,
+  "hardware_builds": [
+    "esp32-s3",
+    "esp32-s3-standalone",
+    "esp32-s3-debug"
+  ]
+}

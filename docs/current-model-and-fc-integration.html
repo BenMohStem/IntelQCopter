@@ -855,7 +855,7 @@ P_{11}^+&amp;=d-2k_1b+k_1^2a+k_1^2R.
 <td><code>fc_cal_load</code>, <code>fc_cal_take_pending</code></td>
 </tr>
 </tbody></table>
-<p>All these symbols are in <a href="../firmware/src/flight_controller.c">flight_controller.c</a>. <a href="../firmware/src/esp32_platform.cpp">The platform adapter</a> handles Arduino, I²C, BLE, task scheduling and NVS. Physical motor pins remain inputs; no ESC output driver is attached.</p>
+<p>All these symbols are in <a href="../firmware/src/flight_controller.cpp">flight_controller.cpp</a>. The hardware-boundary section at the end of the same file handles Arduino, I²C, BLE, task scheduling and NVS. Physical motor pins remain inputs; no ESC output driver is attached.</p>
 <p>The new <a href="../simulation/emulation/README.md">ESP32-S3 emulator</a> executes the compiled C core on QEMU with synthetic inputs. The graphs in this guide come from the separate mathematical LTI calculation script. Keeping those evidence types explicit lets us see what each result actually establishes.</p>
 <h2 id="15-reproduce-and-continue-the-calculation">15. Reproduce and continue the calculation</h2>
 <p>From the <code>esp32-xbox</code> checkout, with Python plus NumPy/SciPy/Matplotlib:</p>

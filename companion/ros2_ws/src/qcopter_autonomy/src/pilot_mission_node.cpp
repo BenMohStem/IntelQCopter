@@ -10,6 +10,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include "profile.hpp"
 #include <algorithm>
+#include <chrono>
 #include <cmath>
 #include <cstring>
 #include <sstream>
@@ -85,6 +86,7 @@ class PilotMissionNode:public rclcpp::Node {
       state_={p.x,p.y,p.z,v.x,v.y,v.z,std::atan2(2*(q.w*q.z+q.x*q.y),1-2*(q.y*q.y+q.z*q.z))};
       tick(std::clamp(dt,.001,.1));
     });
+    heartbeat_timer_=create_wall_timer(std::chrono::milliseconds(20),[this]{idle_heartbeat();});
     RCLCPP_INFO(get_logger(),"READY: endpoints via mission/request; authority via Xbox FC mode; raw UART frames on fc/companion_tx");
   }
  private:
@@ -110,10 +112,21 @@ class PilotMissionNode:public rclcpp::Node {
     finish_={points[1][0],points[1][1],cruise};mission_.enable_finish(route_.size()==2);
     RCLCPP_INFO(get_logger(),"PC_ROUTE_ACCEPTED points=%zu finish=(%.2f,%.2f)",points.size(),points.back()[0],points.back()[1]);return true;
   }
+  void idle_heartbeat(){
+    CallbackProfile::Scope scope(profile_);
+    const double age=now().seconds()-status_time_;
+    if(age<0||age>.75||disarmed_||!pilot_fresh_||(active_&&mode_nav_))return;
+    // Presence is independent of odometry/camera readiness. Active navigation
+    // still requires its normal sensor-driven control updates.
+    std_msgs::msg::UInt8MultiArray heartbeat;heartbeat.data.resize(28,0);
+    auto& p=heartbeat.data;p[0]='Q';p[1]='N';p[2]=1;p[3]=1;
+    u32(p,4,++sequence_);u32(p,24,crc32(p.data(),24));frames_->publish(heartbeat);
+  }
   void tick(double dt){
     CallbackProfile::Scope scope(profile_);
-    if(!active_||!mode_nav_||disarmed_||!pilot_fresh_)return;
     if(now().seconds()-status_time_>.75||now().seconds()-status_time_<0){profile_.reject();return;}
+    if(disarmed_||!pilot_fresh_)return;
+    if(!active_||!mode_nav_)return;
     const bool contact_fresh=now().seconds()-contact_time_>=0&&now().seconds()-contact_time_<.2;
     if(phase_==qcopter::Phase::Navigate&&route_index_+1<route_.size()
        &&std::hypot(state_.x-finish_[0],state_.y-finish_[1])<.2
@@ -147,6 +160,7 @@ class PilotMissionNode:public rclcpp::Node {
   std::array<double,3>finish_{};std::vector<qcopter::Obstacle>map_;
   rclcpp::Publisher<std_msgs::msg::UInt8MultiArray>::SharedPtr frames_;
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr status_,path_;
+  rclcpp::TimerBase::SharedPtr heartbeat_timer_;
   rclcpp::Subscription<std_msgs::msg::UInt8MultiArray>::SharedPtr mode_;
   rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr contact_;
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_;

@@ -13,7 +13,7 @@ The PDF contains **only three identical copper masks**: no labels, dimensions, t
 
 Print **Actual size / 100%**; turn off fit-to-page and borderless enlargement. The corresponding left edges of the two upper masks are **100 mm apart** on the printed sheet. The ground-plane outer span is 95 mm because it stays 2.5 mm from each board edge. Check this before transferring. Use the separate fit/drill sheet for component and mounting dimensions.
 
-The zone has 0.8 mm isolation clearance, 0.8 mm minimum fill width and 1.0 mm thermal spokes. Isolated zone islands are removed. A copper-free notch covers x=36..67 mm, y=0..17 mm at the reference ESP32 antenna; actual board/frame RF clearance still needs checking. The 13 insulated top wires are still required.
+The zone has 0.8 mm isolation clearance, 0.8 mm minimum fill width and 1.0 mm thermal spokes. Isolated zone islands are removed. The zone has an antenna-clearance notch covering x=36..67 mm, y=0..17 mm at the reference ESP32 antenna; actual board/frame RF clearance still needs checking. The 12 insulated top wires are still required.
 
 Native KiCad DRC reports zero violations, unrouted items and schematic-parity issues after the ground fill. Exact filled polygons, tracks and pads are extracted from the native board for the PDF. Both original labelled PDFs and earlier worksheet-bearing SVGs are retained as **superseded** evidence under `artifacts/hardware/print-mask-20261021/`. Use the new three-copy PDF.
 
@@ -32,7 +32,7 @@ Native KiCad DRC reports zero violations, unrouted items and schematic-parity is
 | Feature | Size / method |
 |---|---|
 | Carrier | 100 × 100 mm; mounting pattern must be checked on the real F450 |
-| Copper | One etched bottom layer; **13 insulated component-side wire links** |
+| Copper | One etched bottom layer; **12 insulated component-side wire links** |
 | Signal tracks | 1.0 mm; minimum rule 0.8 mm |
 | Logic power/ground | 1.5–2.0 mm; minimum copper gap 0.6 mm |
 | DevKit socket pads | 1.9 mm diameter, 1.0 mm drill, 2.54 mm pitch |
@@ -71,7 +71,7 @@ Lidar UART provision: GPIO6 RX, GPIO7 TX. **Its VCC pad is intentionally disconn
 1. Print the fit sheet at actual size. Confirm board/module/frame dimensions and available drill bits.
 2. Use the coupon to establish reliable gaps and pad annuli for your etching/drilling process.
 3. Choose artwork orientation for your transfer method. A face-down toner transfer reverses the printed image: use the component-view artwork for that reversal and compare the final copper against the solder-side view. Check an asymmetric connector before etching the full board; never print both masks on the same board.
-4. Inspect etched tracks and drill alignment. Install passives, mapped connectors and all 13 insulated links from the wire-link table. Keep links flat under the removable module/socket gap.
+4. Inspect etched tracks and drill alignment. Install passives, mapped connectors and all 12 insulated links from the wire-link table. Keep links flat under the removable module/socket gap.
 5. Before inserting modules or connecting a battery, check continuity against the connector map and absence of shorts. Verify the regulated supply and divided voltage with a meter.
 6. Fit the ESP32 and individually verified sensor modules. Motor power/output remains disabled pending later bench integration.
 
@@ -91,3 +91,30 @@ The final native checks report **zero DRC violations, zero unrouted connections,
 - [Nooploop module downloads](https://support.nooploop.com/cn/tofsense/download/): exact purchased lidar revision still needs checking.
 
 The long-term RP2350/RP2040 + LoRa/CC1101 architecture remains on main. This carrier serves the separate ESP32-S3 competition branch only.
+
+
+## Direct ESP32 common ground — corrected edition
+
+The older carrier used `GND_MCU` and W22. That jumper dependency is removed. Carrier J1 pin 22 and J2 pins 1, 21 and 22 are now **GND**, on the same net as J3 power-input ground, sensor grounds, ESC signal returns and the bottom fill. These correspond to the ground pins in the [official Espressif header table](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/user_guide_v1.0.html#header-block); our right socket is called J2, while Espressif calls that board header J3.
+
+There are direct 1.5–2.5 mm copper routes plus the large B.Cu plane. ESP32 ground pads have **solid zone connections**; other GND pads retain the documented thermal spokes. W22 is not fitted; 12 other insulated links remain. The four ESP32 grounds pass a separate 300 dpi printed-mask connected-copper check against the power-input GND pad, with no non-GND pad shorted to that region. This is digital continuity evidence, not a measurement of an etched board.
+
+Current native reports, source hashes, annotated proof and mask continuity report are in `artifacts/hardware/direct-common-ground-20261021/`. Earlier reports remain under their original folders. Use the regenerated PDF and ZIP for this edition.
+
+### Reproduce the pour/export in KiCad 10
+
+1. Open `esp32_home_etch.kicad_pro` and its PCB. Select **B.Cu**.
+2. Edit the filled zone: net **GND**, clearance **0.8 mm**, minimum width **0.8 mm**, island removal **Always**, thermal gap **0.8 mm**, spoke width **1.0 mm**.
+3. For the four ESP32 ground pads, open Pad Properties → Clearance Overrides → Zone connection and keep **Solid**. Verify their net is **GND**, not an unconnected net or `GND_MCU`.
+4. Press **B** to refill zones, run DRC with schematic parity and save. The antenna notch remains intentionally unfilled by the zone.
+5. In Plot, select only **B.Cu**, PDF, black/white, scale **1**, actual drill marks, no drawing sheet, no references/values and **no mirror** for face-down toner transfer. Do not select top copper, solder mask or silkscreen. Printer settings must also stay at 100% with mirroring and borderless enlargement off.
+
+Equivalent native single-mask export from this folder:
+
+```powershell
+kicad-cli pcb export pdf --mode-single --layers B.Cu --black-and-white --exclude-refdes --exclude-value --drill-shape-opt 2 --scale 1 --check-zones --output bottom-copper-single.pdf esp32_home_etch.kicad_pcb
+```
+
+The native single-layer export uses the board/page origin and may place copper close to a printer margin; it is useful for layer review. The supplied A4 three-copy sheet positions the masks inside the page and is the recommended print master.
+
+The supplied three-copy PDF is composed from those native copper primitives and checked filled polygons, with no printed text. `tools/hardware/export_etch_geometry.py` uses KiCad Python; `tools/hardware/make_etch_prints.py` uses Python with ReportLab and pypdf. Refill/export after any board edit so the print matches the current board.

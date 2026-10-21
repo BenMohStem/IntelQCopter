@@ -24,6 +24,7 @@ def fp(ref,value,items,diameter=3.2,drill=1.2):
   pad=p.PAD(f);pad.SetNumber(str(num));pad.SetShape(p.PAD_SHAPE_CIRCLE);pad.SetAttribute(p.PAD_ATTRIB_PTH)
   pad.SetSize(vec(diameter,diameter));pad.SetDrillSize(vec(drill,drill));pad.SetLayerSet(p.PAD.PTHMask());pad.SetPosition(vec(x,y))
   pad.SetNet(net(name if name else 'unconnected-('+ref+'-Pad'+str(num)+')'))
+  if role in ('U1L','U1R') and name=='GND':pad.SetLocalZoneConnection(p.ZONE_CONNECTION_FULL)
   f.Add(pad);pads[(ref,str(num))]=(x,y,name)
  f.SetFPIDAsString('HomeEtch:'+ref);f.SetPath(p.KIID_PATH('/'+uid('root')+'/'+uid(ref)))
  clone=p.FOOTPRINT(f);clone.SetPosition(vec(0,0));clone.Reference().SetText('REF**')
@@ -43,8 +44,9 @@ def line(a,b,layer=p.Edge_Cuts,width=.1):
 
 for a,b in [((0,0),(100,0)),((100,0),(100,100)),((100,100),(0,100)),((0,100),(0,0))]:line(a,b)
 # Socket numbering is the actual two header rows, viewed FROM COMPONENT SIDE.
-L=['3V3','','','GPIO4','GPIO5','GPIO6','GPIO7','','','GPIO17','GPIO18','GPIO8','','','GPIO9','','','GPIO12','','GPIO14','5V_MCU','GND_MCU']
-R=['','','','GPIO1','GPIO2','','','','','','','','','','','','','','','','','']
+L=['3V3','','','GPIO4','GPIO5','GPIO6','GPIO7','','','GPIO17','GPIO18','GPIO8','','','GPIO9','','','GPIO12','','GPIO14','5V_MCU','GND']
+R=['GND','','','GPIO1','GPIO2','','','','','','','','','','','','','','','','','']
+R[20]=R[21]='GND'
 fp('U1L','DevKitC-1 LEFT 1x22',[(i+1,40,14+i*2.54,n) for i,n in enumerate(L)],1.9,1.)
 fp('U1R','DevKitC-1 RIGHT 1x22',[(i+1,62.86,14+i*2.54,n) for i,n in enumerate(R)],1.9,1.)
 for a,b in [((38.5,6.9),(64.36,6.9)),((64.36,6.9),(64.36,76.8)),((64.36,76.8),(38.5,76.8)),((38.5,76.8),(38.5,6.9))]:line(a,b,p.F_SilkS,.15)
@@ -101,7 +103,7 @@ route('CURRENT_ADC',[(35.32,88),(35.32,77)])
 route('GND',[(40.4,82),(40.4,93)])
 text('CURRENT: G V3 OUT',60,83.5,.9)
 # Top insulated links isolate crossings and enlarge their soldering points.
-ends={1:((13.08,39),'SENS_3V3','3V3 sensor supply'),4:((18.16,34),'VBAT_ADC','Voltage RC output to GPIO4; disconnect sense when MCU unpowered'),5:((35.32,77),'CURRENT_ADC','Filtered external current signal to GPIO5'),6:((68,50.16),'LIDAR_RX_FC','Future lidar TX -> FC RX; driver pending'),7:((68,55.24),'LIDAR_TX_FC','Future lidar RX <- FC TX; driver pending'),10:((78,40),'COMP_TX','FC TX -> companion RX'),11:((78,45.08),'COMP_RX','FC RX <- companion TX'),12:((23.24,39),'I2C_SCL','Shared I2C clock'),15:((18.16,39),'I2C_SDA','Shared I2C data'),18:((69,60),'GPIO12_ESC','FL signal via 220R'),20:((69,70),'GPIO14_ESC','RL signal via 220R'),21:((20,89),'5V_EXT','REMOVABLE POWER LINK: remove for USB power'),22:((8,82),'GND','Logic ground from external PDB reference')}
+ends={1:((13.08,39),'SENS_3V3','3V3 sensor supply'),4:((18.16,34),'VBAT_ADC','Voltage RC output to GPIO4; disconnect sense when MCU unpowered'),5:((35.32,77),'CURRENT_ADC','Filtered external current signal to GPIO5'),6:((68,50.16),'LIDAR_RX_FC','Future lidar TX -> FC RX; driver pending'),7:((68,55.24),'LIDAR_TX_FC','Future lidar RX <- FC TX; driver pending'),10:((78,40),'COMP_TX','FC TX -> companion RX'),11:((78,45.08),'COMP_RX','FC RX <- companion TX'),12:((23.24,39),'I2C_SCL','Shared I2C clock'),15:((18.16,39),'I2C_SDA','Shared I2C data'),18:((69,60),'GPIO12_ESC','FL signal via 220R'),20:((69,70),'GPIO14_ESC','RL signal via 220R'),21:((20,89),'5V_EXT','REMOVABLE POWER LINK: remove for USB power')}
 for idx,(end,external,desc) in ends.items():
  y=14+(idx-1)*2.54;x=34 if idx%2==0 else 30;gpio=L[idx-1]
  route(gpio,[(40,y),(x,y)],1.)
@@ -109,6 +111,14 @@ for idx,(end,external,desc) in ends.items():
 route('5V_EXT',[(13.08,89),(20,89)],1.5)
 route('GPIO12_ESC',[(69,60),(73,60)])
 route('GPIO14_ESC',[(69,70),(73,70)])
+# Four documented DevKit GND pins connect directly to B.Cu GND, without W22.
+# Left J1.22 and right J2.1/J2.21/J2.22 use same-net copper plus the large fill.
+route('GND',[(40,67.34),(44,67.34)],1.5)
+route('GND',[(44,67.34),(56,67.34)],2.5)
+route('GND',[(62.86,14),(94.08,14),(94.08,20)],1.5)
+route('GND',[(62.86,64.8),(66,64.8),(66,67.34),(62.86,67.34)],1.5)
+route('GND',[(56,67.34),(66,67.34)],2.5)
+
 # Only mounting holes; physical F450 matching is not assumed.
 for i,(x,y) in enumerate([(5,5),(95,5),(5,97),(95,97)]):
  f=p.FOOTPRINT(board);f.SetAttributes(p.FP_BOARD_ONLY);f.SetReference('H'+str(i+1));f.SetPosition(vec(x,y));f.Reference().SetVisible(False);f.Value().SetVisible(False);board.Add(f)

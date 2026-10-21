@@ -50,10 +50,10 @@ Manual uses roll/pitch **angle** targets, yaw rate and vertical speed/hover. Gen
 
 ## Repository layout
 
-`firmware/` C runtime + ESP32 adapters · `companion/` ROS2 packages · `simulation/` Gazebo/emulation · `hardware/` current CAD · `docs/` maintained guides · `measurements/` procedures · `knowledge/` factual versioned ledger · `tools/` commands grouped by purpose · `artifacts/` original evidence · `archive/` historical references.
+`firmware/` one C-style `flight_controller.cpp` + API declarations · `companion/` ROS2 packages · `simulation/` Gazebo/emulation · `hardware/` current CAD · `docs/` maintained guides · `measurements/` procedures · `knowledge/` factual versioned ledger · `tools/` commands grouped by purpose · `artifacts/` original evidence · `archive/` historical references.
 
 `project.json` and `.\qcopter.ps1 help` are the command catalog. Local environments, downloaded SDKs, caches and build outputs are ignored. [Earlier document versions](archive/documentation/README.md) remain recoverable without duplicating them throughout the active guides.
 
 ## What the results mean
 
-Native Gazebo trials run the host-compiled C FC with actual ROS2 C++ nodes. They use provisional mass/inertia/thrust, synthetic sensors and ideal localization. QEMU demonstrates compiled firmware execution with synthetic inputs; neither establishes physical BLE/UART/ESC behavior, MCU deadlines or real flight stability. Original failed trials are preserved alongside successful ones.
+Native Gazebo trials run the host-compiled C-style C++ FC with actual ROS2 C++ nodes. They use provisional mass/inertia/thrust, synthetic sensors and ideal localization. QEMU demonstrates compiled firmware execution with synthetic inputs; neither establishes physical BLE/UART/ESC behavior, MCU deadlines or real flight stability. Original failed trials are preserved alongside successful ones.

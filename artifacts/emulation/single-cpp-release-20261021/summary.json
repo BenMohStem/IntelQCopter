@@ -1,0 +1,303 @@
+{
+  "engine": "Espressif QEMU ESP32-S3",
+  "command": [
+    "C:\\Users\\Mohamed\\Desktop\\Work\\QCopter-ESP32-Xbox\\build\\qemu\\qemu\\bin\\qemu-system-xtensa.exe",
+    "-machine",
+    "esp32s3",
+    "-display",
+    "none",
+    "-monitor",
+    "none",
+    "-serial",
+    "stdio",
+    "-no-reboot",
+    "-snapshot",
+    "-drive",
+    "file=C:/Users/Mohamed/Desktop/Work/QCopter-ESP32-Xbox/build/emulation-flash.bin,if=mtd,format=raw"
+  ],
+  "completed": true,
+  "checks": [
+    {
+      "name": "gyro_stationary_verification",
+      "result": "PASS"
+    },
+    {
+      "name": "barometer_ground_reference",
+      "result": "PASS"
+    },
+    {
+      "name": "uncalibrated_accelerometer_blocks_demands",
+      "result": "PASS"
+    },
+    {
+      "name": "six_face_calibration",
+      "result": "PASS"
+    },
+    {
+      "name": "healthy_calibrated_input",
+      "result": "PASS"
+    },
+    {
+      "name": "calibration_record_generated",
+      "result": "PASS"
+    },
+    {
+      "name": "crc_rejects_corruption",
+      "result": "PASS"
+    },
+    {
+      "name": "record_rejects_wrong_board",
+      "result": "PASS"
+    },
+    {
+      "name": "valid_record_load",
+      "result": "PASS"
+    },
+    {
+      "name": "init_resets_estimator_state",
+      "result": "PASS"
+    },
+    {
+      "name": "boot_requires_fresh_gyro_check",
+      "result": "PASS"
+    },
+    {
+      "name": "reload_recovers_after_verification",
+      "result": "PASS"
+    },
+    {
+      "name": "roll_mixer_sign",
+      "result": "PASS"
+    },
+    {
+      "name": "stale_report_zeroes_demands",
+      "result": "PASS"
+    },
+    {
+      "name": "imu_loss_zeroes_demands",
+      "result": "PASS"
+    },
+    {
+      "name": "barometer_loss_zeroes_demands",
+      "result": "PASS"
+    },
+    {
+      "name": "soc_35_warns",
+      "result": "PASS"
+    },
+    {
+      "name": "soc_20_disarms",
+      "result": "PASS"
+    },
+    {
+      "name": "battery_disarm_latches",
+      "result": "PASS"
+    },
+    {
+      "name": "navigation_requires_full_five_seconds",
+      "result": "PASS"
+    },
+    {
+      "name": "down_B_selects_navigation_after_five_seconds",
+      "result": "PASS"
+    },
+    {
+      "name": "held_gesture_fires_once",
+      "result": "PASS"
+    },
+    {
+      "name": "report_gap_restarts_mode_hold",
+      "result": "PASS"
+    },
+    {
+      "name": "down_A_selects_stable",
+      "result": "PASS"
+    },
+    {
+      "name": "down_LT_requires_two_seconds",
+      "result": "PASS"
+    },
+    {
+      "name": "down_LT_disarms_after_two_seconds",
+      "result": "PASS"
+    },
+    {
+      "name": "user_disarm_is_latched",
+      "result": "PASS"
+    },
+    {
+      "name": "malformed_HID_rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "invalid_hat_rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "UART_telemetry_identifies_mode_and_disarm",
+      "result": "PASS"
+    },
+    {
+      "name": "UART_valid_command_accepted",
+      "result": "PASS"
+    },
+    {
+      "name": "UART_duplicate_sequence_rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "UART_corrupt_CRC_rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "UART_NaN_rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "UART_out_of_range_angle_rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "UART_fresh_sequence_accepted",
+      "result": "PASS"
+    },
+    {
+      "name": "UART_freshness_reported",
+      "result": "PASS"
+    },
+    {
+      "name": "UART_stale_command_expires",
+      "result": "PASS"
+    },
+    {
+      "name": "UART_wrong_length_rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "standalone_selects_stable",
+      "result": "PASS"
+    },
+    {
+      "name": "standalone_rejects_companion_command",
+      "result": "PASS"
+    },
+    {
+      "name": "standalone_rejects_navigation_gesture",
+      "result": "PASS"
+    },
+    {
+      "name": "standalone_telemetry_capability_off",
+      "result": "PASS"
+    },
+    {
+      "name": "companion_telemetry_capability_on",
+      "result": "PASS"
+    },
+    {
+      "name": "UART_completion_flag_valid",
+      "result": "PASS"
+    },
+    {
+      "name": "stable_ignores_companion_disarm",
+      "result": "PASS"
+    },
+    {
+      "name": "completion_test_navigation_selected",
+      "result": "PASS"
+    },
+    {
+      "name": "UART_unknown_flags_rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "navigation_completion_request_accepted",
+      "result": "PASS"
+    },
+    {
+      "name": "navigation_completion_disarms_FC",
+      "result": "PASS"
+    },
+    {
+      "name": "horizontal_observation_finite_accepted",
+      "result": "PASS"
+    },
+    {
+      "name": "horizontal_observation_old_rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "horizontal_observation_NaN_rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "horizontal_observation_NULL_revokes",
+      "result": "PASS"
+    },
+    {
+      "name": "boot_default_gentle_profile",
+      "result": "PASS"
+    },
+    {
+      "name": "boot_default_debug_statistics",
+      "result": "PASS"
+    },
+    {
+      "name": "invalid_debug_level_rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "trace_debug_enabled_at_boot",
+      "result": "PASS"
+    },
+    {
+      "name": "runtime_profile_change_rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "runtime_debug_change_rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "older_HID_rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "deadline_histogram_boundary",
+      "result": "PASS"
+    },
+    {
+      "name": "null_sample_faults_zero_demands",
+      "result": "PASS"
+    },
+    {
+      "name": "absent_ROS_cannot_select_navigation",
+      "result": "PASS"
+    },
+    {
+      "name": "fresh_ROS_allows_explicit_navigation",
+      "result": "PASS"
+    },
+    {
+      "name": "lost_ROS_falls_back_to_stable",
+      "result": "PASS"
+    },
+    {
+      "name": "reconnected_ROS_does_not_seize_control",
+      "result": "PASS"
+    }
+  ],
+  "host_elapsed_seconds": 0.625,
+  "hashes": {
+    "firmware/src/flight_controller.cpp": "79e66ede67434a11ae2c1a08f5572c51dbb14380b4a417fcd9b6f9a93888d7fe",
+    "firmware/include/fc_api.h": "8bc69c6cd67b66f68c610aed0ac2d8cbd5c79f8483b074903a2eb066268e7ff6",
+    "simulation/emulation/scenario.c": "79967bf9a3da4a32ad69613c88b9c78b4ccb0bc72fa55e2a005370e890a8f10e",
+    "simulation/emulation/main.cpp": "61f91c1c8ea45b6d5b7d6615c98ae5875f19ba9079299519df5086d567fd01aa",
+    "simulation/emulation/flight_core.cpp": "3ac8645e6caea9e0f470d9a4e1d975143c80a3364fd65f1b10f14550ace92344",
+    "simulation/emulation/platformio.ini": "083686cb0f7962b43b4a394205ad063dda59db9c3668e8fe2f11848bb46a4cf9",
+    "build/emulation-pio/esp32-s3-qemu/firmware.elf": "bd6e458da87fe9783cc25cac6a0b3691a39c1a9762195999db137bca05e56810",
+    "build/emulation-flash.bin": "24f31678d3c752f1c373ccc8472defb3a0f5020ca7d7bd28375a81185eaf5d5b",
+    "build/qemu/qemu/bin/qemu-system-xtensa.exe": "7716f734130a20193ab45a4c14581918822e5ae684eb5cf3073b9429bee29825"
+  },
+  "scope": "Active C core compiled for Xtensa; synthetic input replay, not flight physics, BLE, sensor registers or real-time timing.",
+  "passed": true
+}

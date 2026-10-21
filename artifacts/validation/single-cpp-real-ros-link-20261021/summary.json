@@ -1,0 +1,45 @@
+{
+  "scope": "Actual host FC + actual ROS2 C++ idle link; synthetic sensors, no flight physics or hardware. Nominal dt=2ms is supplied by a Python replay; this is not a measured 500Hz deadline. HID is simulated; no real BLE, UART wiring, ESCs, cameras or localization are validated.",
+  "passed": false,
+  "checks": [
+    {
+      "name": "No ROS2 process: stable Xbox mode and healthy FC",
+      "passed": true
+    },
+    {
+      "name": "Actual ROS2 idle heartbeat discovered through CRC UART API",
+      "passed": false
+    },
+    {
+      "name": "Companion arrival does not override stable Xbox mode",
+      "passed": true
+    },
+    {
+      "name": "Five-second raw Xbox gesture selects navigation with real companion",
+      "passed": false
+    },
+    {
+      "name": "Companion process loss selects stable Xbox mode",
+      "passed": false
+    },
+    {
+      "name": "Fallback restores actual Xbox angle commands",
+      "passed": true
+    },
+    {
+      "name": "Restarted actual companion is rediscovered",
+      "passed": false
+    },
+    {
+      "name": "Reconnection cannot seize navigation authority",
+      "passed": true
+    },
+    {
+      "name": "Explicit standalone rejects optional link while Xbox works",
+      "passed": true
+    }
+  ],
+  "accepted_actual_ros_frames": 0,
+  "source_sha256": "67f3efae63bd6a00d0f790cbe0cdc48ce8283d0d11ef3a426aefef87398d65fe",
+  "binary_sha256": "14465f432e693f4fa3308510fed4aa984d4ac7685986ea4c8256a5cb5b1ded3f"
+}

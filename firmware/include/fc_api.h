@@ -13,6 +13,8 @@ extern "C" {
 #ifndef FC_ENABLE_COMPANION
 #define FC_ENABLE_COMPANION 1
 #endif
+typedef struct {uint32_t navigation_denied,stable_fallbacks;bool available;} fc_link_stats_t;
+FC_API void fc_link_snapshot(fc_link_stats_t *out);
 FC_API void fc_configure_companion(bool enabled); /* Boot/control task only. Compile-time disabled builds cannot enable it. */
 /* Fixed-size diagnostics, control-task owned. No allocation or printing in C loop.
  * level 0=off, 1=counters, 2=estimator/allocation statistics, 3=50Hz trace. */
@@ -39,7 +41,7 @@ typedef struct {
 FC_API void fc_profile_snapshot(fc_profile_t *out);
 FC_API void fc_profile_record(uint32_t elapsed_us); /* Adapter measurement, 2ms deadline. */
 #define FC_CAL_RECORD_BYTES 160u
-#define FC_CAL_PROFILE 0x00080001u /* ±8g, ±500dps, 42Hz DLPF, 500Hz; bump after mount/config changes. */
+#define FC_CAL_PROFILE 0x00080001u /* +/-8g, +/-500dps, 42Hz DLPF, 500Hz; bump after mount/config changes. */
 /* After boot setup, only the control task calls this API. Cross-task requests use queues. */
 typedef struct {
     float accel_g[3],gyro_dps[3],pressure_pa;

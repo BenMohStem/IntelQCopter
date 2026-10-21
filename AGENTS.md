@@ -1,8 +1,10 @@
-# IntelQCopter — ESP32/Xbox branch
+# IntelQCopter - ESP32/Xbox branch
 
 - Work on esp32-xbox. Main remains RP2350 flight controller/RP2040 handheld.
-- Keep control, estimation and calibration in firmware/src/flight_controller.c.
-  esp32_platform.cpp is a minimal C++ adapter for existing hardware libraries.
+- Per the user request of 2026-10-21, keep the ESP32 firmware implementation in
+  firmware/src/flight_controller.cpp: C-style control/calibration/estimation and
+  only the minimal C++ boundary needed for Arduino/Xbox/sensor libraries.
+  fc_api.h contains declarations only; ROS2 keeps its normal package structure.
 - Keep centered left-stick vertical-speed/height-hold commands; RT is boost.
 - Current facts and assumptions live in knowledge/project.json and docs/status.md.
   Append dated revisions with sources; do not silently replace earlier claims.

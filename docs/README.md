@@ -15,3 +15,5 @@ One maintained destination for each task; older entry points link here or to the
 | Recover older documents and decisions | [Documentation versions](../archive/documentation/README.md), [versioned knowledge ledger](../knowledge/README.md) |
 
 **Scope:** ESP32-S3 competition branch. Native Gazebo uses the actual C FC compiled on the PC and actual ROS2 C++ nodes, with a provisional plant, synthetic sensors and ideal localization. QEMU is firmware emulation, not a physics engine. Physical motor arming remains disabled.
+
+Latest code/link verification: [single-file firmware and optional-companion report](../artifacts/validation/single-cpp-optional-ros-20261021/README.md).

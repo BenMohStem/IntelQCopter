@@ -1,0 +1,60 @@
+{
+  "scope": "Isolated old/new C replay, host API profiling and direct-call fault checks; no aircraft physics. Host timing includes ctypes/Windows scheduling; synthetic replay is not Gazebo flight, MCU deadline or physical interface evidence. Injected timing values only check accounting.",
+  "passed": true,
+  "checks": [
+    {
+      "name": "20000-step healthy old/new replay equivalent within 1e-5",
+      "passed": true
+    },
+    {
+      "name": "Direct public fc_step fails closed: NULL raw",
+      "passed": true
+    },
+    {
+      "name": "Direct public fc_step fails closed: NULL pilot",
+      "passed": true
+    },
+    {
+      "name": "Direct public fc_step fails closed: NaN dt",
+      "passed": true
+    },
+    {
+      "name": "Direct public fc_step fails closed: zero dt",
+      "passed": true
+    },
+    {
+      "name": "Direct public fc_step fails closed: overlong dt",
+      "passed": true
+    },
+    {
+      "name": "Integer timing statistics include 64-bit total and exact 2ms boundary",
+      "passed": true
+    },
+    {
+      "name": "Boot reset and debug-off disable timing accumulation",
+      "passed": true
+    }
+  ],
+  "max_healthy_state_delta": 0,
+  "host_api_us": {
+    "baseline": {
+      "mean": 1.27978,
+      "median": 1.3,
+      "p95": 1.4,
+      "p99": 1.8,
+      "max": 26.7
+    },
+    "optimized": {
+      "mean": 1.27107,
+      "median": 1.3,
+      "p95": 1.4,
+      "p99": 1.7,
+      "max": 7.8
+    }
+  },
+  "source_sha256": "79e66ede67434a11ae2c1a08f5572c51dbb14380b4a417fcd9b6f9a93888d7fe",
+  "binary_sha256": {
+    "baseline": "42c756b39e3a91b04d846710fd2dafa5b2aed22afdd2e0cd2af04a52c87e9673",
+    "optimized": "b805149e591d0be94ee4ea257862996ff08a32660f1e762effaeefba63f1b185"
+  }
+}

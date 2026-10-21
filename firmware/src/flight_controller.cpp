@@ -1,5 +1,5 @@
-/* IntelQCopter ESP32 branch: single-file C control, estimators and calibration.
- * Derived from main at 3803437. Platform I/O is a minimal C++ library adapter.
+/* IntelQCopter ESP32 branch: one C-style C++ firmware translation unit.
+ * C-style control/calibration/estimation below; minimal C++ library boundary at end.
  * Physical arming/output is disabled. No scenario gains are certified for flight.
  */
 #include <stdbool.h>
@@ -9,7 +9,11 @@
 #include <string.h>
 #include <stdio.h>
 #include "fc_api.h"
+#ifdef __cplusplus
+static_assert(sizeof(float)==4, "NVS schema requires a 32-bit float");
+#else
 _Static_assert(sizeof(float)==4, "NVS schema requires a 32-bit float");
+#endif
 static uint16_t qcopter_get_u16(const uint8_t *p) {
     return (uint16_t)p[0]|(uint16_t)((uint16_t)p[1]<<8);
 }
@@ -117,7 +121,7 @@ static bool config_is_valid(const battery_config_t *c) {
 
 void battery_monitor_init(battery_status_t *status, float initial_soc_percent) {
     if (status == NULL) return;
-    *status = (battery_status_t){0};
+    *status = (battery_status_t){};
     if (isfinite(initial_soc_percent)
         && initial_soc_percent >= 0.0f && initial_soc_percent <= 100.0f) {
         status->estimated_soc_percent = initial_soc_percent;
@@ -462,8 +466,8 @@ typedef struct {
 bool bmp280_trim_decode(const uint8_t *bytes, size_t length, bmp280_trim_t *out) {
     if (bytes == NULL || out == NULL || length != 24u) return false;
     const bmp280_trim_t t = {
-        .t1 = qcopter_get_u16(bytes), .t2 = (int16_t)qcopter_get_u16(bytes + 2),
-        .t3 = (int16_t)qcopter_get_u16(bytes + 4), .p1 = qcopter_get_u16(bytes + 6),
+        .t1 = qcopter_get_u16(bytes), .p1 = qcopter_get_u16(bytes + 6),
+        .t2 = (int16_t)qcopter_get_u16(bytes + 2), .t3 = (int16_t)qcopter_get_u16(bytes + 4),
         .p2 = (int16_t)qcopter_get_u16(bytes + 8), .p3 = (int16_t)qcopter_get_u16(bytes + 10),
         .p4 = (int16_t)qcopter_get_u16(bytes + 12), .p5 = (int16_t)qcopter_get_u16(bytes + 14),
         .p6 = (int16_t)qcopter_get_u16(bytes + 16), .p7 = (int16_t)qcopter_get_u16(bytes + 18),
@@ -1027,6 +1031,13 @@ static bool companion_enabled=FC_ENABLE_COMPANION!=0;
 static uint64_t gesture_started_us,previous_report_us,companion_received_us;
 static uint32_t received_reports,mode_events,companion_sequence;
 static bool gesture_fired,have_companion;
+static bool navigation_denied_hold;
+static fc_link_stats_t link_stats;
+static bool companion_is_fresh(uint64_t now) {
+    return companion_enabled && have_companion && now>=companion_received_us
+        && now-companion_received_us<=150000u;
+}
+void fc_link_snapshot(fc_link_stats_t *out){if(out)*out=link_stats;}
 static float companion_values[4];
 
 static uint32_t record_u32(const uint8_t *p) {
@@ -1078,7 +1089,7 @@ void fc_init(uint64_t board_id) {
     memset(&horizontal,0,sizeof(horizontal));accel_angle_correction_enabled=true;
     debug=(fc_debug_t){.level=2,.gentle=1};gentle_profile=true;
     debug_trace_next=debug_trace_count=0;debug_trace_us=0;
-    execution_profile=(fc_profile_t){0};
+    execution_profile=(fc_profile_t){};
     for(unsigned i=0;i<3;i++){gyro_variance_cache[i]=-1;gyro_sigma_cache[i]=0;}
     calibration_board_id=board_id;
 #ifdef FC_BUILD_DLL
@@ -1091,15 +1102,16 @@ void fc_init(uint64_t board_id) {
     pitch_estimator=angle_estimator_defaults;
     altitude_estimator=altitude_estimator_defaults;
     hover_collective=FC_HOVER_THROTTLE_PLACEHOLDER;
-    received_pilot=(fc_pilot_t){0}; selected_mode=held_gesture=0; companion_enabled=FC_ENABLE_COMPANION!=0;
+    received_pilot=(fc_pilot_t){}; selected_mode=held_gesture=0; companion_enabled=FC_ENABLE_COMPANION!=0;
     gesture_started_us=previous_report_us=companion_received_us=0;
     received_reports=mode_events=companion_sequence=0;
-    gesture_fired=have_companion=user_disarm_latched=false;
-    saved_imu=(imu_calibration_t){0};
-    verification=(imu_stationary_cal_t){0};
+    gesture_fired=have_companion=user_disarm_latched=navigation_denied_hold=false;
+    link_stats=(fc_link_stats_t){};
+    saved_imu=(imu_calibration_t){};
+    verification=(imu_stationary_cal_t){};
     memset(accel_faces,0,sizeof(accel_faces));
-    ground_reference=(baro_calibration_t){0};
-    pressure_capture=(baro_reference_cal_t){0};
+    ground_reference=(baro_calibration_t){};
+    pressure_capture=(baro_reference_cal_t){};
     last_pressure_sequence=0; gyro_verified=false; cal_dirty=false; capture_face=-1;
     (void)battery_policy_reset(true);
     reset_control_state();
@@ -1111,7 +1123,7 @@ bool fc_cal_load(const uint8_t record[FC_CAL_RECORD_BYTES]) {
         || record_u32(record+156)!=record_crc(record,156)) return false;
     uint32_t flags=record_u32(record+20);
     if(flags&~3u) return false;
-    imu_calibration_t fit={0};
+    imu_calibration_t fit={};
     fit.accel_valid=(flags&1u)!=0; fit.gyro_valid=(flags&2u)!=0;
     fit.gyro_samples=record_u32(record+24);
     float *vectors[]={fit.accel_bias_g,fit.accel_gain,fit.accel_bias_variance_g2,
@@ -1121,7 +1133,7 @@ bool fc_cal_load(const uint8_t record[FC_CAL_RECORD_BYTES]) {
         uint32_t bits=record_u32(record+offset); memcpy(&vectors[v][a],&bits,4);
     }
     if(!imu_fit_valid(&fit)) return false;
-    saved_imu=fit; gyro_verified=false; verification=(imu_stationary_cal_t){0};
+    saved_imu=fit; gyro_verified=false; verification=(imu_stationary_cal_t){};
     return true;
 }
 bool fc_cal_take_pending(uint8_t record[FC_CAL_RECORD_BYTES]) {
@@ -1146,20 +1158,20 @@ bool fc_cal_take_pending(uint8_t record[FC_CAL_RECORD_BYTES]) {
 }
 void fc_cal_command(char key) {
     if(key=='R' || key=='r') {
-        saved_imu=(imu_calibration_t){0}; verification=(imu_stationary_cal_t){0};
+        saved_imu=(imu_calibration_t){}; verification=(imu_stationary_cal_t){};
         memset(accel_faces,0,sizeof(accel_faces)); gyro_verified=false; capture_face=-1;
         cal_dirty=true; reset_control_state();
     } else if(key=='S' || key=='s') cal_dirty=true;
     else if(key>='0' && key<='5') {
         capture_face=(int8_t)(key-'0');
-        accel_faces[(unsigned)capture_face]=(cal_stats3_t){0};
+        accel_faces[(unsigned)capture_face]=(cal_stats3_t){};
     }
 }
 static void update_calibration(const fc_sample_t *s) {
     if(!s->imu_valid) return;
     if(!gyro_verified) {
         if(!imu_stationary_cal_add(&verification,s->accel_g,s->gyro_dps,true))
-            verification=(imu_stationary_cal_t){0};
+            verification=(imu_stationary_cal_t){};
         else if(verification.gyro.n>=500u) {
             imu_calibration_t fresh=saved_imu;
             if(imu_gyro_cal_finish(&verification,&fresh,true)) {
@@ -1170,7 +1182,7 @@ static void update_calibration(const fc_sample_t *s) {
                         refresh=true;
                 if(refresh) { saved_imu=fresh; cal_dirty=true; }
                 gyro_verified=true;
-            } else verification=(imu_stationary_cal_t){0};
+            } else verification=(imu_stationary_cal_t){};
         }
     }
     if(capture_face>=0) {
@@ -1189,7 +1201,7 @@ void fc_set_estimated_soc(float percent) {
 }
 void fc_step(const fc_sample_t *raw,const fc_pilot_t *pilot,uint64_t now,float dt,fc_status_t *status) {
     if(status==NULL) {reset_control_state();return;}
-    *status=(fc_status_t){0};
+    *status=(fc_status_t){};
     if(raw==NULL || pilot==NULL || !isfinite(dt) || dt<=0 || dt>FC_MAX_CONTROL_DT) {
         reset_control_state();status->sensor_fault=true;return;
     }
@@ -1203,7 +1215,7 @@ void fc_step(const fc_sample_t *raw,const fc_pilot_t *pilot,uint64_t now,float d
                 (void)baro_reference_add(&pressure_capture,raw->pressure_pa,true);
                 if(pressure_capture.n>=100u
                     && !baro_reference_finish(&pressure_capture,&ground_reference,3.0,true))
-                    pressure_capture=(baro_reference_cal_t){0};
+                    pressure_capture=(baro_reference_cal_t){};
             }
             if(ground_reference.valid) {
                 double h,sigma;
@@ -1213,7 +1225,7 @@ void fc_step(const fc_sample_t *raw,const fc_pilot_t *pilot,uint64_t now,float d
     }
     sensor_sample_t s={.accel_x_g=raw->accel_g[0],.accel_y_g=raw->accel_g[1],.accel_z_g=raw->accel_g[2],
         .gyro_x_dps=raw->gyro_dps[0],.gyro_y_dps=raw->gyro_dps[1],.gyro_z_dps=raw->gyro_dps[2],
-        .imu_valid=raw->imu_valid,.barometer_height_m=height,
+        .barometer_height_m=height,.imu_valid=raw->imu_valid,
         .barometer_valid=raw->pressure_valid && ground_reference.valid,
         .barometer_updated=pressure_updated};
     if(gyro_verified && saved_imu.accel_valid)
@@ -1298,7 +1310,10 @@ bool fc_xbox_report(const uint8_t *p,unsigned length,uint64_t now) {
     }
     bool down=p[12]>=4 && p[12]<=6;
     uint8_t gesture=down && next.reduce>=.9f ? 3 : down && (p[13]&3u)==1 ? 1 : down && (p[13]&3u)==2 ? 2 : 0;
-    if(gesture==2 && !companion_enabled)gesture=0;
+    const bool denied=gesture==2 && !companion_is_fresh(now);
+    if(denied && !navigation_denied_hold)link_stats.navigation_denied++;
+    navigation_denied_hold=denied;
+    if(denied)gesture=0; /* No navigation selection until actual valid UART traffic. */
     if(!continuous || gesture!=held_gesture) {held_gesture=gesture;gesture_started_us=now;gesture_fired=false;}
     if(gesture && !gesture_fired && now>=gesture_started_us
         && now-gesture_started_us>=(gesture==3?2000000u:5000000u)) {
@@ -1311,7 +1326,7 @@ bool fc_xbox_report(const uint8_t *p,unsigned length,uint64_t now) {
 }
 void fc_configure_companion(bool enabled) {
     companion_enabled=enabled && FC_ENABLE_COMPANION;
-    if(!companion_enabled){selected_mode=0;have_companion=false;reset_control_state();}
+    if(!companion_enabled){selected_mode=0;have_companion=false;link_stats.available=false;reset_control_state();}
 }
 static bool companion_parse(const uint8_t *p,unsigned length,uint64_t now) {
     if(!companion_enabled || (have_companion && now<companion_received_us))return false;
@@ -1335,7 +1350,11 @@ static void control_step_impl(const fc_sample_t *raw,uint64_t now,float dt,fc_st
     sim_control_calls++;
 #endif
     fc_pilot_t pilot=received_pilot;
-    bool fresh=have_companion && now>=companion_received_us && now-companion_received_us<=150000u;
+    bool fresh=companion_is_fresh(now);link_stats.available=fresh;
+    if(selected_mode==1 && !fresh) {
+        selected_mode=0;mode_events++;link_stats.stable_fallbacks++;
+        reset_control_state(); /* Recapture height and leave UART commands behind. */
+    }
     if(selected_mode==1) {
         pilot.boost=pilot.reduce=0; /* Navigation owns vertical speed; triggers cannot silently modify it. */
         pilot.roll=fresh?companion_values[0]/35:0;pilot.pitch=fresh?companion_values[1]/35:0;
@@ -1367,7 +1386,7 @@ void fc_profile_record(uint32_t elapsed){
     unsigned i=0;while(i<7 && elapsed>bins[i])i++;debug.execution_bins[i]++;
 }
 void fc_control_step(const fc_sample_t *raw,uint64_t now,float dt,fc_status_t *status){
-    if(!raw || !status){reset_control_state();if(debug.level)debug.invalid_calls++;if(status){*status=(fc_status_t){0};status->sensor_fault=true;}return;}
+    if(!raw || !status){reset_control_state();if(debug.level)debug.invalid_calls++;if(status){*status=(fc_status_t){};status->sensor_fault=true;}return;}
     control_step_impl(raw,now,dt,status);
     bool numeric=false;
     for(unsigned i=0;i<4;i++)numeric|=!isfinite(status->motor_demand[i]);
@@ -1438,4 +1457,255 @@ FC_API unsigned fc_sim_observe(float *v,unsigned n) {
         return 31;}
     return 23;
 }
+#endif
+
+
+/* ===== ESP32 library boundary: excluded only by host/QEMU harness builds. ===== */
+#if defined(ARDUINO) && !defined(FC_CORE_ONLY)
+/* Minimal C++ boundary for Arduino, sensor drivers, NVS and Xbox BLE.
+ * All estimators, six controllers and calibration math are above in this same file.
+ * No ESC library, output pulse, or physical arming action exists in this adapter.
+ */
+#include <Arduino.h>
+#include <Wire.h>
+#include <MPU6050.h>
+#include <Adafruit_BMP280.h>
+#include <Preferences.h>
+#include <esp_timer.h>
+#include "fc_api.h"
+static void xbox_report(uint8_t*,size_t);
+#define QCOPTER_XBOX_REPORT_HOOK xbox_report
+#include <XboxSeriesXControllerESP32_asukiaaa.hpp>
+
+static const int SDA_PIN=9,SCL_PIN=8,LED_PIN=42;
+static const int MOTOR_PINS[4]={12,1,2,14}; // FL, FR, RR, RL; INPUT ONLY.
+static const uint32_t CONTROL_PERIOD_US=2000;
+static const int64_t PRESSURE_TIMEOUT_US=150000;
+static XboxSeriesXControllerESP32_asukiaaa::Core xbox;
+static MPU6050 mpu;
+static Adafruit_BMP280 bmp;
+static bool imu_available,bmp_available;
+static uint8_t imu_address=0x68;
+static SemaphoreHandle_t i2c_mutex;
+static TaskHandle_t control_handle;
+static QueueHandle_t command_queue,calibration_queue;
+static esp_timer_handle_t control_timer;
+static portMUX_TYPE state_lock=portMUX_INITIALIZER_UNLOCKED;
+static fc_status_t shared_status;
+static fc_debug_t shared_debug;
+static fc_profile_t shared_profile;
+static fc_link_stats_t shared_link;
+static uint32_t hid_drops,uart_drops,imu_failures;
+static float shared_pressure;
+static uint32_t pressure_sequence,missed_ticks,max_execution_us,late_cycles;
+static int64_t pressure_received_us;
+static bool pressure_ok;
+
+struct HidPacket { uint8_t data[16]; uint64_t received_us; };
+struct CompanionPacket { uint8_t data[FC_COMPANION_FRAME_BYTES]; uint64_t received_us; };
+static QueueHandle_t hid_queue,companion_queue;
+static void xbox_report(uint8_t *bytes,size_t length) {
+    if(length!=16 || !hid_queue) return;
+    HidPacket packet={};memcpy(packet.data,bytes,16);packet.received_us=esp_timer_get_time();
+    // The control task owns all gesture timing and authority state.
+    if(xQueueSend(hid_queue,&packet,0)!=pdTRUE){portENTER_CRITICAL(&state_lock);hid_drops++;portEXIT_CRITICAL(&state_lock);}
+}
+static bool read_registers(uint8_t reg,uint8_t *data,size_t count) {
+    Wire.beginTransmission(imu_address); Wire.write(reg);
+    if(Wire.endTransmission(false)!=0) return false;
+    if(Wire.requestFrom(imu_address,count,true)!=count) {
+        while(Wire.available()) (void)Wire.read();
+        return false;
+    }
+    for(size_t i=0;i<count;i++) data[i]=static_cast<uint8_t>(Wire.read());
+    return true;
+}
+static int16_t imu_raw_word(const uint8_t *bytes,unsigned i) {
+    return (int16_t)(((uint16_t)bytes[i]<<8)|bytes[i+1]);
+}
+static bool acquire_imu(fc_sample_t *sample) {
+    if(!imu_available || xSemaphoreTake(i2c_mutex,pdMS_TO_TICKS(1))!=pdTRUE) return false;
+    uint8_t ready=0,bytes[14];
+    bool valid=read_registers(0x3a,&ready,1) && (ready&1)
+        && read_registers(0x3b,bytes,sizeof(bytes));
+    xSemaphoreGive(i2c_mutex);
+    if(!valid) return false;
+    for(unsigned i=0;i<3;i++) {
+        sample->accel_g[i]=imu_raw_word(bytes,2*i)/4096.0f; // ±8g.
+        sample->gyro_dps[i]=imu_raw_word(bytes,8+2*i)/65.5f; // ±500 deg/s.
+    }
+    return true; // Identity sensor-to-body transform is provisional and must be checked.
+}
+static void timer_tick(void*) {
+    if(control_handle) xTaskNotifyGive(control_handle);
+}
+static void control_task(void*) {
+    int64_t previous=esp_timer_get_time();
+    for(;;) {
+        uint32_t ticks=ulTaskNotifyTake(pdTRUE,portMAX_DELAY);
+        int64_t start=esp_timer_get_time();
+        float dt=static_cast<float>(start-previous)*1e-6f; previous=start;
+        fc_sample_t raw={}; fc_status_t status;
+        portENTER_CRITICAL(&state_lock);
+        raw.pressure_pa=shared_pressure;
+        raw.pressure_sequence=pressure_sequence;
+        raw.pressure_valid=pressure_ok && start>=pressure_received_us
+            && start-pressure_received_us<=PRESSURE_TIMEOUT_US;
+        portEXIT_CRITICAL(&state_lock);
+        raw.imu_valid=acquire_imu(&raw);
+        char command;
+        for(unsigned budget=0;budget<8 && xQueueReceive(command_queue,&command,0)==pdTRUE;budget++) fc_cal_command(command);
+        HidPacket report;
+        for(unsigned budget=0;budget<8 && xQueueReceive(hid_queue,&report,0)==pdTRUE;budget++) fc_xbox_report(report.data,16,report.received_us);
+        CompanionPacket companion;
+        for(unsigned budget=0;budget<8 && xQueueReceive(companion_queue,&companion,0)==pdTRUE;budget++) fc_companion_report(companion.data,sizeof(companion.data),companion.received_us);
+        fc_control_step(&raw,static_cast<uint64_t>(start),dt,&status);
+        uint8_t record[FC_CAL_RECORD_BYTES];
+        if(fc_cal_take_pending(record)) xQueueOverwrite(calibration_queue,record);
+        // Deliberately no PWM/DShot writes, even when mathematical demands are nonzero.
+        uint32_t elapsed=static_cast<uint32_t>(esp_timer_get_time()-start);
+        portENTER_CRITICAL(&state_lock);
+        fc_profile_record(elapsed);fc_debug_snapshot(&shared_debug);fc_profile_snapshot(&shared_profile);fc_link_snapshot(&shared_link);
+        shared_status=status;imu_failures+=!raw.imu_valid;
+        if(ticks>1) missed_ticks+=ticks-1;
+        if(dt>.0021f) late_cycles++;
+        if(elapsed>max_execution_us) max_execution_us=elapsed;
+        portEXIT_CRITICAL(&state_lock);
+    }
+}
+static void bluetooth_task(void*) {
+    for(;;){xbox.onLoop();vTaskDelay(pdMS_TO_TICKS(2));}
+}
+static void slow_task(void*) {
+    uint32_t last_pressure=0,last_log=0,last_save=0;
+    uint8_t pending_record[FC_CAL_RECORD_BYTES]={};
+    bool save_pending=false;
+    unsigned failures=0;
+    for(;;) {
+        // BLE discovery/reconnection runs in its own low-priority task. Its
+        // blocking library calls must not postpone pressure or UART servicing.
+        // No synthetic freshness refresh on connection polling: only actual HID reports count.
+        static uint8_t uart_frame[FC_COMPANION_FRAME_BYTES];static unsigned uart_used=0;
+        for(unsigned budget=0;budget<112 && FC_ENABLE_COMPANION && Serial2.available();budget++) {
+            uint8_t byte=static_cast<uint8_t>(Serial2.read());
+            if(uart_used==0 && byte!='Q')continue;
+            if(uart_used==1 && byte!='N'){uart_used=byte=='Q'?1:0;continue;}
+            uart_frame[uart_used++]=byte;
+            if(uart_used==sizeof(uart_frame)){
+                CompanionPacket packet={};memcpy(packet.data,uart_frame,sizeof(uart_frame));packet.received_us=esp_timer_get_time();
+                if(xQueueSend(companion_queue,&packet,0)!=pdTRUE)uart_drops++;
+                uart_used=0;
+            }
+        }
+        uint32_t now=millis();
+        if(bmp_available && now-last_pressure>=20) {
+            last_pressure=now;
+            if(xSemaphoreTake(i2c_mutex,pdMS_TO_TICKS(2))==pdTRUE) {
+                float pressure=bmp.readPressure();
+                xSemaphoreGive(i2c_mutex);
+                bool valid=isfinite(pressure) && pressure>=30000 && pressure<=110000;
+                portENTER_CRITICAL(&state_lock);
+                shared_pressure=pressure; pressure_ok=valid;
+                if(valid) { pressure_sequence++; pressure_received_us=esp_timer_get_time(); }
+                portEXIT_CRITICAL(&state_lock);
+            }
+        }
+        if(Serial.available()) {
+            char key=static_cast<char>(Serial.read());
+            if(strchr("CcRrSs012345",key)) {
+                if(xQueueSend(command_queue,&key,0)!=pdTRUE) Serial.println("command_queue=full");
+                if(key=='C'||key=='c') Serial.println("C=status; R=clear; S=save; 0..5=+X,-X,+Y,-Y,+Z,-Z; motors=DISABLED");
+            }
+        }
+        if(xQueueReceive(calibration_queue,pending_record,0)==pdTRUE) {
+            save_pending=true; failures=0;
+        }
+        if(save_pending && failures<3 && now-last_save>=5000) {
+            last_save=now;
+            Preferences nvs;
+            bool saved=false;
+            if(nvs.begin("intelqcopter",false)) {
+                saved=nvs.putBytes("imu-v1",pending_record,sizeof(pending_record))==sizeof(pending_record);
+                uint8_t check[FC_CAL_RECORD_BYTES];
+                saved=saved && nvs.getBytes("imu-v1",check,sizeof(check))==sizeof(check)
+                    && memcmp(check,pending_record,sizeof(check))==0;
+                nvs.end();
+            }
+            Serial.printf("calibration_nvs=%s; motors=DISABLED\n",saved?"saved_readback":"failed");
+            if(saved) save_pending=false; else failures++;
+        }
+        if(now-last_log>=250) {
+            last_log=now;
+            fc_status_t s;fc_debug_t d;fc_profile_t profile;fc_link_stats_t link; uint32_t missed,execution,late,hd,im;
+            portENTER_CRITICAL(&state_lock);
+            s=shared_status;d=shared_debug;profile=shared_profile;link=shared_link;hd=hid_drops;im=imu_failures; missed=missed_ticks; execution=max_execution_us; late=late_cycles;
+            portEXIT_CRITICAL(&state_lock);
+            digitalWrite(LED_PIN,s.battery_warning || s.battery_disarm);
+            Serial.printf("FC,ms=%lu,pilot=%d,gyro=%d,accel=%d,baro=%d,fault=%d,roll=%.3f,pitch=%.3f,h=%.3f,vz=%.3f,faces=0x%02x,capture=%d,missed=%lu,late=%lu,max_exec_us=%lu,warn35=%d,disarm20=%d,nvs_pending=%d,nvs_failures=%u,motors=DISABLED\n",
+                static_cast<unsigned long>(now),s.pilot_fresh,s.gyro_verified,s.accel_calibrated,s.barometer_ready,
+                s.sensor_fault,s.roll_deg,s.pitch_deg,s.height_m,s.vertical_mps,s.faces_done,s.capturing_face,
+                static_cast<unsigned long>(missed),static_cast<unsigned long>(late),static_cast<unsigned long>(execution),
+                s.battery_warning,s.battery_disarm,save_pending,failures);
+            Serial.printf("MODE,selected=%u,user_disarm=%d,companion=%d,reports=%lu,events=%lu\n",s.flight_mode,s.user_disarm,s.companion_fresh,(unsigned long)s.xbox_reports,(unsigned long)s.mode_events);
+            Serial.printf("DEBUG,level=%u,gentle=%u,steps=%lu,hid_reject=%lu,uart_reject=%lu,hid_drop=%lu,uart_drop=%lu,imu_fail=%lu,deadline_miss=%lu,collective=%.4f,ceiling=%.4f,torque_scale=%.4f,nis=%.3f/%.3f/%.3f,cov_min=%.6g,numeric_faults=%lu\n",
+                d.level,d.gentle,(unsigned long)d.steps,(unsigned long)d.hid_rejected,(unsigned long)d.uart_rejected,
+                (unsigned long)hd,(unsigned long)uart_drops,(unsigned long)im,(unsigned long)d.deadline_misses,
+                d.collective_allocated,d.collective_ceiling,d.torque_scale,d.roll_nis,d.pitch_nis,d.height_nis,d.min_covariance,(unsigned long)d.numeric_faults);
+            Serial.printf("LINK,available=%d,navigation_denied=%lu,stable_fallbacks=%lu\n",
+                link.available,(unsigned long)link.navigation_denied,(unsigned long)link.stable_fallbacks);
+            Serial.printf("PROFILE,samples=%llu,total_us=%llu,min_us=%lu,mean_us=%.2f,max_us=%lu,last_us=%lu,over_2ms=%lu,scope=loop_before_status_publish,motors=DISABLED\n",
+                (unsigned long long)profile.samples,(unsigned long long)profile.total_us,
+                (unsigned long)profile.minimum_us,profile.samples?(double)profile.total_us/profile.samples:0.0,
+                (unsigned long)profile.maximum_us,(unsigned long)profile.last_us,(unsigned long)profile.over_budget);
+            uint8_t telemetry[16];fc_status_frame(&s,telemetry);if(FC_ENABLE_COMPANION && Serial2.availableForWrite()>=16)Serial2.write(telemetry,sizeof(telemetry));
+        }
+        vTaskDelay(pdMS_TO_TICKS(2));
+    }
+}
+void setup() {
+    Serial.begin(115200);
+    if(FC_ENABLE_COMPANION){Serial2.setRxBufferSize(1024);
+    Serial2.begin(115200,SERIAL_8N1,18,17);} // RX18, TX17; verify final PCB routing.
+    for(unsigned i=0;i<4;i++) pinMode(MOTOR_PINS[i],INPUT_PULLDOWN);
+    pinMode(LED_PIN,OUTPUT); digitalWrite(LED_PIN,LOW);
+    i2c_mutex=xSemaphoreCreateMutex();
+    command_queue=xQueueCreate(8,sizeof(char));
+    calibration_queue=xQueueCreate(1,FC_CAL_RECORD_BYTES);
+    hid_queue=xQueueCreate(8,sizeof(HidPacket));companion_queue=xQueueCreate(8,sizeof(CompanionPacket));
+    configASSERT(i2c_mutex && command_queue && calibration_queue && hid_queue && companion_queue);
+    Wire.begin(SDA_PIN,SCL_PIN); Wire.setClock(400000); Wire.setTimeOut(2);
+    mpu.initialize(); imu_available=mpu.testConnection();
+    if(imu_available) {
+        mpu.setFullScaleAccelRange(MPU6050_ACCEL_FS_8);
+        mpu.setFullScaleGyroRange(MPU6050_GYRO_FS_500);
+        mpu.setDLPFMode(MPU6050_DLPF_BW_42); mpu.setRate(1);
+        mpu.setIntDataReadyEnabled(true);
+    }
+    bmp_available=bmp.begin(0x76) || bmp.begin(0x77);
+    if(bmp_available) bmp.setSampling(Adafruit_BMP280::MODE_NORMAL,
+        Adafruit_BMP280::SAMPLING_X1,Adafruit_BMP280::SAMPLING_X1,
+        Adafruit_BMP280::FILTER_X4,Adafruit_BMP280::STANDBY_MS_1);
+    fc_init(ESP.getEfuseMac());
+    fc_debug_configure(FC_DEBUG_LEVEL);
+    uint8_t record[FC_CAL_RECORD_BYTES]; bool loaded=false;
+    Preferences nvs;
+    if(nvs.begin("intelqcopter",true)) {
+        if(nvs.getBytesLength("imu-v1")==sizeof(record)
+            && nvs.getBytes("imu-v1",record,sizeof(record))==sizeof(record)) loaded=fc_cal_load(record);
+        nvs.end();
+    }
+    Serial.printf("IntelQCopter ESP32-S3/Xbox; imu=%d,bmp=%d,stored_cal=%d; MOTOR OUTPUTS DISABLED\n",
+        imu_available,bmp_available,loaded);
+    Serial.println("Mode2: LX=yaw, LY=vertical speed, RX=roll, RY=pitch, RT=boost, LT=reduce; Down+A/B 5s=stable/nav, Down+LT 2s=disarm; 0..5=six-face capture");
+    xbox.begin();
+    configASSERT(xTaskCreatePinnedToCore(control_task,"fc500",8192,NULL,5,&control_handle,0)==pdPASS);
+    configASSERT(xTaskCreatePinnedToCore(slow_task,"sensor_uart_nvs",12288,NULL,2,NULL,1)==pdPASS);
+    configASSERT(xTaskCreatePinnedToCore(bluetooth_task,"xbox_ble",8192,NULL,1,NULL,1)==pdPASS);
+    esp_timer_create_args_t args={};
+    args.callback=timer_tick; args.name="fc_tick"; args.dispatch_method=ESP_TIMER_TASK;
+    ESP_ERROR_CHECK(esp_timer_create(&args,&control_timer));
+    ESP_ERROR_CHECK(esp_timer_start_periodic(control_timer,CONTROL_PERIOD_US));
+}
+void loop() { delay(1000); }
+
 #endif

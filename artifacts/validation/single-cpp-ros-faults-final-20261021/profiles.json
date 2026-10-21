@@ -1,0 +1,5 @@
+[
+  "component=drone_mission_computer,clock=steady_wall,level=3,calls=126,rejected=20,mean_us=79.1333,max_us=398.2,budget_us=20000,over_budget=0,histogram=44:32:49:1:0:0:0:0:0:0:",
+  "component=drone_mission_computer,clock=steady_wall,level=3,calls=282,rejected=39,mean_us=72.6947,max_us=398.2,budget_us=20000,over_budget=0,histogram=141:48:81:12:0:0:0:0:0:0:",
+  "component=drone_mission_computer,clock=steady_wall,level=3,calls=376,rejected=96,mean_us=86.3285,max_us=398.2,budget_us=20000,over_budget=0,histogram=159:70:128:19:0:0:0:0:0:0:"
+]

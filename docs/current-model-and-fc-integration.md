@@ -1103,7 +1103,7 @@ If 2%, 10% and 15% are justified **standard deviations**, then $\sigma_b/b\appro
 | Full session reset and platform interface | `fc_init`, `fc_step` |
 | Calibration record integrity | `fc_cal_load`, `fc_cal_take_pending` |
 
-All these symbols are in [flight_controller.c](../firmware/src/flight_controller.c). [The platform adapter](../firmware/src/esp32_platform.cpp) handles Arduino, I²C, BLE, task scheduling and NVS. Physical motor pins remain inputs; no ESC output driver is attached.
+All these symbols are in [flight_controller.cpp](../firmware/src/flight_controller.cpp). The hardware-boundary section at the end of the same file handles Arduino, I²C, BLE, task scheduling and NVS. Physical motor pins remain inputs; no ESC output driver is attached.
 
 The new [ESP32-S3 emulator](../simulation/emulation/README.md) executes the compiled C core on QEMU with synthetic inputs. The graphs in this guide come from the separate mathematical LTI calculation script. Keeping those evidence types explicit lets us see what each result actually establishes.
 

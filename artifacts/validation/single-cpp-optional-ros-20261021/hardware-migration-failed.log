@@ -1,0 +1,335 @@
+Processing esp32-s3 (platform: espressif32@7.1.3; board: esp32-s3-devkitc-1; framework: arduino)
+--------------------------------------------------------------------------------
+Verbose mode can be enabled via `-v, --verbose` option
+CONFIGURATION: https://docs.platformio.org/page/boards/espressif32/esp32-s3-devkitc-1.html
+PLATFORM: Espressif 32 (7.1.3) > Espressif ESP32-S3-DevKitC-1-N8 (8 MB QD, No PSRAM)
+HARDWARE: ESP32S3 240MHz, 320KB RAM, 8MB Flash
+DEBUG: Current (esp-builtin) On-board (esp-builtin) External (cmsis-dap, esp-bridge, esp-prog, iot-bus-jtag, jlink, minimodule, olimex-arm-usb-ocd, olimex-arm-usb-ocd-h, olimex-arm-usb-tiny-h, olimex-jtag-tiny, tumpa)
+PACKAGES: 
+ - framework-arduinoespressif32 @ 4.20017.260907+sha.dcc1105b 
+ - tool-esptoolpy @ 2.41100.260830 (4.11.0) 
+ - toolchain-riscv32-esp @ 8.4.0+2021r2-patch5 
+ - toolchain-xtensa-esp32s3 @ 8.4.0+2021r2-patch5
+LDF: Library Dependency Finder -> https://bit.ly/configure-pio-ldf
+LDF Modes: Finder ~ chain, Compatibility ~ soft
+Found 41 compatible libraries
+Scanning dependencies...
+Dependency Graph
+|-- MPU6050 @ 1.4.5
+|-- Adafruit BMP280 Library @ 2.6.8
+|-- Adafruit BusIO @ 1.17.4
+|-- Adafruit Unified Sensor @ 1.1.15
+|-- XboxSeriesXControllerESP32_asukiaaa @ 1.1.3
+|-- NimBLE-Arduino @ 2.5.1
+|-- XboxControllerNotificationParser @ 1.0.5
+|-- XboxSeriesXHIDReportBuilder_asukiaaa @ 1.0.1
+|-- Preferences @ 2.0.0
+|-- Wire @ 2.0.0
+Building in release mode
+Compiling .pio\build\esp32-s3\src\flight_controller.cpp.o
+Building .pio\build\esp32-s3\bootloader.bin
+Generating partitions .pio\build\esp32-s3\partitions.bin
+esptool.py v4.11.0
+Creating esp32s3 image...
+Merged 1 ELF section
+Successfully created esp32s3 image.
+Compiling .pio\build\esp32-s3\lib899\Wire\Wire.cpp.o
+Compiling .pio\build\esp32-s3\libf5c\MPU6050\I2Cdev.cpp.o
+Compiling .pio\build\esp32-s3\libf5c\MPU6050\MPU6050.cpp.o
+Compiling .pio\build\esp32-s3\libf5c\MPU6050\MPU6050_6Axis_MotionApps20.cpp.o
+Compiling .pio\build\esp32-s3\libf5c\MPU6050\MPU6050_6Axis_MotionApps612.cpp.o
+Compiling .pio\build\esp32-s3\libf5c\MPU6050\MPU6050_9Axis_MotionApps41.cpp.o
+Compiling .pio\build\esp32-s3\libfc3\Adafruit Unified Sensor\Adafruit_Sensor.cpp.o
+Compiling .pio\build\esp32-s3\lib47b\SPI\SPI.cpp.o
+Compiling .pio\build\esp32-s3\lib2c5\Adafruit BusIO\Adafruit_BusIO_Register.cpp.o
+Compiling .pio\build\esp32-s3\lib2c5\Adafruit BusIO\Adafruit_GenericDevice.cpp.o
+Compiling .pio\build\esp32-s3\lib2c5\Adafruit BusIO\Adafruit_I2CDevice.cpp.o
+firmware/src/flight_controller.cpp: In function 'void battery_monitor_init(battery_status_t*, float)':
+firmware/src/flight_controller.cpp:124:35: warning: missing initializer for member 'battery_status_t::pack_voltage_sigma_v' [-Wmissing-field-initializers]
+     *status = (battery_status_t){0};
+                                   ^
+firmware/src/flight_controller.cpp:124:35: warning: missing initializer for member 'battery_status_t::estimated_soc_percent' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:124:35: warning: missing initializer for member 'battery_status_t::estimated_soc_sigma_percent' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:124:35: warning: missing initializer for member 'battery_status_t::action' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:124:35: warning: missing initializer for member 'battery_status_t::voltage_filter_initialized' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:124:35: warning: missing initializer for member 'battery_status_t::soc_initialized' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:124:35: warning: missing initializer for member 'battery_status_t::soc_filter_initialized' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:124:35: warning: missing initializer for member 'battery_status_t::sensor_fault' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp: In function 'bool bmp280_trim_decode(const uint8_t*, size_t, bmp280_trim_t*)':
+firmware/src/flight_controller.cpp:475:5: warning: missing initializer for member 'bmp280_trim_t::p1' [-Wmissing-field-initializers]
+     };
+     ^
+firmware/src/flight_controller.cpp:475:5: warning: missing initializer for member 'bmp280_trim_t::p2' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:475:5: warning: missing initializer for member 'bmp280_trim_t::p3' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:475:5: warning: missing initializer for member 'bmp280_trim_t::p4' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:475:5: warning: missing initializer for member 'bmp280_trim_t::p5' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:475:5: warning: missing initializer for member 'bmp280_trim_t::p6' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:475:5: warning: missing initializer for member 'bmp280_trim_t::p7' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:475:5: warning: missing initializer for member 'bmp280_trim_t::p8' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:475:5: warning: missing initializer for member 'bmp280_trim_t::p9' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:475:5: error: designator order for field 'bmp280_trim_t::p1' does not match declaration order in 'const bmp280_trim_t'
+firmware/src/flight_controller.cpp: At global scope:
+firmware/src/flight_controller.cpp:695:1: warning: missing initializer for member 'angle_kf_t::angle_deg' [-Wmissing-field-initializers]
+ };
+ ^
+firmware/src/flight_controller.cpp:695:1: warning: missing initializer for member 'angle_kf_t::gyro_bias_dps' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:695:1: warning: missing initializer for member 'angle_kf_t::p01' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:695:1: warning: missing initializer for member 'angle_kf_t::p10' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:695:1: warning: missing initializer for member 'angle_kf_t::gain_angle' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:695:1: warning: missing initializer for member 'angle_kf_t::gain_bias' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:695:1: warning: missing initializer for member 'angle_kf_t::innovation' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:695:1: warning: missing initializer for member 'angle_kf_t::innovation_variance' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:700:1: warning: missing initializer for member 'altitude_kf_t::height_m' [-Wmissing-field-initializers]
+ };
+ ^
+firmware/src/flight_controller.cpp:700:1: warning: missing initializer for member 'altitude_kf_t::velocity_mps' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:700:1: warning: missing initializer for member 'altitude_kf_t::p01' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:700:1: warning: missing initializer for member 'altitude_kf_t::p10' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:700:1: warning: missing initializer for member 'altitude_kf_t::gain_height' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:700:1: warning: missing initializer for member 'altitude_kf_t::gain_velocity' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:700:1: warning: missing initializer for member 'altitude_kf_t::innovation' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:700:1: warning: missing initializer for member 'altitude_kf_t::innovation_variance' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:707:1: warning: missing initializer for member 'fc_pid_t::integrator' [-Wmissing-field-initializers]
+ };
+ ^
+firmware/src/flight_controller.cpp:707:1: warning: missing initializer for member 'fc_pid_t::previous_measurement' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:707:1: warning: missing initializer for member 'fc_pid_t::initialized' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:711:1: warning: missing initializer for member 'fc_pid_t::integrator' [-Wmissing-field-initializers]
+ };
+ ^
+firmware/src/flight_controller.cpp:711:1: warning: missing initializer for member 'fc_pid_t::previous_measurement' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:711:1: warning: missing initializer for member 'fc_pid_t::initialized' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:715:1: warning: missing initializer for member 'fc_pid_t::integrator' [-Wmissing-field-initializers]
+ };
+ ^
+firmware/src/flight_controller.cpp:715:1: warning: missing initializer for member 'fc_pid_t::previous_measurement' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:715:1: warning: missing initializer for member 'fc_pid_t::initialized' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:719:1: warning: missing initializer for member 'fc_pid_t::integrator' [-Wmissing-field-initializers]
+ };
+ ^
+firmware/src/flight_controller.cpp:719:1: warning: missing initializer for member 'fc_pid_t::previous_measurement' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:719:1: warning: missing initializer for member 'fc_pid_t::initialized' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:723:1: warning: missing initializer for member 'fc_pid_t::integrator' [-Wmissing-field-initializers]
+ };
+ ^
+firmware/src/flight_controller.cpp:723:1: warning: missing initializer for member 'fc_pid_t::previous_measurement' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:723:1: warning: missing initializer for member 'fc_pid_t::initialized' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:727:1: warning: missing initializer for member 'fc_pid_t::integrator' [-Wmissing-field-initializers]
+ };
+ ^
+firmware/src/flight_controller.cpp:727:1: warning: missing initializer for member 'fc_pid_t::previous_measurement' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:727:1: warning: missing initializer for member 'fc_pid_t::initialized' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:744:44: warning: missing initializer for member 'fc_debug_t::steps' [-Wmissing-field-initializers]
+ static fc_debug_t debug={.level=2,.gentle=1};
+                                            ^
+firmware/src/flight_controller.cpp:744:44: warning: missing initializer for member 'fc_debug_t::hid_rejected' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:744:44: warning: missing initializer for member 'fc_debug_t::uart_rejected' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:744:44: warning: missing initializer for member 'fc_debug_t::invalid_calls' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:744:44: warning: missing initializer for member 'fc_debug_t::sensor_faults' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:744:44: warning: missing initializer for member 'fc_debug_t::stale_pilot' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:744:44: warning: missing initializer for member 'fc_debug_t::stale_companion' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:744:44: warning: missing initializer for member 'fc_debug_t::saturation_cycles' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:744:44: warning: missing initializer for member 'fc_debug_t::torque_scaled_cycles' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:744:44: warning: missing initializer for member 'fc_debug_t::numeric_faults' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:744:44: warning: missing initializer for member 'fc_debug_t::deadline_misses' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:744:44: warning: missing initializer for member 'fc_debug_t::max_execution_us' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:744:44: warning: missing initializer for member 'fc_debug_t::execution_bins' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:744:44: warning: missing initializer for member 'fc_debug_t::max_dt_s' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:744:44: warning: missing initializer for member 'fc_debug_t::collective_requested' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:744:44: warning: missing initializer for member 'fc_debug_t::collective_allocated' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:744:44: warning: missing initializer for member 'fc_debug_t::collective_ceiling' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:744:44: warning: missing initializer for member 'fc_debug_t::torque_scale' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:744:44: warning: missing initializer for member 'fc_debug_t::motor_min' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:744:44: warning: missing initializer for member 'fc_debug_t::motor_max' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:744:44: warning: missing initializer for member 'fc_debug_t::roll_nis' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:744:44: warning: missing initializer for member 'fc_debug_t::pitch_nis' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:744:44: warning: missing initializer for member 'fc_debug_t::height_nis' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:744:44: warning: missing initializer for member 'fc_debug_t::min_covariance' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:744:44: warning: missing initializer for member 'fc_debug_t::trace_written' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp: In function 'void fc_init(uint64_t)':
+firmware/src/flight_controller.cpp:1083:42: warning: missing initializer for member 'fc_debug_t::steps' [-Wmissing-field-initializers]
+     debug=(fc_debug_t){.level=2,.gentle=1};gentle_profile=true;
+                                          ^
+firmware/src/flight_controller.cpp:1083:42: warning: missing initializer for member 'fc_debug_t::hid_rejected' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1083:42: warning: missing initializer for member 'fc_debug_t::uart_rejected' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1083:42: warning: missing initializer for member 'fc_debug_t::invalid_calls' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1083:42: warning: missing initializer for member 'fc_debug_t::sensor_faults' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1083:42: warning: missing initializer for member 'fc_debug_t::stale_pilot' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1083:42: warning: missing initializer for member 'fc_debug_t::stale_companion' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1083:42: warning: missing initializer for member 'fc_debug_t::saturation_cycles' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1083:42: warning: missing initializer for member 'fc_debug_t::torque_scaled_cycles' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1083:42: warning: missing initializer for member 'fc_debug_t::numeric_faults' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1083:42: warning: missing initializer for member 'fc_debug_t::deadline_misses' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1083:42: warning: missing initializer for member 'fc_debug_t::max_execution_us' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1083:42: warning: missing initializer for member 'fc_debug_t::execution_bins' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1083:42: warning: missing initializer for member 'fc_debug_t::max_dt_s' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1083:42: warning: missing initializer for member 'fc_debug_t::collective_requested' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1083:42: warning: missing initializer for member 'fc_debug_t::collective_allocated' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1083:42: warning: missing initializer for member 'fc_debug_t::collective_ceiling' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1083:42: warning: missing initializer for member 'fc_debug_t::torque_scale' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1083:42: warning: missing initializer for member 'fc_debug_t::motor_min' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1083:42: warning: missing initializer for member 'fc_debug_t::motor_max' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1083:42: warning: missing initializer for member 'fc_debug_t::roll_nis' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1083:42: warning: missing initializer for member 'fc_debug_t::pitch_nis' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1083:42: warning: missing initializer for member 'fc_debug_t::height_nis' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1083:42: warning: missing initializer for member 'fc_debug_t::min_covariance' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1083:42: warning: missing initializer for member 'fc_debug_t::trace_written' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1085:39: warning: missing initializer for member 'fc_profile_t::total_us' [-Wmissing-field-initializers]
+     execution_profile=(fc_profile_t){0};
+                                       ^
+firmware/src/flight_controller.cpp:1085:39: warning: missing initializer for member 'fc_profile_t::minimum_us' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1085:39: warning: missing initializer for member 'fc_profile_t::maximum_us' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1085:39: warning: missing initializer for member 'fc_profile_t::last_us' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1085:39: warning: missing initializer for member 'fc_profile_t::over_budget' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1098:34: warning: missing initializer for member 'fc_pilot_t::pitch' [-Wmissing-field-initializers]
+     received_pilot=(fc_pilot_t){0}; selected_mode=held_gesture=0; companion_enabled=FC_ENABLE_COMPANION!=0;
+                                  ^
+firmware/src/flight_controller.cpp:1098:34: warning: missing initializer for member 'fc_pilot_t::yaw' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1098:34: warning: missing initializer for member 'fc_pilot_t::vertical' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1098:34: warning: missing initializer for member 'fc_pilot_t::boost' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1098:34: warning: missing initializer for member 'fc_pilot_t::reduce' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1098:34: warning: missing initializer for member 'fc_pilot_t::received_us' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1098:34: warning: missing initializer for member 'fc_pilot_t::connected' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1102:36: warning: missing initializer for member 'imu_calibration_t::accel_gain' [-Wmissing-field-initializers]
+     saved_imu=(imu_calibration_t){0};
+                                    ^
+firmware/src/flight_controller.cpp:1102:36: warning: missing initializer for member 'imu_calibration_t::accel_bias_variance_g2' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1102:36: warning: missing initializer for member 'imu_calibration_t::accel_gain_variance' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1102:36: warning: missing initializer for member 'imu_calibration_t::gyro_bias_dps' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1102:36: warning: missing initializer for member 'imu_calibration_t::gyro_variance_dps2' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1102:36: warning: missing initializer for member 'imu_calibration_t::gyro_bias_variance_dps2' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1102:36: warning: missing initializer for member 'imu_calibration_t::gyro_samples' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1102:36: warning: missing initializer for member 'imu_calibration_t::accel_valid' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1102:36: warning: missing initializer for member 'imu_calibration_t::gyro_valid' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1103:42: warning: missing initializer for member 'cal_stats3_t::mean' [-Wmissing-field-initializers]
+     verification=(imu_stationary_cal_t){0};
+                                          ^
+firmware/src/flight_controller.cpp:1103:42: warning: missing initializer for member 'cal_stats3_t::m2' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1103:42: warning: missing initializer for member 'imu_stationary_cal_t::gyro' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1105:44: warning: missing initializer for member 'baro_calibration_t::reference_variance_pa2' [-Wmissing-field-initializers]
+     ground_reference=(baro_calibration_t){0};
+                                            ^
+firmware/src/flight_controller.cpp:1105:44: warning: missing initializer for member 'baro_calibration_t::measurement_variance_pa2' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1105:44: warning: missing initializer for member 'baro_calibration_t::valid' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1106:46: warning: missing initializer for member 'baro_reference_cal_t::mean_pa' [-Wmissing-field-initializers]
+     pressure_capture=(baro_reference_cal_t){0};
+                                              ^
+firmware/src/flight_controller.cpp:1106:46: warning: missing initializer for member 'baro_reference_cal_t::m2_pa2' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp: In function 'bool fc_cal_load(const uint8_t*)':
+firmware/src/flight_controller.cpp:1118:29: warning: missing initializer for member 'imu_calibration_t::accel_gain' [-Wmissing-field-initializers]
+     imu_calibration_t fit={0};
+                             ^
+firmware/src/flight_controller.cpp:1118:29: warning: missing initializer for member 'imu_calibration_t::accel_bias_variance_g2' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1118:29: warning: missing initializer for member 'imu_calibration_t::accel_gain_variance' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1118:29: warning: missing initializer for member 'imu_calibration_t::gyro_bias_dps' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1118:29: warning: missing initializer for member 'imu_calibration_t::gyro_variance_dps2' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1118:29: warning: missing initializer for member 'imu_calibration_t::gyro_bias_variance_dps2' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1118:29: warning: missing initializer for member 'imu_calibration_t::gyro_samples' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1118:29: warning: missing initializer for member 'imu_calibration_t::accel_valid' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1118:29: warning: missing initializer for member 'imu_calibration_t::gyro_valid' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1128:78: warning: missing initializer for member 'cal_stats3_t::mean' [-Wmissing-field-initializers]
+     saved_imu=fit; gyro_verified=false; verification=(imu_stationary_cal_t){0};
+                                                                              ^
+firmware/src/flight_controller.cpp:1128:78: warning: missing initializer for member 'cal_stats3_t::m2' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1128:78: warning: missing initializer for member 'imu_stationary_cal_t::gyro' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp: In function 'void fc_cal_command(char)':
+firmware/src/flight_controller.cpp:1153:40: warning: missing initializer for member 'imu_calibration_t::accel_gain' [-Wmissing-field-initializers]
+         saved_imu=(imu_calibration_t){0}; verification=(imu_stationary_cal_t){0};
+                                        ^
+firmware/src/flight_controller.cpp:1153:40: warning: missing initializer for member 'imu_calibration_t::accel_bias_variance_g2' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1153:40: warning: missing initializer for member 'imu_calibration_t::accel_gain_variance' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1153:40: warning: missing initializer for member 'imu_calibration_t::gyro_bias_dps' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1153:40: warning: missing initializer for member 'imu_calibration_t::gyro_variance_dps2' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1153:40: warning: missing initializer for member 'imu_calibration_t::gyro_bias_variance_dps2' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1153:40: warning: missing initializer for member 'imu_calibration_t::gyro_samples' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1153:40: warning: missing initializer for member 'imu_calibration_t::accel_valid' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1153:40: warning: missing initializer for member 'imu_calibration_t::gyro_valid' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1153:80: warning: missing initializer for member 'cal_stats3_t::mean' [-Wmissing-field-initializers]
+         saved_imu=(imu_calibration_t){0}; verification=(imu_stationary_cal_t){0};
+                                                                                ^
+firmware/src/flight_controller.cpp:1153:80: warning: missing initializer for member 'cal_stats3_t::m2' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1153:80: warning: missing initializer for member 'imu_stationary_cal_t::gyro' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1159:61: warning: missing initializer for member 'cal_stats3_t::mean' [-Wmissing-field-initializers]
+         accel_faces[(unsigned)capture_face]=(cal_stats3_t){0};
+                                                             ^
+firmware/src/flight_controller.cpp:1159:61: warning: missing initializer for member 'cal_stats3_t::m2' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp: In function 'void update_calibration(const fc_sample_t*)':
+firmware/src/flight_controller.cpp:1166:50: warning: missing initializer for member 'cal_stats3_t::mean' [-Wmissing-field-initializers]
+             verification=(imu_stationary_cal_t){0};
+                                                  ^
+firmware/src/flight_controller.cpp:1166:50: warning: missing initializer for member 'cal_stats3_t::m2' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1166:50: warning: missing initializer for member 'imu_stationary_cal_t::gyro' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1177:57: warning: missing initializer for member 'cal_stats3_t::mean' [-Wmissing-field-initializers]
+             } else verification=(imu_stationary_cal_t){0};
+                                                         ^
+firmware/src/flight_controller.cpp:1177:57: warning: missing initializer for member 'cal_stats3_t::m2' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1177:57: warning: missing initializer for member 'imu_stationary_cal_t::gyro' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp: In function 'void fc_step(const fc_sample_t*, const fc_pilot_t*, uint64_t, float, fc_status_t*)':
+firmware/src/flight_controller.cpp:1196:28: warning: missing initializer for member 'fc_status_t::roll_deg' [-Wmissing-field-initializers]
+     *status=(fc_status_t){0};
+                            ^
+firmware/src/flight_controller.cpp:1196:28: warning: missing initializer for member 'fc_status_t::pitch_deg' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1196:28: warning: missing initializer for member 'fc_status_t::height_m' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1196:28: warning: missing initializer for member 'fc_status_t::vertical_mps' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1196:28: warning: missing initializer for member 'fc_status_t::gyro_sigma_dps' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1196:28: warning: missing initializer for member 'fc_status_t::sensor_fault' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1196:28: warning: missing initializer for member 'fc_status_t::pilot_fresh' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1196:28: warning: missing initializer for member 'fc_status_t::gyro_verified' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1196:28: warning: missing initializer for member 'fc_status_t::accel_calibrated' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1196:28: warning: missing initializer for member 'fc_status_t::barometer_ready' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1196:28: warning: missing initializer for member 'fc_status_t::battery_warning' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1196:28: warning: missing initializer for member 'fc_status_t::battery_disarm' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1196:28: warning: missing initializer for member 'fc_status_t::faces_done' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1196:28: warning: missing initializer for member 'fc_status_t::capturing_face' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1196:28: warning: missing initializer for member 'fc_status_t::flight_mode' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1196:28: warning: missing initializer for member 'fc_status_t::user_disarm' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1196:28: warning: missing initializer for member 'fc_status_t::companion_fresh' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1196:28: warning: missing initializer for member 'fc_status_t::xbox_reports' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1196:28: warning: missing initializer for member 'fc_status_t::mode_events' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1210:62: warning: missing initializer for member 'baro_reference_cal_t::mean_pa' [-Wmissing-field-initializers]
+                     pressure_capture=(baro_reference_cal_t){0};
+                                                              ^
+firmware/src/flight_controller.cpp:1210:62: warning: missing initializer for member 'baro_reference_cal_t::m2_pa2' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1222:44: warning: missing initializer for member 'sensor_sample_t::vertical_acceleration_mps2' [-Wmissing-field-initializers]
+         .barometer_updated=pressure_updated};
+                                            ^
+firmware/src/flight_controller.cpp:1222:44: warning: missing initializer for member 'sensor_sample_t::barometer_height_m' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1222:44: warning: missing initializer for member 'sensor_sample_t::imu_calibrated' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1222:44: warning: missing initializer for member 'sensor_sample_t::barometer_valid' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1222:44: warning: missing initializer for member 'sensor_sample_t::barometer_updated' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1222:44: error: designator order for field 'sensor_sample_t::barometer_height_m' does not match declaration order in 'sensor_sample_t'
+firmware/src/flight_controller.cpp:1237:126: warning: missing initializer for member 'pilot_command_t::arm_request' [-Wmissing-field-initializers]
+         .yaw_rate_dps=180*pilot->yaw,.throttle=.5f+.5f*pilot->vertical,.boost=pilot->boost,.reduce=pilot->reduce,.valid=fresh};
+                                                                                                                              ^
+firmware/src/flight_controller.cpp: In function 'void fc_control_step(const fc_sample_t*, uint64_t, float, fc_status_t*)':
+firmware/src/flight_controller.cpp:1374:118: warning: missing initializer for member 'fc_status_t::roll_deg' [-Wmissing-field-initializers]
+     if(!raw || !status){reset_control_state();if(debug.level)debug.invalid_calls++;if(status){*status=(fc_status_t){0};status->sensor_fault=true;}return;}
+                                                                                                                      ^
+firmware/src/flight_controller.cpp:1374:118: warning: missing initializer for member 'fc_status_t::pitch_deg' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1374:118: warning: missing initializer for member 'fc_status_t::height_m' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1374:118: warning: missing initializer for member 'fc_status_t::vertical_mps' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1374:118: warning: missing initializer for member 'fc_status_t::gyro_sigma_dps' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1374:118: warning: missing initializer for member 'fc_status_t::sensor_fault' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1374:118: warning: missing initializer for member 'fc_status_t::pilot_fresh' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1374:118: warning: missing initializer for member 'fc_status_t::gyro_verified' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1374:118: warning: missing initializer for member 'fc_status_t::accel_calibrated' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1374:118: warning: missing initializer for member 'fc_status_t::barometer_ready' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1374:118: warning: missing initializer for member 'fc_status_t::battery_warning' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1374:118: warning: missing initializer for member 'fc_status_t::battery_disarm' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1374:118: warning: missing initializer for member 'fc_status_t::faces_done' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1374:118: warning: missing initializer for member 'fc_status_t::capturing_face' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1374:118: warning: missing initializer for member 'fc_status_t::flight_mode' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1374:118: warning: missing initializer for member 'fc_status_t::user_disarm' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1374:118: warning: missing initializer for member 'fc_status_t::companion_fresh' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1374:118: warning: missing initializer for member 'fc_status_t::xbox_reports' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1374:118: warning: missing initializer for member 'fc_status_t::mode_events' [-Wmissing-field-initializers]
+firmware/src/flight_controller.cpp:1396:120: warning: missing initializer for member 'fc_trace_t::motor' [-Wmissing-field-initializers]
+             .flags=(status->sensor_fault?1u:0)|(status->pilot_fresh?2u:0)|(status->companion_fresh?4u:0)|(numeric?8u:0)};
+                                                                                                                        ^
+*** [.pio\build\esp32-s3\src\flight_controller.cpp.o] Error 1
+========================= [FAILED] Took 14.21 seconds =========================
+
+Environment    Status    Duration
+-------------  --------  ------------
+esp32-s3       FAILED    00:00:14.206
+==================== 1 failed, 0 succeeded in 00:00:14.206 ====================
