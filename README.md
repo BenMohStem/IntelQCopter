@@ -6,6 +6,10 @@ F450 research quadcopter: ESP32-S3 flight controller, Xbox Series X/S manual inp
 
 > Bench prototype: physical motor arming and ESC outputs remain disabled. Simulation gains and hardware interfaces are not flight-validated.
 
+## Key files and PCB
+
+Start with [important_sources/](important_sources/README.md): firmware, ROS2/YOLO, Gazebo and RViz sources in one indexed folder. [PCB mask and KiCad package](hardware/home-etched-fc/README.md).
+
 ## Fly the simulation
 
 On the configured Windows PC, open PowerShell in this checkout:

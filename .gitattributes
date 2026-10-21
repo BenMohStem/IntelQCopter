@@ -27,3 +27,6 @@ artifacts/** -text
 artifacts/** -text
 # Preserve the archived baseline/reference bytes after moving them on this branch.
 archive/** -text
+
+# Keep curated reference snapshots byte-identical to their source manifest.
+important_sources/** -text

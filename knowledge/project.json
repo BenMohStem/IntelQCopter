@@ -460,6 +460,26 @@
       "id": "source-single-cpp-report",
       "kind": "file",
       "locator": "artifacts/validation/single-cpp-optional-ros-20261021/README.md"
+    },
+    {
+      "id": "source-solid-ground-power-audit",
+      "kind": "file",
+      "locator": "artifacts/hardware/solid-ground-power-audit-20261021/README.md"
+    },
+    {
+      "id": "source-f2-mini-datasheet",
+      "kind": "url",
+      "locator": "https://ftp.nooploop.com/downloads/tofsense/TOFSense_F2_Mini_Datasheet_V1.0_en.pdf"
+    },
+    {
+      "id": "source-important-shelf",
+      "kind": "file",
+      "locator": "important_sources/manifest.json"
+    },
+    {
+      "id": "source-arduino-interface-guide",
+      "kind": "file",
+      "locator": "docs/esp32-arduino-interfaces.md"
     }
   ],
   "facts": [
@@ -696,6 +716,18 @@
             "source-single-cpp-report"
           ],
           "reason": "User requests a single mostly-C .cpp with existing Xbox library and optional companion; original source locators are promoted to immutable Git references."
+        },
+        {
+          "revision": 3,
+          "date": "2026-10-21",
+          "status": "implemented",
+          "evidence_level": "source",
+          "statement": "The one-file ESP32 firmware already uses Arduino framework and Wire, sensor libraries, Preferences, HardwareSerial and the Xbox BLE library. User prefers Arduino-style interfaces. Installed-core LEDC PWM is the planned ESC interface; no Servo/LEDC output is attached while physical arming remains disabled. No new physical output driver or timing claim is introduced.",
+          "sources": [
+            "source-arduino-interface-guide",
+            "source-single-cpp-firmware"
+          ],
+          "reason": "User requests clear important source files, complete PCB power audit, solid ground pads with round white drill holes and Arduino-style ESP32 interfaces."
         }
       ]
     },
@@ -1707,12 +1739,24 @@
           "date": "2026-10-21",
           "status": "implemented",
           "evidence_level": "build",
-          "statement": "Corrected ESP32 grounds: carrier J1.22 and J2.1/21/22 are all common GND with solid B.Cu zone connections and explicit 1.5–2.5mm routes. Removed GND_MCU and W22. 12 other insulated links remain. Native KiCad DRC/ERC/unrouted/parity checks pass; independent raster continuity proves all four ground pads connect to input GND and no non-GND pad is shorted to its printed region. Reference-module fit, etched copper and physical behavior remain unmeasured.",
+          "statement": "Corrected ESP32 grounds: carrier J1.22 and J2.1/21/22 are all common GND with solid B.Cu zone connections and explicit 1.5\u20132.5mm routes. Removed GND_MCU and W22. 12 other insulated links remain. Native KiCad DRC/ERC/unrouted/parity checks pass; independent raster continuity proves all four ground pads connect to input GND and no non-GND pad is shorted to its printed region. Reference-module fit, etched copper and physical behavior remain unmeasured.",
           "sources": [
             "source-direct-common-ground",
             "source-pcb-assembly"
           ],
           "reason": "User correctly identified that the previous carrier relied on a jumper instead of a direct large common GND area."
+        },
+        {
+          "revision": 4,
+          "date": "2026-10-21",
+          "status": "implemented",
+          "evidence_level": "build",
+          "statement": "All 19 common GND pads now use solid zone connections without thermal crosses. Both reference DevKit 3V3 pins are connected. Added insulated W23 for exact F2 Mini regulated5V, giving 13 links total; UART stays3.3V. Native DRC/ERC/unrouted/parity all zero. Independent final-mask audit finds all60 copper nets continuous, no different-net short, 20 reference power pins correct and all372 drill centres white. Explicit jumper graph keeps GND/3V3/5V/pack sense separate and confirms W21 removal isolates DevKit5V. Digital evidence only; module/physical validation pending.",
+          "sources": [
+            "source-solid-ground-power-audit",
+            "source-f2-mini-datasheet"
+          ],
+          "reason": "User requests clear important source files, complete PCB power audit, solid ground pads with round white drill holes and Arduino-style ESP32 interfaces."
         }
       ]
     },
@@ -1731,6 +1775,18 @@
             "source-pcb-assembly"
           ],
           "reason": "User requested continued project consolidation and home-etched competition PCB work."
+        },
+        {
+          "revision": 2,
+          "date": "2026-10-21",
+          "status": "pending",
+          "evidence_level": "source",
+          "statement": "Exact TOFSense-F2 Mini reference supply is now known:4.3-5.2V, fed regulated5V via W23; 3.3V logic. Purchased lidar revision/pigtail and driver remain unvalidated. Current sensor selection, ADC calibration/driver, power-off input protection, magnetometer driver, module/frame fit and real voltage/current/RF behavior remain open. No hardware BMS or enabled physical motor outputs.",
+          "sources": [
+            "source-solid-ground-power-audit",
+            "source-f2-mini-datasheet"
+          ],
+          "reason": "User requests clear important source files, complete PCB power audit, solid ground pads with round white drill holes and Arduino-style ESP32 interfaces."
         }
       ]
     },
@@ -1810,6 +1866,24 @@
             "source-single-cpp-firmware"
           ],
           "reason": "User requests one mostly-C .cpp and standalone Xbox operation with an optional ROS2 companion; tested the actual compiled processes together."
+        }
+      ]
+    },
+    {
+      "id": "important_source_shelf",
+      "topic": "architecture",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-21",
+          "status": "implemented",
+          "evidence_level": "source",
+          "statement": "important_sources contains48 byte-identical curated reading copies: active ESP32 FC, ROS2/YOLO package and Gazebo runtime subset, plus immutable main-branch RP2350/RP2040 and F450 URDF/RViz files. Manifest records source path/branch/commit/hash. Canonical build paths remain authoritative; refresh refuses hand-edited copies and --check checks freshness.",
+          "sources": [
+            "source-important-shelf"
+          ],
+          "reason": "User asks for one clearly indexed folder with only the most important sources, while preserving the separate Pico architecture."
         }
       ]
     }

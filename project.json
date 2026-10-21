@@ -11,7 +11,8 @@
     "evidence": "artifacts/",
     "history": "archive/",
     "companion": "companion/",
-    "hardware": "hardware/"
+    "hardware": "hardware/",
+    "important_sources": "important_sources/"
   },
   "local": {
     "build": "build/",
@@ -320,6 +321,20 @@
       "path": "tools/validation/check_optional_ros_link_windows.cmd",
       "args": [],
       "description": "Actual ROS2 + host FC discovery/loss/restart proof; --dll DLL --name UNIQUE"
+    },
+    "important-sources": {
+      "runtime": "python",
+      "path": "tools/organization/refresh_important_sources.py",
+      "description": "Refresh curated firmware, ROS2 and simulation reading copies",
+      "args": []
+    },
+    "important-check": {
+      "runtime": "python",
+      "path": "tools/organization/refresh_important_sources.py",
+      "description": "Check important source hashes and freshness",
+      "args": [
+        "--check"
+      ]
     }
   }
 }

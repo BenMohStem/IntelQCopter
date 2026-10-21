@@ -10,12 +10,14 @@
 
 Latest implementation: [one-file FC, optional ROS2 and profiling evidence](../artifacts/validation/single-cpp-optional-ros-20261021/README.md). The ESP32 GND pads now connect directly to the common copper fill; W22 was removed. [Annotated mask continuity proof](../artifacts/hardware/direct-common-ground-20261021/ground-connection-proof.png).
 
+Latest PCB: [solid GND pads, round drill openings and full power/mask audit](../artifacts/hardware/solid-ground-power-audit-20261021/README.md). Thirteen insulated links are required, including lidar5V W23. [Key source shelf](../important_sources/README.md).
+
 ## Still unvalidated
 
 - Physical motor outputs are disabled. ESC pulse driver, real timing, motor order and sensor wiring need bench work.
 - Full aircraft mass, inertia, thrust curves, motor lag, sensor noise and battery measurements are not identified. Mathematical gains remain provisional.
 - Real horizontal localization is not implemented. IMU + barometer do not provide drift-free XY hold. Simulated known-panel distance estimation is not general RGB depth.
-- PCB module/frame fit and supply behavior remain unmeasured; current sensor, calibrated ADC driver, magnetometer integration and exact lidar supply/interface remain open.
+- PCB module/frame fit and supply behavior remain unmeasured; current sensor, calibrated ADC driver, magnetometer integration and purchased lidar connector/revision and physical interface validation remain open; reference F2 Mini supply is regulated5V.
 
 ## Where to continue
 
