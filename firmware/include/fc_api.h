@@ -30,6 +30,13 @@ FC_API bool fc_debug_configure(unsigned level); /* Boot only, before first HID. 
 FC_API bool fc_configure_gentle(bool gentle); /* Boot only; simulator shapes HID once externally. */
 FC_API void fc_debug_snapshot(fc_debug_t*);
 FC_API unsigned fc_debug_trace(fc_trace_t*,unsigned capacity); /* Oldest -> newest. */
+/* Adapter elapsed times: integer-only accumulation; no claim of hardware deadlines
+ * until this is measured on a real board. Snapshot only on the owning task. */
+typedef struct {
+ uint64_t samples,total_us;
+ uint32_t minimum_us,maximum_us,last_us,over_budget;
+} fc_profile_t;
+FC_API void fc_profile_snapshot(fc_profile_t *out);
 FC_API void fc_profile_record(uint32_t elapsed_us); /* Adapter measurement, 2ms deadline. */
 #define FC_CAL_RECORD_BYTES 160u
 #define FC_CAL_PROFILE 0x00080001u /* ±8g, ±500dps, 42Hz DLPF, 500Hz; bump after mount/config changes. */

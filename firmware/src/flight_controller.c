@@ -738,6 +738,9 @@ static float altitude_hold_reference_m;
 static float hover_collective = FC_HOVER_THROTTLE_PLACEHOLDER;
 static float boost_state;
 static fc_debug_t debug={.level=2,.gentle=1};
+static fc_profile_t execution_profile;
+/* Status sigma changes only with the calibration variances, not at 500 Hz. */
+static float gyro_variance_cache[3],gyro_sigma_cache[3];
 static fc_trace_t debug_trace[64];
 static uint32_t debug_trace_next,debug_trace_count;
 static uint64_t debug_trace_us;
@@ -778,7 +781,7 @@ static float pid_update(fc_pid_t *pid, float setpoint, float measurement, float 
         return 0.0f;
     }
     const float error = setpoint - measurement;
-    const float derivative = pid->initialized
+    const float derivative = pid->initialized && pid->kd != 0.0f
         ? (measurement - pid->previous_measurement) / dt : 0.0f;
     const float candidate_i = clampf(pid->integrator + error * dt,
                                      -pid->integrator_limit,
@@ -828,7 +831,6 @@ static void angle_kf_update(angle_kf_t *kf, float gyro_dps,
     if(!accel_angle_correction_enabled){kf->gain_angle=kf->gain_bias=0;return;}
     kf->gain_angle=kf->p00/kf->innovation_variance;
     kf->gain_bias=kf->p10/kf->innovation_variance;
-    kf->innovation=accel_angle_deg-kf->angle_deg;
     kf->angle_deg+=kf->gain_angle*kf->innovation;
     kf->gyro_bias_dps+=kf->gain_bias*kf->innovation;
     covariance_correct(&kf->p00,&kf->p01,&kf->p10,&kf->p11,
@@ -1076,6 +1078,8 @@ void fc_init(uint64_t board_id) {
     memset(&horizontal,0,sizeof(horizontal));accel_angle_correction_enabled=true;
     debug=(fc_debug_t){.level=2,.gentle=1};gentle_profile=true;
     debug_trace_next=debug_trace_count=0;debug_trace_us=0;
+    execution_profile=(fc_profile_t){0};
+    for(unsigned i=0;i<3;i++){gyro_variance_cache[i]=-1;gyro_sigma_cache[i]=0;}
     calibration_board_id=board_id;
 #ifdef FC_BUILD_DLL
     sim_control_calls=0;memset(sim_commands,0,sizeof(sim_commands));
@@ -1184,8 +1188,11 @@ void fc_set_estimated_soc(float percent) {
     if(isfinite(percent) && percent>=0 && percent<=100) battery_apply_soc_policy(percent);
 }
 void fc_step(const fc_sample_t *raw,const fc_pilot_t *pilot,uint64_t now,float dt,fc_status_t *status) {
-    if(raw==NULL || pilot==NULL || status==NULL) return;
+    if(status==NULL) {reset_control_state();return;}
     *status=(fc_status_t){0};
+    if(raw==NULL || pilot==NULL || !isfinite(dt) || dt<=0 || dt>FC_MAX_CONTROL_DT) {
+        reset_control_state();status->sensor_fault=true;return;
+    }
     update_calibration(raw);
     bool pressure_updated=raw->pressure_sequence!=last_pressure_sequence;
     float height=altitude_estimator.height_m;
@@ -1213,8 +1220,10 @@ void fc_step(const fc_sample_t *raw,const fc_pilot_t *pilot,uint64_t now,float d
         (void)sensor_sample_apply_imu_calibration(&s,&saved_imu);
     if(s.imu_calibrated) {
         float phi=roll_estimator.angle_deg*FC_DEG_TO_RAD,theta=pitch_estimator.angle_deg*FC_DEG_TO_RAD;
-        s.vertical_acceleration_mps2=9.80665f*(-sinf(theta)*s.accel_x_g
-            +sinf(phi)*cosf(theta)*s.accel_y_g+cosf(phi)*cosf(theta)*s.accel_z_g-1);
+        const float sin_phi=sinf(phi),cos_phi=cosf(phi);
+        const float sin_theta=sinf(theta),cos_theta=cosf(theta);
+        s.vertical_acceleration_mps2=9.80665f*(-sin_theta*s.accel_x_g
+            +sin_phi*cos_theta*s.accel_y_g+cos_phi*cos_theta*s.accel_z_g-1);
     }
     bool fresh=pilot->connected && now>=pilot->received_us
         && now-pilot->received_us<=250000u
@@ -1251,7 +1260,14 @@ void fc_step(const fc_sample_t *raw,const fc_pilot_t *pilot,uint64_t now,float d
     status->sensor_fault=result.sensor_fault; status->pilot_fresh=fresh;
     status->gyro_verified=gyro_verified; status->accel_calibrated=saved_imu.accel_valid;
     status->barometer_ready=ground_reference.valid; status->capturing_face=capture_face;
-    for(unsigned i=0;i<3;i++) status->gyro_sigma_dps[i]=sqrtf(fmaxf(0,saved_imu.gyro_variance_dps2[i]));
+    for(unsigned i=0;i<3;i++) {
+        const float variance=saved_imu.gyro_variance_dps2[i];
+        if(variance!=gyro_variance_cache[i]) {
+            gyro_variance_cache[i]=variance;
+            gyro_sigma_cache[i]=sqrtf(fmaxf(0,variance));
+        }
+        status->gyro_sigma_dps[i]=gyro_sigma_cache[i];
+    }
     for(unsigned f=0;f<6;f++) if(accel_faces[f].n>=200u) status->faces_done|=1u<<f;
     status->battery_warning=battery_warning_active; status->battery_disarm=battery_disarm_latched;
     status->flight_mode=selected_mode;status->user_disarm=user_disarm_latched;
@@ -1338,15 +1354,20 @@ unsigned fc_debug_trace(fc_trace_t *out,unsigned capacity){
     for(unsigned i=0;i<n;i++)out[i]=debug_trace[(start+i)%64];
     return n;
 }
+void fc_profile_snapshot(fc_profile_t *out){if(out)*out=execution_profile;}
 void fc_profile_record(uint32_t elapsed){
     if(!debug.level)return;
+    if(!execution_profile.samples || elapsed<execution_profile.minimum_us)execution_profile.minimum_us=elapsed;
+    if(elapsed>execution_profile.maximum_us)execution_profile.maximum_us=elapsed;
+    execution_profile.samples++;execution_profile.total_us+=elapsed;execution_profile.last_us=elapsed;
+    if(elapsed>2000 && execution_profile.over_budget<UINT32_MAX)execution_profile.over_budget++;
     if(elapsed>debug.max_execution_us)debug.max_execution_us=elapsed;
     debug.deadline_misses+=elapsed>2000;
     static const uint32_t bins[]={50,100,250,500,1000,1500,2000};
     unsigned i=0;while(i<7 && elapsed>bins[i])i++;debug.execution_bins[i]++;
 }
 void fc_control_step(const fc_sample_t *raw,uint64_t now,float dt,fc_status_t *status){
-    if(!raw || !status){if(debug.level)debug.invalid_calls++;if(status){*status=(fc_status_t){0};status->sensor_fault=true;}return;}
+    if(!raw || !status){reset_control_state();if(debug.level)debug.invalid_calls++;if(status){*status=(fc_status_t){0};status->sensor_fault=true;}return;}
     control_step_impl(raw,now,dt,status);
     bool numeric=false;
     for(unsigned i=0;i<4;i++)numeric|=!isfinite(status->motor_demand[i]);

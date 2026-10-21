@@ -2,11 +2,11 @@
 
 Generated from the validated append-only [ledger](project.json). Edit the ledger through a new revision, then regenerate this view. No transcript or private reasoning is stored.
 
-Ledger SHA-256: `308b17eb42e114375dc8903d9b2a38b1e4212cb992bafb6fae46fd8e695dfdd3`.
+Ledger SHA-256: `e8526292b8cbc604608722b21b1ad5377299d99aabdaa338a66d47b3b127a91f`.
 
-48 facts · 80 revisions · 85 sources.
+49 facts · 81 revisions · 86 sources.
 
-Status counts: assumed: 1, confirmed: 6, historical: 1, implemented: 19, measured: 15, pending: 6.
+Status counts: assumed: 1, confirmed: 6, historical: 1, implemented: 19, measured: 16, pending: 6.
 
 [Documentation map](../docs/README.md) · [Math](../docs/current-model-and-fc-integration.html) · [PCB](../hardware/home-etched-fc/README.md) · [Search and history commands](README.md)
 
@@ -175,6 +175,14 @@ New native cameras/video target 15fps and telemetry is retained at 500Hz; earlie
 Sources: [source-station-analysis](../artifacts/reports/station-analysis-20261021/summary.json), [source-station-recovery](../artifacts/maintenance/station-ux2-20261021/recovery-check.json).
 
 ## Firmware
+
+### fc_optimization
+
+**measured · evidence: emulated · esp32-xbox · revision 1**
+
+Behavior-preserving single-C optimizations skip zero-Kd derivatives, cache gyro sigmas and reuse trigonometry. Invalid direct API inputs fail closed/reset integrators. New integer timing statistics publish through the slow adapter. Paired 20000-step synthetic host replay records zero state/output delta; 28 stress checks, 63 ESP32-S3 QEMU checks and 3 hardware builds pass. Host medians both 1.3us: no demonstrated speedup or physical deadline claim. Current six PIDs and position-aided braking remain; requested multilinear removal scope is still unclear.
+
+Sources: [source-fc-optimization](../artifacts/validation/fc-optimization-20261021/README.md).
 
 ### standalone_companion
 

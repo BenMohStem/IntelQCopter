@@ -436,6 +436,11 @@
       "id": "source-ground-plane-print",
       "kind": "file",
       "locator": "artifacts/hardware/print-mask-20261021/ground-plane-print-verification.json"
+    },
+    {
+      "id": "source-fc-optimization",
+      "kind": "file",
+      "locator": "artifacts/validation/fc-optimization-20261021/README.md"
     }
   ],
   "facts": [
@@ -1708,6 +1713,24 @@
             "source-pcb-assembly"
           ],
           "reason": "User requested a large retained GND copper area and three masks without any text for iron toner transfer."
+        }
+      ]
+    },
+    {
+      "id": "fc_optimization",
+      "topic": "firmware",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-21",
+          "status": "measured",
+          "evidence_level": "emulated",
+          "statement": "Behavior-preserving single-C optimizations skip zero-Kd derivatives, cache gyro sigmas and reuse trigonometry. Invalid direct API inputs fail closed/reset integrators. New integer timing statistics publish through the slow adapter. Paired 20000-step synthetic host replay records zero state/output delta; 28 stress checks, 63 ESP32-S3 QEMU checks and 3 hardware builds pass. Host medians both 1.3us: no demonstrated speedup or physical deadline claim. Current six PIDs and position-aided braking remain; requested multilinear removal scope is still unclear.",
+          "sources": [
+            "source-fc-optimization"
+          ],
+          "reason": "User requested FC optimization, debugging and profiling; preserve current behavior until the unspecified controller removal is clarified."
         }
       ]
     }

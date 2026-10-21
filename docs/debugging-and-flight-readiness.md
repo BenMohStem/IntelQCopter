@@ -135,3 +135,8 @@ ROS2 fault injection launches the real compiled C++ mission process in an isolat
 Passing host, QEMU and Gazebo tests does **not** establish physical flight readiness. The project currently has no enabled ESC output path. Remaining measurements and validations include complete mass/inertia, thrust and torque curves, ESC protocol/range, motor order/spin, sensor mounting/axes, real noise/drift/vibration, current/voltage monitor and SOC calibration, and actual 500 Hz timing during BLE, I²C, UART and NVS load. Horizontal localization hardware is unspecified. General RGB obstacle ranging is not solved by the known-size panel detector used in these tests.
 
 Keep the original failed cases, review actual signal traces, and retune using measured parameters. Do not turn provisional simulator gains or the ideal-localization position error into a claim about real flight precision.
+
+
+## Current profiling and direct-call hardening
+
+The C API now exposes `fc_profile_snapshot` with 64-bit sample/total counters and minimum/maximum/last/over-budget timing. Hardware `PROFILE` serial lines compute the mean on the slow task. Timing covers the loop before status publication; missed notifications and scheduler lateness remain separate counters. [Optimization changes and original paired evidence](../artifacts/validation/fc-optimization-20261021/README.md) distinguish host replay, QEMU execution and physical measurements. There is no measured median host speedup in the present comparison.

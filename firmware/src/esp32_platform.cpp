@@ -29,6 +29,7 @@ static esp_timer_handle_t control_timer;
 static portMUX_TYPE state_lock=portMUX_INITIALIZER_UNLOCKED;
 static fc_status_t shared_status;
 static fc_debug_t shared_debug;
+static fc_profile_t shared_profile;
 static uint32_t hid_drops,uart_drops,imu_failures;
 static float shared_pressure;
 static uint32_t pressure_sequence,missed_ticks,max_execution_us,late_cycles;
@@ -97,7 +98,7 @@ static void control_task(void*) {
         // Deliberately no PWM/DShot writes, even when mathematical demands are nonzero.
         uint32_t elapsed=static_cast<uint32_t>(esp_timer_get_time()-start);
         portENTER_CRITICAL(&state_lock);
-        fc_profile_record(elapsed);fc_debug_snapshot(&shared_debug);
+        fc_profile_record(elapsed);fc_debug_snapshot(&shared_debug);fc_profile_snapshot(&shared_profile);
         shared_status=status;imu_failures+=!raw.imu_valid;
         if(ticks>1) missed_ticks+=ticks-1;
         if(dt>.0021f) late_cycles++;
@@ -168,9 +169,9 @@ static void slow_task(void*) {
         }
         if(now-last_log>=250) {
             last_log=now;
-            fc_status_t s;fc_debug_t d; uint32_t missed,execution,late,hd,im;
+            fc_status_t s;fc_debug_t d;fc_profile_t profile; uint32_t missed,execution,late,hd,im;
             portENTER_CRITICAL(&state_lock);
-            s=shared_status;d=shared_debug;hd=hid_drops;im=imu_failures; missed=missed_ticks; execution=max_execution_us; late=late_cycles;
+            s=shared_status;d=shared_debug;profile=shared_profile;hd=hid_drops;im=imu_failures; missed=missed_ticks; execution=max_execution_us; late=late_cycles;
             portEXIT_CRITICAL(&state_lock);
             digitalWrite(LED_PIN,s.battery_warning || s.battery_disarm);
             Serial.printf("FC,ms=%lu,pilot=%d,gyro=%d,accel=%d,baro=%d,fault=%d,roll=%.3f,pitch=%.3f,h=%.3f,vz=%.3f,faces=0x%02x,capture=%d,missed=%lu,late=%lu,max_exec_us=%lu,warn35=%d,disarm20=%d,nvs_pending=%d,nvs_failures=%u,motors=DISABLED\n",
@@ -183,6 +184,10 @@ static void slow_task(void*) {
                 d.level,d.gentle,(unsigned long)d.steps,(unsigned long)d.hid_rejected,(unsigned long)d.uart_rejected,
                 (unsigned long)hd,(unsigned long)uart_drops,(unsigned long)im,(unsigned long)d.deadline_misses,
                 d.collective_allocated,d.collective_ceiling,d.torque_scale,d.roll_nis,d.pitch_nis,d.height_nis,d.min_covariance,(unsigned long)d.numeric_faults);
+            Serial.printf("PROFILE,samples=%llu,total_us=%llu,min_us=%lu,mean_us=%.2f,max_us=%lu,last_us=%lu,over_2ms=%lu,scope=loop_before_status_publish,motors=DISABLED\n",
+                (unsigned long long)profile.samples,(unsigned long long)profile.total_us,
+                (unsigned long)profile.minimum_us,profile.samples?(double)profile.total_us/profile.samples:0.0,
+                (unsigned long)profile.maximum_us,(unsigned long)profile.last_us,(unsigned long)profile.over_budget);
             uint8_t telemetry[16];fc_status_frame(&s,telemetry);if(FC_ENABLE_COMPANION && Serial2.availableForWrite()>=16)Serial2.write(telemetry,sizeof(telemetry));
         }
         vTaskDelay(pdMS_TO_TICKS(2));

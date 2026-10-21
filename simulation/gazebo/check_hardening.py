@@ -8,9 +8,9 @@ from session_controls import shape_report
 class Trace(c.Structure):
  _fields_=[('now_us',c.c_uint64)]+[(n,c.c_float) for n in 'roll pitch height collective scale'.split()]+[('motor',c.c_float*4),('flags',c.c_uint32)]
 def main():
- p=argparse.ArgumentParser();p.add_argument('--name',required=True);a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--name',required=True);p.add_argument('--dll',type=Path);a=p.parse_args()
  out=ROOT/'artifacts/validation'/a.name;out.mkdir(parents=True,exist_ok=False)
- core=FlightCore(3200);lib=core.dll;checks=[];rng=random.Random(3200);raw=Sample();raw.imu_valid=raw.pressure_valid=True;raw.accel_g[2]=1;raw.pressure_pa=101325
+ core=FlightCore(3200,dll_path=a.dll);lib=core.dll;checks=[];rng=random.Random(3200);raw=Sample();raw.imu_valid=raw.pressure_valid=True;raw.accel_g[2]=1;raw.pressure_pa=101325
  lib.fc_debug_snapshot.argtypes=[c.POINTER(Debug)];lib.fc_debug_trace.argtypes=[c.POINTER(Trace),c.c_uint];lib.fc_debug_trace.restype=c.c_uint
  lib.fc_profile_record.argtypes=[c.c_uint32]
  def debug():

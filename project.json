@@ -302,6 +302,12 @@
       "path": "tools/knowledge/render_overview.py",
       "args": [],
       "description": "Render latest validated facts while preserving the append-only ledger history"
+    },
+    "check-fc-optimization": {
+      "runtime": "python",
+      "path": "tools/validation/check_fc_optimization.py",
+      "args": [],
+      "description": "Compare isolated baseline/optimized C DLL replay and profile accounting; --before DLL --after DLL --name UNIQUE"
     }
   }
 }

@@ -16,8 +16,8 @@ class Debug(c.Structure):
  _fields_=[(n,c.c_uint32) for n in 'steps hid_rejected uart_rejected invalid_calls sensor_faults stale_pilot stale_companion saturation_cycles torque_scaled_cycles numeric_faults deadline_misses max_execution_us'.split()]+[('execution_bins',c.c_uint32*8)]+[(n,c.c_float) for n in 'max_dt_s collective_requested collective_allocated collective_ceiling torque_scale motor_min motor_max roll_nis pitch_nis height_nis min_covariance'.split()]+[('trace_written',c.c_uint32),('level',c.c_uint8),('gentle',c.c_uint8)]
 
 class FlightCore:
-    def __init__(self,seed,companion=True,settings=None):
-        self.dll=c.CDLL(str(ROOT/'build/sitl/esp32_flight_core.dll'))
+    def __init__(self,seed,companion=True,settings=None,dll_path=None):
+        self.dll=c.CDLL(str(dll_path or ROOT/'build/sitl/esp32_flight_core.dll'))
         self.dll.fc_init.argtypes=[c.c_uint64]
         self.dll.fc_control_step.argtypes=[c.POINTER(Sample),c.c_uint64,c.c_float,c.POINTER(Status)]
         for name in ('fc_xbox_report','fc_companion_report'):
