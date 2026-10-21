@@ -27,6 +27,7 @@ def main():
   def do_GET(self):
    path=unquote(urlparse(self.path).path)
    if path=='/':self.reply(Path(__file__).with_name('station_manager.html').read_bytes(),kind='text/html; charset=utf-8');return
+   if path=='/debug-guide':self.reply((ROOT/'docs/debugging-and-flight-readiness.html').read_bytes(),kind='text/html; charset=utf-8');return
    if path=='/launching':self.reply(Path(__file__).with_name('launching.html').read_bytes(),kind='text/html; charset=utf-8');return
    if path=='/recording-status':
     run=parse_qs(urlparse(self.path).query).get('run',[''])[0]
@@ -70,7 +71,11 @@ def main():
        self.wfile.write(b);remaining-=len(b)
     except (BrokenPipeError,ConnectionResetError):pass
     return
-   if path in ('/manual-proof/','/manual-proof/summary.json','/manual-proof/control-graphs.png'):
+   if path in ('/hardening-proof/','/hardening-proof/summary.json','/hardening-proof/profiling.png'):
+    file='index.html' if path=='/hardening-proof/' else path.rsplit('/',1)[1];body=(ROOT/'artifacts/reports/hardening-20261021'/file).read_bytes()
+    if file=='index.html':body=body.replace(b'../../gazebo-suite/',b'/recordings/')
+    self.reply(body,kind=mimetypes.guess_type(file)[0] or 'application/octet-stream');return
+   if path in ('/manual-proof/' ,'/manual-proof/summary.json','/manual-proof/control-graphs.png'):
     file='index.html' if path=='/manual-proof/' else path.rsplit('/',1)[1];body=(ROOT/'artifacts/reports/manual-control-20261021'/file).read_bytes()
     if file=='index.html':body=body.replace(b'../../gazebo-suite/',b'/recordings/')
     self.reply(body,kind=mimetypes.guess_type(file)[0] or 'application/octet-stream');return

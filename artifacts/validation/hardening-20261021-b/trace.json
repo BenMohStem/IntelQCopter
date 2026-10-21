@@ -1,0 +1,962 @@
+[
+  {
+    "time_us": 89440000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 89460000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 89480000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 89500000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 89520000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 89540000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 89560000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 89580000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 89600000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 89620000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 89640000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 89660000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 89680000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 89700000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 89720000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 89740000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 89760000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 89780000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 89800000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 89820000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 89840000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 89860000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 89880000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 89900000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 89920000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 89940000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 89960000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 89980000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90000000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90020000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90040000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90060000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90080000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90100000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90120000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90140000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90160000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90180000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90200000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90220000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90240000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90260000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90280000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90300000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90320000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90340000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90360000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90380000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90400000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90420000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90440000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90460000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90480000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90500000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90520000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90540000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90560000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90580000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90600000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90620000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90640000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90660000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90680000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  },
+  {
+    "time_us": 90700000,
+    "roll": 0.0,
+    "pitch": 0.0,
+    "height": 0.0,
+    "collective": 0.5,
+    "scale": 1.0,
+    "motor": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "flags": 2
+  }
+]

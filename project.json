@@ -267,6 +267,34 @@
       "path": "tools/reports/manual_control_report.py",
       "args": [],
       "description": "Render original sustained-angle, release-braking and yaw evidence with preserved failures"
+    },
+    "check-hardening": {
+      "runtime": "python",
+      "path": "simulation/gazebo/check_hardening.py",
+      "args": [],
+      "description": "Seeded malformed-packet fuzz, saturation, Gentle equivalence, finite soak and diagnostics; --name UNIQUE"
+    },
+    "build-debug": {
+      "runtime": "pio",
+      "path": "platformio.ini",
+      "args": [
+        "run",
+        "-e",
+        "esp32-s3-debug"
+      ],
+      "description": "ESP32 hardware compile with level-3 bounded trace; physical outputs disabled"
+    },
+    "check-ros-faults": {
+      "runtime": "cmd",
+      "path": "tools/validation/check_ros_faults_windows.cmd",
+      "args": [],
+      "description": "Actual C++ ROS2 process invalid/stale input and authority fault injection; --name UNIQUE"
+    },
+    "hardening-report": {
+      "runtime": "python",
+      "args": [],
+      "path": "tools/reports/hardening_report.py",
+      "description": "Rebuild the original final C/QEMU/ROS2/Gazebo hardening graphs and authority report"
     }
   }
 }

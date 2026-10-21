@@ -13,8 +13,7 @@ def shape_report(raw,profile):
         z=min(1,max(0,(abs(q)-.12)/.88))**2*gain
         shaped=0 if z==0 else (.12+.88*z)*(1 if q>=0 else -1)
         values[i]=max(0,min(65535,round(32768+32768*shaped)))
-    if not 4<=values[6]<=6:values[4]=round(values[4]*.2)
-    values[5]=round(values[5]*.2)
+    # Full trigger travel in both profiles: C limits collective and reserves PID headroom.
     return struct.pack('<6H4B',*values)
 
 class SessionControls:

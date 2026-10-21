@@ -12,6 +12,9 @@ class Status(c.Structure):
        ('sensor_fault',c.c_bool),('pilot_fresh',c.c_bool),('gyro_verified',c.c_bool),('accel_calibrated',c.c_bool),('barometer_ready',c.c_bool),('battery_warning',c.c_bool),('battery_disarm',c.c_bool),
        ('faces_done',c.c_uint8),('capturing_face',c.c_int8),('flight_mode',c.c_uint8),('user_disarm',c.c_bool),('companion_fresh',c.c_bool),('xbox_reports',c.c_uint32),('mode_events',c.c_uint32)]
 
+class Debug(c.Structure):
+ _fields_=[(n,c.c_uint32) for n in 'steps hid_rejected uart_rejected invalid_calls sensor_faults stale_pilot stale_companion saturation_cycles torque_scaled_cycles numeric_faults deadline_misses max_execution_us'.split()]+[('execution_bins',c.c_uint32*8)]+[(n,c.c_float) for n in 'max_dt_s collective_requested collective_allocated collective_ceiling torque_scale motor_min motor_max roll_nis pitch_nis height_nis min_covariance'.split()]+[('trace_written',c.c_uint32),('level',c.c_uint8),('gentle',c.c_uint8)]
+
 class FlightCore:
     def __init__(self,seed,companion=True,settings=None):
         self.dll=c.CDLL(str(ROOT/'build/sitl/esp32_flight_core.dll'))
@@ -43,12 +46,17 @@ class FlightCore:
         assert self.status.gyro_verified and self.status.accel_calibrated and self.status.barometer_ready
         self.dll.fc_configure_companion.argtypes=[c.c_bool]
         self.dll.fc_configure_companion(companion)
+        self.dll.fc_configure_gentle.argtypes=[c.c_bool];self.dll.fc_configure_gentle.restype=c.c_bool
+        assert self.dll.fc_configure_gentle(False) # UI shapes raw HID once; test pilots use explicitly full-scale decoded inputs.
+        self.dll.fc_debug_configure.argtypes=[c.c_uint];self.dll.fc_debug_configure.restype=c.c_bool
+        assert self.dll.fc_debug_configure(3)
         if settings:
             from experiment_settings import defaults,fc_values
             if settings['fc']!=defaults()['fc']:
                 values=fc_values(settings['fc']);buf=(c.c_float*len(values))(*values)
                 self.dll.fc_sim_configure.argtypes=[c.POINTER(c.c_float),c.c_uint];self.dll.fc_sim_configure.restype=c.c_bool
                 if not self.dll.fc_sim_configure(buf,len(values)):raise ValueError('C core rejected boot-only tuning')
+        self.dll.fc_debug_snapshot.argtypes=[c.POINTER(Debug)]
         self.dll.fc_sim_observe.argtypes=[c.POINTER(c.c_float),c.c_uint];self.dll.fc_sim_observe.restype=c.c_uint
         self.tick=0;self.time_offset_us=20_000_000
         print('Synthetic sensor bench calibration complete; not physical calibration.',flush=True)
@@ -80,6 +88,8 @@ class FlightCore:
     def observe(self):
         keys=['roll_est','pitch_est','height_est','vz_est','roll_sigma','pitch_sigma','height_sigma','vz_sigma','roll_K','pitch_K','height_K','velocity_K','roll_innovation','pitch_innovation','height_innovation','height_S','roll_bias','pitch_bias','roll_command','pitch_command','yaw_rate_command','vz_command','fc_calls','xy_hold_active','xy_aiding_fresh','xy_target_x','xy_target_y','xy_x','xy_y','xy_vx','xy_vy','xy_acceleration_norm','angle_gravity_correction']
         out=(c.c_float*33)();assert self.dll.fc_sim_observe(out,33)==33
-        return dict(zip(keys,map(float,out)))
+        result=dict(zip(keys,map(float,out)));d=Debug();self.dll.fc_debug_snapshot(c.byref(d))
+        result.update({'debug_'+name:float(getattr(d,name)) for name,_ in Debug._fields_ if name!='execution_bins'})
+        return result
     def frame(self):
         out=(c.c_uint8*16)();self.dll.fc_status_frame(c.byref(self.status),out);return bytes(out)

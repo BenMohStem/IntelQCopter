@@ -1,0 +1,132 @@
+{
+  "open_space": true,
+  "long_angle": true,
+  "native_obstacle_contacts": 0,
+  "passed": true,
+  "expected_negative_control": false,
+  "checks": {
+    "pitch_angle_tracks_5deg": true,
+    "pitch_brakes_and_holds": true,
+    "roll_angle_tracks_5deg": true,
+    "roll_brakes_and_holds": true,
+    "yaw-left_correct_sign": true,
+    "yaw-right_correct_sign": true,
+    "C_only_no_ROS2_or_companion": true,
+    "final_disarm": true,
+    "all_hold_sensor_labels_explicit": true,
+    "zero_native_obstacle_contacts": true
+  },
+  "metrics": {
+    "pitch": {
+      "release_speed_mps": 2.6724306713631325,
+      "final_speed_mps": 0.018316367597325817,
+      "release_point_error_m": 0.030804997566866145,
+      "final_angle_deg": 0.023536973815598515,
+      "held_angle_mean_deg": 5.0587486265895825,
+      "max_braking_angle_deg": 6.892214871026452
+    },
+    "roll": {
+      "release_speed_mps": 2.670839729805855,
+      "final_speed_mps": 0.017938375594635268,
+      "release_point_error_m": 0.03113025219509644,
+      "final_angle_deg": 0.022231571242909576,
+      "held_angle_mean_deg": 5.066095561976699,
+      "max_braking_angle_deg": 6.882692822659182
+    },
+    "yaw-left": {
+      "delta_deg": 42.66807176280885
+    },
+    "yaw-right": {
+      "delta_deg": -42.782859268691304
+    }
+  },
+  "engine": "Native Gazebo 10.5 / OGRE2 and actual C host DLL",
+  "localization": "Perfect Gazebo x/y/vx/vy/yaw observation to C FC; synthetic external localization",
+  "policy": "Fixed predetermined HID sequence, no feedback pilot and no ROS2. Only C FC computes braking commands from synthetic localization.",
+  "source_sha256": "3bd97dfdb01fdbe07c6f81a29935f7540712a54d57815a93b2b3ab6a041fa4d0",
+  "phases": [
+    [
+      "select-stable",
+      5.4,
+      {
+        "down": true,
+        "a": true
+      }
+    ],
+    [
+      "takeoff",
+      3,
+      {
+        "vertical": 0.25
+      }
+    ],
+    [
+      "hover",
+      2,
+      {}
+    ],
+    [
+      "pitch-angle",
+      4.0,
+      {
+        "pitch": 0.14285714285714285
+      }
+    ],
+    [
+      "pitch-release-brake-hold",
+      14.0,
+      {}
+    ],
+    [
+      "roll-angle",
+      4.0,
+      {
+        "roll": 0.14285714285714285
+      }
+    ],
+    [
+      "roll-release-brake-hold",
+      14.0,
+      {}
+    ],
+    [
+      "yaw-left",
+      1,
+      {
+        "yaw": -0.25
+      }
+    ],
+    [
+      "yaw-left-release",
+      2,
+      {}
+    ],
+    [
+      "yaw-right",
+      1,
+      {
+        "yaw": 0.25
+      }
+    ],
+    [
+      "yaw-right-release",
+      2,
+      {}
+    ],
+    [
+      "descend",
+      4,
+      {
+        "vertical": -0.25
+      }
+    ],
+    [
+      "disarm",
+      2.4,
+      {
+        "down": true,
+        "lt": 1
+      }
+    ]
+  ]
+}

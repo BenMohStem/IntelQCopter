@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "C:\Users\Mohamed\Desktop\Work\QCopter-ESP32-Xbox\tools\reports\hardening_report.py", line 57, in <module>
+    if __name__=='__main__':main()
+  File "C:\Users\Mohamed\Desktop\Work\QCopter-ESP32-Xbox\tools\reports\hardening_report.py", line 12, in main
+    host=read('artifacts/validation/hardening-final-20261021/summary.json');ros=read('artifacts/validation/hardening-ros-final-20261021/summary.json');emu=read('artifacts/emulation/hardening-final-20261021/summary.json')
+  File "C:\Users\Mohamed\Desktop\Work\QCopter-ESP32-Xbox\tools\reports\hardening_report.py", line 9, in read
+    def read(p):return json.loads((R/p).read_text(encoding='utf8-sig'))
+  File "C:\Users\Mohamed\AppData\Local\Programs\Python\Python310\lib\pathlib.py", line 1134, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+  File "C:\Users\Mohamed\AppData\Local\Programs\Python\Python310\lib\pathlib.py", line 1119, in open
+    return self._accessor.open(self, mode, buffering, encoding, errors,
+LookupError: unknown encoding: utf8-sig

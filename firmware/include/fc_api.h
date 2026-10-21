@@ -14,6 +14,23 @@ extern "C" {
 #define FC_ENABLE_COMPANION 1
 #endif
 FC_API void fc_configure_companion(bool enabled); /* Boot/control task only. Compile-time disabled builds cannot enable it. */
+/* Fixed-size diagnostics, control-task owned. No allocation or printing in C loop.
+ * level 0=off, 1=counters, 2=estimator/allocation statistics, 3=50Hz trace. */
+typedef struct {
+ uint32_t steps,hid_rejected,uart_rejected,invalid_calls,sensor_faults,stale_pilot,stale_companion;
+ uint32_t saturation_cycles,torque_scaled_cycles,numeric_faults,deadline_misses,max_execution_us;
+ uint32_t execution_bins[8];
+ float max_dt_s,collective_requested,collective_allocated,collective_ceiling,torque_scale;
+ float motor_min,motor_max,roll_nis,pitch_nis,height_nis,min_covariance;
+ uint32_t trace_written;
+ uint8_t level,gentle;
+} fc_debug_t;
+typedef struct {uint64_t now_us;float roll,pitch,height,collective,scale,motor[4];uint32_t flags;} fc_trace_t;
+FC_API bool fc_debug_configure(unsigned level); /* Boot only, before first HID. */
+FC_API bool fc_configure_gentle(bool gentle); /* Boot only; simulator shapes HID once externally. */
+FC_API void fc_debug_snapshot(fc_debug_t*);
+FC_API unsigned fc_debug_trace(fc_trace_t*,unsigned capacity); /* Oldest -> newest. */
+FC_API void fc_profile_record(uint32_t elapsed_us); /* Adapter measurement, 2ms deadline. */
 #define FC_CAL_RECORD_BYTES 160u
 #define FC_CAL_PROFILE 0x00080001u /* ±8g, ±500dps, 42Hz DLPF, 500Hz; bump after mount/config changes. */
 /* After boot setup, only the control task calls this API. Cross-task requests use queues. */

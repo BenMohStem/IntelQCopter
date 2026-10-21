@@ -737,6 +737,12 @@ static bool accel_angle_correction_enabled=true;
 static float altitude_hold_reference_m;
 static float hover_collective = FC_HOVER_THROTTLE_PLACEHOLDER;
 static float boost_state;
+static fc_debug_t debug={.level=2,.gentle=1};
+static fc_trace_t debug_trace[64];
+static uint32_t debug_trace_next,debug_trace_count;
+static uint64_t debug_trace_us;
+static bool gentle_profile=true;
+static const float normal_ceiling=.65f,boost_ceiling=.80f; /* 1650/1800 us equivalent; NOT pulse outputs. */
 static bool altitude_reference_initialized;
 static bool user_disarm_latched;
 
@@ -964,11 +970,19 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
     sim_commands[0]=roll_setpoint;sim_commands[1]=pitch_setpoint;
     sim_commands[2]=yaw_rate_setpoint;sim_commands[3]=pilot_vertical_speed;
 #endif
+    const float altitude_integrator_before=altitude_pid.integrator;
     const float collective_correction=altitude_pid_update(altitude_hold_reference_m,
         altitude_estimator.height_m,pilot_vertical_speed,altitude_estimator.velocity_mps,dt);
     const float tilt_factor=fmaxf(0.5f,cosf(roll_estimator.angle_deg*FC_DEG_TO_RAD)
                                      *cosf(pitch_estimator.angle_deg*FC_DEG_TO_RAD));
-    const float collective=clampf((hover_collective+collective_correction)/tilt_factor,0.0f,.65f+.15f*boost);
+    const float ceiling=normal_ceiling+(boost_ceiling-normal_ceiling)*boost;
+    const float requested=(hover_collective+collective_correction)/tilt_factor;
+    const float collective=clampf(requested,0.0f,ceiling);
+    /* Allocation-aware altitude antiwindup: undo integration when the actual
+     * collective ceiling opposes altitude error. Allow unwinding. */
+    if((requested>ceiling && altitude_hold_reference_m>altitude_estimator.height_m)
+       ||(requested<0 && altitude_hold_reference_m<altitude_estimator.height_m))
+        altitude_pid.integrator=altitude_integrator_before;
 
     /* Provisional X-frame math in logical order FL, FR, RR, RL. The result is
        for simulation only until motor order, spin directions, and frame axes
@@ -978,8 +992,15 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
     for(unsigned i=1;i<4;i++){low=fminf(low,correction[i]);high=fmaxf(high,correction[i]);}
     // Uniformly scale only infeasible torque combinations, then shift collective
     // into the feasible interval. Independent clipping would distort torques.
-    const float scale=high-low>1 ? 1/(high-low) : 1;
-    const float allocated=clampf(collective,-low*scale,1-high*scale);
+    float scale=high-low>1 ? 1/(high-low) : 1;
+    if(low<0)scale=fminf(scale,ceiling/(-low));
+    const float allocated=clampf(collective,-low*scale,fminf(ceiling,1-high*scale));
+    if(debug.level){
+        debug.saturation_cycles+=requested<0 || requested>ceiling || fabsf(allocated-collective)>1e-6f;
+        debug.torque_scaled_cycles+=scale<.99999f;
+        if(debug.level>=2){debug.collective_requested=requested;debug.collective_allocated=allocated;
+            debug.collective_ceiling=ceiling;debug.torque_scale=scale;}
+    }
     for(unsigned i=0;i<4;i++)out.motor[i]=clampf(allocated+scale*correction[i],0,1);
 
     /* There is deliberately no hardware arming/output path in this scaffold. */
@@ -1053,6 +1074,8 @@ bool fc_horizontal_observation(const float v[5],uint64_t acquired_us) {
 }
 void fc_init(uint64_t board_id) {
     memset(&horizontal,0,sizeof(horizontal));accel_angle_correction_enabled=true;
+    debug=(fc_debug_t){.level=2,.gentle=1};gentle_profile=true;
+    debug_trace_next=debug_trace_count=0;debug_trace_us=0;
     calibration_board_id=board_id;
 #ifdef FC_BUILD_DLL
     sim_control_calls=0;memset(sim_commands,0,sizeof(sim_commands));
@@ -1244,12 +1267,19 @@ static float xbox_axis(uint16_t value) {
     return copysignf(fminf(1,(fabsf(v)-.12f)/.88f),v);
 }
 bool fc_xbox_report(const uint8_t *p,unsigned length,uint64_t now) {
-    if(!p || length!=16u || qcopter_get_u16(p+8)>1023 || qcopter_get_u16(p+10)>1023 || p[12]>8)return false;
+    if(!p || length!=16u || qcopter_get_u16(p+8)>1023 || qcopter_get_u16(p+10)>1023 || p[12]>8
+       ||(received_reports && now<previous_report_us)){if(debug.level)debug.hid_rejected++;return false;}
     bool continuous=received_reports && now>=previous_report_us && now-previous_report_us<=100000u;
     fc_pilot_t next={.roll=xbox_axis(qcopter_get_u16(p+4)),.pitch=-xbox_axis(qcopter_get_u16(p+6)),
         .yaw=-xbox_axis(qcopter_get_u16(p)),.vertical=-xbox_axis(qcopter_get_u16(p+2)),
         .boost=qcopter_get_u16(p+10)/1023.0f,.reduce=qcopter_get_u16(p+8)/1023.0f,
         .received_us=now,.connected=true};
+    if(gentle_profile){
+        next.roll=copysignf(next.roll*next.roll*(5.f/35),next.roll);
+        next.pitch=copysignf(next.pitch*next.pitch*(5.f/35),next.pitch);
+        next.yaw=copysignf(next.yaw*next.yaw*.25f,next.yaw);
+        next.vertical=copysignf(next.vertical*next.vertical*.25f,next.vertical);
+    }
     bool down=p[12]>=4 && p[12]<=6;
     uint8_t gesture=down && next.reduce>=.9f ? 3 : down && (p[13]&3u)==1 ? 1 : down && (p[13]&3u)==2 ? 2 : 0;
     if(gesture==2 && !companion_enabled)gesture=0;
@@ -1267,8 +1297,8 @@ void fc_configure_companion(bool enabled) {
     companion_enabled=enabled && FC_ENABLE_COMPANION;
     if(!companion_enabled){selected_mode=0;have_companion=false;reset_control_state();}
 }
-bool fc_companion_report(const uint8_t *p,unsigned length,uint64_t now) {
-    if(!companion_enabled)return false;
+static bool companion_parse(const uint8_t *p,unsigned length,uint64_t now) {
+    if(!companion_enabled || (have_companion && now<companion_received_us))return false;
     if(!p || length!=FC_COMPANION_FRAME_BYTES || p[0]!='Q' || p[1]!='N' || p[2]!=1 || (p[3]!=1 && p[3]!=3)
         || record_u32(p+24)!=record_crc(p,24))return false;
     uint32_t seq=record_u32(p+4);
@@ -1281,18 +1311,68 @@ bool fc_companion_report(const uint8_t *p,unsigned length,uint64_t now) {
     if((p[3]&2u) && selected_mode==1){user_disarm_latched=true;reset_control_state();}
     return true;
 }
-void fc_control_step(const fc_sample_t *raw,uint64_t now,float dt,fc_status_t *status) {
+bool fc_companion_report(const uint8_t *p,unsigned length,uint64_t now) {
+    const bool ok=companion_parse(p,length,now);if(!ok && debug.level)debug.uart_rejected++;return ok;
+}
+static void control_step_impl(const fc_sample_t *raw,uint64_t now,float dt,fc_status_t *status) {
 #ifdef FC_BUILD_DLL
     sim_control_calls++;
 #endif
     fc_pilot_t pilot=received_pilot;
     bool fresh=have_companion && now>=companion_received_us && now-companion_received_us<=150000u;
     if(selected_mode==1) {
+        pilot.boost=pilot.reduce=0; /* Navigation owns vertical speed; triggers cannot silently modify it. */
         pilot.roll=fresh?companion_values[0]/35:0;pilot.pitch=fresh?companion_values[1]/35:0;
         pilot.yaw=fresh?companion_values[2]/180:0;pilot.vertical=fresh?companion_values[3]/2:0;
     }
     fc_step(raw,&pilot,now,dt,status);
     if(status)status->companion_fresh=fresh;
+}
+bool fc_debug_configure(unsigned level){if(level>3 || received_reports)return false;debug.level=(uint8_t)level;return true;}
+bool fc_configure_gentle(bool gentle){if(received_reports)return false;gentle_profile=gentle;debug.gentle=gentle;return true;}
+void fc_debug_snapshot(fc_debug_t *out){if(out)*out=debug;}
+unsigned fc_debug_trace(fc_trace_t *out,unsigned capacity){
+    if(!out)return 0;
+    const unsigned n=capacity<debug_trace_count?capacity:debug_trace_count;
+    const unsigned start=(debug_trace_next+64-debug_trace_count)%64;
+    for(unsigned i=0;i<n;i++)out[i]=debug_trace[(start+i)%64];
+    return n;
+}
+void fc_profile_record(uint32_t elapsed){
+    if(!debug.level)return;
+    if(elapsed>debug.max_execution_us)debug.max_execution_us=elapsed;
+    debug.deadline_misses+=elapsed>2000;
+    static const uint32_t bins[]={50,100,250,500,1000,1500,2000};
+    unsigned i=0;while(i<7 && elapsed>bins[i])i++;debug.execution_bins[i]++;
+}
+void fc_control_step(const fc_sample_t *raw,uint64_t now,float dt,fc_status_t *status){
+    if(!raw || !status){if(debug.level)debug.invalid_calls++;if(status){*status=(fc_status_t){0};status->sensor_fault=true;}return;}
+    control_step_impl(raw,now,dt,status);
+    bool numeric=false;
+    for(unsigned i=0;i<4;i++)numeric|=!isfinite(status->motor_demand[i]);
+    numeric|=!isfinite(status->roll_deg)||!isfinite(status->pitch_deg)||!isfinite(status->height_m)||!isfinite(status->vertical_mps);
+    if(numeric){memset(status->motor_demand,0,sizeof(status->motor_demand));status->sensor_fault=true;reset_control_state();}
+    if(!debug.level)return;
+    debug.steps++;debug.numeric_faults+=numeric;debug.sensor_faults+=status->sensor_fault;
+    debug.stale_pilot+=!status->pilot_fresh;debug.stale_companion+=selected_mode==1&&!status->companion_fresh;
+    if(isfinite(dt)&&dt>debug.max_dt_s)debug.max_dt_s=dt;
+    if(debug.level>=2){
+        debug.motor_min=debug.motor_max=status->motor_demand[0];
+        for(unsigned i=1;i<4;i++){debug.motor_min=fminf(debug.motor_min,status->motor_demand[i]);debug.motor_max=fmaxf(debug.motor_max,status->motor_demand[i]);}
+        debug.roll_nis=roll_estimator.innovation*roll_estimator.innovation/fmaxf(roll_estimator.innovation_variance,1e-9f);
+        debug.pitch_nis=pitch_estimator.innovation*pitch_estimator.innovation/fmaxf(pitch_estimator.innovation_variance,1e-9f);
+        debug.height_nis=altitude_estimator.innovation*altitude_estimator.innovation/fmaxf(altitude_estimator.innovation_variance,1e-9f);
+        debug.min_covariance=fminf(fminf(roll_estimator.p00,roll_estimator.p11),fminf(fminf(pitch_estimator.p00,pitch_estimator.p11),fminf(altitude_estimator.p00,altitude_estimator.p11)));
+    }
+    if(debug.level>=3 && (now<debug_trace_us || now-debug_trace_us>=20000)){
+        debug_trace_us=now;fc_trace_t *t=&debug_trace[debug_trace_next];
+        *t=(fc_trace_t){.now_us=now,.roll=status->roll_deg,.pitch=status->pitch_deg,.height=status->height_m,
+            .collective=debug.collective_allocated,.scale=debug.torque_scale,
+            .flags=(status->sensor_fault?1u:0)|(status->pilot_fresh?2u:0)|(status->companion_fresh?4u:0)|(numeric?8u:0)};
+        memcpy(t->motor,status->motor_demand,sizeof(t->motor));debug_trace_next=(debug_trace_next+1)%64;
+        if(debug_trace_count<64)debug_trace_count++;
+        debug.trace_written++;
+    }
 }
 void fc_status_frame(const fc_status_t *s,uint8_t p[16]) {
     if(!s || !p)return;

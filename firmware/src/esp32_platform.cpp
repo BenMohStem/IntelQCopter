@@ -28,6 +28,8 @@ static QueueHandle_t command_queue,calibration_queue;
 static esp_timer_handle_t control_timer;
 static portMUX_TYPE state_lock=portMUX_INITIALIZER_UNLOCKED;
 static fc_status_t shared_status;
+static fc_debug_t shared_debug;
+static uint32_t hid_drops,uart_drops,imu_failures;
 static float shared_pressure;
 static uint32_t pressure_sequence,missed_ticks,max_execution_us,late_cycles;
 static int64_t pressure_received_us;
@@ -40,7 +42,7 @@ static void xbox_report(uint8_t *bytes,size_t length) {
     if(length!=16 || !hid_queue) return;
     HidPacket packet={};memcpy(packet.data,bytes,16);packet.received_us=esp_timer_get_time();
     // The control task owns all gesture timing and authority state.
-    (void)xQueueSend(hid_queue,&packet,0);
+    if(xQueueSend(hid_queue,&packet,0)!=pdTRUE){portENTER_CRITICAL(&state_lock);hid_drops++;portEXIT_CRITICAL(&state_lock);}
 }
 static bool read_registers(uint8_t reg,uint8_t *data,size_t count) {
     Wire.beginTransmission(imu_address); Wire.write(reg);
@@ -84,18 +86,19 @@ static void control_task(void*) {
         portEXIT_CRITICAL(&state_lock);
         raw.imu_valid=acquire_imu(raw);
         char command;
-        while(xQueueReceive(command_queue,&command,0)==pdTRUE) fc_cal_command(command);
+        for(unsigned budget=0;budget<8 && xQueueReceive(command_queue,&command,0)==pdTRUE;budget++) fc_cal_command(command);
         HidPacket report;
-        while(xQueueReceive(hid_queue,&report,0)==pdTRUE) fc_xbox_report(report.data,16,report.received_us);
+        for(unsigned budget=0;budget<8 && xQueueReceive(hid_queue,&report,0)==pdTRUE;budget++) fc_xbox_report(report.data,16,report.received_us);
         CompanionPacket companion;
-        while(xQueueReceive(companion_queue,&companion,0)==pdTRUE) fc_companion_report(companion.data,sizeof(companion.data),companion.received_us);
+        for(unsigned budget=0;budget<8 && xQueueReceive(companion_queue,&companion,0)==pdTRUE;budget++) fc_companion_report(companion.data,sizeof(companion.data),companion.received_us);
         fc_control_step(&raw,static_cast<uint64_t>(start),dt,&status);
         uint8_t record[FC_CAL_RECORD_BYTES];
         if(fc_cal_take_pending(record)) xQueueOverwrite(calibration_queue,record);
         // Deliberately no PWM/DShot writes, even when mathematical demands are nonzero.
         uint32_t elapsed=static_cast<uint32_t>(esp_timer_get_time()-start);
         portENTER_CRITICAL(&state_lock);
-        shared_status=status;
+        fc_profile_record(elapsed);fc_debug_snapshot(&shared_debug);
+        shared_status=status;imu_failures+=!raw.imu_valid;
         if(ticks>1) missed_ticks+=ticks-1;
         if(dt>.0021f) late_cycles++;
         if(elapsed>max_execution_us) max_execution_us=elapsed;
@@ -115,14 +118,15 @@ static void slow_task(void*) {
         // blocking library calls must not postpone pressure or UART servicing.
         // No synthetic freshness refresh on connection polling: only actual HID reports count.
         static uint8_t uart_frame[FC_COMPANION_FRAME_BYTES];static unsigned uart_used=0;
-        while(FC_ENABLE_COMPANION && Serial2.available()) {
+        for(unsigned budget=0;budget<112 && FC_ENABLE_COMPANION && Serial2.available();budget++) {
             uint8_t byte=static_cast<uint8_t>(Serial2.read());
             if(uart_used==0 && byte!='Q')continue;
             if(uart_used==1 && byte!='N'){uart_used=byte=='Q'?1:0;continue;}
             uart_frame[uart_used++]=byte;
             if(uart_used==sizeof(uart_frame)){
                 CompanionPacket packet={};memcpy(packet.data,uart_frame,sizeof(uart_frame));packet.received_us=esp_timer_get_time();
-                (void)xQueueSend(companion_queue,&packet,0);uart_used=0;
+                if(xQueueSend(companion_queue,&packet,0)!=pdTRUE)uart_drops++;
+                uart_used=0;
             }
         }
         uint32_t now=millis();
@@ -164,9 +168,9 @@ static void slow_task(void*) {
         }
         if(now-last_log>=250) {
             last_log=now;
-            fc_status_t s; uint32_t missed,execution,late;
+            fc_status_t s;fc_debug_t d; uint32_t missed,execution,late,hd,im;
             portENTER_CRITICAL(&state_lock);
-            s=shared_status; missed=missed_ticks; execution=max_execution_us; late=late_cycles;
+            s=shared_status;d=shared_debug;hd=hid_drops;im=imu_failures; missed=missed_ticks; execution=max_execution_us; late=late_cycles;
             portEXIT_CRITICAL(&state_lock);
             digitalWrite(LED_PIN,s.battery_warning || s.battery_disarm);
             Serial.printf("FC,ms=%lu,pilot=%d,gyro=%d,accel=%d,baro=%d,fault=%d,roll=%.3f,pitch=%.3f,h=%.3f,vz=%.3f,faces=0x%02x,capture=%d,missed=%lu,late=%lu,max_exec_us=%lu,warn35=%d,disarm20=%d,nvs_pending=%d,nvs_failures=%u,motors=DISABLED\n",
@@ -175,7 +179,11 @@ static void slow_task(void*) {
                 static_cast<unsigned long>(missed),static_cast<unsigned long>(late),static_cast<unsigned long>(execution),
                 s.battery_warning,s.battery_disarm,save_pending,failures);
             Serial.printf("MODE,selected=%u,user_disarm=%d,companion=%d,reports=%lu,events=%lu\n",s.flight_mode,s.user_disarm,s.companion_fresh,(unsigned long)s.xbox_reports,(unsigned long)s.mode_events);
-            uint8_t telemetry[16];fc_status_frame(&s,telemetry);if(FC_ENABLE_COMPANION)Serial2.write(telemetry,sizeof(telemetry));
+            Serial.printf("DEBUG,level=%u,gentle=%u,steps=%lu,hid_reject=%lu,uart_reject=%lu,hid_drop=%lu,uart_drop=%lu,imu_fail=%lu,deadline_miss=%lu,collective=%.4f,ceiling=%.4f,torque_scale=%.4f,nis=%.3f/%.3f/%.3f,cov_min=%.6g,numeric_faults=%lu\n",
+                d.level,d.gentle,(unsigned long)d.steps,(unsigned long)d.hid_rejected,(unsigned long)d.uart_rejected,
+                (unsigned long)hd,(unsigned long)uart_drops,(unsigned long)im,(unsigned long)d.deadline_misses,
+                d.collective_allocated,d.collective_ceiling,d.torque_scale,d.roll_nis,d.pitch_nis,d.height_nis,d.min_covariance,(unsigned long)d.numeric_faults);
+            uint8_t telemetry[16];fc_status_frame(&s,telemetry);if(FC_ENABLE_COMPANION && Serial2.availableForWrite()>=16)Serial2.write(telemetry,sizeof(telemetry));
         }
         vTaskDelay(pdMS_TO_TICKS(2));
     }
@@ -204,6 +212,7 @@ void setup() {
         Adafruit_BMP280::SAMPLING_X1,Adafruit_BMP280::SAMPLING_X1,
         Adafruit_BMP280::FILTER_X4,Adafruit_BMP280::STANDBY_MS_1);
     fc_init(ESP.getEfuseMac());
+    fc_debug_configure(FC_DEBUG_LEVEL);
     uint8_t record[FC_CAL_RECORD_BYTES]; bool loaded=false;
     Preferences nvs;
     if(nvs.begin("intelqcopter",true)) {

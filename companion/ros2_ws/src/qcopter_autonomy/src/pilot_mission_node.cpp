@@ -8,6 +8,7 @@
 #include <std_msgs/msg/u_int8_multi_array.hpp>
 #include <std_msgs/msg/string.hpp>
 #include <rclcpp/rclcpp.hpp>
+#include "profile.hpp"
 #include <algorithm>
 #include <cmath>
 #include <cstring>
@@ -21,7 +22,7 @@ static void u32(std::vector<uint8_t>&p,unsigned offset,uint32_t v){for(unsigned 
 // PC supplies endpoints only; obstacles arrive from the RGB perception pipeline.
 class PilotMissionNode:public rclcpp::Node {
  public:
-  PilotMissionNode():Node("drone_mission_computer") {
+  PilotMissionNode():Node("drone_mission_computer"),profile_(*this) {
     nav_config_.position_gain=declare_parameter<double>("nav_position_gain",1.0);
     nav_config_.velocity_gain=declare_parameter<double>("nav_velocity_gain",1.8);
     nav_config_.max_speed_mps=declare_parameter<double>("nav_max_speed_mps",0.8);
@@ -38,13 +39,16 @@ class PilotMissionNode:public rclcpp::Node {
       const auto&p=m->data;if(p.size()!=16||p[0]!='Q'||p[1]!='S'||p[2]!=1)return;
       uint32_t c=0;for(unsigned i=0;i<4;i++)c|=uint32_t(p[12+i])<<(8*i);
       if(c!=crc32(p.data(),12))return;
-      mode_nav_=p[3]==1;disarmed_=p[4]!=0;pilot_fresh_=p[5]!=0;
+      status_time_=now().seconds();mode_nav_=p[3]==1;disarmed_=p[4]!=0;pilot_fresh_=p[5]!=0;
       if((!mode_nav_||disarmed_)&&active_){active_=false;mission_=qcopter::Mission{};navigator_=qcopter::Navigator{};navigator_.configure(nav_config_);planned_=false;}
     });
-    contact_=create_subscription<std_msgs::msg::Bool>("simulation/ground_contact",10,[this](std_msgs::msg::Bool::ConstSharedPtr m){ground_contact_=m->data;});
+    contact_=create_subscription<std_msgs::msg::Bool>("simulation/ground_contact",10,[this](std_msgs::msg::Bool::ConstSharedPtr m){ground_contact_=m->data;contact_time_=now().seconds();});
     obstacles_=create_subscription<qcopter_autonomy::msg::MetricObstacles>("perception/metric_obstacles",10,[this](qcopter_autonomy::msg::MetricObstacles::ConstSharedPtr m){
       if(m->header.frame_id!="map"||!m->image_processed||m->centers.size()!=m->radii_m.size())return;
-      double t=rclcpp::Time(m->header.stamp).seconds();if(t<camera_time_)return;camera_time_=t;images_++;
+      double t=rclcpp::Time(m->header.stamp).seconds();
+      const double age=now().seconds()-t;
+      if(t<=camera_time_||age<-.1||age>.65||m->centers.size()>256){profile_.reject();return;}
+      camera_time_=t;images_++;
       for(size_t i=0;i<m->centers.size();i++){
         auto p=m->centers[i];double r=m->radii_m[i];
         if(!std::isfinite(p.x)||!std::isfinite(p.y)||!std::isfinite(r)||r<.1||r>2)continue;
@@ -68,20 +72,30 @@ class PilotMissionNode:public rclcpp::Node {
     odom_=create_subscription<nav_msgs::msg::Odometry>("odometry",10,[this](nav_msgs::msg::Odometry::ConstSharedPtr m){
       if(m->header.frame_id!="map"||m->child_frame_id!="map")return;
       double t=rclcpp::Time(m->header.stamp).seconds();if(have_pose_&&t<=pose_time_)return;
-      double dt=have_pose_?t-pose_time_:.02;pose_time_=t;have_pose_=true;
+      const double age=now().seconds()-t;
+      if(age<-.1||age>.25){profile_.reject();return;}
+      double dt=have_pose_?t-pose_time_:.02;
       const auto&p=m->pose.pose.position;const auto&q=m->pose.pose.orientation;const auto&v=m->twist.twist.linear;
+      const double values[]={p.x,p.y,p.z,v.x,v.y,v.z,q.x,q.y,q.z,q.w};
+      for(double x:values)if(!std::isfinite(x)){profile_.reject();return;}
+      const double norm=q.x*q.x+q.y*q.y+q.z*q.z+q.w*q.w;
+      if(std::abs(norm-1)>.02||std::abs(p.x)>100000||std::abs(p.y)>100000||std::abs(p.z)>100000
+         ||std::hypot(v.x,v.y)>50||std::abs(v.z)>50){profile_.reject();return;}
+      pose_time_=t;have_pose_=true;
       state_={p.x,p.y,p.z,v.x,v.y,v.z,std::atan2(2*(q.w*q.z+q.x*q.y),1-2*(q.y*q.y+q.z*q.z))};
       tick(std::clamp(dt,.001,.1));
     });
     RCLCPP_INFO(get_logger(),"READY: endpoints via mission/request; authority via Xbox FC mode; raw UART frames on fc/companion_tx");
   }
  private:
+  CallbackProfile profile_;
   bool start_route(const std::vector<std::array<double,3>>&points,double cruise){
     auto reject=[this](const std::string&why){last_route_error_=why;return false;};
     if(disarmed_)return reject("FC disarm is latched; restart the simulator");
     if(!mode_nav_)return reject("FC is in stable mode; select navigation or enable simulator navigation selection");
     if(!pilot_fresh_)return reject("No fresh Xbox pilot reports reach the FC");
-    if(!have_pose_)return reject("Drone odometry is unavailable");
+    if(!have_pose_||now().seconds()-pose_time_>.25||now().seconds()-pose_time_<-.1)return reject("Drone odometry unavailable or stale");
+    if(now().seconds()-status_time_>.75||now().seconds()-status_time_<0)return reject("FC status stale");
     if(active_)return reject("A mission is already running; switch to stable mode to cancel it first");
     if(points.size()<2||points.size()>64)return reject("Choose 2 to 64 nodes");
     for(size_t i=0;i<points.size();i++){
@@ -97,7 +111,10 @@ class PilotMissionNode:public rclcpp::Node {
     RCLCPP_INFO(get_logger(),"PC_ROUTE_ACCEPTED points=%zu finish=(%.2f,%.2f)",points.size(),points.back()[0],points.back()[1]);return true;
   }
   void tick(double dt){
+    CallbackProfile::Scope scope(profile_);
     if(!active_||!mode_nav_||disarmed_||!pilot_fresh_)return;
+    if(now().seconds()-status_time_>.75||now().seconds()-status_time_<0){profile_.reject();return;}
+    const bool contact_fresh=now().seconds()-contact_time_>=0&&now().seconds()-contact_time_<.2;
     if(phase_==qcopter::Phase::Navigate&&route_index_+1<route_.size()
        &&std::hypot(state_.x-finish_[0],state_.y-finish_[1])<.2
        &&std::hypot(state_.vx,state_.vy)<.2&&std::abs(state_.z-cruise_)<.15){
@@ -109,9 +126,9 @@ class PilotMissionNode:public rclcpp::Node {
     if(dirty_||(!planned_&&pose_time_-last_plan_time_>1.0)){last_plan_time_=pose_time_;planned_=navigator_.plan(state_,finish_,map_);dirty_=false;plans_++;RCLCPP_INFO(get_logger(),"PLANNER waypoint=%zu planned=%d reason=%s",route_index_,planned_,navigator_.reason());
       std::ostringstream out;for(auto p:navigator_.path())out<<p[0]<<','<<p[1]<<';';std_msgs::msg::String msg;msg.data=out.str();path_->publish(msg);}
     auto nav=navigator_.step(state_,camera_fresh&&planned_);
-    auto out=mission_.step(state_,nav,true,camera_fresh,ground_contact_,dt);
+    auto out=mission_.step(state_,nav,true,camera_fresh,ground_contact_&&contact_fresh,dt);
     std_msgs::msg::UInt8MultiArray frame;frame.data.resize(28,0);auto&p=frame.data;
-    p[0]='Q';p[1]='N';p[2]=1;p[3]=out.done&&ground_contact_?3:1;u32(p,4,++sequence_);
+    p[0]='Q';p[1]='N';p[2]=1;p[3]=out.done&&ground_contact_&&contact_fresh?3:1;u32(p,4,++sequence_);
     float vals[]={float(out.command.roll_deg),float(out.command.pitch_deg),float(out.command.yaw_rate_dps),float((out.command.throttle-.5)*4)};
     for(unsigned i=0;i<4;i++){uint32_t bits;std::memcpy(&bits,vals+i,4);u32(p,8+4*i,bits);}u32(p,24,crc32(p.data(),24));
     frames_->publish(frame);
@@ -123,7 +140,7 @@ class PilotMissionNode:public rclcpp::Node {
   bool mode_nav_=false,disarmed_=false,pilot_fresh_=false,have_pose_=false,ground_contact_=false,active_=false,dirty_=false,planned_=false;
   std::string last_route_error_;
   qcopter::NavigationConfig nav_config_{};double last_plan_time_=-100;
-  double pose_time_=0,camera_time_=-100,cruise_=1.25;
+  double pose_time_=0,camera_time_=-100,cruise_=1.25,status_time_=-100,contact_time_=-100;
   size_t route_index_=0;std::vector<std::array<double,3>>route_;
   unsigned sequence_=0,plans_=0,images_=0,requests_=0;
   qcopter::State state_{};qcopter::Mission mission_;qcopter::Navigator navigator_;qcopter::Phase phase_=qcopter::Phase::Idle;

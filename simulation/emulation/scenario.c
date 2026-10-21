@@ -183,6 +183,20 @@ void run_scenario(void) {
     check("horizontal_observation_old_rejected",!fc_horizontal_observation(xy,input_time-1));
     xy[0]=NAN;check("horizontal_observation_NaN_rejected",!fc_horizontal_observation(xy,input_time+1));
     check("horizontal_observation_NULL_revokes",!fc_horizontal_observation(NULL,input_time+2));
+    fc_init(0x3200);fc_debug_t d;fc_debug_snapshot(&d);
+    check("boot_default_gentle_profile",d.gentle==1);
+    check("boot_default_debug_statistics",d.level==2);
+    check("invalid_debug_level_rejected",!fc_debug_configure(4));
+    check("trace_debug_enabled_at_boot",fc_debug_configure(3));
+    memset(hid,0,sizeof(hid));for(unsigned i=0;i<4;i++)hid[2*i+1]=0x80;
+    fc_xbox_report(hid,16,1000000);
+    check("runtime_profile_change_rejected",!fc_configure_gentle(false));
+    check("runtime_debug_change_rejected",!fc_debug_configure(0));
+    check("older_HID_rejected",!fc_xbox_report(hid,16,999999));
+    fc_profile_record(2000);fc_profile_record(2001);fc_debug_snapshot(&d);
+    check("deadline_histogram_boundary",d.deadline_misses==1&&d.max_execution_us==2001);
+    fc_control_step(NULL,1000000,.002f,&status);
+    check("null_sample_faults_zero_demands",status.sensor_fault&&zero_outputs());
     printf("QCOPTER_EMU_END,checks=%u,failures=%u,ticks=%u\n",checks,failures,ticks);
     fflush(stdout);
 }

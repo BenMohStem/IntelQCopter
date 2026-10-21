@@ -1,0 +1,14 @@
+{
+  "gentle_default": "gentle",
+  "C_diagnostic_fields_present": true,
+  "standalone": true,
+  "scope": "Actual browser launch/live C diagnostic graph render/ground camera/automatic stop; real Xbox connected, no mode selection or manual flight performed.",
+  "passed": true,
+  "recording": {
+    "complete": true,
+    "run": "managed-20261021-191518-env01",
+    "automatic": true,
+    "file": "gazebo.mp4",
+    "encoder_returncode": 0
+  }
+}

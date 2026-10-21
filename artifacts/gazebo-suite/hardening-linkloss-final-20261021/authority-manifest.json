@@ -1,0 +1,109 @@
+{
+  "engine": "Native Gazebo 10.5 / OGRE2",
+  "fc": "Production C host DLL; not Xtensa emulation",
+  "localization": "Perfect Gazebo odometry; synthetic IMU/barometer and calibration",
+  "perception": "Actual YOLO + known-panel PnP; no true obstacle coordinates supplied to navigator",
+  "domain": 73,
+  "commands": [
+    {
+      "role": "engine",
+      "argv": [
+        "C:\\Users\\Mohamed\\Desktop\\Work\\QCopter\\sim\\gazebo\\.pixi\\envs\\default\\python.exe",
+        "-u",
+        "simulation/gazebo/engine.py",
+        "--env",
+        "env01",
+        "--run",
+        "hardening-linkloss-final-20261021"
+      ]
+    },
+    {
+      "role": "drone-mission",
+      "argv": [
+        "C:\\Users\\Mohamed\\Desktop\\Work\\QCopter-ESP32-Xbox\\build\\ros2-install\\lib\\qcopter_autonomy\\pilot_mission_node.exe",
+        "--ros-args",
+        "-r",
+        "__ns:=/drone",
+        "-p",
+        "use_sim_time:=true"
+      ]
+    },
+    {
+      "role": "drone-yolo",
+      "argv": [
+        "C:\\Users\\Mohamed\\Desktop\\Work\\QCopter-ESP32-Xbox\\build\\ros2-install\\lib\\qcopter_autonomy\\yolo_node.exe",
+        "--ros-args",
+        "-r",
+        "__ns:=/drone",
+        "-p",
+        "use_sim_time:=true",
+        "-p",
+        "onnx_model:=C:\\Users\\Mohamed\\Desktop\\Work\\QCopter\\build\\panel-training\\rgb-panel\\weights\\best.onnx",
+        "-p",
+        "input_size:=320"
+      ]
+    },
+    {
+      "role": "drone-pnp",
+      "argv": [
+        "C:\\Users\\Mohamed\\Desktop\\Work\\QCopter-ESP32-Xbox\\build\\ros2-install\\lib\\qcopter_autonomy\\panel_pose_node.exe",
+        "--ros-args",
+        "-r",
+        "__ns:=/drone",
+        "-p",
+        "use_sim_time:=true",
+        "-p",
+        "known_fixture_model_confirmed:=true"
+      ]
+    },
+    {
+      "role": "proof-pc",
+      "argv": [
+        "C:\\dev\\.pixi\\envs\\default\\python.exe",
+        "-u",
+        "simulation/gazebo/authority_pc.py",
+        "--out",
+        "C:\\Users\\Mohamed\\Desktop\\Work\\QCopter-ESP32-Xbox\\artifacts\\gazebo-suite\\hardening-linkloss-final-20261021",
+        "--route",
+        "C:\\Users\\Mohamed\\Desktop\\Work\\QCopter-ESP32-Xbox\\artifacts\\gazebo-suite\\hardening-linkloss-final-20261021\\approved-route.json",
+        "--ros-args",
+        "-r",
+        "__ns:=/drone",
+        "-p",
+        "use_sim_time:=true"
+      ]
+    },
+    {
+      "role": "ros-boundary",
+      "argv": [
+        "C:\\dev\\.pixi\\envs\\default\\python.exe",
+        "-u",
+        "simulation/gazebo/ros_bridge.py",
+        "--run",
+        "hardening-linkloss-final-20261021",
+        "--timeout",
+        "35.0",
+        "--authority-proof",
+        "--drop-companion-after",
+        "25.0",
+        "--ros-args",
+        "-r",
+        "__ns:=/drone",
+        "-p",
+        "use_sim_time:=true"
+      ]
+    }
+  ],
+  "sha256": {
+    "firmware/src/flight_controller.c": "ed83b904a260ff87ebdee28ad8f5f3c987e4ed9b40ca2e987aab43461a48ec61",
+    "firmware/include/fc_api.h": "1fe0b7a0782170c2726ff15aebb9dad412141bb81f72d2458091a4ced7d9fda8",
+    "simulation/gazebo/engine.py": "50c035851acb1fc07f999fc3f60d1e55b6544a97babbe30ff9334d2dca3de57d",
+    "simulation/gazebo/ros_bridge.py": "df8d233e9a52c5682f85837c4851e4c94ac18566872a92c1929e4f75a1a7ca17",
+    "simulation/gazebo/authority_pc.py": "a315f798962abab98f7e451e3b2d4bc6822f1f35c264246c77f6d0f9e60f0296",
+    "companion/ros2_ws/src/qcopter_autonomy/src/pilot_mission_node.cpp": "9074850d660624cc92ddd239849013ebfae5c9fbfd89cad433c6740f97549040",
+    "companion/ros2_ws/src/qcopter_autonomy/src/navigation.cpp": "e0446fedd3d92c1296a68ef6cd4bcac4f37201700c6f2a696da5e51409fef4cf",
+    "build/sitl/esp32_flight_core.dll": "28942a8b8647d2a056dbbb6ce4d22f758f92e461c7b3fbeecb8af71178da5d09",
+    "build/ros2-install/lib/qcopter_autonomy/pilot_mission_node.exe": "98a4f3b44d6334e8eea72db463ecec260e8de66a990c9054e8ae09cdf7473893"
+  },
+  "deliberate_UART_drop_after_s": 25.0
+}

@@ -26,12 +26,17 @@ class Boundary(Node):
     self.create_subscription(String,'mission/status',lambda m:setattr(self,'mission',m.data),10)
     self.create_subscription(String,'pilot/state',lambda m:setattr(self,'pilot',m.data),10)
     from qcopter_autonomy.msg import SemanticDetections,MetricObstacles
-    self.trace=None;self.boxes=[];self.box_time=-99.
+    self.trace=None;self.boxes=[];self.box_time=-99.;self.profile_log=None;self.profiles={}
+    self.create_subscription(String,'debug/profile',self.profile,10)
     self.create_subscription(SemanticDetections,'perception/semantics',self.semantic,10)
     self.create_subscription(MetricObstacles,'perception/metric_obstacles',self.metric,10)
     self.clock=self.create_publisher(Clock,'/clock',10);self.odom=self.create_publisher(Odometry,'odometry',10)
     self.fc=self.create_publisher(UInt8MultiArray,'fc/status',10);self.contact=self.create_publisher(Bool,'simulation/ground_contact',10)
     self.rgb=self.create_publisher(Image,'camera/image',10);self.cam=self.create_publisher(CameraInfo,'camera/camera_info',10)
+ def profile(self,m):
+    fields=dict(x.split('=',1) for x in m.data.split(',') if '=' in x)
+    self.profiles[fields.get('component','unknown')]=fields
+    if self.profile_log:self.profile_log.write(json.dumps(dict(wall_time_s=time.time(),profile=m.data))+'\n');self.profile_log.flush()
  def semantic(self,m):
     self.semantics+=1;self.box_time=m.header.stamp.sec+m.header.stamp.nanosec*1e-9
     self.boxes=[dict(class_id=int(d.class_id),confidence=float(d.confidence),xyxy=list(map(float,d.xyxy_pixels))) for d in m.detections]
@@ -54,6 +59,7 @@ def main():
  rclpy.init(args=ros);node=Boundary();client=Client(('127.0.0.1',args.port),authkey=b'intelqcopter-esp32')
  out=ROOT/'artifacts/gazebo-suite'/args.run;out.mkdir(parents=True,exist_ok=True)
  node.trace=(out/'perception.jsonl').open('w',encoding='utf8')
+ node.profile_log=(out/'ros2-profile.jsonl').open('w',encoding='utf8')
  wire=(out/'wire-inputs.jsonl').open('w',encoding='utf8')
  client.send({'op':'state'});state=client.recv();start=state['sim_time_s'];last_camera=last_video=-99.;next_wall=time.monotonic();next_camera=state['sim_time_s'];next_video=state['sim_time_s'];rows=[];done_at=None;count=0;hid_count=uart_count=0;success=False
  ffmpeg=ffmpeg_path()
@@ -97,7 +103,7 @@ def main():
         if viewer:
             client.send({'op':'camera','topic':'/follow/rgb'});fw,fh,fd=client.recv();follow=np.frombuffer(fd,np.uint8).reshape(fh,fw,3)
             canvas[:360,:640]=follow
-            viewer.update(canvas,dict(environment=state.get('environment'),sim_time_s=t-start,real_time_factor=(t-start)/max(.001,time.monotonic()-wall_start),localization_source=state.get('localization_source'),telemetry=state.get('telemetry',{}),motor_actual=state.get('motor_actual',[]),health=state.get('health',{}),velocity=state['velocity'],gesture=gesture,fc_mode=state['mode'],disarmed=state['disarm'],position=state['position'],pilot=node.pilot,mission=node.mission,simulation_actuation=state.get('simulation_actuation'),YOLO_frames=node.semantics,PnP_frames=node.metric_frames,standalone=False),follow=follow,overview=overview)
+            viewer.update(canvas,dict(environment=state.get('environment'),sim_time_s=t-start,real_time_factor=(t-start)/max(.001,time.monotonic()-wall_start),localization_source=state.get('localization_source'),telemetry=state.get('telemetry',{}),motor_actual=state.get('motor_actual',[]),health=state.get('health',{}),velocity=state['velocity'],gesture=gesture,fc_mode=state['mode'],disarmed=state['disarm'],position=state['position'],pilot=node.pilot,mission=node.mission,simulation_actuation=state.get('simulation_actuation'),YOLO_frames=node.semantics,PnP_frames=node.metric_frames,ros2_profile=node.profiles,standalone=False),follow=follow,overview=overview)
         recorder.stdin.write(canvas.tobytes());last_video=t;next_video+=1/15
         if count%250<10:print(f'PROGRESS t={t-start:.1f}s position={state["position"]} mode={state["mode"]} {node.mission}',flush=True)
     if args.authority_proof and 'done=1' in node.mission and state['disarm'] and state['ground_contact']:node.done=True

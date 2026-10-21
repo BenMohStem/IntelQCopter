@@ -147,3 +147,9 @@ Use `.\qcopter.ps1 station` → http://127.0.0.1:8088 for start/stop, automatic 
 Recording starts automatically. Home Start opens the flight in a new tab; End session finalizes the recording and closes that tab. Manual roll/pitch command tilt angles, then the C FC brakes and holds the release position using explicit simulated horizontal localization. Yaw direction is corrected. Real IMU/barometer alone cannot provide horizontal position hold; physical outputs remain disabled.
 
 [Current angle/braking/yaw video and graphs, including preserved failure](artifacts/reports/manual-control-20261021/index.html). Native Gazebo/C host tests and 54 QEMU checks passed; no physical-flight claim.
+
+### Gentle default and current hardening evidence
+
+Gentle is the firmware/UI default. RT retains up to an 1800 µs-equivalent collective ceiling with PID headroom; LT reduces. The standard FC works without a companion and supports optional ROS2 navigation. Physical outputs remain disabled.
+
+[Current videos, measured graphs and fault tests](artifacts/reports/hardening-20261021/index.html) · [Debug levels, profiling and real-flight preparation](docs/debugging-and-flight-readiness.html).

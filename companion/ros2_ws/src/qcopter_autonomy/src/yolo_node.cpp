@@ -1,4 +1,5 @@
 #include <rclcpp/rclcpp.hpp>
+#include "profile.hpp"
 #include <sensor_msgs/msg/image.hpp>
 #include "image_view.hpp"
 #include <opencv2/dnn.hpp>
@@ -11,7 +12,7 @@
 // This semantic node does NOT directly mark free space or command navigation.
 class YoloNode : public rclcpp::Node {
  public:
-  YoloNode():Node("qcopter_yolo") {
+  YoloNode():Node("qcopter_yolo"),profile_(*this) {
     cv::setNumThreads(2); // Leave CPU capacity for DDS, flight plant and mission.
     auto model=declare_parameter<std::string>("onnx_model","");
     if(model.empty())throw std::invalid_argument("Set onnx_model to exported YOLO11 path");
@@ -22,14 +23,18 @@ class YoloNode : public rclcpp::Node {
       net_.setPreferableBackend(cv::dnn::DNN_BACKEND_CUDA);net_.setPreferableTarget(cv::dnn::DNN_TARGET_CUDA);
     }
     pub_=create_publisher<qcopter_autonomy::msg::SemanticDetections>("perception/semantics",10);
-    depth_sub_=create_subscription<sensor_msgs::msg::Image>("camera/depth_registered",rclcpp::SensorDataQoS(),
+    depth_sub_=create_subscription<sensor_msgs::msg::Image>("camera/depth_registered",rclcpp::SensorDataQoS().keep_last(1),
       [this](sensor_msgs::msg::Image::ConstSharedPtr m){depth_=m;});
-    rgb_sub_=create_subscription<sensor_msgs::msg::Image>("camera/image",rclcpp::SensorDataQoS(),
+    rgb_sub_=create_subscription<sensor_msgs::msg::Image>("camera/image",rclcpp::SensorDataQoS().keep_last(1),
       [this](sensor_msgs::msg::Image::ConstSharedPtr m){infer(m);});
     RCLCPP_INFO(get_logger(),"READY_RGB: YOLO ONNX loaded; input=%d, CPU threads=2",side_);
   }
  private:
+  CallbackProfile profile_;
   void infer(const sensor_msgs::msg::Image::ConstSharedPtr &m) {
+    CallbackProfile::Scope scope(profile_);
+    double age=(now()-rclcpp::Time(m->header.stamp)).seconds();
+    if(age<-.1||age>.65){profile_.reject();return;}
     try {
       auto frame=qcopter::image_copy(*m);
       const double scale=std::min(double(side_)/frame.cols,double(side_)/frame.rows);

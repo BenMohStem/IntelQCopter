@@ -76,3 +76,15 @@ logs, failed trials and videos are evidence rather than disposable cache.
 - Final seven-node ROS2/C FC regression completed every intermediate node with zero panel contact steps. QEMU 54/54; both firmware builds pass; host aiding validation/expiry tests pass.
 
 [Current original video, graphs and failures](../artifacts/reports/manual-control-20261021/index.html) · [Updated math/code guide](control-workbench.html).
+
+## Gentle firmware default, observability and hardening — 2026-10-21
+
+- Gentle now defaults in physical C firmware as well as the simulation UI. The UI's explicit HID shaping is applied once; the simulator host decoder explicitly bypasses the second curve. Full RT/LT travel is retained. RT collective ceiling is 0.8 (1800 µs equivalent), neutral 0.65, full LT 0.5; differential PID motor authority remains above that collective ceiling. No physical ESC pulses exist.
+- Allocation-aware altitude antiwindup prevents further integration into the collective ceiling. The allocator respects the ceiling even when shifting collective for torque feasibility. Navigation owns its vertical-speed command and ignores trigger boost; Down+LT still disarms either mode.
+- One standard FC build works in Stable mode without a companion and accepts optional UART commands only under navigation authority. Added monotonic input checks, bounded queue processing, CRC/value validation and bounded partial serial writes with command expiry/configured-port retry. Physical UART and Linux driver behavior remain unvalidated.
+- C debug levels 0..3 expose rejection/freshness/fault/allocator counters, residual statistics, adapter deadline histogram and a bounded 50Hz trace. No C fast-loop printing/allocation. ROS2 mission/YOLO/PnP/UART callbacks publish steady-wall profiling; DDS camera backlog is limited to one frame.
+- Final tests: 28 C host checks including 20,000 malformed packets, 5,000 mixed-axis stress steps and 30,000 healthy soak steps; 12 actual C++ ROS2 process fault checks; 63 QEMU checks; standard, companion-disabled and level-3 hardware builds pass. Native manual long-angle run passed. Seven-node route landed in 89.04 simulation seconds with zero panel contacts; one approved PC route and neutral pilot thereafter were audited. Deliberate companion loss prevented completion as expected.
+- Profiling exposed the perception bottleneck: YOLO mean about 80ms, peak about 436ms in the recorded run, versus mission callback mean about 0.137ms. These are PC wall timings, not ESP32 timing or onboard acceleration measurements. Default 20ms YOLO diagnostic-budget overruns remain in original logs. 15fps video is independent of inference frequency.
+- Simulator assumes 1.2kg, provisional inertias/thrust/motor lag, ideal localization and synthetic sensor calibration. Physical motor arming remains disabled. Host timing, QEMU and ideal-localization precision do not establish physical flight readiness.
+
+[Original final videos, graphs and authority checks](../artifacts/reports/hardening-20261021/index.html) · [Diagnostics and preparation guide](debugging-and-flight-readiness.html).

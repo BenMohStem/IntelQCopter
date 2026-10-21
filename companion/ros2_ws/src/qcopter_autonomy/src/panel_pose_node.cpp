@@ -1,4 +1,5 @@
 #include <rclcpp/rclcpp.hpp>
+#include "profile.hpp"
 #include <sensor_msgs/msg/image.hpp>
 #include <sensor_msgs/msg/camera_info.hpp>
 #include <nav_msgs/msg/odometry.hpp>
@@ -16,7 +17,7 @@
 // Same camera->PnP->world geometry as the executed Python reference.
 class PanelPoseNode:public rclcpp::Node {
  public:
-  PanelPoseNode():Node("qcopter_panel_pose") {
+  PanelPoseNode():Node("qcopter_panel_pose"),profile_(*this) {
     width_=declare_parameter<double>("fixture_inner_width_m",1.09);
     height_=declare_parameter<double>("fixture_inner_height_m",1.69);
     center_z_=declare_parameter<double>("fixture_center_z_m",.9);
@@ -33,7 +34,9 @@ class PanelPoseNode:public rclcpp::Node {
     RCLCPP_INFO(get_logger(),"READY_PNP: known fixture %.2fx%.2f m; map centre z=%.2f +/-%.2f m",width_,height_,center_z_,height_tolerance_);
   }
  private:
+  CallbackProfile profile_;
   void process(const qcopter_autonomy::msg::SemanticDetections::ConstSharedPtr&m){
+    CallbackProfile::Scope scope(profile_);
     const double stamp=rclcpp::Time(m->header.stamp).seconds();
     double image_error=1e9,pose_error=1e9;
     for(auto image:images_){double e=std::abs(rclcpp::Time(image->header.stamp).seconds()-stamp);if(e<image_error){image_=image;image_error=e;}}

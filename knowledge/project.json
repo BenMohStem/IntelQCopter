@@ -376,6 +376,31 @@
       "id": "source-manual-tabs-original",
       "kind": "file",
       "locator": "artifacts/gazebo-suite/managed-20261021-154305-env06/recording-complete.json"
+    },
+    {
+      "id": "source-hardening-final-report",
+      "kind": "file",
+      "locator": "artifacts/reports/hardening-20261021/summary.json"
+    },
+    {
+      "id": "source-hardening-final-host",
+      "kind": "file",
+      "locator": "artifacts/validation/hardening-final-20261021/summary.json"
+    },
+    {
+      "id": "source-hardening-final-ros",
+      "kind": "file",
+      "locator": "artifacts/validation/hardening-ros-final-20261021/summary.json"
+    },
+    {
+      "id": "source-hardening-final-qemu",
+      "kind": "file",
+      "locator": "artifacts/emulation/hardening-final-20261021/summary.json"
+    },
+    {
+      "id": "source-hardening-guide",
+      "kind": "file",
+      "locator": "docs/debugging-and-flight-readiness.md"
     }
   ],
   "facts": [
@@ -629,6 +654,18 @@
           ],
           "evidence_level": "source",
           "reason": "Separate slow work by blocking behavior; preserve measured dt and disabled outputs."
+        },
+        {
+          "revision": 3,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "Added bounded queues, C debug levels0..3, rejection/allocator/filter diagnostics, adapter execution histogram and 64-entry50Hz trace. ROS2 steady-wall profiling and latest-frame camera queue are observable. Final host timing is PC ctypes overhead, not ESP32 deadlines; YOLO mean80ms/peak436ms identifies a perception bottleneck. Actual500Hz behavior under BLE/I2C/UART/NVS still requires hardware.",
+          "sources": [
+            "source-hardening-final-report",
+            "source-hardening-guide"
+          ],
+          "evidence_level": "simulated",
+          "reason": "User requested default Gentle, full RT/LT with PID headroom and extensive FC/ROS2 debugging, profiling and tests."
         }
       ]
     },
@@ -1119,6 +1156,17 @@
           ],
           "evidence_level": "emulated",
           "reason": "User requested true manual angle behavior, braking/hold on release, reversed yaw, and automatic recording/new-tab/end-close lifecycle; original failures retained."
+        },
+        {
+          "revision": 6,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "Final hardened C code passed63 checks on Espressif ESP32-S3 QEMU with original UART logs/hashes. Hardware standard/standalone/debug builds compile. QEMU synthetic replay is not physics, BLE/I2C/UART-device or500Hz timing validation.",
+          "sources": [
+            "source-hardening-final-qemu"
+          ],
+          "evidence_level": "simulated",
+          "reason": "User requested default Gentle, full RT/LT with PID headroom and extensive FC/ROS2 debugging, profiling and tests."
         }
       ]
     },
@@ -1339,6 +1387,19 @@
           ],
           "evidence_level": "emulated",
           "reason": "User requested live real Xbox and optional companion architecture."
+        },
+        {
+          "revision": 2,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "The standard companion-capable FC runs Stable without ROS2/UART, receives optional companion data without granting Stable authority, and retains pilot gesture mode selection. Regressions cover optional enable/disable and actual ROS2 stale-status/pose and Stable cancellation. UART bridge has bounded partial transmit, expiry and configured-port retry; real serial/Linux behavior is unvalidated.",
+          "sources": [
+            "source-hardening-final-host",
+            "source-hardening-final-ros",
+            "source-hardening-guide"
+          ],
+          "evidence_level": "simulated",
+          "reason": "User requested default Gentle, full RT/LT with PID headroom and extensive FC/ROS2 debugging, profiling and tests."
         }
       ]
     },
@@ -1358,6 +1419,18 @@
           ],
           "evidence_level": "simulated",
           "reason": "User-requested control, software and evidence improvements."
+        },
+        {
+          "revision": 2,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "Gentle is now also the physical C firmware default: squared axes, 5deg roll/pitch, .5m/s base vertical and45dps yaw. Simulation explicitly shapes once and tests C/UI equivalence. RT/LT retain full travel; allocator collective ceiling ranges .5..8 with neutral .65. 1800 microseconds is only a provisional normalized pulse equivalent; individual differential motor corrections may use the remaining .2 range. Physical outputs disabled.",
+          "sources": [
+            "source-hardening-final-host",
+            "source-hardening-guide"
+          ],
+          "evidence_level": "simulated",
+          "reason": "User requested default Gentle, full RT/LT with PID headroom and extensive FC/ROS2 debugging, profiling and tests."
         }
       ]
     },
@@ -1415,6 +1488,17 @@
           ],
           "evidence_level": "simulated",
           "reason": "Requested multi-node fault diagnosis, actual command-authority tests and next-start settings/recording UI; original prior trials retained."
+        },
+        {
+          "revision": 2,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "Final native Gazebo C/ROS2 route completed89.04 simulated seconds, intermediate indices1..5 and zero panel contacts. Original wire audit shows onePC route, neutral HID thereafter, sole onboard companion publisher, valid CRC/finite setpoints and noPC pose/image subscription. Dropping companion frames after25s prevents completion and FC marks link stale. Ideal localization/known-panel PnP/synthetic sensors remain explicit.",
+          "sources": [
+            "source-hardening-final-report"
+          ],
+          "evidence_level": "simulated",
+          "reason": "User requested default Gentle, full RT/LT with PID headroom and extensive FC/ROS2 debugging, profiling and tests."
         }
       ]
     },
