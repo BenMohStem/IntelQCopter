@@ -1,0 +1,21 @@
+Reference,Quantity,Component,Status,Assembly notes
+U1,1,ESP32-S3 development board,Exact board variant/row spacing pending,"Socket or wired module, not bare QFN"
+U2,1,MPU6050 breakout,Photo/pin order/mounting pending,Removable module; put near mechanical centre
+U3,1,BMP280 breakout,Photo/pin order/mounting pending,Keep pressure opening unblocked
+U4,1,HMC5883L breakout,Chip identity/pinout pending,Keep away from battery/ESC wires; QMC5883L is not interchangeable firmware
+U5,1,TOFSense F2 Mini,Connector/supply/orientation pending,"Remote mount, provisional UART interface"
+PS1,1,External 3S-to-regulated-5V buck supply,Type/ripple/current rating pending,Do not parallel ESC BEC outputs or USB/external supplies
+R_VTOP,1,47kΩ 1% 0.25W axial resistor,Proposed voltage divider top,"10.16mm lead pitch, large THT pads"
+R_VBOTTOM,1,10kΩ 1% 0.25W axial resistor,Proposed voltage divider bottom,Vadc≈2.211V at Vpack=12.6V
+R_VFILTER,1,1kΩ axial resistor,Proposed ADC series filter,ADC input measurement/calibration pending
+C_VFILTER,1,"100nF ceramic, THT",Proposed at ADC input,Supply-off injection and protection unresolved
+R_PULLUP,2,"4.7kΩ axial resistor, optional",Do not populate by default until module pullups inspected,Parallel module pullups change total resistance
+C_LOCAL,3,"100nF ceramic, THT",Proposed local sensor decoupling,Final count depends on actual modules
+C_BULK,1,100µF 10V or higher electrolytic,Proposed on regulated 5V rail,Polarity and regulator compatibility to check
+J_PWR,1,2-position 5.08mm connector,Pin order to be fixed,Regulated5V/GND only
+J_SENSE,1,Low-current battery-sense connector,"Proposed, fused external sense lead",Only resistor-divider current; no motor feed
+J_ESC,4,2-position signal/GND connectors,Proposed 5.08mm wire terminals or keyed pigtails,No ESC BEC5V contact
+J_COMP,1,3-position GND/TX/RX connector,3.3V UART signal only,No high-power companion supply
+J_CURRENT,1,Low-voltage current-sensor connector,External sensor range and pinout TBD,Not a current shunt on logic board
+LINKS,1,Insulated jumper wire and removable power link,Count pending routing,No plated vias assumed
+RADIOS,0,LoRa + two CC1101 from original architecture,Not assigned on ESP32/Xbox PCB pending user decision,Do not silently reuse Pico radio pin map

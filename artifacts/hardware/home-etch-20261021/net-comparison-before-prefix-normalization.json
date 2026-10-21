@@ -1,0 +1,1128 @@
+{
+  "engine": "KiCad 10.0.6 native DRC/ERC/netlist export; independent model-to-netlist comparison",
+  "DRC_violations": 0,
+  "unrouted": 0,
+  "ERC_violations": 0,
+  "schematic_matches_pad_nets": false,
+  "mismatches": {
+    "/GPIO8": {
+      "model": [],
+      "schematic": [
+        [
+          "J1",
+          "12"
+        ],
+        [
+          "W12",
+          "1"
+        ]
+      ]
+    },
+    "GPIO18": {
+      "model": [
+        [
+          "J1",
+          "11"
+        ],
+        [
+          "W11",
+          "1"
+        ]
+      ],
+      "schematic": []
+    },
+    "/5V_EXT": {
+      "model": [],
+      "schematic": [
+        [
+          "J3",
+          "2"
+        ],
+        [
+          "W21",
+          "2"
+        ]
+      ]
+    },
+    "/GPIO17": {
+      "model": [],
+      "schematic": [
+        [
+          "J1",
+          "10"
+        ],
+        [
+          "W10",
+          "1"
+        ]
+      ]
+    },
+    "5V_MCU": {
+      "model": [
+        [
+          "J1",
+          "21"
+        ],
+        [
+          "W21",
+          "1"
+        ]
+      ],
+      "schematic": []
+    },
+    "/VBAT_ADC": {
+      "model": [],
+      "schematic": [
+        [
+          "C1",
+          "1"
+        ],
+        [
+          "R3",
+          "2"
+        ],
+        [
+          "W4",
+          "2"
+        ]
+      ]
+    },
+    "ESC_RR": {
+      "model": [
+        [
+          "J10",
+          "1"
+        ],
+        [
+          "R6",
+          "2"
+        ]
+      ],
+      "schematic": []
+    },
+    "SENS_3V3": {
+      "model": [
+        [
+          "J14",
+          "2"
+        ],
+        [
+          "J4",
+          "2"
+        ],
+        [
+          "J5",
+          "2"
+        ],
+        [
+          "J6",
+          "2"
+        ],
+        [
+          "W1",
+          "2"
+        ]
+      ],
+      "schematic": []
+    },
+    "VBAT_DIV": {
+      "model": [
+        [
+          "R1",
+          "2"
+        ],
+        [
+          "R2",
+          "2"
+        ],
+        [
+          "R3",
+          "1"
+        ]
+      ],
+      "schematic": []
+    },
+    "I2C_SCL": {
+      "model": [
+        [
+          "J4",
+          "4"
+        ],
+        [
+          "J5",
+          "4"
+        ],
+        [
+          "J6",
+          "4"
+        ],
+        [
+          "W12",
+          "2"
+        ]
+      ],
+      "schematic": []
+    },
+    "LIDAR_RX_FC": {
+      "model": [
+        [
+          "J13",
+          "3"
+        ],
+        [
+          "W6",
+          "2"
+        ]
+      ],
+      "schematic": []
+    },
+    "/GPIO12": {
+      "model": [],
+      "schematic": [
+        [
+          "J1",
+          "18"
+        ],
+        [
+          "W18",
+          "1"
+        ]
+      ]
+    },
+    "/GPIO9": {
+      "model": [],
+      "schematic": [
+        [
+          "J1",
+          "15"
+        ],
+        [
+          "W15",
+          "1"
+        ]
+      ]
+    },
+    "/GPIO12_ESC": {
+      "model": [],
+      "schematic": [
+        [
+          "R4",
+          "1"
+        ],
+        [
+          "W18",
+          "2"
+        ]
+      ]
+    },
+    "GND": {
+      "model": [
+        [
+          "C1",
+          "2"
+        ],
+        [
+          "C2",
+          "2"
+        ],
+        [
+          "J10",
+          "2"
+        ],
+        [
+          "J11",
+          "2"
+        ],
+        [
+          "J12",
+          "3"
+        ],
+        [
+          "J13",
+          "1"
+        ],
+        [
+          "J14",
+          "1"
+        ],
+        [
+          "J3",
+          "1"
+        ],
+        [
+          "J4",
+          "1"
+        ],
+        [
+          "J5",
+          "1"
+        ],
+        [
+          "J6",
+          "1"
+        ],
+        [
+          "J7",
+          "2"
+        ],
+        [
+          "J8",
+          "2"
+        ],
+        [
+          "J9",
+          "2"
+        ],
+        [
+          "R2",
+          "1"
+        ],
+        [
+          "W22",
+          "2"
+        ]
+      ],
+      "schematic": []
+    },
+    "/GPIO7": {
+      "model": [],
+      "schematic": [
+        [
+          "J1",
+          "7"
+        ],
+        [
+          "W7",
+          "1"
+        ]
+      ]
+    },
+    "GPIO6": {
+      "model": [
+        [
+          "J1",
+          "6"
+        ],
+        [
+          "W6",
+          "1"
+        ]
+      ],
+      "schematic": []
+    },
+    "/GPIO14": {
+      "model": [],
+      "schematic": [
+        [
+          "J1",
+          "20"
+        ],
+        [
+          "W20",
+          "1"
+        ]
+      ]
+    },
+    "/ESC_FL": {
+      "model": [],
+      "schematic": [
+        [
+          "J8",
+          "1"
+        ],
+        [
+          "R4",
+          "2"
+        ]
+      ]
+    },
+    "I2C_SDA": {
+      "model": [
+        [
+          "J4",
+          "3"
+        ],
+        [
+          "J5",
+          "3"
+        ],
+        [
+          "J6",
+          "3"
+        ],
+        [
+          "W15",
+          "2"
+        ]
+      ],
+      "schematic": []
+    },
+    "/GPIO6": {
+      "model": [],
+      "schematic": [
+        [
+          "J1",
+          "6"
+        ],
+        [
+          "W6",
+          "1"
+        ]
+      ]
+    },
+    "GPIO14_ESC": {
+      "model": [
+        [
+          "R7",
+          "1"
+        ],
+        [
+          "W20",
+          "2"
+        ]
+      ],
+      "schematic": []
+    },
+    "/VBAT_SENSE": {
+      "model": [],
+      "schematic": [
+        [
+          "J7",
+          "1"
+        ],
+        [
+          "R1",
+          "1"
+        ]
+      ]
+    },
+    "GPIO14": {
+      "model": [
+        [
+          "J1",
+          "20"
+        ],
+        [
+          "W20",
+          "1"
+        ]
+      ],
+      "schematic": []
+    },
+    "/I2C_SCL": {
+      "model": [],
+      "schematic": [
+        [
+          "J4",
+          "4"
+        ],
+        [
+          "J5",
+          "4"
+        ],
+        [
+          "J6",
+          "4"
+        ],
+        [
+          "W12",
+          "2"
+        ]
+      ]
+    },
+    "GPIO7": {
+      "model": [
+        [
+          "J1",
+          "7"
+        ],
+        [
+          "W7",
+          "1"
+        ]
+      ],
+      "schematic": []
+    },
+    "ESC_RL": {
+      "model": [
+        [
+          "J11",
+          "1"
+        ],
+        [
+          "R7",
+          "2"
+        ]
+      ],
+      "schematic": []
+    },
+    "/GND_MCU": {
+      "model": [],
+      "schematic": [
+        [
+          "J1",
+          "22"
+        ],
+        [
+          "W22",
+          "1"
+        ]
+      ]
+    },
+    "/I2C_SDA": {
+      "model": [],
+      "schematic": [
+        [
+          "J4",
+          "3"
+        ],
+        [
+          "J5",
+          "3"
+        ],
+        [
+          "J6",
+          "3"
+        ],
+        [
+          "W15",
+          "2"
+        ]
+      ]
+    },
+    "/VBAT_DIV": {
+      "model": [],
+      "schematic": [
+        [
+          "R1",
+          "2"
+        ],
+        [
+          "R2",
+          "2"
+        ],
+        [
+          "R3",
+          "1"
+        ]
+      ]
+    },
+    "CURRENT_IN": {
+      "model": [
+        [
+          "J14",
+          "3"
+        ],
+        [
+          "R8",
+          "1"
+        ]
+      ],
+      "schematic": []
+    },
+    "/GPIO18": {
+      "model": [],
+      "schematic": [
+        [
+          "J1",
+          "11"
+        ],
+        [
+          "W11",
+          "1"
+        ]
+      ]
+    },
+    "/COMP_TX": {
+      "model": [],
+      "schematic": [
+        [
+          "J12",
+          "1"
+        ],
+        [
+          "W10",
+          "2"
+        ]
+      ]
+    },
+    "/LIDAR_TX_FC": {
+      "model": [],
+      "schematic": [
+        [
+          "J13",
+          "4"
+        ],
+        [
+          "W7",
+          "2"
+        ]
+      ]
+    },
+    "5V_EXT": {
+      "model": [
+        [
+          "J3",
+          "2"
+        ],
+        [
+          "W21",
+          "2"
+        ]
+      ],
+      "schematic": []
+    },
+    "GPIO2": {
+      "model": [
+        [
+          "J2",
+          "5"
+        ],
+        [
+          "R6",
+          "1"
+        ]
+      ],
+      "schematic": []
+    },
+    "VBAT_ADC": {
+      "model": [
+        [
+          "C1",
+          "1"
+        ],
+        [
+          "R3",
+          "2"
+        ],
+        [
+          "W4",
+          "2"
+        ]
+      ],
+      "schematic": []
+    },
+    "/5V_MCU": {
+      "model": [],
+      "schematic": [
+        [
+          "J1",
+          "21"
+        ],
+        [
+          "W21",
+          "1"
+        ]
+      ]
+    },
+    "/GPIO2": {
+      "model": [],
+      "schematic": [
+        [
+          "J2",
+          "5"
+        ],
+        [
+          "R6",
+          "1"
+        ]
+      ]
+    },
+    "/ESC_RR": {
+      "model": [],
+      "schematic": [
+        [
+          "J10",
+          "1"
+        ],
+        [
+          "R6",
+          "2"
+        ]
+      ]
+    },
+    "VBAT_SENSE": {
+      "model": [
+        [
+          "J7",
+          "1"
+        ],
+        [
+          "R1",
+          "1"
+        ]
+      ],
+      "schematic": []
+    },
+    "CURRENT_ADC": {
+      "model": [
+        [
+          "C2",
+          "1"
+        ],
+        [
+          "R8",
+          "2"
+        ],
+        [
+          "W5",
+          "2"
+        ]
+      ],
+      "schematic": []
+    },
+    "GPIO5": {
+      "model": [
+        [
+          "J1",
+          "5"
+        ],
+        [
+          "W5",
+          "1"
+        ]
+      ],
+      "schematic": []
+    },
+    "GPIO9": {
+      "model": [
+        [
+          "J1",
+          "15"
+        ],
+        [
+          "W15",
+          "1"
+        ]
+      ],
+      "schematic": []
+    },
+    "GPIO12": {
+      "model": [
+        [
+          "J1",
+          "18"
+        ],
+        [
+          "W18",
+          "1"
+        ]
+      ],
+      "schematic": []
+    },
+    "3V3": {
+      "model": [
+        [
+          "J1",
+          "1"
+        ],
+        [
+          "W1",
+          "1"
+        ]
+      ],
+      "schematic": []
+    },
+    "COMP_TX": {
+      "model": [
+        [
+          "J12",
+          "1"
+        ],
+        [
+          "W10",
+          "2"
+        ]
+      ],
+      "schematic": []
+    },
+    "/3V3": {
+      "model": [],
+      "schematic": [
+        [
+          "J1",
+          "1"
+        ],
+        [
+          "W1",
+          "1"
+        ]
+      ]
+    },
+    "COMP_RX": {
+      "model": [
+        [
+          "J12",
+          "2"
+        ],
+        [
+          "W11",
+          "2"
+        ]
+      ],
+      "schematic": []
+    },
+    "/COMP_RX": {
+      "model": [],
+      "schematic": [
+        [
+          "J12",
+          "2"
+        ],
+        [
+          "W11",
+          "2"
+        ]
+      ]
+    },
+    "/GPIO4": {
+      "model": [],
+      "schematic": [
+        [
+          "J1",
+          "4"
+        ],
+        [
+          "W4",
+          "1"
+        ]
+      ]
+    },
+    "/LIDAR_RX_FC": {
+      "model": [],
+      "schematic": [
+        [
+          "J13",
+          "3"
+        ],
+        [
+          "W6",
+          "2"
+        ]
+      ]
+    },
+    "/GPIO14_ESC": {
+      "model": [],
+      "schematic": [
+        [
+          "R7",
+          "1"
+        ],
+        [
+          "W20",
+          "2"
+        ]
+      ]
+    },
+    "/GPIO5": {
+      "model": [],
+      "schematic": [
+        [
+          "J1",
+          "5"
+        ],
+        [
+          "W5",
+          "1"
+        ]
+      ]
+    },
+    "/CURRENT_IN": {
+      "model": [],
+      "schematic": [
+        [
+          "J14",
+          "3"
+        ],
+        [
+          "R8",
+          "1"
+        ]
+      ]
+    },
+    "GND_MCU": {
+      "model": [
+        [
+          "J1",
+          "22"
+        ],
+        [
+          "W22",
+          "1"
+        ]
+      ],
+      "schematic": []
+    },
+    "/CURRENT_ADC": {
+      "model": [],
+      "schematic": [
+        [
+          "C2",
+          "1"
+        ],
+        [
+          "R8",
+          "2"
+        ],
+        [
+          "W5",
+          "2"
+        ]
+      ]
+    },
+    "GPIO17": {
+      "model": [
+        [
+          "J1",
+          "10"
+        ],
+        [
+          "W10",
+          "1"
+        ]
+      ],
+      "schematic": []
+    },
+    "GPIO8": {
+      "model": [
+        [
+          "J1",
+          "12"
+        ],
+        [
+          "W12",
+          "1"
+        ]
+      ],
+      "schematic": []
+    },
+    "GPIO12_ESC": {
+      "model": [
+        [
+          "R4",
+          "1"
+        ],
+        [
+          "W18",
+          "2"
+        ]
+      ],
+      "schematic": []
+    },
+    "GPIO4": {
+      "model": [
+        [
+          "J1",
+          "4"
+        ],
+        [
+          "W4",
+          "1"
+        ]
+      ],
+      "schematic": []
+    },
+    "GPIO1": {
+      "model": [
+        [
+          "J2",
+          "4"
+        ],
+        [
+          "R5",
+          "1"
+        ]
+      ],
+      "schematic": []
+    },
+    "/SENS_3V3": {
+      "model": [],
+      "schematic": [
+        [
+          "J14",
+          "2"
+        ],
+        [
+          "J4",
+          "2"
+        ],
+        [
+          "J5",
+          "2"
+        ],
+        [
+          "J6",
+          "2"
+        ],
+        [
+          "W1",
+          "2"
+        ]
+      ]
+    },
+    "ESC_FL": {
+      "model": [
+        [
+          "J8",
+          "1"
+        ],
+        [
+          "R4",
+          "2"
+        ]
+      ],
+      "schematic": []
+    },
+    "/GND": {
+      "model": [],
+      "schematic": [
+        [
+          "C1",
+          "2"
+        ],
+        [
+          "C2",
+          "2"
+        ],
+        [
+          "J10",
+          "2"
+        ],
+        [
+          "J11",
+          "2"
+        ],
+        [
+          "J12",
+          "3"
+        ],
+        [
+          "J13",
+          "1"
+        ],
+        [
+          "J14",
+          "1"
+        ],
+        [
+          "J3",
+          "1"
+        ],
+        [
+          "J4",
+          "1"
+        ],
+        [
+          "J5",
+          "1"
+        ],
+        [
+          "J6",
+          "1"
+        ],
+        [
+          "J7",
+          "2"
+        ],
+        [
+          "J8",
+          "2"
+        ],
+        [
+          "J9",
+          "2"
+        ],
+        [
+          "R2",
+          "1"
+        ],
+        [
+          "W22",
+          "2"
+        ]
+      ]
+    },
+    "ESC_FR": {
+      "model": [
+        [
+          "J9",
+          "1"
+        ],
+        [
+          "R5",
+          "2"
+        ]
+      ],
+      "schematic": []
+    },
+    "LIDAR_TX_FC": {
+      "model": [
+        [
+          "J13",
+          "4"
+        ],
+        [
+          "W7",
+          "2"
+        ]
+      ],
+      "schematic": []
+    },
+    "/GPIO1": {
+      "model": [],
+      "schematic": [
+        [
+          "J2",
+          "4"
+        ],
+        [
+          "R5",
+          "1"
+        ]
+      ]
+    },
+    "/ESC_RL": {
+      "model": [],
+      "schematic": [
+        [
+          "J11",
+          "1"
+        ],
+        [
+          "R7",
+          "2"
+        ]
+      ]
+    },
+    "/ESC_FR": {
+      "model": [],
+      "schematic": [
+        [
+          "J9",
+          "1"
+        ],
+        [
+          "R5",
+          "2"
+        ]
+      ]
+    }
+  },
+  "net_count": 35,
+  "component_count": 37,
+  "insulated_links": 13,
+  "assumptions": [
+    "Genuine/reference ESP32-S3-DevKitC-1 2x22 header geometry; purchased board must fit paper template",
+    "3.3V-compatible external sensor breakouts with mapped pigtails; no assumed clone pin order",
+    "External regulated5V; no motor current on PCB",
+    "Lidar supply disconnected; current sensor not selected; ADC/HMC/lidar firmware unfinished",
+    "100x100mm carrier and its mounting pattern not checked on actual F450 frame",
+    "DRC/ERC validate carrier connectivity/geometry; external modules are passive connectors, no voltage-domain or dynamic flight proof"
+  ],
+  "hashes": {
+    "esp32_home_etch.kicad_pcb": "020be81cd42654a390da30294d3b992326cb602138dca8fefb50f9a3cfc88a50",
+    "esp32_home_etch.kicad_sch": "5e6387a9d7fdd2b02fe169449104ad2fc8f345f317b0d2c79030e86babd908a4",
+    "generate_board.py": "3f4691332aa86687614f74ea49f6dab9aa8a924f91ba327c5dc6e187d63d2943",
+    "generate_schematic.py": "27f517ba49ca5e27a79f719c134703882a9f00444c9ff419c2742f653f4b3a35"
+  }
+}

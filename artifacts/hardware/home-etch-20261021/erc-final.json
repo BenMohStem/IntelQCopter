@@ -1,0 +1,592 @@
+{
+    "$schema": "https://schemas.kicad.org/erc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-10-21T20:25:21",
+    "ignored_checks": [
+        {
+            "description": "Global label only appears once in the schematic",
+            "key": "single_global_label"
+        },
+        {
+            "description": "Four connection points are joined together",
+            "key": "four_way_junction"
+        },
+        {
+            "description": "SPICE model issue",
+            "key": "simulation_model_issue"
+        },
+        {
+            "description": "Assigned footprint doesn't match footprint filters",
+            "key": "footprint_filter"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning"
+    ],
+    "kicad_version": "10.0.6",
+    "sheets": [
+        {
+            "path": "/",
+            "uuid_path": "/15de3759-b200-54ff-a4ca-925fa9b1764c",
+            "violations": [
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol J3 [Block_2]",
+                            "pos": {
+                                "x": 0.4445,
+                                "y": 1.1557
+                            },
+                            "uuid": "517c384c-66a4-5e20-9385-f0ac9aa8614e"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol R3 [Block_2]",
+                            "pos": {
+                                "x": 0.4445,
+                                "y": 1.7018
+                            },
+                            "uuid": "8ac08614-f9cc-5eeb-95d1-6bdf792129fd"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol J10 [Block_2]",
+                            "pos": {
+                                "x": 0.4445,
+                                "y": 2.2479
+                            },
+                            "uuid": "4109a335-5ed2-54c5-b246-aa982aa39fda"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol C2 [Block_2]",
+                            "pos": {
+                                "x": 0.4445,
+                                "y": 2.794
+                            },
+                            "uuid": "c2740ebb-7e52-5973-9075-b43024d6c384"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol W11 [Block_2]",
+                            "pos": {
+                                "x": 0.4445,
+                                "y": 3.3528
+                            },
+                            "uuid": "4e651336-48bc-5703-9050-38076168b924"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol J1 [Block_22]",
+                            "pos": {
+                                "x": 0.6985,
+                                "y": 0.2159
+                            },
+                            "uuid": "01a5fa04-837d-5812-b825-be4814f58b62"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol J4 [Block_4]",
+                            "pos": {
+                                "x": 1.2446,
+                                "y": 1.1557
+                            },
+                            "uuid": "e202a395-22bd-5601-8ac0-6f1ceb246356"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol C1 [Block_2]",
+                            "pos": {
+                                "x": 1.2446,
+                                "y": 1.7018
+                            },
+                            "uuid": "82165724-49ab-51c8-8e45-df069a93e9e3"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol R7 [Block_2]",
+                            "pos": {
+                                "x": 1.2446,
+                                "y": 2.2479
+                            },
+                            "uuid": "14292a52-72c7-5528-97f1-f15e934b0062"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol W1 [Block_2]",
+                            "pos": {
+                                "x": 1.2446,
+                                "y": 2.794
+                            },
+                            "uuid": "e355d07c-7d0b-52c8-b256-f0a7812a6eab"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol W12 [Block_2]",
+                            "pos": {
+                                "x": 1.2446,
+                                "y": 3.3528
+                            },
+                            "uuid": "01322d15-376a-511b-ba90-aa7679b1934f"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol J5 [Block_4]",
+                            "pos": {
+                                "x": 2.0447,
+                                "y": 1.1557
+                            },
+                            "uuid": "0d09ef42-a3b2-5a47-b8e0-81bea352e8fa"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol R4 [Block_2]",
+                            "pos": {
+                                "x": 2.0447,
+                                "y": 1.7018
+                            },
+                            "uuid": "c48ea4ff-2665-5608-8bcd-c44ada89b8bc"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol J11 [Block_2]",
+                            "pos": {
+                                "x": 2.0447,
+                                "y": 2.2479
+                            },
+                            "uuid": "5070cded-0de6-5b0e-b53f-3949f5071c0c"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol W4 [Block_2]",
+                            "pos": {
+                                "x": 2.0447,
+                                "y": 2.794
+                            },
+                            "uuid": "b23f22f3-2e9a-567f-bfaf-99b96e9580cc"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol W15 [Block_2]",
+                            "pos": {
+                                "x": 2.0447,
+                                "y": 3.3528
+                            },
+                            "uuid": "3dce7833-4fac-5d39-b25a-93bb6b304ae2"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol J2 [Block_22]",
+                            "pos": {
+                                "x": 2.4003,
+                                "y": 0.2159
+                            },
+                            "uuid": "18bd55d9-b029-52e6-b2a1-804a553e757e"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol J6 [Block_4]",
+                            "pos": {
+                                "x": 2.8448,
+                                "y": 1.1557
+                            },
+                            "uuid": "857aaec9-7661-556d-bd52-6137cbaf581d"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol J8 [Block_2]",
+                            "pos": {
+                                "x": 2.8448,
+                                "y": 1.7018
+                            },
+                            "uuid": "c44847e2-28c4-5680-86ce-295eb4f7c06b"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol J12 [Block_3]",
+                            "pos": {
+                                "x": 2.8448,
+                                "y": 2.2479
+                            },
+                            "uuid": "09649a42-a491-59db-bc2c-f8798bfff7bc"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol W5 [Block_2]",
+                            "pos": {
+                                "x": 2.8448,
+                                "y": 2.794
+                            },
+                            "uuid": "7bdf2b36-f8d1-5cac-8def-9f9c7977e28c"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol W18 [Block_2]",
+                            "pos": {
+                                "x": 2.8448,
+                                "y": 3.3528
+                            },
+                            "uuid": "8877635c-9a0d-53d1-b3af-1c5211c63f84"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol J7 [Block_2]",
+                            "pos": {
+                                "x": 3.6449,
+                                "y": 1.1557
+                            },
+                            "uuid": "e30c98ae-4cee-5cd8-b3e0-aea3ebf29d9d"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol R5 [Block_2]",
+                            "pos": {
+                                "x": 3.6449,
+                                "y": 1.7018
+                            },
+                            "uuid": "ff2b16d1-664b-57a6-92be-936e69c65940"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol J13 [Block_4]",
+                            "pos": {
+                                "x": 3.6449,
+                                "y": 2.2479
+                            },
+                            "uuid": "8eef306b-4ec3-5c50-8521-f8a2a1915fb2"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol W6 [Block_2]",
+                            "pos": {
+                                "x": 3.6449,
+                                "y": 2.794
+                            },
+                            "uuid": "664603bc-d9d4-54cb-817f-6b66bd742770"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol W20 [Block_2]",
+                            "pos": {
+                                "x": 3.6449,
+                                "y": 3.3528
+                            },
+                            "uuid": "ddd177c7-134c-5b5b-8389-e15c69ec5ef8"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol R1 [Block_2]",
+                            "pos": {
+                                "x": 4.445,
+                                "y": 1.1557
+                            },
+                            "uuid": "b58c2ba4-3670-55d3-bf87-70886ec7de6f"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol J9 [Block_2]",
+                            "pos": {
+                                "x": 4.445,
+                                "y": 1.7018
+                            },
+                            "uuid": "232edc0f-c0e7-5341-a0bf-93772b3bcb5e"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol J14 [Block_3]",
+                            "pos": {
+                                "x": 4.445,
+                                "y": 2.2479
+                            },
+                            "uuid": "b8df7815-0419-5064-bc3b-0d75e3a017a6"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol W7 [Block_2]",
+                            "pos": {
+                                "x": 4.445,
+                                "y": 2.794
+                            },
+                            "uuid": "41897dff-b57e-5a34-a9b8-6db6faa4ffc3"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol W21 [Block_2]",
+                            "pos": {
+                                "x": 4.445,
+                                "y": 3.3528
+                            },
+                            "uuid": "e2285110-1286-59a5-a059-ed5b5d789420"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol R2 [Block_2]",
+                            "pos": {
+                                "x": 5.2451,
+                                "y": 1.1557
+                            },
+                            "uuid": "8845a8de-535b-5d8c-8e8d-cbc6d1c6580d"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol R6 [Block_2]",
+                            "pos": {
+                                "x": 5.2451,
+                                "y": 1.7018
+                            },
+                            "uuid": "1726414e-f1c8-5455-8209-e71fac9d049f"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol R8 [Block_2]",
+                            "pos": {
+                                "x": 5.2451,
+                                "y": 2.2479
+                            },
+                            "uuid": "daf44806-81b4-5365-8034-185b1e42fab3"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol W10 [Block_2]",
+                            "pos": {
+                                "x": 5.2451,
+                                "y": 2.794
+                            },
+                            "uuid": "32490593-8891-5a9c-a967-33f20ea596cf"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                },
+                {
+                    "description": "The current configuration does not include the footprint library 'HomeEtch'",
+                    "items": [
+                        {
+                            "description": "Symbol W22 [Block_2]",
+                            "pos": {
+                                "x": 5.2451,
+                                "y": 3.3528
+                            },
+                            "uuid": "e7d4502d-2600-5600-80c1-fd237178efaa"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "footprint_link_issues"
+                }
+            ]
+        }
+    ],
+    "source": "esp32_home_etch.kicad_sch"
+}

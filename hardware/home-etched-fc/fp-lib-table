@@ -1,0 +1,1 @@
+(fp_lib_table (version 7) (lib (name "HomeEtch") (type "KiCad") (uri "${KIPRJMOD}/HomeEtch.pretty") (options "") (descr "Project-local enlarged THT pads and insulated links")))

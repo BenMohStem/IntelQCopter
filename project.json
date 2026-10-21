@@ -10,7 +10,8 @@
     "knowledge": "knowledge/",
     "evidence": "artifacts/",
     "history": "archive/",
-    "companion": "companion/"
+    "companion": "companion/",
+    "hardware": "hardware/"
   },
   "local": {
     "build": "build/",
@@ -295,6 +296,12 @@
       "args": [],
       "path": "tools/reports/hardening_report.py",
       "description": "Rebuild the original final C/QEMU/ROS2/Gazebo hardening graphs and authority report"
+    },
+    "knowledge-overview": {
+      "runtime": "python",
+      "path": "tools/knowledge/render_overview.py",
+      "args": [],
+      "description": "Render latest validated facts while preserving the append-only ledger history"
     }
   }
 }

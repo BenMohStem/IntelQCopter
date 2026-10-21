@@ -406,6 +406,26 @@
       "id": "source-github-simulation-launch-guide",
       "kind": "file",
       "locator": "docs/run-simulation.md"
+    },
+    {
+      "id": "source-competition-pcb-request",
+      "kind": "decision",
+      "locator": "User confirmed ESP32-S3 + Xbox sensors-only competition carrier, single bottom copper with wire jumpers, internet reference modules; 2026-10-21"
+    },
+    {
+      "id": "source-pcb-native-cad",
+      "kind": "file",
+      "locator": "artifacts/hardware/home-etch-20261021/verification-summary.json"
+    },
+    {
+      "id": "source-pcb-assembly",
+      "kind": "file",
+      "locator": "hardware/home-etched-fc/README.md"
+    },
+    {
+      "id": "source-doc-consolidation",
+      "kind": "file",
+      "locator": "docs/README.md"
     }
   ],
   "facts": [
@@ -1581,6 +1601,62 @@
           "reason": "User requested GitHub instructions for running the current simulation."
         }
       ]
+    },
+    {
+      "id": "competition_pcb",
+      "topic": "hardware",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-21",
+          "status": "implemented",
+          "evidence_level": "build",
+          "statement": "100x100mm ESP32-S3-DevKitC-1 reference carrier with bottom copper, 13 insulated links, 1mm signals, 1.9mm socket pads and 3.2mm external pads. Native KiCad 10.0.6 reports zero DRC/ERC/unrouted/parity issues; independent comparison matches 35 connected nets. Module/frame fit and electrical/physical flight behavior remain unvalidated. No motor-current path or physical ESC output enable.",
+          "sources": [
+            "source-competition-pcb-request",
+            "source-pcb-native-cad",
+            "source-pcb-assembly"
+          ],
+          "reason": "User requested continued project consolidation and home-etched competition PCB work."
+        }
+      ]
+    },
+    {
+      "id": "pcb_measurement_pending",
+      "topic": "hardware",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-21",
+          "status": "pending",
+          "evidence_level": "source",
+          "statement": "Battery divider and filtered GPIO4/GPIO5 voltage/current provisions are CAD only. Current sensor, calibrated ADC driver, power-off input protection, exact lidar supply, magnetometer driver and purchased module fit remain open. Companion UART is optional; no onboard LoRa/CC1101 in this competition carrier. This is not a hardware BMS.",
+          "sources": [
+            "source-pcb-assembly"
+          ],
+          "reason": "User requested continued project consolidation and home-etched competition PCB work."
+        }
+      ]
+    },
+    {
+      "id": "documentation_map",
+      "topic": "documentation",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-21",
+          "status": "implemented",
+          "evidence_level": "source",
+          "statement": "Current documentation has a task index, consolidated launch guide, operational settings guide and expanded illustrated mathematical guide (braking, ideal poles, stopping distance, Gentle shaping, trigger headroom, allocator and filter limits). Earlier document blobs are indexed by immutable Git commit; original trial artifacts remain in place. Current knowledge overview is generated from the validated ledger.",
+          "sources": [
+            "source-doc-consolidation"
+          ],
+          "reason": "User requested continued project consolidation and home-etched competition PCB work."
+        }
+      ]
     }
   ],
   "relations": [
@@ -1643,6 +1719,11 @@
       "from": "sampled_stability",
       "type": "limited_by",
       "to": "mass"
+    },
+    {
+      "from": "competition_pcb",
+      "type": "limited_by",
+      "to": "pcb_measurement_pending"
     }
   ]
 }

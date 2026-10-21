@@ -1,0 +1,487 @@
+{
+    "$schema": "https://schemas.kicad.org/drc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-10-21T20:26:06",
+    "ignored_checks": [
+        {
+            "description": "Footprint has no courtyard defined",
+            "key": "missing_courtyard"
+        },
+        {
+            "description": "Track endpoint not centered on via",
+            "key": "track_not_centered_on_via"
+        },
+        {
+            "description": "Tuning profile track geometries",
+            "key": "tuning_profile_track_geometries"
+        },
+        {
+            "description": "Footprint doesn't match symbol's footprint filters",
+            "key": "footprint_filters_mismatch"
+        },
+        {
+            "description": "Footprint component type doesn't match footprint pads",
+            "key": "footprint_type_mismatch"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning"
+    ],
+    "kicad_version": "10.0.6",
+    "schematic_parity": [
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J1-Pad2))",
+            "items": [
+                {
+                    "description": "PTH pad 2 [<no net>] of J1",
+                    "pos": {
+                        "x": 40.0,
+                        "y": 16.54
+                    },
+                    "uuid": "209dbac0-b1c4-4214-ac0d-9031e32ccee3"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J1-Pad3))",
+            "items": [
+                {
+                    "description": "PTH pad 3 [<no net>] of J1",
+                    "pos": {
+                        "x": 40.0,
+                        "y": 19.08
+                    },
+                    "uuid": "a5f65225-a81a-4f35-aff4-96084d84e0f5"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J1-Pad8))",
+            "items": [
+                {
+                    "description": "PTH pad 8 [<no net>] of J1",
+                    "pos": {
+                        "x": 40.0,
+                        "y": 31.78
+                    },
+                    "uuid": "11e7731a-ba3d-487d-8816-ef6fe550fc8a"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J1-Pad9))",
+            "items": [
+                {
+                    "description": "PTH pad 9 [<no net>] of J1",
+                    "pos": {
+                        "x": 40.0,
+                        "y": 34.32
+                    },
+                    "uuid": "e0e82ea7-2a5c-4cb6-964e-52f694f04136"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J1-Pad13))",
+            "items": [
+                {
+                    "description": "PTH pad 13 [<no net>] of J1",
+                    "pos": {
+                        "x": 40.0,
+                        "y": 44.48
+                    },
+                    "uuid": "4f63c122-c290-43b5-a43b-31c4c974c325"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J1-Pad14))",
+            "items": [
+                {
+                    "description": "PTH pad 14 [<no net>] of J1",
+                    "pos": {
+                        "x": 40.0,
+                        "y": 47.02
+                    },
+                    "uuid": "4639fc2c-fb66-414a-9219-0877f6e2683c"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J1-Pad16))",
+            "items": [
+                {
+                    "description": "PTH pad 16 [<no net>] of J1",
+                    "pos": {
+                        "x": 40.0,
+                        "y": 52.1
+                    },
+                    "uuid": "3b55d713-a7f0-4853-aad9-0a68a4608c96"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J1-Pad17))",
+            "items": [
+                {
+                    "description": "PTH pad 17 [<no net>] of J1",
+                    "pos": {
+                        "x": 40.0,
+                        "y": 54.64
+                    },
+                    "uuid": "86c0bbce-ad8b-4efe-8609-8a915a0b5937"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J1-Pad19))",
+            "items": [
+                {
+                    "description": "PTH pad 19 [<no net>] of J1",
+                    "pos": {
+                        "x": 40.0,
+                        "y": 59.72
+                    },
+                    "uuid": "f8b39296-fc58-4c7f-92ca-9d6dc25253bf"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J2-Pad1))",
+            "items": [
+                {
+                    "description": "PTH pad 1 [<no net>] of J2",
+                    "pos": {
+                        "x": 62.86,
+                        "y": 14.0
+                    },
+                    "uuid": "eb670628-bee3-49af-9459-760be42b56bd"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J2-Pad2))",
+            "items": [
+                {
+                    "description": "PTH pad 2 [<no net>] of J2",
+                    "pos": {
+                        "x": 62.86,
+                        "y": 16.54
+                    },
+                    "uuid": "149cda79-05e6-4b13-95a7-f2ed205a0055"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J2-Pad3))",
+            "items": [
+                {
+                    "description": "PTH pad 3 [<no net>] of J2",
+                    "pos": {
+                        "x": 62.86,
+                        "y": 19.08
+                    },
+                    "uuid": "1de51589-3556-4c7d-875c-519ccaa6906a"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J2-Pad6))",
+            "items": [
+                {
+                    "description": "PTH pad 6 [<no net>] of J2",
+                    "pos": {
+                        "x": 62.86,
+                        "y": 26.7
+                    },
+                    "uuid": "3d5e15b9-b520-407e-bfb3-1e63c3cfb53c"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J2-Pad7))",
+            "items": [
+                {
+                    "description": "PTH pad 7 [<no net>] of J2",
+                    "pos": {
+                        "x": 62.86,
+                        "y": 29.24
+                    },
+                    "uuid": "c2c18997-f81d-48e8-8ffb-87ffca8fd0bc"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J2-Pad8))",
+            "items": [
+                {
+                    "description": "PTH pad 8 [<no net>] of J2",
+                    "pos": {
+                        "x": 62.86,
+                        "y": 31.78
+                    },
+                    "uuid": "bc6280da-a952-421d-9bf2-2e391223672a"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J2-Pad9))",
+            "items": [
+                {
+                    "description": "PTH pad 9 [<no net>] of J2",
+                    "pos": {
+                        "x": 62.86,
+                        "y": 34.32
+                    },
+                    "uuid": "d768d754-818e-4652-8e27-524c7503555e"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J2-Pad10))",
+            "items": [
+                {
+                    "description": "PTH pad 10 [<no net>] of J2",
+                    "pos": {
+                        "x": 62.86,
+                        "y": 36.86
+                    },
+                    "uuid": "3b204b6b-358f-4799-8777-8222ca78d783"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J2-Pad11))",
+            "items": [
+                {
+                    "description": "PTH pad 11 [<no net>] of J2",
+                    "pos": {
+                        "x": 62.86,
+                        "y": 39.4
+                    },
+                    "uuid": "1e0306bb-db63-4215-a6c4-9709c5cff0e9"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J2-Pad12))",
+            "items": [
+                {
+                    "description": "PTH pad 12 [<no net>] of J2",
+                    "pos": {
+                        "x": 62.86,
+                        "y": 41.94
+                    },
+                    "uuid": "123c5048-e99f-49af-b2fd-447b52c58b5d"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J2-Pad13))",
+            "items": [
+                {
+                    "description": "PTH pad 13 [<no net>] of J2",
+                    "pos": {
+                        "x": 62.86,
+                        "y": 44.48
+                    },
+                    "uuid": "794a8d23-168a-4633-bc82-4d4ceb6793e8"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J2-Pad14))",
+            "items": [
+                {
+                    "description": "PTH pad 14 [<no net>] of J2",
+                    "pos": {
+                        "x": 62.86,
+                        "y": 47.02
+                    },
+                    "uuid": "1d486194-5636-4228-8236-0b6ac8f8f84a"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J2-Pad15))",
+            "items": [
+                {
+                    "description": "PTH pad 15 [<no net>] of J2",
+                    "pos": {
+                        "x": 62.86,
+                        "y": 49.56
+                    },
+                    "uuid": "e6164201-b63b-449a-a0c1-22f233661f7a"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J2-Pad16))",
+            "items": [
+                {
+                    "description": "PTH pad 16 [<no net>] of J2",
+                    "pos": {
+                        "x": 62.86,
+                        "y": 52.1
+                    },
+                    "uuid": "735c0b92-a35f-41e7-b3c8-067defe596ad"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J2-Pad17))",
+            "items": [
+                {
+                    "description": "PTH pad 17 [<no net>] of J2",
+                    "pos": {
+                        "x": 62.86,
+                        "y": 54.64
+                    },
+                    "uuid": "c8506569-b6ee-4c1d-8c39-dafc4f642687"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J2-Pad18))",
+            "items": [
+                {
+                    "description": "PTH pad 18 [<no net>] of J2",
+                    "pos": {
+                        "x": 62.86,
+                        "y": 57.18
+                    },
+                    "uuid": "f77f35b7-c3e5-4ac6-bb8a-317d7cf4f213"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J2-Pad19))",
+            "items": [
+                {
+                    "description": "PTH pad 19 [<no net>] of J2",
+                    "pos": {
+                        "x": 62.86,
+                        "y": 59.72
+                    },
+                    "uuid": "b311b8ff-4b09-4a2b-8f44-935ef2d430d5"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J2-Pad20))",
+            "items": [
+                {
+                    "description": "PTH pad 20 [<no net>] of J2",
+                    "pos": {
+                        "x": 62.86,
+                        "y": 62.26
+                    },
+                    "uuid": "648dc51d-c73f-45da-a3aa-6b615f8f3ea6"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J2-Pad21))",
+            "items": [
+                {
+                    "description": "PTH pad 21 [<no net>] of J2",
+                    "pos": {
+                        "x": 62.86,
+                        "y": 64.8
+                    },
+                    "uuid": "1e747ffc-44af-4a17-81dc-eb0f899ed82a"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J2-Pad22))",
+            "items": [
+                {
+                    "description": "PTH pad 22 [<no net>] of J2",
+                    "pos": {
+                        "x": 62.86,
+                        "y": 67.34
+                    },
+                    "uuid": "277344c2-a39e-4d99-af9b-9bf45faaa874"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        },
+        {
+            "description": "Pad missing net given by schematic (unconnected-(J13-Pad2))",
+            "items": [
+                {
+                    "description": "PTH pad 2 [<no net>] of J13",
+                    "pos": {
+                        "x": 73.0,
+                        "y": 45.08
+                    },
+                    "uuid": "34436a86-95db-401d-ab0a-b5de6f3ecfe0"
+                }
+            ],
+            "severity": "warning",
+            "type": "net_conflict"
+        }
+    ],
+    "source": "esp32_home_etch.kicad_pcb",
+    "unconnected_items": [],
+    "violations": []
+}

@@ -1,0 +1,68 @@
+(footprint "W22"
+	(version 20260206)
+	(generator "pcbnew")
+	(generator_version "10.0")
+	(layer "F.Cu")
+	(property "Reference" "REF**"
+		(at 0 0 0)
+		(layer "F.SilkS")
+		(hide yes)
+		(uuid "c481ae9f-591b-4576-85f2-3f8c19f62748")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Value" "INSULATED_WIRE"
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "4800b95b-da7d-49f3-8f03-6f681dfe0e71")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "63288613-1f03-412f-9f40-7461c6323b98")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "595cea1e-c10a-4588-b78d-95829d2b3e19")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(duplicate_pad_numbers_are_jumpers no)
+	(pad "1" thru_hole circle
+		(at 0 0)
+		(size 2.8 2.8)
+		(drill 1.2)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "bf09e79c-473b-41e6-859c-a42c4456f1dd")
+	)
+	(pad "2" thru_hole circle
+		(at -26 14.66)
+		(size 2.8 2.8)
+		(drill 1.2)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "ec43907d-8a63-44d8-95ea-cf5f39e2d8cc")
+	)
+	(embedded_fonts no)
+)

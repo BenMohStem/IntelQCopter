@@ -8,7 +8,11 @@ This edition follows your request for **linear, time-invariant (LTI) equations**
 
 The calculations below use the same provisional gains as the active ESP32 C file. The model and discretization also apply to the RP2350 architecture; platform drivers and storage differ. We have **not** measured the complete aircraft mass, inertia or propeller thrust. The numerical examples are a transparent calculation scenario, not flight-certified settings.
 
-<nav class="chapter-links"><a href="#1-what-is-t">1 · Force</a><a href="#2-draw-the-f450-before-writing-torques">2 · F450 geometry</a><a href="#4-build-the-linear-differential-equations">4 · Differential equations</a><a href="#6-from-a-differential-equation-to-a-transfer-function">6 · Transfer functions</a><a href="#8-calculate-the-six-controller-gains">8 · Six gains</a><a href="#10-turn-continuous-equations-into-2-ms-updates">10 · Discrete time</a><a href="#12-kalman-filtering-with-every-step-shown">12 · Kalman</a></nav>
+<nav class="chapter-links"><a href="#1-what-is-t">1 · Force</a><a href="#2-draw-the-f450-before-writing-torques">2 · F450 geometry</a><a href="#4-build-the-linear-differential-equations">4 · Differential equations</a><a href="#6-from-a-differential-equation-to-a-transfer-function">6 · Transfer functions</a><a href="#8-calculate-the-six-controller-gains">8 · Six gains</a><a href="#10-turn-continuous-equations-into-2-ms-updates">10 · Discrete time</a><a href="#12-kalman-filtering-with-every-step-shown">12 · Kalman</a><a href="#16-why-centring-the-stick-requires-a-braking-loop">16 · Braking</a><a href="#17-gentle-inputs-rtlt-and-the-pid-headroom-calculation">17 · Trigger headroom</a><a href="#18-what-the-present-filters-and-experiments-establish">18 · Evidence limits</a></nav>
+
+<div class="hero-note"><strong>Current implementation:</strong> Gentle stick inputs; angle roll/pitch, yaw rate, vertical-speed/hover control; optional position-aided braking. Read chapters 16–18 after the six-PID and Kalman derivations. The real hardware does not yet have the simulated horizontal localization.</div>
+
+**Navigation:** [Run a simulation](run-simulation.md) · [Settings and command authority](control-workbench.md) · [PCB assembly](../hardware/home-etched-fc/README.md) · [Measurements still needed](../measurements/README.md).
 
 ## 0. Read the symbols as short sentences
 
@@ -1121,3 +1125,185 @@ node tools/docs/render_math_guides.cjs
 ```
 
 The reader itself needs no network, JavaScript or installed LaTeX package. The old nonlinear paper remains in the archive for later study. This guide is the active explanation for learning the F450 hover model in smaller steps.
+
+
+## 16. Why centring the stick requires a braking loop
+
+Angle control does not directly command position. In the small-angle hover model from §4,
+
+$$
+\ddot x\approx g\theta,\qquad \ddot y\approx-g\phi.
+$$
+
+If $\theta=0$, then $\ddot x\approx0$. Integrating once gives $\dot x(t)\approx\dot x(0)$, **not necessarily zero**. A level drone can keep moving. Drag reduces this eventually, but cannot promise that it stops where the stick was released.
+
+### 16.1 Define the desired point and signs
+
+At the instant of stick release, save the observed position $x_h=x(t_0)$. Define
+
+$$
+e_x=x_h-x,\qquad \dot e_x=-\dot x=-v_x,\qquad\ddot e_x=-\ddot x=-a_x.
+$$
+
+There is a minus sign because the held target is constant: $d x_h/dt=0$. If the aircraft is moving forward, $v_x>0$ and $\dot e_x<0$. It is leaving the target even though the initial position error is zero.
+
+Ask for acceleration using a position term and a braking term:
+
+$$
+a_x^*=k_x e_x-k_vv_x=0.9e_x-1.9v_x.
+$$
+
+For $e_x=0$ and $v_x>0$, this gives negative acceleration. That is the counter-tilt you see after releasing the stick. The units are $k_x:\mathrm{s^{-2}}$ and $k_v:\mathrm{s^{-1}}$, so each term has acceleration units.
+
+### 16.2 Derive the ideal error dynamics, one substitution at a time
+
+Suppose the inner loops track the requested acceleration exactly, with no limit or delay. Substitute $a_x=a_x^*$ and $v_x=-\dot e_x$:
+
+$$
+\ddot e_x=-a_x^*=-0.9e_x+1.9v_x
+=-0.9e_x-1.9\dot e_x.
+$$
+
+Bring everything to the left:
+
+$$
+\ddot e_x+1.9\dot e_x+0.9e_x=0.
+$$
+
+Its characteristic polynomial factors directly:
+
+$$
+s^2+1.9s+0.9=(s+0.9)(s+1),\qquad s_1=-0.9,\quad s_2=-1.
+$$
+
+Both ideal modes decay. This is a calculation for an **ideal outer loop**, not a proof that the full uncertain aircraft is stable. The six inner angle/rate/height controllers, motor lag, observations and limits still matter.
+
+### 16.3 Why even this stable loop overshoots the release point
+
+Let $t=0$ mean release, and let $v_0>0$ be its speed then. We have $e_x(0)=0$ and $\dot e_x(0)=-v_0$. The general ideal solution is
+
+$$
+e_x(t)=C_1e^{-0.9t}+C_2e^{-t}.
+$$
+
+The first initial condition gives $C_2=-C_1$. Differentiating and substituting the second gives
+
+$$
+-0.9C_1-C_2=0.1C_1=-v_0,
+\qquad C_1=-10v_0,\quad C_2=10v_0.
+$$
+
+Therefore
+
+$$
+e_x(t)=10v_0(e^{-t}-e^{-0.9t}).
+$$
+
+For positive $t$ this is initially negative: the drone first moves past the release point, then returns. Our real implementation also limits acceleration to $\pm1.2\,\mathrm{m/s^2}$. Even perfect immediate braking cannot stop in less than
+
+$$
+d_{\min}=\frac{v_0^2}{2a_{\max}}.
+$$
+
+At $v_0=0.74\,\mathrm{m/s}$, this lower bound is about $0.228$ m. At $2.67\,\mathrm{m/s}$ it is about $2.97$ m. Finite motor/attitude response can increase it. A 3 cm error **after settling** is not a 3 cm maximum excursion.
+
+### 16.4 Match the explanation to the 2 ms C implementation
+
+The implemented acceleration requests are clipped:
+
+$$
+a_x=\operatorname{clip}(0.9(x_h-x)-1.9v_x,-1.2,1.2),\quad
+a_y=\operatorname{clip}(0.9(y_h-y)-1.9v_y,-1.2,1.2).
+$$
+
+For heading $\psi$, turn world requests into body forward/left requests:
+
+$$
+a_{bx}=\cos\psi\,a_x+\sin\psi\,a_y,\qquad
+a_{by}=-\sin\psi\,a_x+\cos\psi\,a_y.
+$$
+
+The LTI small-angle explanation uses $\theta_r\approx a_{bx}/g$, $\phi_r\approx-a_{by}/g$. The C implementation uses bounded arctangent equivalents and converts radians to degrees before applying its $\pm7^\circ$ braking limit. A deflected stick still commands angle directly. These two optional outer PD corrections do not replace the six PIDs derived earlier.
+
+Fresh horizontal localization is mandatory for this loop. The simulator explicitly supplies ideal position, velocity and heading to the C FC; Python does not override the aircraft's position or motor forces. No equivalent real localization driver is implemented. After 100 ms without fresh aiding, the FC stops using position hold. The IMU/barometer alone cannot provide drift-free XY position.
+
+## 17. Gentle inputs, RT/LT and the PID headroom calculation
+
+### 17.1 The stick curve does not change a PID gain
+
+Let $q$ be a raw normalized stick value. After the 12% deadband, define
+
+$$
+z=\operatorname{sign}(q)\max\left(0,\frac{|q|-0.12}{0.88}\right).
+$$
+
+Gentle maps roll/pitch to $5z|z|$ degrees. Thus halfway through the active travel, $z=0.5$ gives $5(0.5)^2=1.25^\circ$. Full travel gives $5^\circ$. The PID compares this requested angle with its estimate as before; neither $K_p$ nor $K_i$ is secretly multiplied by the stick curve.
+
+Gentle is now the physical C boot default and the UI default. The simulator's explicitly labelled input mapper applies this curve once and its C host decoder is configured to avoid applying it again. Triggers retain full travel.
+
+### 17.2 Trigger slew and collective ceiling
+
+Let $b^*=\operatorname{clip}(RT-LT,-1,1)$. At each sample the FC updates
+
+$$
+b_k=b_{k-1}+\operatorname{clip}(b^*-b_{k-1},-10\Delta t,4\Delta t),
+\qquad c_{\max}=0.65+0.15b_k.
+$$
+
+Neutral means $c_{\max}=0.65$, full RT permits $0.80$, and full LT reduces it to $0.50$. These are ceilings; they do not force the aircraft to use those values. Under a provisional 1000–2000 microsecond mapping,
+
+$$
+t_{\mathrm{equiv}}=(1000+1000c)\,\mathrm{\mu s},
+\qquad c=0.8\Rightarrow t_{\mathrm{equiv}}=1800\,\mathrm{\mu s}.
+$$
+
+There is no physical ESC pulse driver. This conversion does not identify thrust or guarantee how a real ESC responds.
+
+### 17.3 Keep torque corrections while respecting the ceiling
+
+Call the four zero-sum attitude corrections $\delta_i$. Let $\ell=\min_i\delta_i$ and $u=\max_i\delta_i$. Scale infeasible differential commands together, using scale $\alpha\le1$. The feasible collective interval must satisfy
+
+$$
+0\le c+\alpha\delta_i\le1
+\quad\Longrightarrow\quad
+-\alpha\ell\le c\le1-\alpha u.
+$$
+
+Also require $c\le c_{\max}$. The implemented allocation is therefore
+
+$$
+c_{\mathrm{alloc}}=\operatorname{clip}\left(c_{\mathrm{request}},
+-\alpha\ell,\min(c_{\max},1-\alpha u)\right),
+\qquad m_i=c_{\mathrm{alloc}}+\alpha\delta_i.
+$$
+
+The scale is reduced if necessary so this interval exists, including $\alpha\le c_{\max}/(-\ell)$ when $\ell<0$. Since $\sum_i\delta_i=0$,
+
+$$
+\frac{m_1+m_2+m_3+m_4}{4}=c_{\mathrm{alloc}}\le c_{\max}.
+$$
+
+An individual motor can exceed $0.8$ to correct attitude while another decreases. That is the reserved PID authority, not an RT collective boost to $1.0$. Altitude integral growth is undone when it would push further into the actual collective ceiling; integration that unwinds saturation is allowed.
+
+## 18. What the present filters and experiments establish
+
+An accelerometer observes gravity mixed with translational acceleration. A sustained tilt accelerates the aircraft, so treating every accelerometer angle as gravity can bias the attitude estimate and cause angle creep. This was observed in a preserved failed simulation.
+
+In manual mode with fresh localization, the C core estimates horizontal acceleration from velocity differences. Above $0.25\,\mathrm{m/s^2}$ it keeps gyro prediction and covariance propagation, but skips that contaminated gravity correction:
+
+$$
+\hat x_k=\hat x_k^-,\qquad P_k=P_k^-,\qquad K_k=0.
+$$
+
+The filter has not become magically certain. Its prediction uncertainty continues to evolve. The correction resumes as translation settles. This depends on ideal simulated aiding today; it is not drift-free IMU-only estimation or a hardware validation. The ROS2-navigation estimator policy remains separate.
+
+| Evidence | What it actually demonstrates |
+|---|---|
+| LTI calculation in this guide | Algebra and poles for the stated model/feedback assumptions |
+| C host stress tests | Input/fault handling, bounded calculations, allocator behavior and PC API timing |
+| ESP32-S3 QEMU replay | Compiled C source execution with synthetic inputs, not aircraft physics or BLE timing |
+| Native Gazebo flights | C controller + assumed plant/synthetic sensors + explicit ideal localization |
+| ROS2 command-authority audit | One approved route; onboard planning produces UART commands consumed by C FC |
+| Physical measurements | Still required for mass/inertia/thrust, interfaces, noise, timing and flight claims |
+
+The [current report](../artifacts/reports/hardening-20261021/index.html) retains videos, source hashes, original graphs and failed cases. [Launch instructions](run-simulation.md) explain how to reproduce a session. [The debugging guide](debugging-and-flight-readiness.md) explains the counters and remaining limitations. [The PCB guide](../hardware/home-etched-fc/README.md) covers the current competition carrier; adding a connector does not implement its sensor driver.

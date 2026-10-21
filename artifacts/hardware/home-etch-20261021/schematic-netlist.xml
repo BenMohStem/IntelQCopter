@@ -1,0 +1,1189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export version="E">
+  <design>
+    <source>C:\Users\Mohamed\Desktop\Work\QCopter-ESP32-Xbox\hardware\home-etched-fc\esp32_home_etch.kicad_sch</source>
+    <date>2026-10-21T20:18:47</date>
+    <tool>Eeschema 10.0.6</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title>ESP32-S3 single-sided prototype carrier</title>
+        <company/>
+        <rev/>
+        <date/>
+        <source>esp32_home_etch.kicad_sch</source>
+        <comment number="1" value="Module connectors only; physical arming disabled"/>
+        <comment number="2" value="Lidar power open; external motor PDB; no LoRa/CC1101"/>
+        <comment number="3" value=""/>
+        <comment number="4" value=""/>
+        <comment number="5" value=""/>
+        <comment number="6" value=""/>
+        <comment number="7" value=""/>
+        <comment number="8" value=""/>
+        <comment number="9" value=""/>
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="C_IFILTER">
+      <value>100nF</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>7d77d17c-664f-5107-be4f-a5f32f1c7c29</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C_VFILTER">
+      <value>100nF</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>54ffd8ee-4dc5-5708-bcaa-fe5c24e2cc15</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J_BARO">
+      <value>BMP280</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_4" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>c59544fd-0204-5c79-8b12-22d8c4ee0f3c</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+            <pin num="4"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J_BAT">
+      <value>SENSE ONLY</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>d5b338d4-86f5-55da-b491-baee5ae6f397</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J_CURRENT">
+      <value>0-2.5V current input</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_3" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>66a7a6fa-f58d-5872-a9c4-b501cf135531</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J_FL">
+      <value>ESC_FL</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>c53e657c-de64-5ba3-b378-99d13972655d</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J_FR">
+      <value>ESC_FR</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>2f924dac-c2fe-5165-baf5-4b986fb881c4</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J_IMU">
+      <value>MPU6050</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_4" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>fdf250b9-9010-5327-80e4-a37a46215830</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+            <pin num="4"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J_LIDAR">
+      <value>F2 MINI: VCC TBD</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_4" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>e47a7515-cafa-5334-8fa5-dd7422823766</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+            <pin num="4"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J_MAG">
+      <value>HMC5883L</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_4" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>1f9cfd9c-4052-5c80-898e-f2bf5c8437c9</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+            <pin num="4"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J_PWR">
+      <value>REGULATED 5V ONLY</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>dd530992-1c81-51d5-8935-dd31f3aa1e53</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J_RL">
+      <value>ESC_RL</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>c5d70cd2-fb97-50bb-9b00-187439887dd5</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J_ROS">
+      <value>OPTIONAL 3V3 UART</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_3" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>441da39f-f9d8-5f4e-b29c-be2513510edf</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J_RR">
+      <value>ESC_RR</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>76ca29d8-568e-5d64-a8f9-3a53acfe5efa</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R_FL">
+      <value>220R</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>66c1e70a-69ba-5975-b6e0-0873de858c2d</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R_FR">
+      <value>220R</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>22efd096-824e-5b39-91f4-fa01038b8cda</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R_IFILTER">
+      <value>1k</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>b22e9162-4fa1-54fe-b60f-e326f961f2c3</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R_RL">
+      <value>220R</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>9c48cd07-1cb3-5dcc-94e1-54a88aa519b8</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R_RR">
+      <value>220R</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>81376a74-ab91-5133-8dd3-6e76378dbed5</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R_VBOTTOM">
+      <value>10k 1%</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>9abff0fd-9e32-548c-b2c0-1ad8019ce977</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R_VFILTER">
+      <value>1k</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>fc9b8d83-1db6-5908-8cd2-f4e8631fd110</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R_VTOP">
+      <value>47k 1%</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>3f83d649-0da2-5e83-aa94-919be4133428</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U1L">
+      <value>DevKitC-1 LEFT 1x22</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_22" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>056a037d-f03a-5d9a-a0e8-c52b8091750e</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+            <pin num="4"/>
+            <pin num="5"/>
+            <pin num="6"/>
+            <pin num="7"/>
+            <pin num="8"/>
+            <pin num="9"/>
+            <pin num="10"/>
+            <pin num="11"/>
+            <pin num="12"/>
+            <pin num="13"/>
+            <pin num="14"/>
+            <pin num="15"/>
+            <pin num="16"/>
+            <pin num="17"/>
+            <pin num="18"/>
+            <pin num="19"/>
+            <pin num="20"/>
+            <pin num="21"/>
+            <pin num="22"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U1R">
+      <value>DevKitC-1 RIGHT 1x22</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_22" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>0babb49e-4ef3-58dc-87ff-6c561e6abe4f</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+            <pin num="4"/>
+            <pin num="5"/>
+            <pin num="6"/>
+            <pin num="7"/>
+            <pin num="8"/>
+            <pin num="9"/>
+            <pin num="10"/>
+            <pin num="11"/>
+            <pin num="12"/>
+            <pin num="13"/>
+            <pin num="14"/>
+            <pin num="15"/>
+            <pin num="16"/>
+            <pin num="17"/>
+            <pin num="18"/>
+            <pin num="19"/>
+            <pin num="20"/>
+            <pin num="21"/>
+            <pin num="22"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W1">
+      <value>INSULATED_WIRE</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>e355d07c-7d0b-52c8-b256-f0a7812a6eab</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W4">
+      <value>INSULATED_WIRE</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>b23f22f3-2e9a-567f-bfaf-99b96e9580cc</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W5">
+      <value>INSULATED_WIRE</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>7bdf2b36-f8d1-5cac-8def-9f9c7977e28c</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W6">
+      <value>INSULATED_WIRE</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>664603bc-d9d4-54cb-817f-6b66bd742770</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W7">
+      <value>INSULATED_WIRE</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>41897dff-b57e-5a34-a9b8-6db6faa4ffc3</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W10">
+      <value>INSULATED_WIRE</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>32490593-8891-5a9c-a967-33f20ea596cf</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W11">
+      <value>INSULATED_WIRE</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>4e651336-48bc-5703-9050-38076168b924</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W12">
+      <value>INSULATED_WIRE</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>01322d15-376a-511b-ba90-aa7679b1934f</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W15">
+      <value>INSULATED_WIRE</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>3dce7833-4fac-5d39-b25a-93bb6b304ae2</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W18">
+      <value>INSULATED_WIRE</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>8877635c-9a0d-53d1-b3af-1c5211c63f84</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W20">
+      <value>INSULATED_WIRE</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ddd177c7-134c-5b5b-8389-e15c69ec5ef8</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W21">
+      <value>INSULATED_WIRE</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>e2285110-1286-59a5-a059-ed5b5d789420</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W22">
+      <value>INSULATED_WIRE</value>
+      <fields>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="HomeEtch" part="Block_2" description=""/>
+      <property name="Sheetname" value="esp32_home_etch"/>
+      <property name="Sheetfile" value="esp32_home_etch.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>e7d4502d-2600-5600-80c1-fd237178efaa</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="HomeEtch" part="Block_2">
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Block2</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="HomeEtch" part="Block_22">
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Block22</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+        <pin num="3" name="3" type="passive"/>
+        <pin num="4" name="4" type="passive"/>
+        <pin num="5" name="5" type="passive"/>
+        <pin num="6" name="6" type="passive"/>
+        <pin num="7" name="7" type="passive"/>
+        <pin num="8" name="8" type="passive"/>
+        <pin num="9" name="9" type="passive"/>
+        <pin num="10" name="10" type="passive"/>
+        <pin num="11" name="11" type="passive"/>
+        <pin num="12" name="12" type="passive"/>
+        <pin num="13" name="13" type="passive"/>
+        <pin num="14" name="14" type="passive"/>
+        <pin num="15" name="15" type="passive"/>
+        <pin num="16" name="16" type="passive"/>
+        <pin num="17" name="17" type="passive"/>
+        <pin num="18" name="18" type="passive"/>
+        <pin num="19" name="19" type="passive"/>
+        <pin num="20" name="20" type="passive"/>
+        <pin num="21" name="21" type="passive"/>
+        <pin num="22" name="22" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="HomeEtch" part="Block_3">
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Block3</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+        <pin num="3" name="3" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="HomeEtch" part="Block_4">
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Block4</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+        <pin num="3" name="3" type="passive"/>
+        <pin num="4" name="4" type="passive"/>
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries/>
+  <nets>
+    <net code="1" name="/3V3" class="Default">
+      <node ref="U1L" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="W1" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="2" name="/5V_EXT" class="Default">
+      <node ref="J_PWR" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="W21" pin="2" pinfunction="2_2" pintype="passive"/>
+    </net>
+    <net code="3" name="/5V_MCU" class="Default">
+      <node ref="U1L" pin="21" pinfunction="21_21" pintype="passive"/>
+      <node ref="W21" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="4" name="/COMP_RX" class="Default">
+      <node ref="J_ROS" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="W11" pin="2" pinfunction="2_2" pintype="passive"/>
+    </net>
+    <net code="5" name="/COMP_TX" class="Default">
+      <node ref="J_ROS" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="W10" pin="2" pinfunction="2_2" pintype="passive"/>
+    </net>
+    <net code="6" name="/CURRENT_ADC" class="Default">
+      <node ref="C_IFILTER" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="R_IFILTER" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="W5" pin="2" pinfunction="2_2" pintype="passive"/>
+    </net>
+    <net code="7" name="/CURRENT_IN" class="Default">
+      <node ref="J_CURRENT" pin="3" pinfunction="3_3" pintype="passive"/>
+      <node ref="R_IFILTER" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="8" name="/ESC_FL" class="Default">
+      <node ref="J_FL" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="R_FL" pin="2" pinfunction="2_2" pintype="passive"/>
+    </net>
+    <net code="9" name="/ESC_FR" class="Default">
+      <node ref="J_FR" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="R_FR" pin="2" pinfunction="2_2" pintype="passive"/>
+    </net>
+    <net code="10" name="/ESC_RL" class="Default">
+      <node ref="J_RL" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="R_RL" pin="2" pinfunction="2_2" pintype="passive"/>
+    </net>
+    <net code="11" name="/ESC_RR" class="Default">
+      <node ref="J_RR" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="R_RR" pin="2" pinfunction="2_2" pintype="passive"/>
+    </net>
+    <net code="12" name="/GND" class="Default">
+      <node ref="C_IFILTER" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="C_VFILTER" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="J_BARO" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="J_BAT" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="J_CURRENT" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="J_FL" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="J_FR" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="J_IMU" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="J_LIDAR" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="J_MAG" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="J_PWR" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="J_RL" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="J_ROS" pin="3" pinfunction="3_3" pintype="passive"/>
+      <node ref="J_RR" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="R_VBOTTOM" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="W22" pin="2" pinfunction="2_2" pintype="passive"/>
+    </net>
+    <net code="13" name="/GND_MCU" class="Default">
+      <node ref="U1L" pin="22" pinfunction="22_22" pintype="passive"/>
+      <node ref="W22" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="14" name="/GPIO1" class="Default">
+      <node ref="R_FR" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U1R" pin="4" pinfunction="4_4" pintype="passive"/>
+    </net>
+    <net code="15" name="/GPIO2" class="Default">
+      <node ref="R_RR" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U1R" pin="5" pinfunction="5_5" pintype="passive"/>
+    </net>
+    <net code="16" name="/GPIO4" class="Default">
+      <node ref="U1L" pin="4" pinfunction="4_4" pintype="passive"/>
+      <node ref="W4" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="17" name="/GPIO5" class="Default">
+      <node ref="U1L" pin="5" pinfunction="5_5" pintype="passive"/>
+      <node ref="W5" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="18" name="/GPIO6" class="Default">
+      <node ref="U1L" pin="6" pinfunction="6_6" pintype="passive"/>
+      <node ref="W6" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="19" name="/GPIO7" class="Default">
+      <node ref="U1L" pin="7" pinfunction="7_7" pintype="passive"/>
+      <node ref="W7" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="20" name="/GPIO8" class="Default">
+      <node ref="U1L" pin="12" pinfunction="12_12" pintype="passive"/>
+      <node ref="W12" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="21" name="/GPIO9" class="Default">
+      <node ref="U1L" pin="15" pinfunction="15_15" pintype="passive"/>
+      <node ref="W15" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="22" name="/GPIO12" class="Default">
+      <node ref="U1L" pin="18" pinfunction="18_18" pintype="passive"/>
+      <node ref="W18" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="23" name="/GPIO12_ESC" class="Default">
+      <node ref="R_FL" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="W18" pin="2" pinfunction="2_2" pintype="passive"/>
+    </net>
+    <net code="24" name="/GPIO14" class="Default">
+      <node ref="U1L" pin="20" pinfunction="20_20" pintype="passive"/>
+      <node ref="W20" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="25" name="/GPIO14_ESC" class="Default">
+      <node ref="R_RL" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="W20" pin="2" pinfunction="2_2" pintype="passive"/>
+    </net>
+    <net code="26" name="/GPIO17" class="Default">
+      <node ref="U1L" pin="10" pinfunction="10_10" pintype="passive"/>
+      <node ref="W10" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="27" name="/GPIO18" class="Default">
+      <node ref="U1L" pin="11" pinfunction="11_11" pintype="passive"/>
+      <node ref="W11" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="28" name="/I2C_SCL" class="Default">
+      <node ref="J_BARO" pin="4" pinfunction="4_4" pintype="passive"/>
+      <node ref="J_IMU" pin="4" pinfunction="4_4" pintype="passive"/>
+      <node ref="J_MAG" pin="4" pinfunction="4_4" pintype="passive"/>
+      <node ref="W12" pin="2" pinfunction="2_2" pintype="passive"/>
+    </net>
+    <net code="29" name="/I2C_SDA" class="Default">
+      <node ref="J_BARO" pin="3" pinfunction="3_3" pintype="passive"/>
+      <node ref="J_IMU" pin="3" pinfunction="3_3" pintype="passive"/>
+      <node ref="J_MAG" pin="3" pinfunction="3_3" pintype="passive"/>
+      <node ref="W15" pin="2" pinfunction="2_2" pintype="passive"/>
+    </net>
+    <net code="30" name="/LIDAR_RX_FC" class="Default">
+      <node ref="J_LIDAR" pin="3" pinfunction="3_3" pintype="passive"/>
+      <node ref="W6" pin="2" pinfunction="2_2" pintype="passive"/>
+    </net>
+    <net code="31" name="/LIDAR_TX_FC" class="Default">
+      <node ref="J_LIDAR" pin="4" pinfunction="4_4" pintype="passive"/>
+      <node ref="W7" pin="2" pinfunction="2_2" pintype="passive"/>
+    </net>
+    <net code="32" name="/LIDAR_VCC_OPEN" class="Default">
+      <node ref="J_LIDAR" pin="2" pinfunction="2_2" pintype="passive"/>
+    </net>
+    <net code="33" name="/SENS_3V3" class="Default">
+      <node ref="J_BARO" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="J_CURRENT" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="J_IMU" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="J_MAG" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="W1" pin="2" pinfunction="2_2" pintype="passive"/>
+    </net>
+    <net code="34" name="/VBAT_ADC" class="Default">
+      <node ref="C_VFILTER" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="R_VFILTER" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="W4" pin="2" pinfunction="2_2" pintype="passive"/>
+    </net>
+    <net code="35" name="/VBAT_DIV" class="Default">
+      <node ref="R_VBOTTOM" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="R_VFILTER" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="R_VTOP" pin="2" pinfunction="2_2" pintype="passive"/>
+    </net>
+    <net code="36" name="/VBAT_SENSE" class="Default">
+      <node ref="J_BAT" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="R_VTOP" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="37" name="unconnected-(U1L-Pad2)" class="Default">
+      <node ref="U1L" pin="2" pinfunction="2_2" pintype="passive+no_connect"/>
+    </net>
+    <net code="38" name="unconnected-(U1L-Pad3)" class="Default">
+      <node ref="U1L" pin="3" pinfunction="3_3" pintype="passive+no_connect"/>
+    </net>
+    <net code="39" name="unconnected-(U1L-Pad8)" class="Default">
+      <node ref="U1L" pin="8" pinfunction="8_8" pintype="passive+no_connect"/>
+    </net>
+    <net code="40" name="unconnected-(U1L-Pad9)" class="Default">
+      <node ref="U1L" pin="9" pinfunction="9_9" pintype="passive+no_connect"/>
+    </net>
+    <net code="41" name="unconnected-(U1L-Pad13)" class="Default">
+      <node ref="U1L" pin="13" pinfunction="13_13" pintype="passive+no_connect"/>
+    </net>
+    <net code="42" name="unconnected-(U1L-Pad14)" class="Default">
+      <node ref="U1L" pin="14" pinfunction="14_14" pintype="passive+no_connect"/>
+    </net>
+    <net code="43" name="unconnected-(U1L-Pad16)" class="Default">
+      <node ref="U1L" pin="16" pinfunction="16_16" pintype="passive+no_connect"/>
+    </net>
+    <net code="44" name="unconnected-(U1L-Pad17)" class="Default">
+      <node ref="U1L" pin="17" pinfunction="17_17" pintype="passive+no_connect"/>
+    </net>
+    <net code="45" name="unconnected-(U1L-Pad19)" class="Default">
+      <node ref="U1L" pin="19" pinfunction="19_19" pintype="passive+no_connect"/>
+    </net>
+    <net code="46" name="unconnected-(U1R-Pad1)" class="Default">
+      <node ref="U1R" pin="1" pinfunction="1_1" pintype="passive+no_connect"/>
+    </net>
+    <net code="47" name="unconnected-(U1R-Pad2)" class="Default">
+      <node ref="U1R" pin="2" pinfunction="2_2" pintype="passive+no_connect"/>
+    </net>
+    <net code="48" name="unconnected-(U1R-Pad3)" class="Default">
+      <node ref="U1R" pin="3" pinfunction="3_3" pintype="passive+no_connect"/>
+    </net>
+    <net code="49" name="unconnected-(U1R-Pad6)" class="Default">
+      <node ref="U1R" pin="6" pinfunction="6_6" pintype="passive+no_connect"/>
+    </net>
+    <net code="50" name="unconnected-(U1R-Pad7)" class="Default">
+      <node ref="U1R" pin="7" pinfunction="7_7" pintype="passive+no_connect"/>
+    </net>
+    <net code="51" name="unconnected-(U1R-Pad8)" class="Default">
+      <node ref="U1R" pin="8" pinfunction="8_8" pintype="passive+no_connect"/>
+    </net>
+    <net code="52" name="unconnected-(U1R-Pad9)" class="Default">
+      <node ref="U1R" pin="9" pinfunction="9_9" pintype="passive+no_connect"/>
+    </net>
+    <net code="53" name="unconnected-(U1R-Pad10)" class="Default">
+      <node ref="U1R" pin="10" pinfunction="10_10" pintype="passive+no_connect"/>
+    </net>
+    <net code="54" name="unconnected-(U1R-Pad11)" class="Default">
+      <node ref="U1R" pin="11" pinfunction="11_11" pintype="passive+no_connect"/>
+    </net>
+    <net code="55" name="unconnected-(U1R-Pad12)" class="Default">
+      <node ref="U1R" pin="12" pinfunction="12_12" pintype="passive+no_connect"/>
+    </net>
+    <net code="56" name="unconnected-(U1R-Pad13)" class="Default">
+      <node ref="U1R" pin="13" pinfunction="13_13" pintype="passive+no_connect"/>
+    </net>
+    <net code="57" name="unconnected-(U1R-Pad14)" class="Default">
+      <node ref="U1R" pin="14" pinfunction="14_14" pintype="passive+no_connect"/>
+    </net>
+    <net code="58" name="unconnected-(U1R-Pad15)" class="Default">
+      <node ref="U1R" pin="15" pinfunction="15_15" pintype="passive+no_connect"/>
+    </net>
+    <net code="59" name="unconnected-(U1R-Pad16)" class="Default">
+      <node ref="U1R" pin="16" pinfunction="16_16" pintype="passive+no_connect"/>
+    </net>
+    <net code="60" name="unconnected-(U1R-Pad17)" class="Default">
+      <node ref="U1R" pin="17" pinfunction="17_17" pintype="passive+no_connect"/>
+    </net>
+    <net code="61" name="unconnected-(U1R-Pad18)" class="Default">
+      <node ref="U1R" pin="18" pinfunction="18_18" pintype="passive+no_connect"/>
+    </net>
+    <net code="62" name="unconnected-(U1R-Pad19)" class="Default">
+      <node ref="U1R" pin="19" pinfunction="19_19" pintype="passive+no_connect"/>
+    </net>
+    <net code="63" name="unconnected-(U1R-Pad20)" class="Default">
+      <node ref="U1R" pin="20" pinfunction="20_20" pintype="passive+no_connect"/>
+    </net>
+    <net code="64" name="unconnected-(U1R-Pad21)" class="Default">
+      <node ref="U1R" pin="21" pinfunction="21_21" pintype="passive+no_connect"/>
+    </net>
+    <net code="65" name="unconnected-(U1R-Pad22)" class="Default">
+      <node ref="U1R" pin="22" pinfunction="22_22" pintype="passive+no_connect"/>
+    </net>
+  </nets>
+</export>

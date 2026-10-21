@@ -1,0 +1,76 @@
+(footprint "J12"
+	(version 20260206)
+	(generator "pcbnew")
+	(generator_version "10.0")
+	(layer "F.Cu")
+	(property "Reference" "REF**"
+		(at 0 0 0)
+		(layer "F.SilkS")
+		(hide yes)
+		(uuid "a72c445d-6824-4bdb-8177-afe21f20800e")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Value" "OPTIONAL 3V3 UART"
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "2faea4cc-7ce6-4075-970d-9ab81381728c")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "3b9b03ea-c06f-45d2-94b0-d4ca41ecb9fc")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "8a9f81ff-745d-4ab7-822e-6f079b757657")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(duplicate_pad_numbers_are_jumpers no)
+	(pad "1" thru_hole circle
+		(at 0 0)
+		(size 3.2 3.2)
+		(drill 1.2)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "79b2511d-ae5e-4ee8-ba17-84c99b050a17")
+	)
+	(pad "2" thru_hole circle
+		(at 0 5.08)
+		(size 3.2 3.2)
+		(drill 1.2)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "737927b0-7605-4a09-9c67-ec5be2e09bcc")
+	)
+	(pad "3" thru_hole circle
+		(at 0 10.16)
+		(size 3.2 3.2)
+		(drill 1.2)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "db504912-4d8e-4d27-98ef-f9402de82c65")
+	)
+	(embedded_fonts no)
+)

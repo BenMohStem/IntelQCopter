@@ -1,0 +1,6 @@
+(version 1)
+(rule "Home etch copper clearance" (constraint clearance (min 0.6mm)))
+(rule "Home etch wide tracks" (constraint track_width (min 0.8mm)))
+(rule "Manual drilling" (constraint hole_size (min 1.0mm)))
+(rule "Manual drill annulus" (constraint annular_width (min 0.45mm)))
+(rule "Copper away from sawn edge" (constraint edge_clearance (min 2.0mm)))

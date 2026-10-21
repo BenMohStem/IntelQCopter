@@ -6,6 +6,8 @@ search cache at `build/knowledge/project.sqlite`. Neither tool reads the full ch
 or invents measurements. This stores concise project knowledge and decision
 reasons, not private reasoning traces or an unstructured transcript dump.
 
+[Read the generated current overview](current.md). Run `.\qcopter.ps1 knowledge-overview` after adding ledger revisions. The overview is a derived reading view; SQLite remains a disposable search index.
+
 ## Architecture
 
 ```mermaid

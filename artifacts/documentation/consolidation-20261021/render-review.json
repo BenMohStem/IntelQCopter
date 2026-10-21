@@ -1,0 +1,16 @@
+{
+  "scope": "Documentation rendering and link structure; not FC/ROS runtime tests",
+  "guides": [
+    {
+      "path": "docs/current-model-and-fc-integration.html",
+      "mathml_elements": 391,
+      "katex_errors": false
+    },
+    {
+      "path": "docs/control-workbench.html",
+      "mathml_elements": 46,
+      "katex_errors": false
+    }
+  ],
+  "missing_local_links": []
+}

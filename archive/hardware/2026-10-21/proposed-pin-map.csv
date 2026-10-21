@@ -1,0 +1,16 @@
+Signal,MCU pin,Connection,Status,Notes
+I2C_SDA,GPIO9,MPU6050/BMP280/HMC5883L shared bus,Existing adapter; magnetometer driver pending,"3.3V logic, module wire order must be mapped"
+I2C_SCL,GPIO8,MPU6050/BMP280/HMC5883L shared bus,Existing adapter; magnetometer driver pending,Do not route tracks between adjacent 2.54mm pads
+ESC_FL_SIG,GPIO12,Front-left ESC signal,Pin reserved; output disabled,Signal and signal GND only; no BEC +5V pin
+ESC_FR_SIG,GPIO1,Front-right ESC signal,Pin reserved; output disabled,No battery/motor current through carrier
+ESC_RR_SIG,GPIO2,Rear-right ESC signal,Pin reserved; output disabled,Motor order/direction not physically validated
+ESC_RL_SIG,GPIO14,Rear-left ESC signal,Pin reserved; output disabled,Protocol and signal thresholds need ESC identification
+COMP_TX,GPIO17,FC TX -> companion RX,Existing UART adapter,"3.3V TTL; common GND, not RS232"
+COMP_RX,GPIO18,FC RX <- companion TX,Existing UART adapter,Companion external power; no Pi/Jetson power from this connector
+VBAT_ADC,GPIO4 proposed,Total-pack voltage sense,Proposed; no physical ADC acquisition implemented,ADC1_CH3 per Espressif; board variant must be confirmed
+CURRENT_ADC,GPIO5 proposed,External low-voltage current-sensor output,Proposed; sensor and driver TBD,ADC1_CH4; no 5V output directly to GPIO
+LIDAR_RX,GPIO6 proposed,FC RX <- lidar TX,Proposed; orientation/electrical interface TBD,Do not connect until exact F2 Mini pin order/levels confirmed
+LIDAR_TX,GPIO7 proposed,FC TX -> lidar RX,Proposed; electrical interface TBD,Separate UART from companion; no driver yet
+3V3,module 3V3,Sensor rail,Provisional regulator-current budget,"I2C pullups go to 3V3, never 5V"
+5V_IN,module 5V input,External regulated 5V,Regulator/module TBD,No raw 3S LiPo connection; isolate USB/external supply
+GND,module GND,Common logic/signal return,Provisional star return to PDB reference,Motor current bypasses logic ground tracks

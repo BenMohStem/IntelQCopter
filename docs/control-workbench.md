@@ -207,52 +207,8 @@ The seven-node stall occurred when a later visual observation enlarged an obstac
 The more complete model derivation remains in [the model and integration guide](current-model-and-fc-integration.html). This workshop is an experimental interface, not an automatic gain calculator or proof that arbitrary values are stable.
 
 
-## 8. Centred-stick braking and the sustained-angle correction
+## 8. Current braking and trigger mathematics
 
-The original six angle/rate/altitude PIDs remain. An optional horizontal position/velocity observation adds two outer PD corrections **inside `flight_controller.c`** when the right stick is centred. It does not send a pose, velocity or force override to Gazebo.
+The canonical [illustrated F450 guide](current-model-and-fc-integration.html#16-why-centring-the-stick-requires-a-braking-loop) now derives release-position braking, its ideal poles and unavoidable stopping distance step by step. Chapters 17–18 cover Gentle shaping, RT/LT collective limits, zero-sum motor allocation, anti-windup and accelerometer correction gating.
 
-At release, capture the current localization position $x_h,y_h$. At every fresh control step:
-
-$$
-a_x=\operatorname{clip}(0.9(x_h-x)-1.9v_x,-1.2,1.2),\qquad
-a_y=\operatorname{clip}(0.9(y_h-y)-1.9v_y,-1.2,1.2).
-$$
-
-The position coefficients have units $\mathrm{s^{-2}}$, the velocity coefficients $\mathrm{s^{-1}}$, and acceleration is in $\mathrm{m/s^2}$. Convert the world acceleration into body forward/left coordinates using measured heading $\psi$:
-
-$$
-a_{bx}=\cos\psi\,a_x+\sin\psi\,a_y,\qquad
-a_{by}=-\sin\psi\,a_x+\cos\psi\,a_y.
-$$
-
-Then the existing angle loops receive:
-
-$$
-\theta_r=\operatorname{clip}(\arctan(a_{bx}/g),-7^\circ,7^\circ),\qquad
-\phi_r=\operatorname{clip}(-\arctan(a_{by}/g),-7^\circ,7^\circ).
-$$
-
-Here angles are converted to degrees in C before the degree limits apply. While the right stick is deflected, it directly commands roll/pitch angle instead; the hold anchor is released. The braking loop is disabled for ROS2 navigation, stale/invalid localization, invalid pilot/calibration, low ground height and disarm. Localization older than 100 ms cannot hold position. Yaw and vertical control remain independent while holding XY.
-
-Under the *ideal acceleration-tracking approximation*, ignoring inner-loop lag and saturation, the centred-stick error satisfies:
-
-$$
-\ddot e+1.9\dot e+0.9e=0,\qquad
-s^2+1.9s+0.9=(s+0.9)(s+1.0).
-$$
-
-Both ideal poles are negative. This is an explanation of the outer PD choice, not a stability proof for the full nonlinear, saturated, uncertain aircraft. Finite thrust and acceleration mean stopping is never instantaneous. The vehicle can overshoot and return to the captured release point.
-
-### Why the old angle could keep growing
-
-The accelerometer sees gravity **and translational acceleration**. During sustained forward acceleration, its apparent gravity angle is biased. Repeatedly correcting the Kalman angle toward that biased observation made the old estimate drift; the angle PID then asked for more true tilt.
-
-The C FC now estimates horizontal acceleration from fresh localization velocity differences, with a low-pass update. In manual mode, when its norm exceeds $0.25\,\mathrm{m/s^2}$, it performs the gyro prediction and covariance propagation but skips the invalid accelerometer gravity correction:
-
-$$
-\hat x_k=\hat x_k^-,\qquad P_k=P_k^-,\qquad K_k=0.
-$$
-
-Gravity correction resumes as translation settles. The live gains/uncertainty and gating graph show this explicitly. The real system still needs a measured, timed, sufficiently accurate localization source before using this mode; perfect simulated velocity is a substantial simplification. This change does not claim drift-free IMU-only attitude or position estimation. The existing ROS2 navigation estimator policy is unchanged.
-
-Manual yaw input is now inverted once in the Xbox decoder, so left-stick left requests positive (left/CCW in this model) yaw. Companion commands keep their existing sign convention.
+Keep this page for editable settings, process authority and evidence capture. Use the math guide for derivations and the [launch guide](run-simulation.md) for startup and troubleshooting. Earlier versions are recorded in the [archive index](../archive/documentation/README.md).
