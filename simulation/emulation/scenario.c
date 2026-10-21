@@ -11,6 +11,8 @@ static fc_pilot_t pilot;
 static fc_status_t status;
 static uint64_t clock_us;
 static unsigned ticks, failures, checks;
+static void put32(uint8_t*p,uint32_t v){for(unsigned i=0;i<4;i++)p[i]=(uint8_t)(v>>(8*i));}
+static void seal(uint8_t*p){uint32_t c=~0u;for(unsigned j=0;j<24;j++){c^=p[j];for(unsigned k=0;k<8;k++)c=(c>>1)^((c&1)?0xedb88320u:0);}put32(p+24,~c);}
 
 static void check(const char *name, bool passed) {
     ++checks;
@@ -100,6 +102,53 @@ void run_scenario(void) {
     check("soc_20_disarms",status.battery_disarm && zero_outputs());
     fc_set_estimated_soc(80); tick(true);
     check("battery_disarm_latches",status.battery_disarm && zero_outputs());
+    /* Exercise the exact raw-report path used by BLE and Gazebo. */
+    fc_init(0x1122334455667788ull);
+    uint8_t hid[16]={0};for(unsigned i=0;i<4;i++){hid[2*i]=0;hid[2*i+1]=128;}
+    hid[12]=5;hid[13]=2;
+    uint64_t input_time=30000000u;
+    for(unsigned i=0;i<250;i++){fc_xbox_report(hid,16,input_time);fc_control_step(&sample,input_time,.002f,&status);input_time+=20000;}
+    check("navigation_requires_full_five_seconds",status.flight_mode==0);
+    fc_xbox_report(hid,16,input_time);fc_control_step(&sample,input_time,.002f,&status);
+    check("down_B_selects_navigation_after_five_seconds",status.flight_mode==1 && status.mode_events==1);
+    for(unsigned i=0;i<50;i++){input_time+=20000;fc_xbox_report(hid,16,input_time);}
+    fc_control_step(&sample,input_time,.002f,&status);
+    check("held_gesture_fires_once",status.mode_events==1);
+    hid[13]=1;input_time+=20000;fc_xbox_report(hid,16,input_time);
+    input_time+=200000;fc_xbox_report(hid,16,input_time); // Report gap resets the hold.
+    for(unsigned i=0;i<249;i++){input_time+=20000;fc_xbox_report(hid,16,input_time);}
+    fc_control_step(&sample,input_time,.002f,&status);
+    check("report_gap_restarts_mode_hold",status.flight_mode==1);
+    input_time+=20000;fc_xbox_report(hid,16,input_time);fc_control_step(&sample,input_time,.002f,&status);
+    check("down_A_selects_stable",status.flight_mode==0 && status.mode_events==2);
+    hid[13]=0;hid[8]=0xff;hid[9]=3;
+    input_time+=20000;fc_xbox_report(hid,16,input_time);
+    for(unsigned i=0;i<99;i++){input_time+=20000;fc_xbox_report(hid,16,input_time);}
+    fc_control_step(&sample,input_time,.002f,&status);
+    check("down_LT_requires_two_seconds",!status.user_disarm);
+    input_time+=20000;fc_xbox_report(hid,16,input_time);fc_control_step(&sample,input_time,.002f,&status);
+    check("down_LT_disarms_after_two_seconds",status.user_disarm && zero_outputs());
+    hid[12]=0;hid[8]=hid[9]=0;input_time+=20000;fc_xbox_report(hid,16,input_time);fc_control_step(&sample,input_time,.002f,&status);
+    check("user_disarm_is_latched",status.user_disarm && zero_outputs());
+    check("malformed_HID_rejected",!fc_xbox_report(hid,15,input_time));
+    hid[12]=9;check("invalid_hat_rejected",!fc_xbox_report(hid,16,input_time));
+    uint8_t telemetry[16];fc_status_frame(&status,telemetry);
+    check("UART_telemetry_identifies_mode_and_disarm",telemetry[0]=='Q' && telemetry[1]=='S' && telemetry[3]==0 && telemetry[4]==1);
+    uint8_t uart[28]={'Q','N',1,1};put32(uart+4,1);seal(uart);
+    check("UART_valid_command_accepted",fc_companion_report(uart,28,input_time));
+    check("UART_duplicate_sequence_rejected",!fc_companion_report(uart,28,input_time+1000));
+    uart[8]^=1;check("UART_corrupt_CRC_rejected",!fc_companion_report(uart,28,input_time+2000));uart[8]^=1;
+    put32(uart+4,2);put32(uart+8,0x7fc00000u);seal(uart);
+    check("UART_NaN_rejected",!fc_companion_report(uart,28,input_time+3000));
+    float outside=36;memcpy(uart+8,&outside,4);seal(uart);
+    check("UART_out_of_range_angle_rejected",!fc_companion_report(uart,28,input_time+4000));
+    put32(uart+8,0);seal(uart);
+    check("UART_fresh_sequence_accepted",fc_companion_report(uart,28,input_time+5000));
+    fc_control_step(&sample,input_time+5000,.002f,&status);
+    check("UART_freshness_reported",status.companion_fresh);
+    fc_control_step(&sample,input_time+156000,.002f,&status);
+    check("UART_stale_command_expires",!status.companion_fresh);
+    check("UART_wrong_length_rejected",!fc_companion_report(uart,27,input_time+157000));
     printf("QCOPTER_EMU_END,checks=%u,failures=%u,ticks=%u\n",checks,failures,ticks);
     fflush(stdout);
 }

@@ -26,10 +26,10 @@ flash image. `run.py` prints **live original UART output** and stores each run i
 Expected final marker for the current scenario:
 
 ```text
-QCOPTER_EMU_END,checks=19,failures=0,ticks=4982
+QCOPTER_EMU_END,checks=39,failures=0,ticks=4982
 ```
 
-The 4,982 logical 2 ms steps represent 9.964 seconds of input time. QEMU may
+The baseline uses 4,982 logical 2 ms control steps. Additional gesture tests use a separate synthetic report timeline with explicit five/two-second holds. QEMU may
 execute that in a different amount of wall time. This does not measure a real
 500 Hz deadline. The runner stops QEMU after the end marker, or reports failure
 if the marker does not arrive before its timeout.
@@ -47,6 +47,10 @@ Inputs are deliberately synthetic, including a known +0.8°/s gyro-x bias. The
 calibration routine estimates and subtracts it. The scenario is **input replay**:
 motor demands do not drive a physical drone plant. The plot is not a flight trajectory.
 
+- Continuous Down+A / Down+B mode holds, report-gap reset and once-per-hold behavior.
+- Down+LT two-second disarm and its latch.
+- UART CRC, finite/range/length checks, duplicate sequence rejection and expiry.
+
 ## What is not emulated by this harness
 
 The physical I²C transactions, MPU6050/BMP280 register behavior, Xbox BLE radio
@@ -56,6 +60,10 @@ power-loss persistence is not. Motor outputs remain disabled in the hardware bui
 The first harness is intentionally limited to making the CPU/control evidence reproducible.
 
 ## Evidence and the failed first attempt
+
+Latest: [39-check UART log](../../artifacts/emulation/uart-mode-gestures-2026-10-21/uart.log) · [summary and hashes](../../artifacts/emulation/uart-mode-gestures-2026-10-21/summary.json).
+The following links retain the earlier 19-check baseline and initial failures.
+
 
 - [Verified original UART log](../../artifacts/emulation/verified-replay/uart.log)
 - [Checks, command and source/binary hashes](../../artifacts/emulation/verified-replay/summary.json)

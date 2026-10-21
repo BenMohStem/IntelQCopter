@@ -1,53 +1,45 @@
 # Current status — ESP32/Xbox
 
-## Confirmed
+## Implemented and checked
 
-- ESP32-S3 aircraft, Xbox Series X/S input; no custom RP2040 handheld here.
-- C control/estimation/calibration, minimal C++ boundary for libraries.
-- Roll/pitch angle, yaw rate, centered-stick height hold and vertical-speed commands.
-- RT boost. Warn at 35% estimated SOC; latched disarm at 20%; no automatic landing.
-- Physical arming/output remains disabled.
+- Flight control, estimation, calibration, Xbox parsing, mode gestures and UART authority stay in the single `firmware/src/flight_controller.c`.
+- Stable mode: roll/pitch angle cascades, yaw rate, centred-stick height hold/vertical speed. RT boosts; LT reduces. Down+A/B held five seconds selects stable/navigation. Down+LT held two seconds latches disarm.
+- Physical arming remains disabled: motor pins are inputs, and no ESC output driver is connected.
+- ESP32-S3 hardware build succeeds: 31,836 bytes static RAM, 590,573 bytes reported program flash. Real heap, task timing and hardware remain unmeasured.
+- Latest Espressif QEMU ESP32-S3 replay passes 39 named checks, including raw HID gestures, calibration, stale inputs and CRC/sequence/range-checked UART commands. These are synthetic input tests, not flight physics.
+- The active C core also drives native Gazebo 10.5/OGRE2 through simulated IMU/barometer samples at logical 500 Hz. Five virtual Xbox manual flights passed. Original navigation trials and subsequent corrections remain in `artifacts/gazebo-suite/`; final layout verification is recorded in its reports.
+- ROS2 C++ drone mission/perception/UART software and a PC endpoint map are implemented. PC supplies endpoints over DDS; the drone plans/replans from RGB YOLO and known-size panel PnP observations.
+- Initial Windows DLL mismatch, recording serializer failure, gesture timing gap, occlusion-distance failure and interrupted trials are retained. No failing check or native contact is suppressed.
 
-## Source implementation
+## Evidence categories
 
-Xbox reports → synchronized pilot snapshot → 500 Hz target C task →
-six loops/estimators → normalized motor demands → telemetry only.
-MPU/BMP acquisition and versioned NVS calibration hooks are implemented.
-No hardware has exercised them.
+QEMU runs the active C source on an emulated Xtensa CPU, without a flight plant.
+Gazebo runs the active C source as a host DLL with real native physics/cameras.
+ROS2 nodes run as actual independent Windows processes. They simulate separate
+PC/drone roles on one machine. Neither result proves physical BLE/I²C/UART/ESC,
+measured 500 Hz deadlines, real aircraft stability or separate-computer networking.
 
-The ESP32-S3 target compiled successfully. See ../artifacts/esp32-build/ for
-original build output and source/binary hashes. This is build evidence, not
-a measured timing or Bluetooth result.
+The F450 model uses an assumed 1.2 kg and inertia (0.012, 0.012, 0.022) kg·m²,
+6 N/motor and 40 ms lag. Sensors/localization/calibration are synthetic. RGB
+ranging is specific to known-size, flat-floor blue panel fixtures, including a
+known centre-height prior. It does not resolve arbitrary obstacle distance.
 
-On 2026-10-21 the active C core also executed on the Espressif QEMU ESP32-S3
-machine with synthetic input replay: 19 checks passed in 4,982 logical steps.
-The initial failed startup and first successful run remain in artifacts/emulation/.
-`fc_init()` now resets estimator state, which is checked by the final replay.
-This is CPU/control evidence; it does not exercise the hardware adapter or flight physics.
+## Remaining hardware work
 
-The active mathematical guide explains the F450 X allocation, continuous hover
-LTI model, six gains, stability, exact plant discretization and the actual C PID/Kalman
-updates. Its numerical response plots assume ideal state feedback and provisional
-airframe parameters. See current-model-and-fc-integration.html.
+1. Exact-board wiring, sensor axes, I²C, controller pairing/firmware and real report timing/range.
+2. Real calibration/noise/temperature data and NVS reboot/power-loss behavior.
+3. HMC5883L, lidar orientation/driver, battery voltage/current acquisition and SOC characterization.
+4. Complete takeoff mass, COM/inertia, thrust curve, motor delay and reaction torque measurements.
+5. Companion hardware/OS, camera/localization source, standard odometry-frame adapter, UART electrical tests and separate-machine DDS.
+6. A future explicitly authorized ESC/arming implementation; it remains disabled now.
 
-## Missing, in order
+## Software cleanup
 
-1. Exact-board wiring, mounted axes, I²C integrity, controller firmware and pairing verification.
-2. Measured report rate, idle behavior, latency/range/dropouts and control timing.
-3. Actual calibration captures and reboot/power-loss persistence checks.
-4. HMC5883L, lidar and voltage/current ADC integration; usable capacity/OCV identification.
-5. Complete mass/COM/inertia, thrust, motor delay and reaction torque measurements.
-6. ESC protocol/wiring and an explicitly authorized future arming/output design.
-7. Connect the ESP32 C API or emulated CPU to a flight plant/ROS/Gazebo; CPU replay exists, but no ESP32 flight recording does.
-8. Companion transport/authority, localization, camera distance geometry and real-scene perception.
+25 Isaac Sim Python packages were uninstalled. Direct removal of remaining Isaac
+namespace/staging data and historical Isaac files was blocked by automatic command
+policy. See `artifacts/maintenance/2026-10-21/isaac-cleanup.json`. The shared vision
+Python environment was retained, including its historical directory name. Base
+ROS2/Gazebo installation files were not changed by this task.
 
-The 1.2 kg flight baseline and 0.740 kg component URDF are distinct assumptions,
-not measured aircraft mass. The battery's approximate 150 g remains unverified.
-
-## Archive policy
-
-Current summaries supersede scattered historical status claims.
-Prior reports, source, failed trials, videos, PCB drafts and math remain in
-the verified .cache/archive/rp2350 snapshot, recoverable through archive/README.md.
-Original launchers assume the old root layout; main has the current Pico workflow.
-Historical evidence does not establish ESP32 pairing, deadlines or flight.
+Prior project history remains recoverable through `archive/README.md`. Original
+logs, failed trials and videos are evidence rather than disposable cache.

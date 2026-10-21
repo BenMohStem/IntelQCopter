@@ -23,7 +23,7 @@ radio endpoints with a commercial Xbox controller connected directly to the ESP3
 | Control mode | Roll/pitch angle cascades, yaw rate, vertical-speed throttle with height hold |
 | Scheduling | 2 ms timer requests; measured elapsed time; missed/late cycles and execution time reported |
 | Calibration | Stationary gyro verification, six-face accel capture, versioned/CRC/board-bound NVS record |
-| CPU emulation | Espressif QEMU ESP32-S3; 19 passing checks on the active C core with synthetic inputs |
+| CPU emulation | Espressif QEMU ESP32-S3; 39 passing checks on the active C core with synthetic inputs |
 | Battery policy | 35% estimated-SOC warning, 20% latched disarm; voltage/current acquisition unfinished |
 
 ## Controls
@@ -33,9 +33,11 @@ radio endpoints with a commercial Xbox controller connected directly to the ESP3
 | Left stick horizontal | Yaw rate |
 | Left stick vertical | Climb/descent; center holds height |
 | Right stick horizontal / vertical | Roll / pitch angle |
-| RT | Smooth climb/collective boost allowance |
-| LB + RB + A / B | Log takeoff / landing request only; no mission or arming action |
-| LT, D-pad, other buttons | Reserved |
+| RT / LT | Smooth climb/collective boost / reduction |
+| D-pad Down + A, held 5 s | Select stable angle/yaw-rate/vertical-speed flight |
+| D-pad Down + B, held 5 s | Select drone ROS2 navigation authority |
+| D-pad Down + LT at least 90%, held 2 s | Latched disarm; restart required |
+| LB / RB and remaining buttons | Reserved |
 
 ## Build
 
@@ -55,7 +57,8 @@ Build is separate from flashing. See [setup, wiring and calibration](docs/setup.
 | docs/ | Illustrated LTI/discrete model, setup, code map and current status |
 | simulation/emulation/ | Reproducible ESP32-S3 CPU replay and original-check runner |
 | knowledge/ | Versioned facts, evidence sources and dependency relationships |
-| simulation/ | Flight simulation integration plan; QEMU replay is separate |
+| simulation/gazebo/ | Native physics, cameras, raw Xbox/ROS2 transport and scenarios |
+| companion/ | ROS2 C++ drone navigation, YOLO/PnP, UART bridge and PC endpoint map |
 | artifacts/ | Original evidence produced for this branch |
 | archive/reference-drone/ | Unmodified source snapshot from the user's Drone folder |
 | archive/ | Historical Git snapshot index and original Drone reference |
@@ -70,15 +73,25 @@ Generated tools, firmware images and the searchable SQLite index live in ignored
 
 ## Build evidence
 
-The latest ESP32-S3 hardware firmware compiles successfully: **31,732 bytes static RAM** and
-**588,741 bytes reported program flash**. These size figures do not include every
-runtime heap/task allocation. [Latest original logs and checks](artifacts/2026-10-21/README.md).
+The latest ESP32-S3 hardware firmware compiles successfully: **31,836 bytes static RAM** and
+**590,573 bytes reported program flash**. These size figures do not include every
+runtime heap/task allocation. [Latest compiler and interface logs](artifacts/validation/2026-10-21/).
 No flashing, pairing, physical calibration or flight has been performed.
 
-QEMU executed 4,982 logical steps and passed 19 checks. [Original UART log](artifacts/emulation/verified-replay/uart.log) ·
+QEMU passed 39 checks in the current input replay. [Latest original UART log](artifacts/emulation/uart-mode-gestures-2026-10-21/uart.log).
+The original baseline executed 4,982 logical steps and passed 19 checks. [Original UART log](artifacts/emulation/verified-replay/uart.log) ·
 [Recorded samples](artifacts/emulation/verified-replay/telemetry.png).
 The replay uses stationary synthetic sensors; motor demands do not drive a flight plant.
 
 The [mathematical paper](https://github.com/BenMohStem/IntelQCopter/blob/8432cf33300fc1f92aeab97f01548aac2b1d2e48/archive/rp2350/output/pdf/IntelQcopter-model-guide.pdf)
 remains useful for airframe/control equations. Its RP2350 flash and old runtime descriptions
 are historical and do not describe the ESP32 NVS/platform layer.
+
+## Native Gazebo flights
+
+[Run the 10-world suite and PC map](simulation/gazebo/README.md) · [Controls and UART protocol](docs/xbox-ros2-protocol.md).
+
+Gazebo drives the active C core at 500 Hz through simulated IMU/barometer samples.
+The ground PC sends Xbox-format reports or a ROS2 endpoint request. The drone
+C++ companion handles navigation and RGB perception. Physical ESC outputs stay disabled.
+CPU emulation and host flight simulation are separate evidence categories.

@@ -1,0 +1,5 @@
+{
+  "passed": true,
+  "checks": 2,
+  "scope": "Actual generated ROS2 float-array messages serialize to JSON. No flight or hardware exercised."
+}

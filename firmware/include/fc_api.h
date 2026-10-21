@@ -2,6 +2,11 @@
 #define INTELQCOPTER_FC_API_H
 #include <stdbool.h>
 #include <stdint.h>
+#if defined(FC_BUILD_DLL) && defined(_WIN32)
+#define FC_API __declspec(dllexport)
+#else
+#define FC_API
+#endif
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -14,7 +19,7 @@ typedef struct {
     bool imu_valid,pressure_valid;
 } fc_sample_t;
 typedef struct {
-    float roll,pitch,yaw,vertical,boost;
+    float roll,pitch,yaw,vertical,boost,reduce;
     uint64_t received_us;
     bool connected;
 } fc_pilot_t;
@@ -25,13 +30,22 @@ typedef struct {
     bool battery_warning,battery_disarm;
     uint8_t faces_done;
     int8_t capturing_face;
+    uint8_t flight_mode; /* 0=stable, 1=ROS navigation */
+    bool user_disarm,companion_fresh;
+    uint32_t xbox_reports,mode_events;
 } fc_status_t;
-void fc_init(uint64_t board_id);
-void fc_step(const fc_sample_t*,const fc_pilot_t*,uint64_t now_us,float dt,fc_status_t*);
-bool fc_cal_load(const uint8_t record[FC_CAL_RECORD_BYTES]);
-void fc_cal_command(char command);
-bool fc_cal_take_pending(uint8_t record[FC_CAL_RECORD_BYTES]);
-void fc_set_estimated_soc(float percent); /* Future calibrated battery monitor; not controller battery. */
+FC_API void fc_init(uint64_t board_id);
+FC_API void fc_step(const fc_sample_t*,const fc_pilot_t*,uint64_t now_us,float dt,fc_status_t*);
+FC_API bool fc_cal_load(const uint8_t record[FC_CAL_RECORD_BYTES]);
+FC_API void fc_cal_command(char command);
+FC_API bool fc_cal_take_pending(uint8_t record[FC_CAL_RECORD_BYTES]);
+FC_API void fc_set_estimated_soc(float percent); /* Future calibrated battery monitor; not controller battery. */
+/* Same decoded-report/authority path for hardware and simulation. Control-task owned. */
+FC_API bool fc_xbox_report(const uint8_t *report, unsigned length, uint64_t now_us);
+FC_API bool fc_companion_report(const uint8_t *frame, unsigned length, uint64_t now_us);
+FC_API void fc_control_step(const fc_sample_t*,uint64_t now_us,float dt,fc_status_t*);
+#define FC_COMPANION_FRAME_BYTES 28u
+FC_API void fc_status_frame(const fc_status_t*,uint8_t frame[16]);
 #ifdef __cplusplus
 }
 #endif

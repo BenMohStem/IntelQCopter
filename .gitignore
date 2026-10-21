@@ -43,3 +43,6 @@ compile_commands.json
 # Local caches and machine-specific configuration
 /.cache/
 /.local/
+
+# Native Gazebo dependency environment
+/simulation/gazebo/.pixi/

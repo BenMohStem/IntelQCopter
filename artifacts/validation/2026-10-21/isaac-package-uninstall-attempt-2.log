@@ -1,0 +1,83 @@
+WARNING: Ignoring invalid distribution -saacsim-extscache-kit (c:\users\mohamed\desktop\work\qcopter\.venv-isaacsim\lib\site-packages)
+WARNING: Ignoring invalid distribution -saacsim-extscache-kit (c:\users\mohamed\desktop\work\qcopter\.venv-isaacsim\lib\site-packages)
+WARNING: Skipping isaacsim as it is not installed.
+WARNING: Ignoring invalid distribution -saacsim-extscache-kit (c:\users\mohamed\desktop\work\qcopter\.venv-isaacsim\lib\site-packages)
+WARNING: Skipping isaacsim-app as it is not installed.
+WARNING: Ignoring invalid distribution -saacsim-extscache-kit (c:\users\mohamed\desktop\work\qcopter\.venv-isaacsim\lib\site-packages)
+WARNING: Skipping isaacsim-asset as it is not installed.
+WARNING: Ignoring invalid distribution -saacsim-extscache-kit (c:\users\mohamed\desktop\work\qcopter\.venv-isaacsim\lib\site-packages)
+WARNING: Skipping isaacsim-benchmark as it is not installed.
+WARNING: Ignoring invalid distribution -saacsim-extscache-kit (c:\users\mohamed\desktop\work\qcopter\.venv-isaacsim\lib\site-packages)
+WARNING: Skipping isaacsim-code-editor as it is not installed.
+WARNING: Ignoring invalid distribution -saacsim-extscache-kit (c:\users\mohamed\desktop\work\qcopter\.venv-isaacsim\lib\site-packages)
+WARNING: Skipping isaacsim-core as it is not installed.
+WARNING: Ignoring invalid distribution -saacsim-extscache-kit (c:\users\mohamed\desktop\work\qcopter\.venv-isaacsim\lib\site-packages)
+WARNING: Skipping isaacsim-cortex as it is not installed.
+WARNING: Ignoring invalid distribution -saacsim-extscache-kit (c:\users\mohamed\desktop\work\qcopter\.venv-isaacsim\lib\site-packages)
+WARNING: Skipping isaacsim-example as it is not installed.
+WARNING: Ignoring invalid distribution -saacsim-extscache-kit (c:\users\mohamed\desktop\work\qcopter\.venv-isaacsim\lib\site-packages)
+WARNING: Skipping isaacsim-extscache-kit as it is not installed.
+WARNING: Ignoring invalid distribution -saacsim-extscache-kit (c:\users\mohamed\desktop\work\qcopter\.venv-isaacsim\lib\site-packages)
+Found existing installation: isaacsim-extscache-kit-sdk 4.1.0.0
+Uninstalling isaacsim-extscache-kit-sdk-4.1.0.0:
+  Successfully uninstalled isaacsim-extscache-kit-sdk-4.1.0.0
+WARNING: Ignoring invalid distribution -saacsim-extscache-kit (c:\users\mohamed\desktop\work\qcopter\.venv-isaacsim\lib\site-packages)
+Found existing installation: isaacsim-extscache-physics 4.1.0.0
+Uninstalling isaacsim-extscache-physics-4.1.0.0:
+  Successfully uninstalled isaacsim-extscache-physics-4.1.0.0
+WARNING: Ignoring invalid distribution -saacsim-extscache-kit (c:\users\mohamed\desktop\work\qcopter\.venv-isaacsim\lib\site-packages)
+Found existing installation: isaacsim-gui 4.1.0.0
+Uninstalling isaacsim-gui-4.1.0.0:
+  Successfully uninstalled isaacsim-gui-4.1.0.0
+WARNING: Ignoring invalid distribution -saacsim-extscache-kit (c:\users\mohamed\desktop\work\qcopter\.venv-isaacsim\lib\site-packages)
+Found existing installation: isaacsim-kernel 4.1.0.0
+Uninstalling isaacsim-kernel-4.1.0.0:
+  Successfully uninstalled isaacsim-kernel-4.1.0.0
+WARNING: Ignoring invalid distribution -saacsim-extscache-kit (c:\users\mohamed\desktop\work\qcopter\.venv-isaacsim\lib\site-packages)
+Found existing installation: isaacsim-replicator 4.1.0.0
+Uninstalling isaacsim-replicator-4.1.0.0:
+  Successfully uninstalled isaacsim-replicator-4.1.0.0
+WARNING: Ignoring invalid distribution -saacsim-extscache-kit (c:\users\mohamed\desktop\work\qcopter\.venv-isaacsim\lib\site-packages)
+Found existing installation: isaacsim-rl 4.1.0.0
+Uninstalling isaacsim-rl-4.1.0.0:
+  Successfully uninstalled isaacsim-rl-4.1.0.0
+WARNING: Ignoring invalid distribution -saacsim-extscache-kit (c:\users\mohamed\desktop\work\qcopter\.venv-isaacsim\lib\site-packages)
+Found existing installation: isaacsim-robot 4.1.0.0
+Uninstalling isaacsim-robot-4.1.0.0:
+  Successfully uninstalled isaacsim-robot-4.1.0.0
+WARNING: Ignoring invalid distribution -saacsim-extscache-kit (c:\users\mohamed\desktop\work\qcopter\.venv-isaacsim\lib\site-packages)
+Found existing installation: isaacsim-robot-motion 4.1.0.0
+Uninstalling isaacsim-robot-motion-4.1.0.0:
+  Successfully uninstalled isaacsim-robot-motion-4.1.0.0
+WARNING: Ignoring invalid distribution -saacsim-extscache-kit (c:\users\mohamed\desktop\work\qcopter\.venv-isaacsim\lib\site-packages)
+Found existing installation: isaacsim-robot-setup 4.1.0.0
+Uninstalling isaacsim-robot-setup-4.1.0.0:
+  Successfully uninstalled isaacsim-robot-setup-4.1.0.0
+WARNING: Ignoring invalid distribution -saacsim-extscache-kit (c:\users\mohamed\desktop\work\qcopter\.venv-isaacsim\lib\site-packages)
+Found existing installation: isaacsim-ros1 4.1.0.0
+Uninstalling isaacsim-ros1-4.1.0.0:
+WARNING: Ignoring invalid distribution -saacsim-extscache-kit (c:\users\mohamed\desktop\work\qcopter\.venv-isaacsim\lib\site-packages)
+  Successfully uninstalled isaacsim-ros1-4.1.0.0
+Found existing installation: isaacsim-ros2 4.1.0.0
+Uninstalling isaacsim-ros2-4.1.0.0:
+  Successfully uninstalled isaacsim-ros2-4.1.0.0
+WARNING: Ignoring invalid distribution -saacsim-extscache-kit (c:\users\mohamed\desktop\work\qcopter\.venv-isaacsim\lib\site-packages)
+Found existing installation: isaacsim-sensor 4.1.0.0
+Uninstalling isaacsim-sensor-4.1.0.0:
+  Successfully uninstalled isaacsim-sensor-4.1.0.0
+WARNING: Ignoring invalid distribution -saacsim-extscache-kit (c:\users\mohamed\desktop\work\qcopter\.venv-isaacsim\lib\site-packages)
+Found existing installation: isaacsim-storage 4.1.0.0
+Uninstalling isaacsim-storage-4.1.0.0:
+  Successfully uninstalled isaacsim-storage-4.1.0.0
+WARNING: Ignoring invalid distribution -saacsim-extscache-kit (c:\users\mohamed\desktop\work\qcopter\.venv-isaacsim\lib\site-packages)
+Found existing installation: isaacsim-template 4.1.0.0
+Uninstalling isaacsim-template-4.1.0.0:
+  Successfully uninstalled isaacsim-template-4.1.0.0
+WARNING: Ignoring invalid distribution -saacsim-extscache-kit (c:\users\mohamed\desktop\work\qcopter\.venv-isaacsim\lib\site-packages)
+Found existing installation: isaacsim-test 4.1.0.0
+Uninstalling isaacsim-test-4.1.0.0:
+  Successfully uninstalled isaacsim-test-4.1.0.0
+WARNING: Ignoring invalid distribution -saacsim-extscache-kit (c:\users\mohamed\desktop\work\qcopter\.venv-isaacsim\lib\site-packages)
+Found existing installation: isaacsim-utils 4.1.0.0
+Uninstalling isaacsim-utils-4.1.0.0:
+  Successfully uninstalled isaacsim-utils-4.1.0.0

@@ -191,6 +191,51 @@
       "id": "code-map",
       "kind": "file",
       "locator": "docs/code-map.md"
+    },
+    {
+      "id": "source-controls-20261021",
+      "kind": "decision",
+      "locator": "User Xbox mode/trigger and simulation requirements, 2026-10-21"
+    },
+    {
+      "id": "source-protocol-v1",
+      "kind": "file",
+      "locator": "docs/xbox-ros2-protocol.md"
+    },
+    {
+      "id": "source-qemu39",
+      "kind": "file",
+      "locator": "artifacts/emulation/final-39-checks-2026-10-21/summary.json"
+    },
+    {
+      "id": "source-build-20261021",
+      "kind": "file",
+      "locator": "artifacts/validation/2026-10-21/hardware-controller-build-final.log"
+    },
+    {
+      "id": "source-native-manual",
+      "kind": "file",
+      "locator": "artifacts/gazebo-suite/suite-20261021-env01-manual/result.json"
+    },
+    {
+      "id": "source-companion",
+      "kind": "file",
+      "locator": "companion/ros2_ws/src/qcopter_autonomy/src/pilot_mission_node.cpp"
+    },
+    {
+      "id": "source-fixture-prior",
+      "kind": "file",
+      "locator": "companion/ros2_ws/src/qcopter_autonomy/src/panel_pose_node.cpp"
+    },
+    {
+      "id": "source-cleanup-20261021",
+      "kind": "file",
+      "locator": "artifacts/maintenance/2026-10-21/isaac-cleanup.json"
+    },
+    {
+      "id": "source-map-http",
+      "kind": "file",
+      "locator": "artifacts/validation/2026-10-21/pc-map-http-attempt-2.json"
     }
   ],
   "facts": [
@@ -220,6 +265,17 @@
           ],
           "evidence_level": "build",
           "reason": "Rebuilt after fc_init reset and C organization changes; prior size evidence is retained."
+        },
+        {
+          "revision": 3,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "ESP32-S3 hardware target compiles with 31836 bytes static RAM and 590573 bytes reported program flash. This includes queued raw HID/UART and separate BLE/peripheral tasks; no physical execution.",
+          "sources": [
+            "source-build-20261021"
+          ],
+          "evidence_level": "build",
+          "reason": "New code and original successful compiler output."
         }
       ]
     },
@@ -294,6 +350,18 @@
           ],
           "evidence_level": "source",
           "reason": "Migrated without changing the original claim from schema 1."
+        },
+        {
+          "revision": 2,
+          "date": "2026-10-21",
+          "status": "implemented",
+          "statement": "BLE callback queues raw 16-byte Xbox reports and actual receive timestamps. The C control task owns decoding, hold timers and authority; companion frames also carry receive timestamps across the queue.",
+          "sources": [
+            "source-007",
+            "source-protocol-v1"
+          ],
+          "evidence_level": "source",
+          "reason": "Move all input/authority logic into the single C runtime."
         }
       ]
     },
@@ -313,6 +381,18 @@
           ],
           "evidence_level": "requirement",
           "reason": "Migrated without changing the original claim from schema 1."
+        },
+        {
+          "revision": 2,
+          "date": "2026-10-21",
+          "status": "confirmed",
+          "statement": "Mode 2 sticks retained. RT boosts climb/collective allowance; LT reduces it. Down+A 5s selects stable, Down+B 5s navigation; Down+LT >=90% 2s latches disarm.",
+          "sources": [
+            "source-controls-20261021",
+            "source-protocol-v1"
+          ],
+          "evidence_level": "requirement",
+          "reason": "Latest explicit user control mapping supersedes reserved LT/buttons."
         }
       ]
     },
@@ -331,6 +411,18 @@
           ],
           "evidence_level": "source",
           "reason": "Migrated without changing the original claim from schema 1."
+        },
+        {
+          "revision": 2,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "39-check QEMU replay verifies full five-second mode holds, report-gap restart, once-per-hold action, two-second LT disarm/latch, malformed HID and UART validation. Old LB/RB takeoff/land logging was replaced.",
+          "sources": [
+            "source-qemu39",
+            "source-protocol-v1"
+          ],
+          "evidence_level": "emulated",
+          "reason": "Executed current raw-report C path on the emulated ESP32-S3."
         }
       ]
     },
@@ -386,6 +478,17 @@
           ],
           "evidence_level": "source",
           "reason": "Migrated without changing the original claim from schema 1."
+        },
+        {
+          "revision": 2,
+          "date": "2026-10-21",
+          "status": "implemented",
+          "statement": "2 ms timer requests the C control task on core 0. On core 1, sensor/UART/NVS service and lower-priority BLE reconnection use separate tasks so a blocking BLE library call need not postpone pressure/UART service. Physical timing remains unmeasured.",
+          "sources": [
+            "source-007"
+          ],
+          "evidence_level": "source",
+          "reason": "Separate slow work by blocking behavior; preserve measured dt and disabled outputs."
         }
       ]
     },
@@ -405,6 +508,17 @@
           ],
           "evidence_level": "none",
           "reason": "Migrated without changing the original claim from schema 1."
+        },
+        {
+          "revision": 2,
+          "date": "2026-10-21",
+          "status": "implemented",
+          "statement": "Pilot expires after 250 ms; a report gap >100 ms restarts gesture holds. Navigation companion expires after 150 ms and requests neutral angle/rate/vertical command while pilot remains fresh. Thresholds require physical latency/report-rate measurements.",
+          "sources": [
+            "source-protocol-v1"
+          ],
+          "evidence_level": "source",
+          "reason": "Add bounded companion authority without changing the requested motor-disarm policy."
         }
       ]
     },
@@ -675,6 +789,17 @@
           ],
           "evidence_level": "source",
           "reason": "Separate completed CPU replay from the still-pending feedback flight simulation."
+        },
+        {
+          "revision": 3,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "Native Gazebo 10.5/OGRE2 is connected to the active ESP32 C host DLL at a logical 500 Hz. Five manual flights passed using raw simulated Xbox reports only. Navigation world verification is recorded separately; this is not QEMU-in-Gazebo or physical flight.",
+          "sources": [
+            "source-native-manual"
+          ],
+          "evidence_level": "simulated",
+          "reason": "Close the flight plant loop and preserve original engine evidence."
         }
       ]
     },
@@ -694,6 +819,18 @@
           ],
           "evidence_level": "none",
           "reason": "Migrated without changing the original claim from schema 1."
+        },
+        {
+          "revision": 2,
+          "date": "2026-10-21",
+          "status": "implemented",
+          "statement": "Portable ROS2 C++ drone role accepts PC start/finish requests only in Xbox-selected navigation mode, then runs mission phases/A* from RGB YOLO/PnP observations. Host simulations use Gazebo local odometry. Pi/Jetson, VIO and electrical UART remain unvalidated.",
+          "sources": [
+            "source-companion",
+            "source-protocol-v1"
+          ],
+          "evidence_level": "source",
+          "reason": "Companion runtime now exists on this branch; hardware choice remains open."
         }
       ]
     },
@@ -713,6 +850,17 @@
           ],
           "evidence_level": "none",
           "reason": "Migrated without changing the original claim from schema 1."
+        },
+        {
+          "revision": 2,
+          "date": "2026-10-21",
+          "status": "pending",
+          "statement": "25 Isaac Sim Python packages were uninstalled. Residual Isaac data/staging folders and historical Isaac project files remain because direct deletion was blocked by automatic command policy. Shared vision Python and TensorFlow/CUDA settings were retained.",
+          "sources": [
+            "source-cleanup-20261021"
+          ],
+          "evidence_level": "source",
+          "reason": "Correct the earlier blanket removal claim using actual package-manager logs and the removal blocker."
         }
       ]
     },
@@ -774,6 +922,17 @@
           ],
           "evidence_level": "emulated",
           "reason": "Added for the requested emulation, organization and linear model work."
+        },
+        {
+          "revision": 2,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "Active C source passes all 39 named checks on Espressif QEMU ESP32-S3. Synthetic fixed sensors, gesture timeline and UART protocol only; no flight physics, physical BLE/I2C/UART/ESC or real-time guarantee.",
+          "sources": [
+            "source-qemu39"
+          ],
+          "evidence_level": "emulated",
+          "reason": "Latest retained replay supersedes the 19-check baseline; baseline failures remain."
         }
       ]
     },
@@ -849,6 +1008,62 @@
           ],
           "evidence_level": "source",
           "reason": "Added for the requested emulation, organization and linear model work."
+        }
+      ]
+    },
+    {
+      "id": "companion_protocol",
+      "topic": "companion",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-21",
+          "status": "implemented",
+          "statement": "Version-1 UART uses QN 28-byte bounded/CRC/sequence-checked setpoints and QS 16-byte FC mode/freshness/disarm telemetry. ROS2 UART bridge supports Windows/POSIX but has no hardware transport proof.",
+          "sources": [
+            "source-protocol-v1",
+            "source-qemu39"
+          ],
+          "evidence_level": "source",
+          "reason": "Define one binary boundary for hardware and simulator."
+        }
+      ]
+    },
+    {
+      "id": "fixture_distance_prior",
+      "topic": "perception",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-21",
+          "status": "implemented",
+          "statement": "Known-size blue panel PnP uses synchronized RGB/pose and rejects map centre height outside 0.90 +/-0.20 m on the controlled flat-floor fixtures. This rejects observed occlusion ghosts but is not arbitrary-object monocular depth.",
+          "sources": [
+            "source-fixture-prior"
+          ],
+          "evidence_level": "source",
+          "reason": "A parking-scene failure exposed false distances from partial silhouettes."
+        }
+      ]
+    },
+    {
+      "id": "ground_pc_map",
+      "topic": "companion",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-21",
+          "status": "implemented",
+          "statement": "PC browser map sends local-map endpoints through the real ROS2 mission service. HTTP map/pose routes and external-origin rejection passed; frontend JS syntax checked. No interactive browser click or separate-machine deployment is claimed.",
+          "sources": [
+            "source-map-http",
+            "source-companion"
+          ],
+          "evidence_level": "source",
+          "reason": "Provide a user-facing ground-PC tool without direct FC/motor inputs."
         }
       ]
     }

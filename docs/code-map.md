@@ -6,6 +6,9 @@
 | Public platform boundary | firmware/include/fc_api.h |
 | I²C, Xbox, scheduling, telemetry and NVS | firmware/src/esp32_platform.cpp |
 | Xtensa CPU replay | simulation/emulation/ |
+| Native flight plant, worlds and input transport | simulation/gazebo/ |
+| Drone ROS2 mission/perception/UART | companion/ros2_ws/src/qcopter_autonomy/ |
+| Ground-PC map | companion/pc_mission_map.py |
 | Mathematical plant/gain calculation | tools/model/model_lti.py |
 | Knowledge validation/search | tools/knowledge/ |
 | Offline guide rendering | tools/docs/ |
@@ -13,7 +16,7 @@
 | PlatformIO dependency adaptation | tools/platformio/ |
 | Historical snapshot index and cache recovery | archive/ and tools/archive/ |
 
-One C file holds flight math, grouped into six numbered sections. C++ handles
+One C file holds flight math, grouped into seven numbered sections. C++ handles
 existing hardware library interfaces. The emulator compiles that same C source;
 it does not maintain a separate flight-controller implementation.
 

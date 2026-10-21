@@ -9,7 +9,8 @@
     "documentation": "docs/",
     "knowledge": "knowledge/",
     "evidence": "artifacts/",
-    "history": "archive/"
+    "history": "archive/",
+    "companion": "companion/"
   },
   "local": {
     "build": "build/",
@@ -89,6 +90,42 @@
       "runtime": "python",
       "path": "tools/validation/check_layout.py",
       "description": "Validate active paths and script syntax",
+      "args": []
+    },
+    "build-host": {
+      "runtime": "powershell",
+      "path": "tools/build/build_host_fc.ps1",
+      "description": "Compile the active C flight core for native Gazebo",
+      "args": []
+    },
+    "build-companion": {
+      "runtime": "cmd",
+      "path": "tools/build/build_companion_windows.cmd",
+      "description": "Build the ROS2 C++ companion overlay",
+      "args": []
+    },
+    "gazebo-suite": {
+      "runtime": "python",
+      "path": "simulation/gazebo/run_suite.py",
+      "description": "Run five virtual Xbox flights and ten ROS2 navigation worlds",
+      "args": []
+    },
+    "gazebo-report": {
+      "runtime": "python",
+      "path": "tools/reports/gazebo_suite_report.py",
+      "description": "Plot original Gazebo flight data and build the video index",
+      "args": []
+    },
+    "ros2": {
+      "runtime": "cmd",
+      "path": "tools/ros2/ros2_windows.cmd",
+      "description": "Run a command in the project ROS2 overlay",
+      "args": []
+    },
+    "pc-map": {
+      "runtime": "cmd",
+      "path": "tools/ros2/pc_map_windows.cmd",
+      "description": "Open the ground-PC ROS2 endpoint map server on localhost:8086",
       "args": []
     }
   }

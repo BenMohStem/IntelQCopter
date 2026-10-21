@@ -16,7 +16,8 @@ Pin choices are inherited assumptions, not a verified PCB wiring diagram.
 
 Sensor-to-body transform is identity until verified. Before future motor output,
 check +x forward, +y left, +z up. Rotate gyro and accelerometer axes consistently.
-HMC5883L, TOFSense, battery ADC/current sensing and companion UART remain unconnected.
+HMC5883L, TOFSense and battery ADC/current sensing remain unconnected.
+Companion UART software is implemented at 115200 baud on RX18/TX17; routing, wiring and electrical operation remain unvalidated.
 
 ## Build without upload
 
@@ -28,9 +29,9 @@ This workstation also has PlatformIO at:
     C:\Users\Mohamed\.platformio\penv\Scripts\platformio.exe
 
 Dependencies are pinned in platformio.ini. The downloaded Xbox library gets one
-guarded raw-report callback in its local .pio cache via tools/patch_xbox.py.
-The library handles pairing; our observer parses a complete 16-byte report
-and atomically publishes a timestamped snapshot. It does not poll the library's
+guarded raw-report callback in its local .pio cache via tools/platformio/patch_xbox.py.
+The library handles pairing; our observer queues the complete 16-byte report with its receive timestamp.
+The C control task parses it and owns gesture/authority state. It does not poll the library's
 mutable public input fields across cores. The original Drone library cache is unchanged.
 
 The build produces .pio/build/esp32-s3/firmware.bin. Compilation is not evidence
@@ -75,7 +76,7 @@ Ground barometric pressure is measured from 100 readings each session, not persi
 
 ## Timing and estimator limits
 
-A timer requests 500 updates/s. Measured dt and pending notifications reveal delays.
+A timer requests 500 updates/s. The control task runs on core 0. Core 1 has separate sensor/UART/NVS and lower-priority Bluetooth service tasks; blocking BLE reconnect calls are isolated from periodic pressure acquisition. Measured dt and pending notifications reveal delays.
 I²C, BLE scheduling, flash and driver timeouts can still cause misses.
 NVS writes can pause both cores. They are allowed here only while physical arming
 is permanently disabled; a future arming path must enforce no writes during flight.
@@ -84,3 +85,7 @@ Gravity removal uses the previous roll/pitch estimate. Independent angle filters
 the approximate body-rate/Euler-rate assumption from main; this is not a quaternion estimator.
 BMP280 filtering correlates samples. Sensor noise, delay, temperature, mounting,
 motor response and execution time need physical measurement.
+
+## Companion and controller modes
+
+See [Xbox and UART protocol](xbox-ros2-protocol.md). Base ROS2 packages were not installed or modified in this task. Pi/Jetson hardware has not been selected or exercised.

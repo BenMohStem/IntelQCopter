@@ -644,7 +644,8 @@ typedef struct {
     float pitch_deg;
     float yaw_rate_dps;
     float throttle; /* [0,1], center requests zero vertical speed */
-    float boost;    /* RT [0,1]: extra climb/collective allowance, same flight mode */
+    float boost;    /* RT [0,1]: extra climb/collective allowance */
+    float reduce;   /* LT [0,1]: symmetric reduced climb/collective allowance */
     bool valid;
     bool arm_request;
 } pilot_command_t;
@@ -724,6 +725,7 @@ static float altitude_hold_reference_m;
 static float hover_collective = FC_HOVER_THROTTLE_PLACEHOLDER;
 static float boost_state;
 static bool altitude_reference_initialized;
+static bool user_disarm_latched;
 
 static float clampf(float value, float low, float high) {
     if (value < low) return low;
@@ -865,7 +867,7 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
                                              float dt) {
     control_output_t out = { .motor = {0.0f, 0.0f, 0.0f, 0.0f},
                              .armed = false, .sensor_fault = false };
-    if (battery_disarm_latched) {
+    if (battery_disarm_latched || user_disarm_latched) {
         reset_control_state();
         return out; /* Explicit user policy: stop mathematical demands, even airborne. */
     }
@@ -911,7 +913,7 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
     const float pitch_setpoint = clampf(cmd->pitch_deg, -35.0f, 35.0f);
     const float yaw_rate_setpoint = clampf(cmd->yaw_rate_dps, -180.0f, 180.0f);
     const float throttle = clampf(cmd->throttle, 0.0f, 1.0f);
-    const float boost_target=clampf(cmd->boost,0,1);
+    const float boost_target=clampf(cmd->boost-cmd->reduce,-1,1);
     boost_state+=clampf(boost_target-boost_state,-10*dt,4*dt);
     const float boost=boost_state;
     const float roll_rate_setpoint = pid_update(&roll_angle_pid, roll_setpoint,
@@ -931,7 +933,8 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
         altitude_reference_initialized = true;
     }
     const float pilot_vertical_speed = (throttle - 0.5f)
-                                     * 2.0f * (FC_MAX_VERTICAL_SPEED_MPS+boost);
+                                     * 2.0f * (FC_MAX_VERTICAL_SPEED_MPS+fabsf(boost))
+                                     +boost*.6f;
     altitude_hold_reference_m += pilot_vertical_speed * dt;
     altitude_hold_reference_m=clampf(altitude_hold_reference_m,
         altitude_estimator.height_m-2.0f,altitude_estimator.height_m+2.0f);
@@ -969,6 +972,12 @@ static uint32_t last_pressure_sequence;
 static uint64_t calibration_board_id;
 static bool gyro_verified,cal_dirty;
 static int8_t capture_face=-1;
+static fc_pilot_t received_pilot;
+static uint8_t selected_mode,held_gesture;
+static uint64_t gesture_started_us,previous_report_us,companion_received_us;
+static uint32_t received_reports,mode_events,companion_sequence;
+static bool gesture_fired,have_companion;
+static float companion_values[4];
 
 static uint32_t record_u32(const uint8_t *p) {
     return (uint32_t)p[0]|(uint32_t)p[1]<<8|(uint32_t)p[2]<<16|(uint32_t)p[3]<<24;
@@ -1004,6 +1013,10 @@ void fc_init(uint64_t board_id) {
     pitch_estimator=angle_estimator_defaults;
     altitude_estimator=altitude_estimator_defaults;
     hover_collective=FC_HOVER_THROTTLE_PLACEHOLDER;
+    received_pilot=(fc_pilot_t){0}; selected_mode=held_gesture=0;
+    gesture_started_us=previous_report_us=companion_received_us=0;
+    received_reports=mode_events=companion_sequence=0;
+    gesture_fired=have_companion=user_disarm_latched=false;
     saved_imu=(imu_calibration_t){0};
     verification=(imu_stationary_cal_t){0};
     memset(accel_faces,0,sizeof(accel_faces));
@@ -1132,9 +1145,9 @@ void fc_step(const fc_sample_t *raw,const fc_pilot_t *pilot,uint64_t now,float d
     bool fresh=pilot->connected && now>=pilot->received_us
         && now-pilot->received_us<=250000u
         && isfinite(pilot->roll) && isfinite(pilot->pitch) && isfinite(pilot->yaw)
-        && isfinite(pilot->vertical) && isfinite(pilot->boost);
+        && isfinite(pilot->vertical) && isfinite(pilot->boost) && isfinite(pilot->reduce);
     pilot_command_t cmd={.roll_deg=35*pilot->roll,.pitch_deg=35*pilot->pitch,
-        .yaw_rate_dps=180*pilot->yaw,.throttle=.5f+.5f*pilot->vertical,.boost=pilot->boost,.valid=fresh};
+        .yaw_rate_dps=180*pilot->yaw,.throttle=.5f+.5f*pilot->vertical,.boost=pilot->boost,.reduce=pilot->reduce,.valid=fresh};
     control_output_t result=flight_control_step(&s,&cmd,dt);
     memcpy(status->motor_demand,result.motor,sizeof(status->motor_demand));
     status->roll_deg=roll_estimator.angle_deg; status->pitch_deg=pitch_estimator.angle_deg;
@@ -1145,4 +1158,62 @@ void fc_step(const fc_sample_t *raw,const fc_pilot_t *pilot,uint64_t now,float d
     for(unsigned i=0;i<3;i++) status->gyro_sigma_dps[i]=sqrtf(fmaxf(0,saved_imu.gyro_variance_dps2[i]));
     for(unsigned f=0;f<6;f++) if(accel_faces[f].n>=200u) status->faces_done|=1u<<f;
     status->battery_warning=battery_warning_active; status->battery_disarm=battery_disarm_latched;
+    status->flight_mode=selected_mode;status->user_disarm=user_disarm_latched;
+    status->xbox_reports=received_reports;status->mode_events=mode_events;
+}
+
+/* 7. Xbox raw HID reports and bounded companion authority.
+ * Holds require continuous fresh reports; gaps/release/conflicts restart timing.
+ * Physical arming stays absent. A user disarm is latched until session restart. */
+static float xbox_axis(uint16_t value) {
+    float v=((int32_t)value-32768)/32768.0f;
+    if(fabsf(v)<=.12f)return 0;
+    return copysignf(fminf(1,(fabsf(v)-.12f)/.88f),v);
+}
+bool fc_xbox_report(const uint8_t *p,unsigned length,uint64_t now) {
+    if(!p || length!=16u || qcopter_get_u16(p+8)>1023 || qcopter_get_u16(p+10)>1023 || p[12]>8)return false;
+    bool continuous=received_reports && now>=previous_report_us && now-previous_report_us<=100000u;
+    fc_pilot_t next={.roll=xbox_axis(qcopter_get_u16(p+4)),.pitch=-xbox_axis(qcopter_get_u16(p+6)),
+        .yaw=xbox_axis(qcopter_get_u16(p)),.vertical=-xbox_axis(qcopter_get_u16(p+2)),
+        .boost=qcopter_get_u16(p+10)/1023.0f,.reduce=qcopter_get_u16(p+8)/1023.0f,
+        .received_us=now,.connected=true};
+    bool down=p[12]>=4 && p[12]<=6;
+    uint8_t gesture=down && next.reduce>=.9f ? 3 : down && (p[13]&3u)==1 ? 1 : down && (p[13]&3u)==2 ? 2 : 0;
+    if(!continuous || gesture!=held_gesture) {held_gesture=gesture;gesture_started_us=now;gesture_fired=false;}
+    if(gesture && !gesture_fired && now>=gesture_started_us
+        && now-gesture_started_us>=(gesture==3?2000000u:5000000u)) {
+        gesture_fired=true;mode_events++;
+        if(gesture==3)user_disarm_latched=true;
+        else {selected_mode=gesture==2?1:0;reset_control_state();}
+    }
+    received_pilot=next;previous_report_us=now;received_reports++;
+    return true;
+}
+bool fc_companion_report(const uint8_t *p,unsigned length,uint64_t now) {
+    if(!p || length!=FC_COMPANION_FRAME_BYTES || p[0]!='Q' || p[1]!='N' || p[2]!=1 || p[3]!=1
+        || record_u32(p+24)!=record_crc(p,24))return false;
+    uint32_t seq=record_u32(p+4);
+    if(have_companion && now>=companion_received_us && now-companion_received_us<1000000u
+        && (int32_t)(seq-companion_sequence)<=0)return false;
+    float values[4];
+    for(unsigned i=0;i<4;i++){uint32_t bits=record_u32(p+8+4*i);memcpy(values+i,&bits,4);if(!isfinite(values[i]))return false;}
+    if(fabsf(values[0])>35 || fabsf(values[1])>35 || fabsf(values[2])>180 || fabsf(values[3])>3)return false;
+    memcpy(companion_values,values,sizeof(values));companion_sequence=seq;companion_received_us=now;have_companion=true;
+    return true;
+}
+void fc_control_step(const fc_sample_t *raw,uint64_t now,float dt,fc_status_t *status) {
+    fc_pilot_t pilot=received_pilot;
+    bool fresh=have_companion && now>=companion_received_us && now-companion_received_us<=150000u;
+    if(selected_mode==1) {
+        pilot.roll=fresh?companion_values[0]/35:0;pilot.pitch=fresh?companion_values[1]/35:0;
+        pilot.yaw=fresh?companion_values[2]/180:0;pilot.vertical=fresh?companion_values[3]/2:0;
+    }
+    fc_step(raw,&pilot,now,dt,status);
+    if(status)status->companion_fresh=fresh;
+}
+void fc_status_frame(const fc_status_t *s,uint8_t p[16]) {
+    if(!s || !p)return;
+    memset(p,0,16);p[0]='Q';p[1]='S';p[2]=1;p[3]=s->flight_mode;
+    p[4]=s->user_disarm;p[5]=s->pilot_fresh;p[6]=s->companion_fresh;
+    record_put32(p+8,s->xbox_reports);record_put32(p+12,record_crc(p,12));
 }

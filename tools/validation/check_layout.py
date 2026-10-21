@@ -18,7 +18,7 @@ for domain,path in data['domains'].items():
     target=(ROOT/path).resolve()
     assert target.is_relative_to(ROOT) and target.is_dir(),f'Missing domain: {domain}'
     checks.append('domain:'+domain)
-for base in ('tools','sim' if data['branch']=='main' else 'simulation'):
+for base in ('tools','sim' if data['branch']=='main' else 'simulation','companion'):
     for folder,dirs,files in os.walk(ROOT/base):
         dirs[:]=[d for d in dirs if d not in {'__pycache__','.pixi','.pio','.cache','build','node_modules'} and not d.startswith('.venv')]
         for name in files:

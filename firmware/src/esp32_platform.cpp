@@ -27,39 +27,20 @@ static TaskHandle_t control_handle;
 static QueueHandle_t command_queue,calibration_queue;
 static esp_timer_handle_t control_timer;
 static portMUX_TYPE state_lock=portMUX_INITIALIZER_UNLOCKED;
-static fc_pilot_t shared_pilot;
 static fc_status_t shared_status;
 static float shared_pressure;
 static uint32_t pressure_sequence,missed_ticks,max_execution_us,late_cycles;
 static int64_t pressure_received_us;
 static bool pressure_ok;
-static unsigned gesture_events;
 
-static float stick(uint16_t value) {
-    float x=(static_cast<int32_t>(value)-32768)/32768.0f;
-    constexpr float deadband=.12f;
-    if(fabsf(x)<=deadband) return 0;
-    return copysignf(fminf(1,(fabsf(x)-deadband)/(1-deadband)),x);
-}
+struct HidPacket { uint8_t data[16]; uint64_t received_us; };
+struct CompanionPacket { uint8_t data[FC_COMPANION_FRAME_BYTES]; uint64_t received_us; };
+static QueueHandle_t hid_queue,companion_queue;
 static void xbox_report(uint8_t *bytes,size_t length) {
-    if(length!=XboxControllerNotificationParser::expectedDataLen) return;
-    XboxControllerNotificationParser report;
-    if(report.update(bytes,length)!=0) return;
-    fc_pilot_t p={};
-    p.roll=stick(report.joyRHori); p.pitch=-stick(report.joyRVert);
-    p.yaw=stick(report.joyLHori); p.vertical=-stick(report.joyLVert);
-    p.boost=fminf(1,report.trigRT/1023.0f);
-    p.received_us=static_cast<uint64_t>(esp_timer_get_time()); p.connected=true;
-    // Requests are recorded only. They never arm or directly command motors.
-    static bool was_takeoff,was_land;
-    bool takeoff=report.btnLB && report.btnRB && report.btnA;
-    bool land=report.btnLB && report.btnRB && report.btnB;
-    portENTER_CRITICAL(&state_lock);
-    shared_pilot=p;
-    if(takeoff && !was_takeoff) gesture_events|=1;
-    if(land && !was_land) gesture_events|=2;
-    portEXIT_CRITICAL(&state_lock);
-    was_takeoff=takeoff; was_land=land;
+    if(length!=16 || !hid_queue) return;
+    HidPacket packet={};memcpy(packet.data,bytes,16);packet.received_us=esp_timer_get_time();
+    // The control task owns all gesture timing and authority state.
+    (void)xQueueSend(hid_queue,&packet,0);
 }
 static bool read_registers(uint8_t reg,uint8_t *data,size_t count) {
     Wire.beginTransmission(imu_address); Wire.write(reg);
@@ -94,9 +75,9 @@ static void control_task(void*) {
         uint32_t ticks=ulTaskNotifyTake(pdTRUE,portMAX_DELAY);
         int64_t start=esp_timer_get_time();
         float dt=static_cast<float>(start-previous)*1e-6f; previous=start;
-        fc_sample_t raw={}; fc_pilot_t pilot; fc_status_t status;
+        fc_sample_t raw={}; fc_status_t status;
         portENTER_CRITICAL(&state_lock);
-        pilot=shared_pilot; raw.pressure_pa=shared_pressure;
+        raw.pressure_pa=shared_pressure;
         raw.pressure_sequence=pressure_sequence;
         raw.pressure_valid=pressure_ok && start>=pressure_received_us
             && start-pressure_received_us<=PRESSURE_TIMEOUT_US;
@@ -104,7 +85,11 @@ static void control_task(void*) {
         raw.imu_valid=acquire_imu(raw);
         char command;
         while(xQueueReceive(command_queue,&command,0)==pdTRUE) fc_cal_command(command);
-        fc_step(&raw,&pilot,static_cast<uint64_t>(start),dt,&status);
+        HidPacket report;
+        while(xQueueReceive(hid_queue,&report,0)==pdTRUE) fc_xbox_report(report.data,16,report.received_us);
+        CompanionPacket companion;
+        while(xQueueReceive(companion_queue,&companion,0)==pdTRUE) fc_companion_report(companion.data,sizeof(companion.data),companion.received_us);
+        fc_control_step(&raw,static_cast<uint64_t>(start),dt,&status);
         uint8_t record[FC_CAL_RECORD_BYTES];
         if(fc_cal_take_pending(record)) xQueueOverwrite(calibration_queue,record);
         // Deliberately no PWM/DShot writes, even when mathematical demands are nonzero.
@@ -117,17 +102,29 @@ static void control_task(void*) {
         portEXIT_CRITICAL(&state_lock);
     }
 }
+static void bluetooth_task(void*) {
+    for(;;){xbox.onLoop();vTaskDelay(pdMS_TO_TICKS(2));}
+}
 static void slow_task(void*) {
     uint32_t last_pressure=0,last_log=0,last_save=0;
     uint8_t pending_record[FC_CAL_RECORD_BYTES]={};
     bool save_pending=false;
     unsigned failures=0;
     for(;;) {
-        xbox.onLoop(); // Discovery/reconnection may block; it is outside the control task.
-        bool connected=xbox.isConnected() && !xbox.isWaitingForFirstNotification();
-        portENTER_CRITICAL(&state_lock);
-        if(!connected) shared_pilot.connected=false;
-        portEXIT_CRITICAL(&state_lock);
+        // BLE discovery/reconnection runs in its own low-priority task. Its
+        // blocking library calls must not postpone pressure or UART servicing.
+        // No synthetic freshness refresh on connection polling: only actual HID reports count.
+        static uint8_t uart_frame[FC_COMPANION_FRAME_BYTES];static unsigned uart_used=0;
+        while(Serial2.available()) {
+            uint8_t byte=static_cast<uint8_t>(Serial2.read());
+            if(uart_used==0 && byte!='Q')continue;
+            if(uart_used==1 && byte!='N'){uart_used=byte=='Q'?1:0;continue;}
+            uart_frame[uart_used++]=byte;
+            if(uart_used==sizeof(uart_frame)){
+                CompanionPacket packet={};memcpy(packet.data,uart_frame,sizeof(uart_frame));packet.received_us=esp_timer_get_time();
+                (void)xQueueSend(companion_queue,&packet,0);uart_used=0;
+            }
+        }
         uint32_t now=millis();
         if(bmp_available && now-last_pressure>=20) {
             last_pressure=now;
@@ -167,10 +164,9 @@ static void slow_task(void*) {
         }
         if(now-last_log>=250) {
             last_log=now;
-            fc_status_t s; uint32_t missed,execution,late; unsigned events;
+            fc_status_t s; uint32_t missed,execution,late;
             portENTER_CRITICAL(&state_lock);
             s=shared_status; missed=missed_ticks; execution=max_execution_us; late=late_cycles;
-            events=gesture_events; gesture_events=0;
             portEXIT_CRITICAL(&state_lock);
             digitalWrite(LED_PIN,s.battery_warning || s.battery_disarm);
             Serial.printf("FC,ms=%lu,pilot=%d,gyro=%d,accel=%d,baro=%d,fault=%d,roll=%.3f,pitch=%.3f,h=%.3f,vz=%.3f,faces=0x%02x,capture=%d,missed=%lu,late=%lu,max_exec_us=%lu,warn35=%d,disarm20=%d,nvs_pending=%d,nvs_failures=%u,motors=DISABLED\n",
@@ -178,20 +174,23 @@ static void slow_task(void*) {
                 s.sensor_fault,s.roll_deg,s.pitch_deg,s.height_m,s.vertical_mps,s.faces_done,s.capturing_face,
                 static_cast<unsigned long>(missed),static_cast<unsigned long>(late),static_cast<unsigned long>(execution),
                 s.battery_warning,s.battery_disarm,save_pending,failures);
-            if(events&1) Serial.println("gesture=TAKEOFF_REQUEST_ONLY; no mission/arming action connected");
-            if(events&2) Serial.println("gesture=LAND_REQUEST_ONLY; no mission/arming action connected");
+            Serial.printf("MODE,selected=%u,user_disarm=%d,companion=%d,reports=%lu,events=%lu\n",s.flight_mode,s.user_disarm,s.companion_fresh,(unsigned long)s.xbox_reports,(unsigned long)s.mode_events);
+            uint8_t telemetry[16];fc_status_frame(&s,telemetry);Serial2.write(telemetry,sizeof(telemetry));
         }
         vTaskDelay(pdMS_TO_TICKS(2));
     }
 }
 void setup() {
     Serial.begin(115200);
+    Serial2.setRxBufferSize(1024);
+    Serial2.begin(115200,SERIAL_8N1,18,17); // RX18, TX17; verify final PCB routing.
     for(int pin:MOTOR_PINS) pinMode(pin,INPUT_PULLDOWN);
     pinMode(LED_PIN,OUTPUT); digitalWrite(LED_PIN,LOW);
     i2c_mutex=xSemaphoreCreateMutex();
     command_queue=xQueueCreate(8,sizeof(char));
     calibration_queue=xQueueCreate(1,FC_CAL_RECORD_BYTES);
-    configASSERT(i2c_mutex && command_queue && calibration_queue);
+    hid_queue=xQueueCreate(8,sizeof(HidPacket));companion_queue=xQueueCreate(8,sizeof(CompanionPacket));
+    configASSERT(i2c_mutex && command_queue && calibration_queue && hid_queue && companion_queue);
     Wire.begin(SDA_PIN,SCL_PIN); Wire.setClock(400000); Wire.setTimeOut(2);
     mpu.initialize(); imu_available=mpu.testConnection();
     if(imu_available) {
@@ -214,10 +213,11 @@ void setup() {
     }
     Serial.printf("IntelQCopter ESP32-S3/Xbox; imu=%d,bmp=%d,stored_cal=%d; MOTOR OUTPUTS DISABLED\n",
         imu_available,bmp_available,loaded);
-    Serial.println("Mode2: LX=yaw, LY=vertical speed, RX=roll, RY=pitch, RT=boost; 0..5=six-face capture");
+    Serial.println("Mode2: LX=yaw, LY=vertical speed, RX=roll, RY=pitch, RT=boost, LT=reduce; Down+A/B 5s=stable/nav, Down+LT 2s=disarm; 0..5=six-face capture");
     xbox.begin();
     configASSERT(xTaskCreatePinnedToCore(control_task,"fc500",8192,nullptr,5,&control_handle,0)==pdPASS);
-    configASSERT(xTaskCreatePinnedToCore(slow_task,"xbox_slow",12288,nullptr,1,nullptr,1)==pdPASS);
+    configASSERT(xTaskCreatePinnedToCore(slow_task,"sensor_uart_nvs",12288,nullptr,2,nullptr,1)==pdPASS);
+    configASSERT(xTaskCreatePinnedToCore(bluetooth_task,"xbox_ble",8192,nullptr,1,nullptr,1)==pdPASS);
     esp_timer_create_args_t args={};
     args.callback=timer_tick; args.name="fc_tick"; args.dispatch_method=ESP_TIMER_TASK;
     ESP_ERROR_CHECK(esp_timer_create(&args,&control_timer));

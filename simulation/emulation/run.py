@@ -62,7 +62,8 @@ summary={'engine':'Espressif QEMU ESP32-S3','command':command,'completed':comple
          'scope':'Active C core compiled for Xtensa; synthetic input replay, not flight physics, BLE, sensor registers or real-time timing.'}
 end=next((re.fullmatch(r'QCOPTER_EMU_END,checks=(\d+),failures=(\d+),ticks=(\d+)\s*',line) for line in lines if line.startswith('QCOPTER_EMU_END,')),None)
 summary['passed']=bool(completed and end and int(end[1])==len(checks) and int(end[2])==0
-    and len(checks)==19 and len({c['name'] for c in checks})==19
+    and {c['name'] for c in checks}==set(re.findall(r'check\("([^"]+)"',(ROOT/'simulation/emulation/scenario.c').read_text(encoding='utf8')))
+    and len({c['name'] for c in checks})==len(checks)
     and all(c['result']=='PASS' for c in checks))
 (output/'summary.json').write_text(json.dumps(summary,indent=2)+'\n',encoding='utf8')
 print('Saved',output)
