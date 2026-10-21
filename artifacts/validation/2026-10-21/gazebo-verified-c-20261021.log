@@ -1,0 +1,16 @@
+START verified-c-20261021-env07-nav
+verified-c-20261021-env07-nav PROGRESS t=20.0s position=[3.0461215435476934, -1.4039678409275935, 1.2491829046202576] mode=1 phase=4,done=0,mapped=2,plans=2,images=176,requests=1,camera=1
+RESULT verified-c-20261021-env07-nav PASS
+START verified-c-20261021-env08-nav
+verified-c-20261021-env08-nav PROGRESS t=20.0s position=[3.4988390963810954, 1.3909915611220922, 1.2489697385405154] mode=1 phase=4,done=0,mapped=3,plans=22,images=172,requests=1,camera=1
+verified-c-20261021-env08-nav PROGRESS t=45.0s position=[8.880058603074561, -0.034186577697637, 0.3100511919339487] mode=1 phase=6,done=0,mapped=3,plans=22,images=417,requests=1,camera=1
+RESULT verified-c-20261021-env08-nav PASS
+START verified-c-20261021-env09-nav
+verified-c-20261021-env09-nav PROGRESS t=20.0s position=[3.0855333386700323, -1.3757693123476429, 1.250186577413483] mode=1 phase=4,done=0,mapped=3,plans=7,images=179,requests=1,camera=1
+verified-c-20261021-env09-nav PROGRESS t=50.0s position=[8.904998608619499, 0.2723795289480698, 0.07999976148633049] mode=1 phase=7,done=1,mapped=3,plans=7,images=464,requests=1,camera=1
+RESULT verified-c-20261021-env09-nav PASS
+START verified-c-20261021-env10-nav
+verified-c-20261021-env10-nav PROGRESS t=20.0s position=[3.231259110712709, 1.3900523923514714, 1.248762470109359] mode=1 phase=4,done=0,mapped=2,plans=2,images=180,requests=1,camera=1
+verified-c-20261021-env10-nav PROGRESS t=50.0s position=[8.90394843421528, -0.28675400123339984, 0.07999223314300408] mode=1 phase=7,done=1,mapped=3,plans=3,images=458,requests=1,camera=1
+RESULT verified-c-20261021-env10-nav PASS
+SUITE 4 runs 4 passed

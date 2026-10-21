@@ -95,3 +95,23 @@ Gazebo drives the active C core at 500 Hz through simulated IMU/barometer sample
 The ground PC sends Xbox-format reports or a ROS2 endpoint request. The drone
 C++ companion handles navigation and RGB perception. Physical ESC outputs stay disabled.
 CPU emulation and host flight simulation are separate evidence categories.
+
+## Verified simulation evidence · 21 October 2026
+
+| Check | Result |
+|---|---|
+| ESP32-S3 hardware build | Pass; no flashing |
+| ESP32-S3 QEMU | 39/39 checks |
+| Native Gazebo manual Xbox flights | 5/5; zero companion flight packets |
+| Native Gazebo ROS2 navigation | 10/10 layouts; no native panel contacts |
+| Additional PC map mission | Custom endpoint/height accepted over ROS2; landed/disarmed |
+
+[Results, limitations and measurements](docs/gazebo-results-2026-10-21.md) ·
+[Video and graph index — open locally](artifacts/reports/gazebo-verified-20261021/index.html) ·
+[Launch and choose your own endpoints](simulation/gazebo/README.md#pc-endpoint-selection).
+
+![Actual native Gazebo navigation trajectories](artifacts/reports/gazebo-verified-20261021/navigation-trajectories.png)
+
+Mean simulated landing error: **9.49 cm manual**, **1.53 cm navigation**. This
+uses unmeasured aircraft parameters, synthetic sensors and simulated localization.
+RGB distance is specific to known panel fixtures; physical interfaces remain unvalidated.

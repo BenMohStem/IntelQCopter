@@ -1,0 +1,6 @@
+PC map available at http://127.0.0.1:8086; endpoints travel over ROS2 DDS.
+127.0.0.1 - - [21/Oct/2026 11:52:16] "GET /state HTTP/1.1" 200 -
+127.0.0.1 - - [21/Oct/2026 11:52:16] "POST /mission HTTP/1.1" 200 -
+127.0.0.1 - - [21/Oct/2026 11:52:55] "GET /state HTTP/1.1" 200 -
+127.0.0.1 - - [21/Oct/2026 11:53:21] "GET /state HTTP/1.1" 200 -
+127.0.0.1 - - [21/Oct/2026 11:53:21] "POST /mission HTTP/1.1" 200 -

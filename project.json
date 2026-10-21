@@ -127,6 +127,12 @@
       "path": "tools/ros2/pc_map_windows.cmd",
       "description": "Open the ground-PC ROS2 endpoint map server on localhost:8086",
       "args": []
+    },
+    "gazebo-audit": {
+      "runtime": "python",
+      "path": "tools/validation/check_gazebo_evidence.py",
+      "description": "Audit final original flight files, CRC frames, videos and source fingerprints",
+      "args": []
     }
   }
 }

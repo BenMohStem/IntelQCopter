@@ -32,6 +32,7 @@ def detail(result,target):
     fig.savefig(target,dpi=135);plt.close(fig)
     position=np.column_stack([values(rows,k) for k in ['x','y','z']])
     result['derived_metrics']={'trajectory_distance_m':float(np.sum(np.linalg.norm(np.diff(position,axis=0),axis=1))),
+       'max_speed_mps':float(np.linalg.norm(np.column_stack([values(rows,k) for k in ['vx','vy','vz']]),axis=1).max()),
        'max_abs_roll_pitch_deg':float(max(abs(values(rows,'roll_deg')).max(),abs(values(rows,'pitch_deg')).max())),
        'max_height_m':float(z.max()),'height_estimate_rmse_m':float(np.sqrt(np.mean((z-.082-values(rows,'estimated_z'))**2)))}
 
@@ -73,6 +74,11 @@ def main():
     summary={'scope':'Native Gazebo 10.5/OGRE2 + C flight core host DLL + ROS2 DDS; synthetic sensors and simulated localization; no physical BLE/ESC/hardware validation.',
         'prefixes':args.prefix,'selected_runs':len(results),'passed':sum(r['passed'] for r in results),'manual_passed':sum(r['passed'] and r['kind']=='manual' for r in results),'navigation_passed':len(nav),
         'best_landing_error_run':best['name'] if best else None,'runs':results}
+    cohorts={}
+    for kind in ['manual','navigation']:
+        errors=np.array([r['arrival_error_m'] for r in passed if r['kind']==kind])
+        if len(errors):cohorts[kind]=dict(n=len(errors),mean_landing_error_m=float(errors.mean()),sample_std_landing_error_m=float(errors.std(ddof=1)) if len(errors)>1 else None,max_landing_error_m=float(errors.max()))
+    summary['observed_cohort_statistics']=cohorts
     (out/'summary.json').write_text(json.dumps(summary,indent=2)+'\n',encoding='utf8')
     cards=[];table=[]
     for r in results:
@@ -84,16 +90,20 @@ def main():
 <p>HID reports: {tr['hid_packets']} · companion frames: {tr['companion_packets']} · YOLO/PnP frames: {tr['yolo_frames']}/{tr['pnp_frames']}</p>
 <p><a href="{rel}/flight.csv">Flight CSV</a> · <a href="{rel}/xbox-reports.csv">Xbox reports</a> · <a href="{rel}/engine.log">Gazebo original log</a> · <a href="{rel}/ros-boundary.log">ROS transport log</a> · <a href="{rel}/engine-summary.json">Assumptions and result</a> · <a href="{rel}/pc-mission.json">PC request</a> · <a href="{rel}/world.sdf">Exact world</a></p></section>''')
     bestlink=f'<p>Lowest measured landing error in this set: <a href="../../gazebo-suite/{best["name"]}/gazebo.mp4">{best["name"]}</a>. This selection is not a real-world reliability ranking.</p>' if best else ''
-    history=[]
+    history=[];operators=[]
     for path in sorted(EVIDENCE.glob('*/result.json')):
         r=json.loads(path.read_text(encoding='utf8'))
+        if r.get('operator') and r.get('passed'):
+            relative='../../gazebo-suite/'+path.parent.name
+            operators.append(f'<section><h2>Additional PC map workflow check</h2><p>Outside the 15-case suite: the ground-PC HTTP map tool submitted custom endpoints through ROS2; the virtual Xbox supplied no automatic mission request.</p><video controls preload="none" src="{relative}/gazebo.mp4"></video><p><a href="{relative}/pc-map-missions.jsonl">Original PC requests/replies</a> · <a href="{relative}/pc-mission.json">Virtual Xbox role</a> · <a href="{relative}/result.json">Flight result</a></p></section>')
         if not r.get('passed'):history.append(f'<li><a href="../../gazebo-suite/{path.parent.name}/result.json">{html.escape(path.parent.name)}</a></li>')
+    statistics=' · '.join(f"{kind}: mean {c['mean_landing_error_m']*100:.1f} cm, sample SD {(c['sample_std_landing_error_m'] or 0)*100:.1f} cm (n={c['n']})" for kind,c in cohorts.items())
     doc=f'''<!doctype html><meta charset="utf-8"><title>IntelQCopter · native Gazebo evidence</title>
 <style>body{{font:16px system-ui;background:#edf3f7;color:#183348;max-width:1440px;margin:32px auto;padding:0 22px;line-height:1.6}}h1{{font-size:38px}}section{{background:white;padding:25px;border-radius:15px;margin:25px 0}}video{{width:70%;max-width:960px;background:#14202a}}img{{width:100%;height:auto}}a{{color:#007c91}}table{{border-collapse:collapse;width:100%;background:white}}td,th{{text-align:left;border-bottom:1px solid #d8e4ea;padding:9px}}.scope{{border-left:5px solid #d78c31;padding:15px;background:#fff9ed}}</style>
 <h1>IntelQCopter · native Gazebo flight evidence</h1><p>{summary['passed']} / {len(results)} selected runs passed: {summary['manual_passed']} manual + {summary['navigation_passed']} navigation.</p>
 <p class="scope">{html.escape(summary['scope'])}<br>Model: 1.2 kg, J=(0.012,0.012,0.022) kg·m², 450 mm diagonal, 6 N/motor, 40 ms lag; all unmeasured. RGB ranging uses known-size blue fixtures, not arbitrary obstacle depth. Manual pilot is a feedback algorithm emitting raw Xbox reports, not a real human.</p>
-{bestlink}<p><a href="summary.json">Machine-readable results and model assumptions</a></p><h2>Trajectories from original CSV</h2><img src="manual-trajectories.png"><img src="navigation-trajectories.png">
+{bestlink}<p>{statistics}. These describe the selected simulated cases; they are not sensor uncertainty estimates or hardware confidence bounds.</p><p><a href="summary.json">Machine-readable results and model assumptions</a></p><h2>Trajectories from original CSV</h2><img src="manual-trajectories.png"><img src="navigation-trajectories.png">
 <table><tr><th>Run</th><th>Result</th><th>Landing error (cm)</th><th>Simulation (s)</th></tr>{''.join(table)}</table>
-{''.join(cards)}<section><h2>Retained unsuccessful attempts</h2><p>These failures are excluded from the final selected set but remain original project evidence.</p><ul>{''.join(history)}</ul></section>'''
+{''.join(cards)}{''.join(operators)}<section><h2>Retained unsuccessful attempts</h2><p>These failures are excluded from the final selected set but remain original project evidence.</p><ul>{''.join(history)}</ul></section>'''
     (out/'index.html').write_text(doc,encoding='utf8');print(json.dumps({k:v for k,v in summary.items() if k!='runs'},indent=2))
 if __name__=='__main__':main()

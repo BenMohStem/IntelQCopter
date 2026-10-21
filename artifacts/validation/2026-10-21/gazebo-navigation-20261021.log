@@ -1,0 +1,28 @@
+START navigation-20261021-env01-nav
+navigation-20261021-env01-nav PROGRESS t=20.0s position=[3.1140094308584585, -1.3292561143835377, 1.249995194896187] mode=1 phase=4,done=0,mapped=3,plans=9,images=178,requests=1,camera=1
+navigation-20261021-env01-nav PROGRESS t=50.0s position=[8.948960430460158, -0.2625585618535298, 1.2273922683980993] mode=1 phase=6,done=0,mapped=3,plans=9,images=478,requests=1,camera=1
+RESULT navigation-20261021-env01-nav PASS
+START navigation-20261021-env02-nav
+navigation-20261021-env02-nav PROGRESS t=20.0s position=[4.097187524651964, 2.3169881765439304, 1.2496187976932842] mode=1 phase=4,done=0,mapped=2,plans=4,images=196,requests=1,camera=1
+RESULT navigation-20261021-env02-nav PASS
+START navigation-20261021-env03-nav
+navigation-20261021-env03-nav PROGRESS t=15.0s position=[9.067791666291532e-19, 3.306507271384017e-19, 0.07999981982562351] mode=0 
+navigation-20261021-env03-nav PROGRESS t=40.0s position=[9.067791666291532e-19, 3.306507271384017e-19, 0.07999981982562351] mode=0 
+navigation-20261021-env03-nav PROGRESS t=60.0s position=[9.067791666291532e-19, 3.306507271384017e-19, 0.07999981982562351] mode=0 
+navigation-20261021-env03-nav PROGRESS t=85.0s position=[9.067791666291532e-19, 3.306507271384017e-19, 0.07999981982562351] mode=0 
+RESULT navigation-20261021-env03-nav FAIL
+START navigation-20261021-env04-nav
+navigation-20261021-env04-nav PROGRESS t=20.0s position=[3.236207742727525, 1.223771445239103, 1.2505441949111764] mode=1 phase=4,done=0,mapped=3,plans=3,images=178,requests=1,camera=1
+navigation-20261021-env04-nav PROGRESS t=45.0s position=[8.889674846305132, -0.32637502068745555, 0.23012438190811593] mode=1 phase=6,done=0,mapped=3,plans=3,images=428,requests=1,camera=1
+RESULT navigation-20261021-env04-nav PASS
+START navigation-20261021-env05-nav
+navigation-20261021-env05-nav PROGRESS t=20.0s position=[3.6697720395658537, -1.365277284294511, 1.2491313717265946] mode=1 phase=4,done=0,mapped=3,plans=8,images=188,requests=1,camera=1
+navigation-20261021-env05-nav PROGRESS t=45.0s position=[8.897001607826667, 0.013315719606413272, 0.12280139420568752] mode=1 phase=6,done=0,mapped=3,plans=8,images=438,requests=1,camera=1
+RESULT navigation-20261021-env05-nav PASS
+START navigation-20261021-env06-nav
+navigation-20261021-env06-nav PROGRESS t=20.0s position=[1.1020689039569451, 0.765151792571971, 1.2522658673519498] mode=1 phase=4,done=0,mapped=5,plans=16,images=182,requests=1,camera=1
+navigation-20261021-env06-nav PROGRESS t=40.0s position=[0.8987922722077896, 1.151110849324084, 1.249236901910452] mode=1 phase=4,done=0,mapped=6,plans=77,images=368,requests=1,camera=1
+navigation-20261021-env06-nav PROGRESS t=65.0s position=[0.8974800216755618, 1.1512551943619733, 1.2508512378070895] mode=1 phase=4,done=0,mapped=6,plans=205,images=618,requests=1,camera=1
+navigation-20261021-env06-nav PROGRESS t=90.0s position=[0.8957550734952554, 1.1513547601173024, 1.249548293537912] mode=1 phase=4,done=0,mapped=6,plans=308,images=866,requests=1,camera=1
+RESULT navigation-20261021-env06-nav FAIL
+START navigation-20261021-env07-nav

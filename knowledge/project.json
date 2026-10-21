@@ -236,6 +236,26 @@
       "id": "source-map-http",
       "kind": "file",
       "locator": "artifacts/validation/2026-10-21/pc-map-http-attempt-2.json"
+    },
+    {
+      "id": "source-final-gazebo",
+      "kind": "file",
+      "locator": "artifacts/reports/gazebo-verified-20261021/summary.json"
+    },
+    {
+      "id": "source-final-audit",
+      "kind": "file",
+      "locator": "artifacts/reports/gazebo-verified-20261021/evidence-audit.json"
+    },
+    {
+      "id": "source-map-live",
+      "kind": "file",
+      "locator": "artifacts/validation/2026-10-21/pc-map-live-state.json"
+    },
+    {
+      "id": "source-map-operator",
+      "kind": "file",
+      "locator": "artifacts/gazebo-suite/pc-map-operator-20261021-env07-nav/result.json"
     }
   ],
   "facts": [
@@ -800,6 +820,18 @@
           ],
           "evidence_level": "simulated",
           "reason": "Close the flight plant loop and preserve original engine evidence."
+        },
+        {
+          "revision": 4,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "Final native Gazebo set passed 5/5 raw-Xbox manual flights and 10/10 distinct navigation layouts with no native panel contacts. Mean endpoint errors are 0.094864 m manual and 0.015281 m navigation. Active C host core, synthetic sensors/assumptions and simulated local odometry only; earlier failures retained.",
+          "sources": [
+            "source-final-gazebo",
+            "source-final-audit"
+          ],
+          "evidence_level": "simulated",
+          "reason": "Completed original native trials and independent file/CRC/video consistency audit."
         }
       ]
     },
@@ -1064,6 +1096,18 @@
           ],
           "evidence_level": "source",
           "reason": "Provide a user-facing ground-PC tool without direct FC/motor inputs."
+        },
+        {
+          "revision": 2,
+          "date": "2026-10-21",
+          "status": "measured",
+          "statement": "PC map receives live pose, planned path and observed panel estimates. Additional operator-mode Gazebo flight accepted a custom endpoint/cruise height through HTTP -> actual ROS2 mission service; the virtual Xbox sent zero automatic mission requests. It landed/disarmed successfully. Browser clicking and separate-machine hardware remain untested.",
+          "sources": [
+            "source-map-live",
+            "source-map-operator"
+          ],
+          "evidence_level": "simulated",
+          "reason": "Completed original native trials and independent file/CRC/video consistency audit."
         }
       ]
     }

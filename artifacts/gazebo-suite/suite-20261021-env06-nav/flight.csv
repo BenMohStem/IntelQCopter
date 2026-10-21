@@ -1,0 +1,2 @@
+time_s,x,y,z,vx,vy,vz,roll_deg,pitch_deg,yaw_deg,estimated_z,estimated_vz,FL,FR,RR,RL,mode,user_disarm,pilot_fresh,companion_fresh,mode_events,xbox_reports,ground_contact,obstacle_contact,min_clearance
+0.04,2.811177619046952e-20,-1.7080412526787678e-20,0.07985757992983432,-1.1299682130504615e-18,9.331646561848887e-19,0.0007189332581326695,1.096755929423239e-16,2.570913073655947e-17,8.441952105479208e-19,-0.0006285631679929793,0.005559448152780533,0.0,0.0,0.0,0.0,0,False,True,False,0,1,True,False,2.5215534951853185

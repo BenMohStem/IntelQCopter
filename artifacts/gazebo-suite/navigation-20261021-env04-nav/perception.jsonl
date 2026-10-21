@@ -1,0 +1,956 @@
+{"kind": "YOLO", "image_time_s": 2.22, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 2.22, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 2.319999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 2.319999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 2.419999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 2.419999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 2.52, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 2.52, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 2.62, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 2.62, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 2.72, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 2.72, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 2.819999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 2.819999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 2.919999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 2.919999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 3.02, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 3.02, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 3.12, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 3.12, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 3.22, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 3.22, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 3.319999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 3.319999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 3.419999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 3.419999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 3.52, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 3.52, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 3.62, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 3.62, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 3.72, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 3.72, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 3.819999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 3.819999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 3.919999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 3.919999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 4.019999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 4.019999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 4.12, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 4.12, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 4.219999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 4.219999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 4.32, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 4.32, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 4.419999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 4.419999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 4.519999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 4.519999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 4.62, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 4.62, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 4.719999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 4.719999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 4.82, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 4.82, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 4.919999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 4.919999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 5.019999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 5.019999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 5.12, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 5.12, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 5.219999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 5.219999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 5.32, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 5.32, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 5.419999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 5.419999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 5.519999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 5.519999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 5.62, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 5.62, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 5.719999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 5.719999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 5.82, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 5.82, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 5.919999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 5.919999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 6.019999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 6.019999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 6.12, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 6.12, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 6.219999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 6.219999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 6.32, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 6.32, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 6.419999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 6.419999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 6.519999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 6.519999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 6.62, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 6.62, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 6.719999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 6.719999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 6.82, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 6.82, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 6.919999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 6.919999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 7.019999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 7.019999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 7.12, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 7.12, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 7.219999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 7.219999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 7.32, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 7.32, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 7.419999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 7.419999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 7.519999999, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 7.519999999, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 7.62, "detections": [{"class_id": 0, "confidence": 0.9107743501663208, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 7.62, "image_processed": true, "frame": "map", "centers": [[2.8209914166874692, -0.3585940155315895, 0.9130096142542342]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 7.719999999, "detections": [{"class_id": 0, "confidence": 0.910805881023407, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 7.719999999, "image_processed": true, "frame": "map", "centers": [[2.820986206959147, -0.3586293275645178, 0.9130632916240986]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 7.82, "detections": [{"class_id": 0, "confidence": 0.9097126722335815, "xyxy": [144.0, 5.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 7.82, "image_processed": true, "frame": "map", "centers": [[2.820948943262862, -0.3588971162666367, 0.9141414501983006]], "radii": [0.8812793133349975]}
+{"kind": "YOLO", "image_time_s": 7.919999999, "detections": [{"class_id": 0, "confidence": 0.9098520278930664, "xyxy": [144.0, 6.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 7.919999999, "image_processed": true, "frame": "map", "centers": [[2.82787167599945, -0.3568504143280064, 0.9169245341569507]], "radii": [0.8818352692020319]}
+{"kind": "YOLO", "image_time_s": 8.019999999, "detections": [{"class_id": 0, "confidence": 0.9101769924163818, "xyxy": [144.0, 6.0, 225.0, 121.0]}]}
+{"kind": "PnP", "image_time_s": 8.019999999, "image_processed": true, "frame": "map", "centers": [[2.8278599151858557, -0.3569872264949116, 0.9206567666286158]], "radii": [0.8818352692020319]}
+{"kind": "YOLO", "image_time_s": 8.119999999, "detections": [{"class_id": 0, "confidence": 0.9054394960403442, "xyxy": [144.0, 7.0, 225.0, 122.0]}]}
+{"kind": "PnP", "image_time_s": 8.119999999, "image_processed": true, "frame": "map", "centers": [[2.8278399280551465, -0.35708099741323374, 0.9252561068852354]], "radii": [0.8818352692020319]}
+{"kind": "YOLO", "image_time_s": 8.22, "detections": [{"class_id": 0, "confidence": 0.9039365649223328, "xyxy": [144.0, 8.0, 225.0, 122.0]}, {"class_id": 0, "confidence": 0.35717153549194336, "xyxy": [0.0, 10.0, 49.0, 128.0]}]}
+{"kind": "PnP", "image_time_s": 8.22, "image_processed": true, "frame": "map", "centers": [[2.8209443491854063, -0.35949539887410625, 0.9144733382057367]], "radii": [0.8812857360596789]}
+{"kind": "YOLO", "image_time_s": 8.32, "detections": [{"class_id": 0, "confidence": 0.904646098613739, "xyxy": [144.0, 8.0, 225.0, 122.0]}]}
+{"kind": "PnP", "image_time_s": 8.32, "image_processed": true, "frame": "map", "centers": [[2.827989554133719, -0.3573490220774979, 0.9201000411474685]], "radii": [0.8818522360912222]}
+{"kind": "YOLO", "image_time_s": 8.419999999, "detections": [{"class_id": 0, "confidence": 0.9040026068687439, "xyxy": [144.0, 9.0, 225.0, 123.0]}, {"class_id": 0, "confidence": 0.4530283510684967, "xyxy": [0.0, 10.0, 50.0, 127.0]}]}
+{"kind": "PnP", "image_time_s": 8.419999999, "image_processed": true, "frame": "map", "centers": [[2.827953081014572, -0.3576123445326545, 0.9255606219375936]], "radii": [0.8818522360912222]}
+{"kind": "YOLO", "image_time_s": 8.519999999, "detections": [{"class_id": 0, "confidence": 0.9009175300598145, "xyxy": [144.0, 9.0, 225.0, 123.0]}, {"class_id": 0, "confidence": 0.4360930025577545, "xyxy": [0.0, 10.0, 50.0, 127.0]}]}
+{"kind": "PnP", "image_time_s": 8.519999999, "image_processed": true, "frame": "map", "centers": [[2.820913582648725, -0.3602222139622961, 0.9150379856919005]], "radii": [0.881292035490502]}
+{"kind": "YOLO", "image_time_s": 8.619999999000001, "detections": [{"class_id": 0, "confidence": 0.906701385974884, "xyxy": [144.0, 10.0, 225.0, 123.0]}, {"class_id": 0, "confidence": 0.48930665850639343, "xyxy": [0.0, 10.0, 49.0, 127.0]}]}
+{"kind": "PnP", "image_time_s": 8.619999999000001, "image_processed": true, "frame": "map", "centers": [[2.8280959485252897, -0.358063764023485, 0.9204827460977778]], "radii": [0.8818696078662441]}
+{"kind": "YOLO", "image_time_s": 8.72, "detections": [{"class_id": 0, "confidence": 0.9105077385902405, "xyxy": [144.0, 10.0, 225.0, 124.0]}, {"class_id": 0, "confidence": 0.45341819524765015, "xyxy": [0.0, 11.0, 49.0, 127.0]}]}
+{"kind": "PnP", "image_time_s": 8.72, "image_processed": true, "frame": "map", "centers": [[2.820644296664927, -0.36070989531359804, 0.9172965704553971]], "radii": [0.881276448570858]}
+{"kind": "YOLO", "image_time_s": 8.82, "detections": [{"class_id": 0, "confidence": 0.911864697933197, "xyxy": [144.0, 10.0, 225.0, 124.0]}, {"class_id": 0, "confidence": 0.4870936870574951, "xyxy": [0.0, 11.0, 49.0, 127.0]}]}
+{"kind": "PnP", "image_time_s": 8.82, "image_processed": true, "frame": "map", "centers": [[2.8208692121365417, -0.36110416347576313, 0.9141237381178939]], "radii": [0.881298182266832]}
+{"kind": "YOLO", "image_time_s": 8.919999999, "detections": [{"class_id": 0, "confidence": 0.9169111251831055, "xyxy": [144.0, 10.0, 225.0, 124.0]}, {"class_id": 0, "confidence": 0.485553115606308, "xyxy": [0.0, 11.0, 49.0, 127.0]}]}
+{"kind": "PnP", "image_time_s": 8.919999999, "image_processed": true, "frame": "map", "centers": [[2.8281810821574203, -0.35894954683006225, 0.9186314153999842]], "radii": [0.8818873890115384]}
+{"kind": "YOLO", "image_time_s": 9.019999999, "detections": [{"class_id": 0, "confidence": 0.9167898893356323, "xyxy": [144.0, 10.0, 225.0, 124.0]}, {"class_id": 0, "confidence": 0.5032235980033875, "xyxy": [0.0, 11.0, 49.0, 127.0]}]}
+{"kind": "PnP", "image_time_s": 9.019999999, "image_processed": true, "frame": "map", "centers": [[2.828126599192317, -0.3593330914517384, 0.9227690635771943]], "radii": [0.8818873890115384]}
+{"kind": "YOLO", "image_time_s": 9.119999999, "detections": [{"class_id": 0, "confidence": 0.924122154712677, "xyxy": [144.0, 11.0, 225.0, 126.0]}, {"class_id": 0, "confidence": 0.47319337725639343, "xyxy": [0.0, 11.0, 50.0, 127.0]}]}
+{"kind": "PnP", "image_time_s": 9.119999999, "image_processed": true, "frame": "map", "centers": [[2.8282980921715257, -0.3596319557699668, 0.9167518011463636]], "radii": [0.8819055991530895]}
+{"kind": "YOLO", "image_time_s": 9.22, "detections": [{"class_id": 0, "confidence": 0.923414945602417, "xyxy": [144.0, 12.0, 225.0, 126.0]}, {"class_id": 0, "confidence": 0.4665207862854004, "xyxy": [0.0, 11.0, 49.0, 131.0]}]}
+{"kind": "PnP", "image_time_s": 9.22, "image_processed": true, "frame": "map", "centers": [[2.82847247355809, -0.3599315414644134, 0.9199111007311961]], "radii": [0.8819242504636846]}
+{"kind": "YOLO", "image_time_s": 9.32, "detections": [{"class_id": 0, "confidence": 0.9251211285591125, "xyxy": [144.0, 13.0, 224.0, 128.0]}, {"class_id": 0, "confidence": 0.5182653069496155, "xyxy": [0.0, 13.0, 50.0, 133.0]}]}
+{"kind": "PnP", "image_time_s": 9.32, "image_processed": true, "frame": "map", "centers": [[2.820865541442906, -0.3629748990862151, 0.9151625791291]], "radii": [0.8813201432836151]}
+{"kind": "YOLO", "image_time_s": 9.419999999, "detections": [{"class_id": 0, "confidence": 0.9141578078269958, "xyxy": [144.0, 16.0, 225.0, 131.0]}, {"class_id": 0, "confidence": 0.6176670789718628, "xyxy": [0.0, 15.0, 49.0, 133.0]}]}
+{"kind": "PnP", "image_time_s": 9.419999999, "image_processed": true, "frame": "map", "centers": [[2.82091039907288, -0.36336128816417557, 0.9171742067530391]], "radii": [0.8813285692563664]}
+{"kind": "YOLO", "image_time_s": 9.519999999, "detections": [{"class_id": 0, "confidence": 0.923089861869812, "xyxy": [144.0, 20.0, 224.0, 133.0]}, {"class_id": 0, "confidence": 0.6947194933891296, "xyxy": [0.0, 16.0, 49.0, 135.0]}]}
+{"kind": "PnP", "image_time_s": 9.519999999, "image_processed": true, "frame": "map", "centers": [[2.815620230460273, -0.3649701489523736, 0.9200509641492851]], "radii": [0.8809103890555601]}
+{"kind": "YOLO", "image_time_s": 9.619999999000001, "detections": [{"class_id": 0, "confidence": 0.922042191028595, "xyxy": [144.0, 22.0, 224.0, 136.0]}, {"class_id": 0, "confidence": 0.6179973483085632, "xyxy": [0.0, 18.0, 49.0, 135.0]}]}
+{"kind": "PnP", "image_time_s": 9.619999999000001, "image_processed": true, "frame": "map", "centers": [[2.830629002699633, -0.360313109311731, 0.9194584442970217]], "radii": [0.8821152487164026]}
+{"kind": "YOLO", "image_time_s": 9.72, "detections": [{"class_id": 0, "confidence": 0.936055064201355, "xyxy": [144.0, 25.0, 224.0, 139.0]}, {"class_id": 0, "confidence": 0.3844382166862488, "xyxy": [0.0, 20.0, 49.0, 140.0]}]}
+{"kind": "PnP", "image_time_s": 9.72, "image_processed": true, "frame": "map", "centers": [[2.8315131555299264, -0.3600948554208385, 0.9170943906333676]], "radii": [0.8821900423492688]}
+{"kind": "YOLO", "image_time_s": 9.82, "detections": [{"class_id": 0, "confidence": 0.938285231590271, "xyxy": [144.0, 28.0, 224.0, 143.0]}]}
+{"kind": "PnP", "image_time_s": 9.82, "image_processed": true, "frame": "map", "centers": [[2.8153232702737174, -0.36609641587417263, 0.9174041819158019]], "radii": [0.8808984758338152]}
+{"kind": "YOLO", "image_time_s": 9.919999999, "detections": [{"class_id": 0, "confidence": 0.9324151277542114, "xyxy": [144.0, 29.0, 224.0, 146.0]}]}
+{"kind": "PnP", "image_time_s": 9.919999999, "image_processed": true, "frame": "map", "centers": [[2.8149764700328253, -0.3665091188578053, 0.9207388225210131]], "radii": [0.8808741569876042]}
+{"kind": "YOLO", "image_time_s": 10.019999999, "detections": [{"class_id": 0, "confidence": 0.9268504977226257, "xyxy": [144.0, 35.0, 224.0, 150.0]}]}
+{"kind": "PnP", "image_time_s": 10.019999999, "image_processed": true, "frame": "map", "centers": [[2.8141226190193964, -0.36701667267120497, 0.9094826327317629]], "radii": [0.8808097103693454]}
+{"kind": "YOLO", "image_time_s": 10.119999999, "detections": [{"class_id": 0, "confidence": 0.923356294631958, "xyxy": [144.0, 38.0, 224.0, 153.0]}]}
+{"kind": "PnP", "image_time_s": 10.119999999, "image_processed": true, "frame": "map", "centers": [[2.813028483086478, -0.3675623829390648, 0.9147613150355494]], "radii": [0.8807258239513539]}
+{"kind": "YOLO", "image_time_s": 10.22, "detections": [{"class_id": 0, "confidence": 0.9280623197555542, "xyxy": [144.0, 42.0, 225.0, 157.0]}]}
+{"kind": "PnP", "image_time_s": 10.22, "image_processed": true, "frame": "map", "centers": [[2.8108170557737786, -0.3682971877964734, 0.904907006044549]], "radii": [0.8805523463574652]}
+{"kind": "YOLO", "image_time_s": 10.32, "detections": [{"class_id": 0, "confidence": 0.9493331909179688, "xyxy": [144.0, 45.0, 223.0, 160.0]}]}
+{"kind": "PnP", "image_time_s": 10.32, "image_processed": true, "frame": "map", "centers": [[2.808592773798172, -0.368989749140192, 0.9114000826366149]], "radii": [0.8803776794380307]}
+{"kind": "YOLO", "image_time_s": 10.419999999, "detections": [{"class_id": 0, "confidence": 0.9385347962379456, "xyxy": [144.0, 49.0, 223.0, 164.0]}]}
+{"kind": "PnP", "image_time_s": 10.419999999, "image_processed": true, "frame": "map", "centers": [[2.8052181553988618, -0.36982743680122077, 0.903024041228303]], "radii": [0.8801108477831313]}
+{"kind": "YOLO", "image_time_s": 10.519999999, "detections": [{"class_id": 0, "confidence": 0.927364706993103, "xyxy": [144.0, 54.0, 223.0, 167.0]}]}
+{"kind": "PnP", "image_time_s": 10.519999999, "image_processed": true, "frame": "map", "centers": [[2.8026586624952703, -0.3704987181736939, 0.910449322736574]], "radii": [0.8799089679286486]}
+{"kind": "YOLO", "image_time_s": 10.619999999000001, "detections": [{"class_id": 0, "confidence": 0.9323505759239197, "xyxy": [144.0, 56.0, 223.0, 171.0]}]}
+{"kind": "PnP", "image_time_s": 10.619999999000001, "image_processed": true, "frame": "map", "centers": [[2.787974831021957, -0.37251159673562184, 0.917416258117912]], "radii": [0.8787369595134186]}
+{"kind": "YOLO", "image_time_s": 10.72, "detections": [{"class_id": 0, "confidence": 0.9444119930267334, "xyxy": [144.0, 60.0, 223.0, 174.0]}]}
+{"kind": "PnP", "image_time_s": 10.72, "image_processed": true, "frame": "map", "centers": [[2.79608087488809, -0.37189173220886673, 0.9256914605409989]], "radii": [0.8793879010781929]}
+{"kind": "YOLO", "image_time_s": 10.82, "detections": [{"class_id": 0, "confidence": 0.9454898238182068, "xyxy": [144.0, 61.0, 223.0, 178.0]}]}
+{"kind": "PnP", "image_time_s": 10.82, "image_processed": true, "frame": "map", "centers": [[2.799772365832785, -0.36212515766153575, 0.9240574895528499]], "radii": [0.8796854172362283]}
+{"kind": "YOLO", "image_time_s": 10.919999999, "detections": [{"class_id": 0, "confidence": 0.9266529083251953, "xyxy": [143.0, 66.0, 224.0, 181.0]}]}
+{"kind": "PnP", "image_time_s": 10.919999999, "image_processed": true, "frame": "map", "centers": [[2.786628444849131, -0.35446951493158174, 0.9132356211174458]], "radii": [0.8786357704037269]}
+{"kind": "YOLO", "image_time_s": 11.019999999, "detections": [{"class_id": 0, "confidence": 0.918304443359375, "xyxy": [143.0, 70.0, 224.0, 184.0]}]}
+{"kind": "PnP", "image_time_s": 11.019999999, "image_processed": true, "frame": "map", "centers": [[2.785057936347534, -0.35524566734855006, 0.9104729530507285]], "radii": [0.8785117110412995]}
+{"kind": "YOLO", "image_time_s": 11.119999999, "detections": [{"class_id": 0, "confidence": 0.918304443359375, "xyxy": [143.0, 70.0, 224.0, 184.0]}]}
+{"kind": "PnP", "image_time_s": 11.119999999, "image_processed": true, "frame": "map", "centers": [[2.785039964158735, -0.3554723160489704, 0.9502402201280785]], "radii": [0.8785117110412995]}
+{"kind": "YOLO", "image_time_s": 11.22, "detections": [{"class_id": 0, "confidence": 0.9328561425209045, "xyxy": [144.0, 74.0, 224.0, 189.0]}]}
+{"kind": "PnP", "image_time_s": 11.22, "image_processed": true, "frame": "map", "centers": [[2.7826431633505324, -0.35642479982235414, 0.9087187292342624]], "radii": [0.8783214444274388]}
+{"kind": "YOLO", "image_time_s": 11.32, "detections": [{"class_id": 0, "confidence": 0.9504590630531311, "xyxy": [144.0, 77.0, 223.0, 191.0]}]}
+{"kind": "PnP", "image_time_s": 11.32, "image_processed": true, "frame": "map", "centers": [[2.781801129970141, -0.35686849854824454, 0.9086317547634906]], "radii": [0.878255512245775]}
+{"kind": "YOLO", "image_time_s": 11.419999999, "detections": [{"class_id": 0, "confidence": 0.9500640034675598, "xyxy": [144.0, 77.0, 224.0, 193.0]}]}
+{"kind": "PnP", "image_time_s": 11.419999999, "image_processed": true, "frame": "map", "centers": [[2.793183698577092, -0.3522512802889654, 0.9062123375815087]], "radii": [0.8791672903845732]}
+{"kind": "YOLO", "image_time_s": 11.519999999, "detections": [{"class_id": 0, "confidence": 0.943995475769043, "xyxy": [144.0, 78.0, 223.0, 195.0]}]}
+{"kind": "PnP", "image_time_s": 11.519999999, "image_processed": true, "frame": "map", "centers": [[2.792145911551447, -0.35311793499265104, 0.8964922294600062]], "radii": [0.8790852514358298]}
+{"kind": "YOLO", "image_time_s": 11.619999999000001, "detections": [{"class_id": 0, "confidence": 0.9401740431785583, "xyxy": [143.0, 81.0, 223.0, 196.0]}]}
+{"kind": "PnP", "image_time_s": 11.619999999000001, "image_processed": true, "frame": "map", "centers": [[2.7916418459887185, -0.3535954293009178, 0.897641827197436]], "radii": [0.879045880020578]}
+{"kind": "YOLO", "image_time_s": 11.72, "detections": [{"class_id": 0, "confidence": 0.937606930732727, "xyxy": [143.0, 82.0, 223.0, 197.0]}]}
+{"kind": "PnP", "image_time_s": 11.72, "image_processed": true, "frame": "map", "centers": [[2.7911532801026016, -0.3540430069918769, 0.8947504123084522]], "radii": [0.8790076975203992]}
+{"kind": "YOLO", "image_time_s": 11.82, "detections": [{"class_id": 0, "confidence": 0.936579704284668, "xyxy": [143.0, 82.0, 223.0, 197.0]}]}
+{"kind": "PnP", "image_time_s": 11.82, "image_processed": true, "frame": "map", "centers": [[2.791139880450161, -0.35421034753248887, 0.9034225553510824]], "radii": [0.8790076975203992]}
+{"kind": "YOLO", "image_time_s": 11.919999999, "detections": [{"class_id": 0, "confidence": 0.936579704284668, "xyxy": [143.0, 82.0, 223.0, 197.0]}]}
+{"kind": "PnP", "image_time_s": 11.919999999, "image_processed": true, "frame": "map", "centers": [[2.791125110747755, -0.35436224805925365, 0.9088984904350389]], "radii": [0.8790076975203992]}
+{"kind": "YOLO", "image_time_s": 12.019999999, "detections": [{"class_id": 0, "confidence": 0.9353737831115723, "xyxy": [143.0, 83.0, 223.0, 198.0]}]}
+{"kind": "PnP", "image_time_s": 12.019999999, "image_processed": true, "frame": "map", "centers": [[2.7906460615541597, -0.3547493831647103, 0.8964400653479598]], "radii": [0.8789707185317363]}
+{"kind": "YOLO", "image_time_s": 12.119999999, "detections": [{"class_id": 0, "confidence": 0.9333759546279907, "xyxy": [143.0, 84.0, 222.0, 198.0]}]}
+{"kind": "PnP", "image_time_s": 12.119999999, "image_processed": true, "frame": "map", "centers": [[2.812429359085488, -0.356793025221925, 0.9145017355569585]], "radii": [0.8807145174602234]}
+{"kind": "YOLO", "image_time_s": 12.22, "detections": [{"class_id": 0, "confidence": 0.9338029623031616, "xyxy": [143.0, 84.0, 223.0, 198.0]}]}
+{"kind": "PnP", "image_time_s": 12.22, "image_processed": true, "frame": "map", "centers": [[2.8124171355710477, -0.35692323998287356, 0.9132898903832327]], "radii": [0.8807145174602234]}
+{"kind": "YOLO", "image_time_s": 12.32, "detections": [{"class_id": 0, "confidence": 0.9346158504486084, "xyxy": [143.0, 83.0, 223.0, 198.0]}]}
+{"kind": "PnP", "image_time_s": 12.32, "image_processed": true, "frame": "map", "centers": [[2.812404220817616, -0.3570436903684244, 0.9107364806245453]], "radii": [0.8807145174602234]}
+{"kind": "YOLO", "image_time_s": 12.419999999, "detections": [{"class_id": 0, "confidence": 0.9351378083229065, "xyxy": [143.0, 83.0, 222.0, 198.0]}]}
+{"kind": "PnP", "image_time_s": 12.419999999, "image_processed": true, "frame": "map", "centers": [[2.807403585890536, -0.3581290142477172, 0.9281164695431801]], "radii": [0.8803154973917466]}
+{"kind": "YOLO", "image_time_s": 12.519999999, "detections": [{"class_id": 0, "confidence": 0.9358627796173096, "xyxy": [143.0, 82.0, 223.0, 197.0]}]}
+{"kind": "PnP", "image_time_s": 12.519999999, "image_processed": true, "frame": "map", "centers": [[2.8118702573331804, -0.35737150503202997, 0.91898900656409]], "radii": [0.8806736930204396]}
+{"kind": "YOLO", "image_time_s": 12.619999999000001, "detections": [{"class_id": 0, "confidence": 0.9350261092185974, "xyxy": [143.0, 82.0, 223.0, 197.0]}]}
+{"kind": "PnP", "image_time_s": 12.619999999000001, "image_processed": true, "frame": "map", "centers": [[2.811866992122902, -0.35747154570483713, 0.9147186477355226]], "radii": [0.8806736930204396]}
+{"kind": "YOLO", "image_time_s": 12.72, "detections": [{"class_id": 0, "confidence": 0.9383409023284912, "xyxy": [143.0, 82.0, 223.0, 197.0]}]}
+{"kind": "PnP", "image_time_s": 12.72, "image_processed": true, "frame": "map", "centers": [[2.8118687258689627, -0.35755776020772806, 0.9104870973040253]], "radii": [0.8806736930204396]}
+{"kind": "YOLO", "image_time_s": 12.82, "detections": [{"class_id": 0, "confidence": 0.9387112259864807, "xyxy": [143.0, 81.0, 223.0, 197.0]}]}
+{"kind": "PnP", "image_time_s": 12.82, "image_processed": true, "frame": "map", "centers": [[2.805697066979702, -0.3587954267651011, 0.927081826809084]], "radii": [0.8801802214586911]}
+{"kind": "YOLO", "image_time_s": 12.919999999, "detections": [{"class_id": 0, "confidence": 0.943755030632019, "xyxy": [143.0, 81.0, 223.0, 197.0]}]}
+{"kind": "PnP", "image_time_s": 12.919999999, "image_processed": true, "frame": "map", "centers": [[2.7975775781191516, -0.35922616956804126, 0.8934901177974507]], "radii": [0.8796421241894655]}
+{"kind": "YOLO", "image_time_s": 13.019999999, "detections": [{"class_id": 0, "confidence": 0.9484811425209045, "xyxy": [143.0, 77.0, 225.0, 192.0]}]}
+{"kind": "PnP", "image_time_s": 13.019999999, "image_processed": true, "frame": "map", "centers": [[2.8015850310207693, -0.36424936893258536, 0.9141141949421026]], "radii": [0.8803167544528288]}
+{"kind": "YOLO", "image_time_s": 13.119999999, "detections": [{"class_id": 0, "confidence": 0.9306764006614685, "xyxy": [142.0, 73.0, 227.0, 189.0]}]}
+{"kind": "PnP", "image_time_s": 13.119999999, "image_processed": true, "frame": "map", "centers": [[2.8062103028264507, -0.3643878254917241, 0.9228880257091336]], "radii": [0.8806726399261591]}
+{"kind": "YOLO", "image_time_s": 13.22, "detections": [{"class_id": 0, "confidence": 0.9148443937301636, "xyxy": [141.0, 70.0, 227.0, 188.0]}]}
+{"kind": "PnP", "image_time_s": 13.22, "image_processed": true, "frame": "map", "centers": [[2.7870140064203874, -0.3578525958037584, 0.8999135026717934]], "radii": [0.8786702911623712]}
+{"kind": "YOLO", "image_time_s": 13.32, "detections": [{"class_id": 0, "confidence": 0.9061413407325745, "xyxy": [146.0, 70.0, 228.0, 187.0]}]}
+{"kind": "PnP", "image_time_s": 13.32, "image_processed": true, "frame": "map", "centers": [[2.8148668590135273, -0.34699056153051067, 0.9297662223554617]], "radii": [0.879512718844699]}
+{"kind": "YOLO", "image_time_s": 13.419999999, "detections": [{"class_id": 0, "confidence": 0.9234603643417358, "xyxy": [146.0, 71.0, 235.0, 190.0]}]}
+{"kind": "PnP", "image_time_s": 13.419999999, "image_processed": true, "frame": "map", "centers": [[2.797016995080636, -0.3347292240970269, 0.9014248029530814]], "radii": [0.8755284122737541]}
+{"kind": "YOLO", "image_time_s": 13.519999999, "detections": [{"class_id": 0, "confidence": 0.9344433546066284, "xyxy": [159.0, 71.0, 249.0, 192.0]}]}
+{"kind": "PnP", "image_time_s": 13.519999999, "image_processed": true, "frame": "map", "centers": [[2.8116380655269477, -0.3144101082237485, 0.9161439899074872]], "radii": [0.8720305417000906]}
+{"kind": "YOLO", "image_time_s": 13.619999999000001, "detections": [{"class_id": 0, "confidence": 0.9220641851425171, "xyxy": [175.0, 70.0, 267.0, 198.0]}, {"class_id": 0, "confidence": 0.6786801815032959, "xyxy": [280.0, 61.0, 319.0, 155.0]}]}
+{"kind": "PnP", "image_time_s": 13.619999999000001, "image_processed": true, "frame": "map", "centers": [[2.8054710054800798, -0.31926709238789797, 0.9054190432653584]], "radii": [0.8642835738830417]}
+{"kind": "YOLO", "image_time_s": 13.72, "detections": [{"class_id": 0, "confidence": 0.8358500599861145, "xyxy": [194.0, 65.0, 297.0, 208.0]}]}
+{"kind": "PnP", "image_time_s": 13.72, "image_processed": true, "frame": "map", "centers": [[2.801385725495356, -0.3072340997823757, 0.9102341773344385]], "radii": [0.8541650083924697]}
+{"kind": "YOLO", "image_time_s": 13.82, "detections": [{"class_id": 0, "confidence": 0.8645232915878296, "xyxy": [216.0, 60.0, 319.0, 221.0]}]}
+{"kind": "PnP", "image_time_s": 13.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 13.919999999, "detections": [{"class_id": 0, "confidence": 0.8975560069084167, "xyxy": [239.0, 55.0, 319.0, 227.0]}, {"class_id": 0, "confidence": 0.4641100764274597, "xyxy": [0.0, 10.0, 68.0, 180.0]}]}
+{"kind": "PnP", "image_time_s": 13.919999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 14.019999999, "detections": [{"class_id": 0, "confidence": 0.901547372341156, "xyxy": [263.0, 54.0, 319.0, 227.0]}, {"class_id": 0, "confidence": 0.7202439904212952, "xyxy": [1.0, 0.0, 93.0, 201.0]}]}
+{"kind": "PnP", "image_time_s": 14.019999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 14.119999999, "detections": [{"class_id": 0, "confidence": 0.8560749292373657, "xyxy": [290.0, 52.0, 320.0, 234.0]}, {"class_id": 0, "confidence": 0.8505825996398926, "xyxy": [0.0, 0.0, 100.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 14.119999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 14.22, "detections": [{"class_id": 0, "confidence": 0.8916405439376831, "xyxy": [0.0, 1.0, 114.0, 240.0]}, {"class_id": 0, "confidence": 0.6769265532493591, "xyxy": [306.0, 92.0, 312.0, 156.0]}]}
+{"kind": "PnP", "image_time_s": 14.22, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 14.32, "detections": [{"class_id": 0, "confidence": 0.9421471953392029, "xyxy": [2.0, 4.0, 126.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 14.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 14.419999999, "detections": [{"class_id": 0, "confidence": 0.9697514772415161, "xyxy": [2.0, 5.0, 124.0, 240.0]}, {"class_id": 0, "confidence": 0.5418248176574707, "xyxy": [132.0, 53.0, 194.0, 164.0]}]}
+{"kind": "PnP", "image_time_s": 14.419999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 14.519999999, "detections": [{"class_id": 0, "confidence": 0.9731771349906921, "xyxy": [2.0, 7.0, 125.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 14.519999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 14.619999999000001, "detections": [{"class_id": 0, "confidence": 0.9611700773239136, "xyxy": [2.0, 10.0, 124.0, 237.0]}, {"class_id": 0, "confidence": 0.35874512791633606, "xyxy": [216.0, 68.0, 223.0, 128.0]}]}
+{"kind": "PnP", "image_time_s": 14.619999999000001, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 14.72, "detections": [{"class_id": 0, "confidence": 0.949164092540741, "xyxy": [2.0, 11.0, 125.0, 209.0]}]}
+{"kind": "PnP", "image_time_s": 14.72, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 14.82, "detections": [{"class_id": 0, "confidence": 0.9333164095878601, "xyxy": [0.0, 16.0, 119.0, 200.0]}]}
+{"kind": "PnP", "image_time_s": 14.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 14.919999999, "detections": [{"class_id": 0, "confidence": 0.9519980549812317, "xyxy": [0.0, 10.0, 102.0, 209.0]}]}
+{"kind": "PnP", "image_time_s": 14.919999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 15.019999999, "detections": [{"class_id": 0, "confidence": 0.9456725120544434, "xyxy": [0.0, 9.0, 95.0, 210.0]}, {"class_id": 0, "confidence": 0.8195521235466003, "xyxy": [309.0, 90.0, 320.0, 163.0]}]}
+{"kind": "PnP", "image_time_s": 15.019999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 15.119999999, "detections": [{"class_id": 0, "confidence": 0.8983849287033081, "xyxy": [0.0, 6.0, 92.0, 211.0]}, {"class_id": 0, "confidence": 0.8797200918197632, "xyxy": [297.0, 92.0, 320.0, 161.0]}]}
+{"kind": "PnP", "image_time_s": 15.119999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 15.22, "detections": [{"class_id": 0, "confidence": 0.934730589389801, "xyxy": [286.0, 93.0, 312.0, 162.0]}, {"class_id": 0, "confidence": 0.42199385166168213, "xyxy": [2.0, 12.0, 76.0, 211.0]}]}
+{"kind": "PnP", "image_time_s": 15.22, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 15.32, "detections": [{"class_id": 0, "confidence": 0.8470815420150757, "xyxy": [276.0, 95.0, 297.0, 161.0]}, {"class_id": 0, "confidence": 0.642018735408783, "xyxy": [300.0, 79.0, 319.0, 189.0]}]}
+{"kind": "PnP", "image_time_s": 15.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 15.419999999, "detections": [{"class_id": 0, "confidence": 0.8219384551048279, "xyxy": [261.0, 95.0, 287.0, 158.0]}, {"class_id": 0, "confidence": 0.5390514731407166, "xyxy": [286.0, 80.0, 307.0, 185.0]}]}
+{"kind": "PnP", "image_time_s": 15.419999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 15.519999999, "detections": [{"class_id": 0, "confidence": 0.8037746548652649, "xyxy": [250.0, 98.0, 272.0, 158.0]}, {"class_id": 0, "confidence": 0.3728587031364441, "xyxy": [273.0, 87.0, 297.0, 185.0]}, {"class_id": 0, "confidence": 0.3514316976070404, "xyxy": [272.0, 72.0, 319.0, 185.0]}]}
+{"kind": "PnP", "image_time_s": 15.519999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 15.619999999000001, "detections": [{"class_id": 0, "confidence": 0.8601006269454956, "xyxy": [237.0, 98.0, 257.0, 159.0]}, {"class_id": 0, "confidence": 0.6679924130439758, "xyxy": [286.0, 37.0, 319.0, 240.0]}, {"class_id": 0, "confidence": 0.5032395720481873, "xyxy": [259.0, 89.0, 284.0, 185.0]}]}
+{"kind": "PnP", "image_time_s": 15.619999999000001, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 15.72, "detections": [{"class_id": 0, "confidence": 0.8764663934707642, "xyxy": [279.0, 35.0, 319.0, 240.0]}, {"class_id": 0, "confidence": 0.7641056180000305, "xyxy": [224.0, 99.0, 245.0, 158.0]}, {"class_id": 0, "confidence": 0.49091842770576477, "xyxy": [245.0, 88.0, 269.0, 182.0]}]}
+{"kind": "PnP", "image_time_s": 15.72, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 15.82, "detections": [{"class_id": 0, "confidence": 0.8729021549224854, "xyxy": [265.0, 39.0, 320.0, 240.0]}, {"class_id": 0, "confidence": 0.7800952792167664, "xyxy": [213.0, 99.0, 232.0, 159.0]}, {"class_id": 0, "confidence": 0.6542810201644897, "xyxy": [233.0, 88.0, 254.0, 182.0]}]}
+{"kind": "PnP", "image_time_s": 15.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 15.919999999, "detections": [{"class_id": 0, "confidence": 0.9320063591003418, "xyxy": [253.0, 36.0, 318.0, 240.0]}, {"class_id": 0, "confidence": 0.6972456574440002, "xyxy": [203.0, 100.0, 221.0, 159.0]}, {"class_id": 0, "confidence": 0.6308444738388062, "xyxy": [223.0, 91.0, 242.0, 185.0]}]}
+{"kind": "PnP", "image_time_s": 15.919999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 16.019999999, "detections": [{"class_id": 0, "confidence": 0.88787841796875, "xyxy": [249.0, 40.0, 318.0, 240.0]}, {"class_id": 0, "confidence": 0.7775214910507202, "xyxy": [192.0, 101.0, 211.0, 160.0]}, {"class_id": 0, "confidence": 0.6959995031356812, "xyxy": [211.0, 91.0, 236.0, 185.0]}]}
+{"kind": "PnP", "image_time_s": 16.019999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 16.12, "detections": [{"class_id": 0, "confidence": 0.8205828070640564, "xyxy": [238.0, 41.0, 318.0, 238.0]}, {"class_id": 0, "confidence": 0.7382155656814575, "xyxy": [187.0, 101.0, 205.0, 159.0]}, {"class_id": 0, "confidence": 0.5565610527992249, "xyxy": [206.0, 91.0, 228.0, 187.0]}]}
+{"kind": "PnP", "image_time_s": 16.12, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 16.219999999, "detections": [{"class_id": 0, "confidence": 0.7962760925292969, "xyxy": [236.0, 45.0, 319.0, 239.0]}, {"class_id": 0, "confidence": 0.742768406867981, "xyxy": [182.0, 103.0, 200.0, 162.0]}, {"class_id": 0, "confidence": 0.714895486831665, "xyxy": [201.0, 93.0, 225.0, 191.0]}]}
+{"kind": "PnP", "image_time_s": 16.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 16.32, "detections": [{"class_id": 0, "confidence": 0.8254824280738831, "xyxy": [240.0, 42.0, 319.0, 240.0]}, {"class_id": 0, "confidence": 0.8137437105178833, "xyxy": [181.0, 106.0, 200.0, 166.0]}, {"class_id": 0, "confidence": 0.6647183299064636, "xyxy": [200.0, 93.0, 228.0, 194.0]}]}
+{"kind": "PnP", "image_time_s": 16.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 16.42, "detections": [{"class_id": 0, "confidence": 0.9054685235023499, "xyxy": [253.0, 37.0, 318.0, 240.0]}, {"class_id": 0, "confidence": 0.878329873085022, "xyxy": [204.0, 95.0, 237.0, 196.0]}, {"class_id": 0, "confidence": 0.7975015044212341, "xyxy": [182.0, 107.0, 201.0, 168.0]}]}
+{"kind": "PnP", "image_time_s": 16.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 16.519999999, "detections": [{"class_id": 0, "confidence": 0.8865153193473816, "xyxy": [209.0, 94.0, 247.0, 199.0]}, {"class_id": 0, "confidence": 0.8335073590278625, "xyxy": [187.0, 106.0, 208.0, 169.0]}, {"class_id": 0, "confidence": 0.812463641166687, "xyxy": [259.0, 37.0, 320.0, 238.0]}]}
+{"kind": "PnP", "image_time_s": 16.519999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 16.62, "detections": [{"class_id": 0, "confidence": 0.9106637239456177, "xyxy": [192.0, 106.0, 216.0, 170.0]}, {"class_id": 0, "confidence": 0.8882247805595398, "xyxy": [216.0, 93.0, 265.0, 202.0]}, {"class_id": 0, "confidence": 0.8078163862228394, "xyxy": [280.0, 32.0, 319.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 16.62, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 16.719999999, "detections": [{"class_id": 0, "confidence": 0.9193482995033264, "xyxy": [228.0, 93.0, 287.0, 209.0]}, {"class_id": 0, "confidence": 0.9124066829681396, "xyxy": [203.0, 106.0, 230.0, 172.0]}, {"class_id": 0, "confidence": 0.44214847683906555, "xyxy": [305.0, 69.0, 319.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 16.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 16.82, "detections": [{"class_id": 0, "confidence": 0.9387785792350769, "xyxy": [244.0, 93.0, 320.0, 217.0]}, {"class_id": 0, "confidence": 0.9338817000389099, "xyxy": [215.0, 106.0, 244.0, 176.0]}, {"class_id": 0, "confidence": 0.3658812344074249, "xyxy": [0.0, 16.0, 92.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 16.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 16.92, "detections": [{"class_id": 0, "confidence": 0.9030200242996216, "xyxy": [267.0, 91.0, 319.0, 224.0]}, {"class_id": 0, "confidence": 0.8662465810775757, "xyxy": [232.0, 106.0, 265.0, 178.0]}, {"class_id": 0, "confidence": 0.560417115688324, "xyxy": [0.0, 10.0, 95.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 16.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 17.019999999, "detections": [{"class_id": 0, "confidence": 0.8675124645233154, "xyxy": [252.0, 105.0, 291.0, 181.0]}, {"class_id": 0, "confidence": 0.8112933039665222, "xyxy": [292.0, 89.0, 319.0, 232.0]}]}
+{"kind": "PnP", "image_time_s": 17.019999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 17.12, "detections": [{"class_id": 0, "confidence": 0.9166979193687439, "xyxy": [274.0, 104.0, 320.0, 187.0]}, {"class_id": 0, "confidence": 0.4045262932777405, "xyxy": [12.0, 15.0, 125.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 17.12, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 17.219999999, "detections": [{"class_id": 0, "confidence": 0.7972397208213806, "xyxy": [301.0, 101.0, 319.0, 193.0]}]}
+{"kind": "PnP", "image_time_s": 17.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 17.32, "detections": [{"class_id": 0, "confidence": 0.62901771068573, "xyxy": [34.0, 13.0, 157.0, 236.0]}, {"class_id": 0, "confidence": 0.4115695059299469, "xyxy": [138.0, 0.0, 320.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 17.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 17.42, "detections": [{"class_id": 0, "confidence": 0.37270739674568176, "xyxy": [177.0, 0.0, 317.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 17.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 17.519999999, "detections": [{"class_id": 0, "confidence": 0.5586177706718445, "xyxy": [70.0, 21.0, 188.0, 240.0]}, {"class_id": 0, "confidence": 0.45212027430534363, "xyxy": [186.0, 0.0, 318.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 17.519999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 17.62, "detections": []}
+{"kind": "PnP", "image_time_s": 17.62, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 17.719999999, "detections": [{"class_id": 0, "confidence": 0.4468718469142914, "xyxy": [1.0, 0.0, 77.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 17.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 17.82, "detections": [{"class_id": 0, "confidence": 0.8963533639907837, "xyxy": [0.0, 0.0, 94.0, 240.0]}, {"class_id": 0, "confidence": 0.5769084095954895, "xyxy": [99.0, 23.0, 221.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 17.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 17.92, "detections": [{"class_id": 0, "confidence": 0.8638896942138672, "xyxy": [0.0, 0.0, 93.0, 240.0]}, {"class_id": 0, "confidence": 0.6404264569282532, "xyxy": [100.0, 23.0, 221.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 17.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 18.019999999, "detections": [{"class_id": 0, "confidence": 0.8032352924346924, "xyxy": [1.0, 0.0, 69.0, 240.0]}, {"class_id": 0, "confidence": 0.3655906021595001, "xyxy": [67.0, 23.0, 221.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 18.019999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 18.12, "detections": [{"class_id": 0, "confidence": 0.8613173961639404, "xyxy": [2.0, 0.0, 75.0, 240.0]}, {"class_id": 0, "confidence": 0.671040415763855, "xyxy": [77.0, 21.0, 217.0, 236.0]}]}
+{"kind": "PnP", "image_time_s": 18.12, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 18.219999999, "detections": [{"class_id": 0, "confidence": 0.7272530794143677, "xyxy": [62.0, 21.0, 222.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 18.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 18.32, "detections": [{"class_id": 0, "confidence": 0.7608871459960938, "xyxy": [39.0, 19.0, 189.0, 239.0]}]}
+{"kind": "PnP", "image_time_s": 18.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 18.42, "detections": [{"class_id": 0, "confidence": 0.787341296672821, "xyxy": [25.0, 5.0, 197.0, 238.0]}, {"class_id": 0, "confidence": 0.40050527453422546, "xyxy": [180.0, 0.0, 318.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 18.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 18.519999999, "detections": [{"class_id": 0, "confidence": 0.6901164054870605, "xyxy": [0.0, 0.0, 172.0, 238.0]}, {"class_id": 0, "confidence": 0.6695031523704529, "xyxy": [1.0, 0.0, 61.0, 240.0]}, {"class_id": 0, "confidence": 0.5280036926269531, "xyxy": [150.0, 0.0, 320.0, 238.0]}]}
+{"kind": "PnP", "image_time_s": 18.519999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 18.62, "detections": [{"class_id": 0, "confidence": 0.9261340498924255, "xyxy": [8.0, 7.0, 154.0, 240.0]}, {"class_id": 0, "confidence": 0.7093191146850586, "xyxy": [156.0, 0.0, 317.0, 238.0]}]}
+{"kind": "PnP", "image_time_s": 18.62, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 18.719999999, "detections": [{"class_id": 0, "confidence": 0.8754043579101562, "xyxy": [2.0, 8.0, 125.0, 240.0]}, {"class_id": 0, "confidence": 0.4172312617301941, "xyxy": [113.0, 0.0, 320.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 18.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 18.82, "detections": [{"class_id": 0, "confidence": 0.900009036064148, "xyxy": [285.0, 84.0, 319.0, 179.0]}, {"class_id": 0, "confidence": 0.8100883364677429, "xyxy": [0.0, 1.0, 111.0, 240.0]}, {"class_id": 0, "confidence": 0.38370755314826965, "xyxy": [111.0, 0.0, 320.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 18.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 18.92, "detections": [{"class_id": 0, "confidence": 0.9269704818725586, "xyxy": [262.0, 84.0, 319.0, 175.0]}, {"class_id": 0, "confidence": 0.719497561454773, "xyxy": [1.0, 4.0, 89.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 18.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 19.019999999, "detections": [{"class_id": 0, "confidence": 0.9535485506057739, "xyxy": [240.0, 89.0, 302.0, 173.0]}]}
+{"kind": "PnP", "image_time_s": 19.019999999, "image_processed": true, "frame": "map", "centers": [[6.707747795482032, -0.5809304489576965, 0.8985215410902168]], "radii": [0.9099999999999999]}
+{"kind": "YOLO", "image_time_s": 19.12, "detections": [{"class_id": 0, "confidence": 0.9270751476287842, "xyxy": [223.0, 90.0, 279.0, 170.0]}, {"class_id": 0, "confidence": 0.7024129629135132, "xyxy": [301.0, 55.0, 319.0, 233.0]}]}
+{"kind": "PnP", "image_time_s": 19.12, "image_processed": true, "frame": "map", "centers": [[6.727069583283443, -0.5746311225128786, 0.9065924051133182]], "radii": [0.9099999999999999]}
+{"kind": "YOLO", "image_time_s": 19.219999999, "detections": [{"class_id": 0, "confidence": 0.9459520578384399, "xyxy": [207.0, 92.0, 259.0, 170.0]}, {"class_id": 0, "confidence": 0.9023138284683228, "xyxy": [279.0, 63.0, 319.0, 232.0]}, {"class_id": 0, "confidence": 0.5086095333099365, "xyxy": [19.0, 42.0, 63.0, 174.0]}, {"class_id": 0, "confidence": 0.3825477361679077, "xyxy": [15.0, 0.0, 263.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 19.219999999, "image_processed": true, "frame": "map", "centers": [[6.725645201013877, -0.5708369331526453, 0.9178391134715259], [6.725645201013877, -0.5708369331526453, 0.9178391134715259]], "radii": [0.9099999999999999, 0.9099999999999999]}
+{"kind": "YOLO", "image_time_s": 19.32, "detections": [{"class_id": 0, "confidence": 0.9602625966072083, "xyxy": [192.0, 94.0, 242.0, 172.0]}, {"class_id": 0, "confidence": 0.906363308429718, "xyxy": [261.0, 67.0, 319.0, 232.0]}, {"class_id": 0, "confidence": 0.46492400765419006, "xyxy": [0.0, 36.0, 44.0, 181.0]}]}
+{"kind": "PnP", "image_time_s": 19.32, "image_processed": true, "frame": "map", "centers": [[6.738777482167219, -0.5549521548850593, 0.9164010505977691]], "radii": [0.9099999999999999]}
+{"kind": "YOLO", "image_time_s": 19.42, "detections": [{"class_id": 0, "confidence": 0.9435379505157471, "xyxy": [181.0, 94.0, 231.0, 174.0]}, {"class_id": 0, "confidence": 0.9020276069641113, "xyxy": [244.0, 69.0, 319.0, 238.0]}, {"class_id": 0, "confidence": 0.4391547441482544, "xyxy": [2.0, 133.0, 126.0, 237.0]}]}
+{"kind": "PnP", "image_time_s": 19.42, "image_processed": true, "frame": "map", "centers": [[6.762786775527969, -0.5537483346382703, 0.9131531525897227]], "radii": [0.9099999999999999]}
+{"kind": "YOLO", "image_time_s": 19.519999999, "detections": [{"class_id": 0, "confidence": 0.9432290196418762, "xyxy": [173.0, 95.0, 221.0, 175.0]}, {"class_id": 0, "confidence": 0.904416024684906, "xyxy": [238.0, 71.0, 317.0, 237.0]}]}
+{"kind": "PnP", "image_time_s": 19.519999999, "image_processed": true, "frame": "map", "centers": [[6.7308360895132395, -0.5159324365972677, 0.9129488210488435], [4.780223572897092, -0.6350712593806744, 0.9072478960262698]], "radii": [0.9099999999999999, 0.8318195595395625]}
+{"kind": "YOLO", "image_time_s": 19.62, "detections": [{"class_id": 0, "confidence": 0.9325131773948669, "xyxy": [167.0, 95.0, 217.0, 177.0]}, {"class_id": 0, "confidence": 0.9089875817298889, "xyxy": [239.0, 71.0, 310.0, 240.0]}, {"class_id": 0, "confidence": 0.6427273154258728, "xyxy": [30.0, 135.0, 115.0, 238.0]}]}
+{"kind": "PnP", "image_time_s": 19.62, "image_processed": true, "frame": "map", "centers": [[6.750228120267691, -0.5099625036408568, 0.9133871114975565], [4.783229564659897, -0.6212978740421597, 0.9084985874729883]], "radii": [0.9099999999999999, 0.8294175300069218]}
+{"kind": "YOLO", "image_time_s": 19.719999999, "detections": [{"class_id": 0, "confidence": 0.9331138730049133, "xyxy": [167.0, 96.0, 217.0, 179.0]}, {"class_id": 0, "confidence": 0.9020960330963135, "xyxy": [239.0, 70.0, 316.0, 240.0]}, {"class_id": 0, "confidence": 0.6672345995903015, "xyxy": [6.0, 3.0, 216.0, 240.0]}, {"class_id": 0, "confidence": 0.3619621694087982, "xyxy": [24.0, 137.0, 114.0, 238.0]}]}
+{"kind": "PnP", "image_time_s": 19.719999999, "image_processed": true, "frame": "map", "centers": [[6.755971081323304, -0.49287796619961566, 0.9035988441673168], [6.755971081323304, -0.49287796619961566, 0.9035988441673168]], "radii": [0.9099999999999999, 0.9099999999999999]}
+{"kind": "YOLO", "image_time_s": 19.82, "detections": [{"class_id": 0, "confidence": 0.9415457844734192, "xyxy": [171.0, 95.0, 221.0, 180.0]}, {"class_id": 0, "confidence": 0.9151919484138489, "xyxy": [248.0, 64.0, 319.0, 240.0]}, {"class_id": 0, "confidence": 0.5290642380714417, "xyxy": [6.0, 1.0, 224.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 19.82, "image_processed": true, "frame": "map", "centers": [[6.771498106684293, -0.48443003294481257, 0.8943514347780466], [6.771498106684293, -0.48443003294481257, 0.8943514347780466]], "radii": [0.9099999999999999, 0.9099999999999999]}
+{"kind": "YOLO", "image_time_s": 19.92, "detections": [{"class_id": 0, "confidence": 0.9494457840919495, "xyxy": [176.0, 94.0, 229.0, 180.0]}, {"class_id": 0, "confidence": 0.9020276069641113, "xyxy": [256.0, 63.0, 319.0, 240.0]}, {"class_id": 0, "confidence": 0.4882899224758148, "xyxy": [4.0, 2.0, 238.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 19.92, "image_processed": true, "frame": "map", "centers": [[6.756034086544586, -0.4768169318782751, 0.8945426137196865], [6.756034086544586, -0.4768169318782751, 0.8945426137196865]], "radii": [0.9099999999999999, 0.9099999999999999]}
+{"kind": "YOLO", "image_time_s": 20.019999999, "detections": [{"class_id": 0, "confidence": 0.9418917894363403, "xyxy": [183.0, 94.0, 236.0, 182.0]}, {"class_id": 0, "confidence": 0.8960387110710144, "xyxy": [270.0, 57.0, 319.0, 239.0]}, {"class_id": 0, "confidence": 0.5581967234611511, "xyxy": [7.0, 16.0, 175.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 20.019999999, "image_processed": true, "frame": "map", "centers": [[6.760090128962728, -0.47505009220905414, 0.9025016586106672]], "radii": [0.9099999999999999]}
+{"kind": "YOLO", "image_time_s": 20.12, "detections": [{"class_id": 0, "confidence": 0.9371330738067627, "xyxy": [192.0, 93.0, 247.0, 183.0]}, {"class_id": 0, "confidence": 0.8751304149627686, "xyxy": [287.0, 57.0, 319.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 20.12, "image_processed": true, "frame": "map", "centers": [[6.737102423571692, -0.47092670937557357, 0.8976120260556313]], "radii": [0.9099999999999999]}
+{"kind": "YOLO", "image_time_s": 20.219999999, "detections": [{"class_id": 0, "confidence": 0.933785080909729, "xyxy": [198.0, 93.0, 255.0, 184.0]}, {"class_id": 0, "confidence": 0.6583861112594604, "xyxy": [297.0, 51.0, 319.0, 240.0]}, {"class_id": 0, "confidence": 0.5159323811531067, "xyxy": [0.0, 36.0, 37.0, 191.0]}]}
+{"kind": "PnP", "image_time_s": 20.219999999, "image_processed": true, "frame": "map", "centers": [[6.75410452959477, -0.4863285689667458, 0.89806519291292]], "radii": [0.9099999999999999]}
+{"kind": "YOLO", "image_time_s": 20.32, "detections": [{"class_id": 0, "confidence": 0.9281095862388611, "xyxy": [204.0, 93.0, 264.0, 185.0]}, {"class_id": 0, "confidence": 0.5231825709342957, "xyxy": [0.0, 35.0, 41.0, 186.0]}]}
+{"kind": "PnP", "image_time_s": 20.32, "image_processed": true, "frame": "map", "centers": [[6.724195573344181, -0.4746732150456914, 0.902783304887687]], "radii": [0.9099999999999999]}
+{"kind": "YOLO", "image_time_s": 20.42, "detections": [{"class_id": 0, "confidence": 0.9542146921157837, "xyxy": [208.0, 92.0, 271.0, 186.0]}, {"class_id": 0, "confidence": 0.4197082221508026, "xyxy": [0.0, 31.0, 46.0, 193.0]}]}
+{"kind": "PnP", "image_time_s": 20.42, "image_processed": true, "frame": "map", "centers": [[6.736735687206981, -0.49033482785161797, 0.9109890502913365]], "radii": [0.9099999999999999]}
+{"kind": "YOLO", "image_time_s": 20.519999999, "detections": [{"class_id": 0, "confidence": 0.9484953880310059, "xyxy": [213.0, 92.0, 274.0, 190.0]}, {"class_id": 0, "confidence": 0.4771668016910553, "xyxy": [0.0, 32.0, 52.0, 191.0]}]}
+{"kind": "PnP", "image_time_s": 20.519999999, "image_processed": true, "frame": "map", "centers": [[6.729969971885348, -0.48593698802351915, 0.8908316328282766]], "radii": [0.9099999999999999]}
+{"kind": "YOLO", "image_time_s": 20.62, "detections": [{"class_id": 0, "confidence": 0.9267441034317017, "xyxy": [215.0, 89.0, 280.0, 190.0]}, {"class_id": 0, "confidence": 0.4784185290336609, "xyxy": [0.0, 30.0, 50.0, 191.0]}]}
+{"kind": "PnP", "image_time_s": 20.62, "image_processed": true, "frame": "map", "centers": [[6.723357457154574, -0.4901165343421383, 0.9034065484048108]], "radii": [0.9099999999999999]}
+{"kind": "YOLO", "image_time_s": 20.719999999, "detections": [{"class_id": 0, "confidence": 0.9209603667259216, "xyxy": [217.0, 89.0, 282.0, 189.0]}, {"class_id": 0, "confidence": 0.48884350061416626, "xyxy": [0.0, 29.0, 50.0, 191.0]}]}
+{"kind": "PnP", "image_time_s": 20.719999999, "image_processed": true, "frame": "map", "centers": [[6.7372245907904516, -0.5016233382260162, 0.9043227959219854]], "radii": [0.9099999999999999]}
+{"kind": "YOLO", "image_time_s": 20.82, "detections": [{"class_id": 0, "confidence": 0.9332041144371033, "xyxy": [219.0, 89.0, 287.0, 193.0]}, {"class_id": 0, "confidence": 0.5063210725784302, "xyxy": [0.0, 31.0, 50.0, 191.0]}]}
+{"kind": "PnP", "image_time_s": 20.82, "image_processed": true, "frame": "map", "centers": [[6.711458486480331, -0.4949850761618704, 0.9081438061821332]], "radii": [0.905498944244687]}
+{"kind": "YOLO", "image_time_s": 20.92, "detections": [{"class_id": 0, "confidence": 0.9249925017356873, "xyxy": [222.0, 89.0, 288.0, 195.0]}, {"class_id": 0, "confidence": 0.42170053720474243, "xyxy": [0.0, 31.0, 51.0, 193.0]}]}
+{"kind": "PnP", "image_time_s": 20.92, "image_processed": true, "frame": "map", "centers": [[6.72003306643477, -0.4924635071146777, 0.8996299000237535]], "radii": [0.9022838235023342]}
+{"kind": "YOLO", "image_time_s": 21.019999999, "detections": [{"class_id": 0, "confidence": 0.9345457553863525, "xyxy": [221.0, 88.0, 291.0, 195.0]}, {"class_id": 0, "confidence": 0.4772650897502899, "xyxy": [0.0, 30.0, 52.0, 192.0]}]}
+{"kind": "PnP", "image_time_s": 21.019999999, "image_processed": true, "frame": "map", "centers": [[6.705820287978147, -0.4887909818151419, 0.9040298178607309]], "radii": [0.8974436001668282]}
+{"kind": "YOLO", "image_time_s": 21.12, "detections": [{"class_id": 0, "confidence": 0.9468737244606018, "xyxy": [224.0, 86.0, 295.0, 196.0]}, {"class_id": 0, "confidence": 0.4740987718105316, "xyxy": [0.0, 29.0, 51.0, 192.0]}]}
+{"kind": "PnP", "image_time_s": 21.12, "image_processed": true, "frame": "map", "centers": [[6.709278202186859, -0.48649047166180837, 0.908671154363814]], "radii": [0.8938092196221717]}
+{"kind": "YOLO", "image_time_s": 21.219999999, "detections": [{"class_id": 0, "confidence": 0.9273850917816162, "xyxy": [224.0, 87.0, 298.0, 197.0]}, {"class_id": 0, "confidence": 0.4199095070362091, "xyxy": [0.0, 29.0, 52.0, 193.0]}]}
+{"kind": "PnP", "image_time_s": 21.219999999, "image_processed": true, "frame": "map", "centers": [[6.726995232235904, -0.4972932620729291, 0.9030947726770515]], "radii": [0.8910739465938747]}
+{"kind": "YOLO", "image_time_s": 21.32, "detections": [{"class_id": 0, "confidence": 0.9277879595756531, "xyxy": [229.0, 87.0, 300.0, 200.0]}, {"class_id": 0, "confidence": 0.40145817399024963, "xyxy": [0.0, 30.0, 52.0, 195.0]}]}
+{"kind": "PnP", "image_time_s": 21.32, "image_processed": true, "frame": "map", "centers": [[6.717123391250916, -0.4932127472246435, 0.8994490780771175]], "radii": [0.886117764963726]}
+{"kind": "YOLO", "image_time_s": 21.42, "detections": [{"class_id": 0, "confidence": 0.9103623628616333, "xyxy": [230.0, 85.0, 305.0, 200.0]}, {"class_id": 0, "confidence": 0.46194323897361755, "xyxy": [0.0, 28.0, 51.0, 194.0]}]}
+{"kind": "PnP", "image_time_s": 21.42, "image_processed": true, "frame": "map", "centers": [[6.712291953442114, -0.4897821175975505, 0.9008640562951373]], "radii": [0.8817958364886894]}
+{"kind": "YOLO", "image_time_s": 21.519999999, "detections": [{"class_id": 0, "confidence": 0.9248862266540527, "xyxy": [233.0, 85.0, 310.0, 201.0]}, {"class_id": 0, "confidence": 0.534081220626831, "xyxy": [0.0, 28.0, 50.0, 193.0]}]}
+{"kind": "PnP", "image_time_s": 21.519999999, "image_processed": true, "frame": "map", "centers": [[6.709143807030662, -0.48926546888818323, 0.89988849712458]], "radii": [0.8775130191442271]}
+{"kind": "YOLO", "image_time_s": 21.62, "detections": [{"class_id": 0, "confidence": 0.9300853610038757, "xyxy": [236.0, 83.0, 314.0, 203.0]}, {"class_id": 0, "confidence": 0.4940948784351349, "xyxy": [0.0, 28.0, 50.0, 194.0]}]}
+{"kind": "PnP", "image_time_s": 21.62, "image_processed": true, "frame": "map", "centers": [[6.7121312166247975, -0.4889983471180994, 0.9075809211236943]], "radii": [0.8735270827822719]}
+{"kind": "YOLO", "image_time_s": 21.719999999, "detections": [{"class_id": 0, "confidence": 0.9270533323287964, "xyxy": [237.0, 85.0, 318.0, 205.0]}, {"class_id": 0, "confidence": 0.5188509225845337, "xyxy": [0.0, 28.0, 49.0, 194.0]}]}
+{"kind": "PnP", "image_time_s": 21.719999999, "image_processed": true, "frame": "map", "centers": [[6.7099069931394375, -0.4890434585380474, 0.9039898714008328]], "radii": [0.8690942978843484]}
+{"kind": "YOLO", "image_time_s": 21.82, "detections": [{"class_id": 0, "confidence": 0.9184802770614624, "xyxy": [241.0, 83.0, 320.0, 208.0]}, {"class_id": 0, "confidence": 0.5804803967475891, "xyxy": [0.0, 27.0, 50.0, 196.0]}]}
+{"kind": "PnP", "image_time_s": 21.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 21.92, "detections": [{"class_id": 0, "confidence": 0.9271761775016785, "xyxy": [244.0, 81.0, 320.0, 208.0]}, {"class_id": 0, "confidence": 0.5758371353149414, "xyxy": [0.0, 25.0, 50.0, 194.0]}]}
+{"kind": "PnP", "image_time_s": 21.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 22.019999999, "detections": [{"class_id": 0, "confidence": 0.9316238760948181, "xyxy": [244.0, 78.0, 319.0, 209.0]}, {"class_id": 0, "confidence": 0.564207911491394, "xyxy": [0.0, 23.0, 50.0, 194.0]}]}
+{"kind": "PnP", "image_time_s": 22.019999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 22.12, "detections": [{"class_id": 0, "confidence": 0.9210734367370605, "xyxy": [248.0, 77.0, 320.0, 210.0]}, {"class_id": 0, "confidence": 0.5726868510246277, "xyxy": [0.0, 23.0, 50.0, 195.0]}]}
+{"kind": "PnP", "image_time_s": 22.12, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 22.219999999, "detections": [{"class_id": 0, "confidence": 0.9340835213661194, "xyxy": [253.0, 78.0, 320.0, 213.0]}, {"class_id": 0, "confidence": 0.5461573004722595, "xyxy": [0.0, 25.0, 49.0, 196.0]}]}
+{"kind": "PnP", "image_time_s": 22.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 22.32, "detections": [{"class_id": 0, "confidence": 0.9411692023277283, "xyxy": [255.0, 77.0, 320.0, 216.0]}, {"class_id": 0, "confidence": 0.5094826817512512, "xyxy": [0.0, 26.0, 49.0, 196.0]}]}
+{"kind": "PnP", "image_time_s": 22.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 22.42, "detections": [{"class_id": 0, "confidence": 0.9343748092651367, "xyxy": [255.0, 76.0, 320.0, 215.0]}, {"class_id": 0, "confidence": 0.5100674033164978, "xyxy": [0.0, 24.0, 51.0, 195.0]}]}
+{"kind": "PnP", "image_time_s": 22.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 22.519999999, "detections": [{"class_id": 0, "confidence": 0.9363828301429749, "xyxy": [255.0, 73.0, 320.0, 216.0]}, {"class_id": 0, "confidence": 0.36389994621276855, "xyxy": [0.0, 23.0, 51.0, 195.0]}]}
+{"kind": "PnP", "image_time_s": 22.519999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 22.62, "detections": [{"class_id": 0, "confidence": 0.9419735670089722, "xyxy": [255.0, 73.0, 320.0, 219.0]}]}
+{"kind": "PnP", "image_time_s": 22.62, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 22.719999999, "detections": [{"class_id": 0, "confidence": 0.939663290977478, "xyxy": [256.0, 73.0, 320.0, 221.0]}]}
+{"kind": "PnP", "image_time_s": 22.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 22.82, "detections": [{"class_id": 0, "confidence": 0.9323049783706665, "xyxy": [258.0, 73.0, 319.0, 224.0]}, {"class_id": 0, "confidence": 0.3564971089363098, "xyxy": [0.0, 27.0, 40.0, 195.0]}]}
+{"kind": "PnP", "image_time_s": 22.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 22.92, "detections": [{"class_id": 0, "confidence": 0.9259414076805115, "xyxy": [260.0, 71.0, 319.0, 225.0]}, {"class_id": 0, "confidence": 0.48145169019699097, "xyxy": [47.0, 0.0, 271.0, 240.0]}, {"class_id": 0, "confidence": 0.36504554748535156, "xyxy": [0.0, 26.0, 39.0, 195.0]}]}
+{"kind": "PnP", "image_time_s": 22.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 23.019999999, "detections": [{"class_id": 0, "confidence": 0.9293165802955627, "xyxy": [260.0, 70.0, 319.0, 224.0]}, {"class_id": 0, "confidence": 0.6518421769142151, "xyxy": [40.0, 8.0, 203.0, 240.0]}, {"class_id": 0, "confidence": 0.4873577058315277, "xyxy": [0.0, 23.0, 38.0, 197.0]}, {"class_id": 0, "confidence": 0.3688890337944031, "xyxy": [25.0, 17.0, 106.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 23.019999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 23.12, "detections": [{"class_id": 0, "confidence": 0.9207589030265808, "xyxy": [261.0, 69.0, 319.0, 226.0]}, {"class_id": 0, "confidence": 0.6238772869110107, "xyxy": [34.0, 3.0, 224.0, 240.0]}, {"class_id": 0, "confidence": 0.4886585772037506, "xyxy": [0.0, 24.0, 36.0, 196.0]}]}
+{"kind": "PnP", "image_time_s": 23.12, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 23.219999999, "detections": [{"class_id": 0, "confidence": 0.9073615074157715, "xyxy": [263.0, 71.0, 319.0, 229.0]}, {"class_id": 0, "confidence": 0.4996933043003082, "xyxy": [37.0, 6.0, 230.0, 240.0]}, {"class_id": 0, "confidence": 0.41560259461402893, "xyxy": [0.0, 24.0, 35.0, 198.0]}]}
+{"kind": "PnP", "image_time_s": 23.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 23.32, "detections": [{"class_id": 0, "confidence": 0.9053678512573242, "xyxy": [263.0, 70.0, 319.0, 233.0]}, {"class_id": 0, "confidence": 0.4093865752220154, "xyxy": [37.0, 12.0, 248.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 23.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 23.42, "detections": [{"class_id": 0, "confidence": 0.9049269556999207, "xyxy": [264.0, 70.0, 319.0, 235.0]}]}
+{"kind": "PnP", "image_time_s": 23.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 23.519999999, "detections": [{"class_id": 0, "confidence": 0.9062774181365967, "xyxy": [264.0, 69.0, 319.0, 234.0]}]}
+{"kind": "PnP", "image_time_s": 23.519999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 23.62, "detections": [{"class_id": 0, "confidence": 0.8950332403182983, "xyxy": [265.0, 66.0, 319.0, 236.0]}, {"class_id": 0, "confidence": 0.6789180040359497, "xyxy": [30.0, 4.0, 247.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 23.62, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 23.719999999, "detections": [{"class_id": 0, "confidence": 0.8968004584312439, "xyxy": [269.0, 67.0, 319.0, 239.0]}, {"class_id": 0, "confidence": 0.6458744406700134, "xyxy": [31.0, 2.0, 266.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 23.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 23.82, "detections": [{"class_id": 0, "confidence": 0.9022875428199768, "xyxy": [270.0, 68.0, 319.0, 239.0]}, {"class_id": 0, "confidence": 0.7293369174003601, "xyxy": [36.0, 3.0, 260.0, 240.0]}, {"class_id": 0, "confidence": 0.608373761177063, "xyxy": [26.0, 5.0, 114.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 23.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 23.92, "detections": [{"class_id": 0, "confidence": 0.9033685326576233, "xyxy": [270.0, 69.0, 319.0, 239.0]}, {"class_id": 0, "confidence": 0.6499193906784058, "xyxy": [35.0, 3.0, 269.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 23.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 24.019999999, "detections": [{"class_id": 0, "confidence": 0.893393337726593, "xyxy": [275.0, 64.0, 319.0, 239.0]}, {"class_id": 0, "confidence": 0.5747388601303101, "xyxy": [27.0, 1.0, 271.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 24.019999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 24.12, "detections": [{"class_id": 0, "confidence": 0.9037449955940247, "xyxy": [279.0, 60.0, 319.0, 240.0]}, {"class_id": 0, "confidence": 0.47625732421875, "xyxy": [23.0, 1.0, 272.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 24.12, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 24.219999999, "detections": [{"class_id": 0, "confidence": 0.9030161499977112, "xyxy": [282.0, 58.0, 319.0, 240.0]}, {"class_id": 0, "confidence": 0.557908833026886, "xyxy": [25.0, 1.0, 266.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 24.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 24.32, "detections": [{"class_id": 0, "confidence": 0.8983128666877747, "xyxy": [286.0, 58.0, 320.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 24.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 24.42, "detections": [{"class_id": 0, "confidence": 0.8757618069648743, "xyxy": [288.0, 57.0, 320.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 24.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 24.519999999, "detections": [{"class_id": 0, "confidence": 0.8415613770484924, "xyxy": [289.0, 58.0, 320.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 24.519999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 24.62, "detections": [{"class_id": 0, "confidence": 0.7478609085083008, "xyxy": [293.0, 52.0, 319.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 24.62, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 24.719999999, "detections": [{"class_id": 0, "confidence": 0.6262809634208679, "xyxy": [300.0, 54.0, 319.0, 240.0]}, {"class_id": 0, "confidence": 0.3603348731994629, "xyxy": [29.0, 0.0, 273.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 24.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 24.82, "detections": [{"class_id": 0, "confidence": 0.7168054580688477, "xyxy": [293.0, 50.0, 319.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 24.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 24.92, "detections": []}
+{"kind": "PnP", "image_time_s": 24.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 25.019999999, "detections": []}
+{"kind": "PnP", "image_time_s": 25.019999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 25.12, "detections": []}
+{"kind": "PnP", "image_time_s": 25.12, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 25.219999999, "detections": []}
+{"kind": "PnP", "image_time_s": 25.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 25.32, "detections": []}
+{"kind": "PnP", "image_time_s": 25.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 25.42, "detections": []}
+{"kind": "PnP", "image_time_s": 25.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 25.519999999, "detections": []}
+{"kind": "PnP", "image_time_s": 25.519999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 25.62, "detections": []}
+{"kind": "PnP", "image_time_s": 25.62, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 25.719999999, "detections": [{"class_id": 0, "confidence": 0.36685270071029663, "xyxy": [30.0, 0.0, 265.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 25.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 25.82, "detections": []}
+{"kind": "PnP", "image_time_s": 25.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 25.92, "detections": []}
+{"kind": "PnP", "image_time_s": 25.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 26.019999999, "detections": []}
+{"kind": "PnP", "image_time_s": 26.019999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 26.12, "detections": []}
+{"kind": "PnP", "image_time_s": 26.12, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 26.219999999, "detections": []}
+{"kind": "PnP", "image_time_s": 26.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 26.32, "detections": [{"class_id": 0, "confidence": 0.3551357388496399, "xyxy": [12.0, 0.0, 258.0, 240.0]}]}
+{"kind": "PnP", "image_time_s": 26.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 26.42, "detections": []}
+{"kind": "PnP", "image_time_s": 26.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 26.519999999, "detections": []}
+{"kind": "PnP", "image_time_s": 26.519999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 26.62, "detections": [{"class_id": 0, "confidence": 0.39723819494247437, "xyxy": [0.0, 141.0, 154.0, 235.0]}]}
+{"kind": "PnP", "image_time_s": 26.62, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 26.719999999, "detections": []}
+{"kind": "PnP", "image_time_s": 26.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 26.82, "detections": []}
+{"kind": "PnP", "image_time_s": 26.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 26.92, "detections": []}
+{"kind": "PnP", "image_time_s": 26.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 27.019999999, "detections": []}
+{"kind": "PnP", "image_time_s": 27.019999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 27.12, "detections": []}
+{"kind": "PnP", "image_time_s": 27.12, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 27.219999999, "detections": []}
+{"kind": "PnP", "image_time_s": 27.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 27.32, "detections": [{"class_id": 0, "confidence": 0.5550693869590759, "xyxy": [290.0, 22.0, 320.0, 171.0]}]}
+{"kind": "PnP", "image_time_s": 27.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 27.42, "detections": []}
+{"kind": "PnP", "image_time_s": 27.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 27.519999999, "detections": []}
+{"kind": "PnP", "image_time_s": 27.519999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 27.62, "detections": []}
+{"kind": "PnP", "image_time_s": 27.62, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 27.719999999, "detections": []}
+{"kind": "PnP", "image_time_s": 27.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 27.82, "detections": [{"class_id": 0, "confidence": 0.6950117945671082, "xyxy": [290.0, 20.0, 319.0, 176.0]}]}
+{"kind": "PnP", "image_time_s": 27.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 27.92, "detections": []}
+{"kind": "PnP", "image_time_s": 27.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 28.019999999, "detections": []}
+{"kind": "PnP", "image_time_s": 28.019999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 28.12, "detections": []}
+{"kind": "PnP", "image_time_s": 28.12, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 28.219999999, "detections": []}
+{"kind": "PnP", "image_time_s": 28.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 28.32, "detections": []}
+{"kind": "PnP", "image_time_s": 28.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 28.42, "detections": []}
+{"kind": "PnP", "image_time_s": 28.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 28.519999999, "detections": []}
+{"kind": "PnP", "image_time_s": 28.519999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 28.62, "detections": []}
+{"kind": "PnP", "image_time_s": 28.62, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 28.719999999, "detections": []}
+{"kind": "PnP", "image_time_s": 28.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 28.82, "detections": []}
+{"kind": "PnP", "image_time_s": 28.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 28.92, "detections": []}
+{"kind": "PnP", "image_time_s": 28.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 29.019999999, "detections": []}
+{"kind": "PnP", "image_time_s": 29.019999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 29.12, "detections": []}
+{"kind": "PnP", "image_time_s": 29.12, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 29.219999999, "detections": []}
+{"kind": "PnP", "image_time_s": 29.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 29.32, "detections": []}
+{"kind": "PnP", "image_time_s": 29.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 29.42, "detections": []}
+{"kind": "PnP", "image_time_s": 29.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 29.519999999, "detections": []}
+{"kind": "PnP", "image_time_s": 29.519999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 29.62, "detections": []}
+{"kind": "PnP", "image_time_s": 29.62, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 29.719999999, "detections": []}
+{"kind": "PnP", "image_time_s": 29.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 29.82, "detections": []}
+{"kind": "PnP", "image_time_s": 29.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 29.92, "detections": []}
+{"kind": "PnP", "image_time_s": 29.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 30.019999999, "detections": []}
+{"kind": "PnP", "image_time_s": 30.019999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 30.12, "detections": []}
+{"kind": "PnP", "image_time_s": 30.12, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 30.219999999, "detections": []}
+{"kind": "PnP", "image_time_s": 30.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 30.32, "detections": []}
+{"kind": "PnP", "image_time_s": 30.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 30.42, "detections": []}
+{"kind": "PnP", "image_time_s": 30.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 30.519999999, "detections": []}
+{"kind": "PnP", "image_time_s": 30.519999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 30.62, "detections": []}
+{"kind": "PnP", "image_time_s": 30.62, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 30.719999999, "detections": []}
+{"kind": "PnP", "image_time_s": 30.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 30.82, "detections": []}
+{"kind": "PnP", "image_time_s": 30.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 30.92, "detections": []}
+{"kind": "PnP", "image_time_s": 30.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 31.019999999, "detections": []}
+{"kind": "PnP", "image_time_s": 31.019999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 31.12, "detections": []}
+{"kind": "PnP", "image_time_s": 31.12, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 31.219999999, "detections": []}
+{"kind": "PnP", "image_time_s": 31.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 31.32, "detections": []}
+{"kind": "PnP", "image_time_s": 31.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 31.42, "detections": []}
+{"kind": "PnP", "image_time_s": 31.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 31.519999999, "detections": []}
+{"kind": "PnP", "image_time_s": 31.519999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 31.62, "detections": []}
+{"kind": "PnP", "image_time_s": 31.62, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 31.719999999, "detections": []}
+{"kind": "PnP", "image_time_s": 31.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 31.82, "detections": []}
+{"kind": "PnP", "image_time_s": 31.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 31.92, "detections": []}
+{"kind": "PnP", "image_time_s": 31.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 32.02, "detections": []}
+{"kind": "PnP", "image_time_s": 32.02, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 32.119999999, "detections": []}
+{"kind": "PnP", "image_time_s": 32.119999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 32.219999999, "detections": []}
+{"kind": "PnP", "image_time_s": 32.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 32.32, "detections": []}
+{"kind": "PnP", "image_time_s": 32.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 32.42, "detections": []}
+{"kind": "PnP", "image_time_s": 32.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 32.52, "detections": []}
+{"kind": "PnP", "image_time_s": 32.52, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 32.619999999, "detections": []}
+{"kind": "PnP", "image_time_s": 32.619999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 32.719999999, "detections": []}
+{"kind": "PnP", "image_time_s": 32.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 32.82, "detections": []}
+{"kind": "PnP", "image_time_s": 32.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 32.92, "detections": []}
+{"kind": "PnP", "image_time_s": 32.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 33.02, "detections": []}
+{"kind": "PnP", "image_time_s": 33.02, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 33.119999999, "detections": []}
+{"kind": "PnP", "image_time_s": 33.119999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 33.219999999, "detections": []}
+{"kind": "PnP", "image_time_s": 33.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 33.32, "detections": []}
+{"kind": "PnP", "image_time_s": 33.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 33.42, "detections": []}
+{"kind": "PnP", "image_time_s": 33.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 33.52, "detections": []}
+{"kind": "PnP", "image_time_s": 33.52, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 33.619999999, "detections": []}
+{"kind": "PnP", "image_time_s": 33.619999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 33.719999999, "detections": []}
+{"kind": "PnP", "image_time_s": 33.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 33.82, "detections": []}
+{"kind": "PnP", "image_time_s": 33.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 33.92, "detections": []}
+{"kind": "PnP", "image_time_s": 33.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 34.02, "detections": []}
+{"kind": "PnP", "image_time_s": 34.02, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 34.119999999, "detections": []}
+{"kind": "PnP", "image_time_s": 34.119999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 34.219999999, "detections": []}
+{"kind": "PnP", "image_time_s": 34.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 34.32, "detections": []}
+{"kind": "PnP", "image_time_s": 34.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 34.42, "detections": []}
+{"kind": "PnP", "image_time_s": 34.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 34.52, "detections": []}
+{"kind": "PnP", "image_time_s": 34.52, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 34.619999999, "detections": []}
+{"kind": "PnP", "image_time_s": 34.619999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 34.719999999, "detections": []}
+{"kind": "PnP", "image_time_s": 34.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 34.82, "detections": []}
+{"kind": "PnP", "image_time_s": 34.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 34.92, "detections": []}
+{"kind": "PnP", "image_time_s": 34.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 35.02, "detections": []}
+{"kind": "PnP", "image_time_s": 35.02, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 35.119999999, "detections": []}
+{"kind": "PnP", "image_time_s": 35.119999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 35.219999999, "detections": []}
+{"kind": "PnP", "image_time_s": 35.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 35.32, "detections": []}
+{"kind": "PnP", "image_time_s": 35.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 35.42, "detections": []}
+{"kind": "PnP", "image_time_s": 35.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 35.52, "detections": []}
+{"kind": "PnP", "image_time_s": 35.52, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 35.619999999, "detections": []}
+{"kind": "PnP", "image_time_s": 35.619999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 35.719999999, "detections": []}
+{"kind": "PnP", "image_time_s": 35.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 35.82, "detections": []}
+{"kind": "PnP", "image_time_s": 35.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 35.92, "detections": []}
+{"kind": "PnP", "image_time_s": 35.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 36.02, "detections": []}
+{"kind": "PnP", "image_time_s": 36.02, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 36.119999999, "detections": []}
+{"kind": "PnP", "image_time_s": 36.119999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 36.219999999, "detections": []}
+{"kind": "PnP", "image_time_s": 36.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 36.32, "detections": []}
+{"kind": "PnP", "image_time_s": 36.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 36.42, "detections": []}
+{"kind": "PnP", "image_time_s": 36.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 36.52, "detections": []}
+{"kind": "PnP", "image_time_s": 36.52, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 36.619999999, "detections": []}
+{"kind": "PnP", "image_time_s": 36.619999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 36.719999999, "detections": []}
+{"kind": "PnP", "image_time_s": 36.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 36.82, "detections": []}
+{"kind": "PnP", "image_time_s": 36.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 36.92, "detections": []}
+{"kind": "PnP", "image_time_s": 36.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 37.02, "detections": []}
+{"kind": "PnP", "image_time_s": 37.02, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 37.119999999, "detections": []}
+{"kind": "PnP", "image_time_s": 37.119999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 37.219999999, "detections": []}
+{"kind": "PnP", "image_time_s": 37.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 37.32, "detections": []}
+{"kind": "PnP", "image_time_s": 37.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 37.42, "detections": []}
+{"kind": "PnP", "image_time_s": 37.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 37.52, "detections": []}
+{"kind": "PnP", "image_time_s": 37.52, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 37.619999999, "detections": []}
+{"kind": "PnP", "image_time_s": 37.619999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 37.719999999, "detections": []}
+{"kind": "PnP", "image_time_s": 37.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 37.82, "detections": []}
+{"kind": "PnP", "image_time_s": 37.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 37.92, "detections": []}
+{"kind": "PnP", "image_time_s": 37.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 38.02, "detections": []}
+{"kind": "PnP", "image_time_s": 38.02, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 38.119999999, "detections": []}
+{"kind": "PnP", "image_time_s": 38.119999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 38.219999999, "detections": []}
+{"kind": "PnP", "image_time_s": 38.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 38.32, "detections": []}
+{"kind": "PnP", "image_time_s": 38.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 38.42, "detections": []}
+{"kind": "PnP", "image_time_s": 38.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 38.52, "detections": []}
+{"kind": "PnP", "image_time_s": 38.52, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 38.619999999, "detections": []}
+{"kind": "PnP", "image_time_s": 38.619999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 38.719999999, "detections": []}
+{"kind": "PnP", "image_time_s": 38.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 38.82, "detections": []}
+{"kind": "PnP", "image_time_s": 38.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 38.92, "detections": []}
+{"kind": "PnP", "image_time_s": 38.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 39.02, "detections": []}
+{"kind": "PnP", "image_time_s": 39.02, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 39.119999999, "detections": []}
+{"kind": "PnP", "image_time_s": 39.119999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 39.219999999, "detections": []}
+{"kind": "PnP", "image_time_s": 39.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 39.32, "detections": []}
+{"kind": "PnP", "image_time_s": 39.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 39.42, "detections": []}
+{"kind": "PnP", "image_time_s": 39.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 39.52, "detections": []}
+{"kind": "PnP", "image_time_s": 39.52, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 39.619999999, "detections": []}
+{"kind": "PnP", "image_time_s": 39.619999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 39.719999999, "detections": []}
+{"kind": "PnP", "image_time_s": 39.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 39.82, "detections": []}
+{"kind": "PnP", "image_time_s": 39.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 39.92, "detections": []}
+{"kind": "PnP", "image_time_s": 39.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 40.02, "detections": []}
+{"kind": "PnP", "image_time_s": 40.02, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 40.119999999, "detections": []}
+{"kind": "PnP", "image_time_s": 40.119999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 40.219999999, "detections": []}
+{"kind": "PnP", "image_time_s": 40.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 40.32, "detections": []}
+{"kind": "PnP", "image_time_s": 40.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 40.42, "detections": []}
+{"kind": "PnP", "image_time_s": 40.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 40.52, "detections": []}
+{"kind": "PnP", "image_time_s": 40.52, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 40.619999999, "detections": []}
+{"kind": "PnP", "image_time_s": 40.619999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 40.719999999, "detections": []}
+{"kind": "PnP", "image_time_s": 40.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 40.82, "detections": []}
+{"kind": "PnP", "image_time_s": 40.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 40.92, "detections": []}
+{"kind": "PnP", "image_time_s": 40.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 41.02, "detections": []}
+{"kind": "PnP", "image_time_s": 41.02, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 41.119999999, "detections": []}
+{"kind": "PnP", "image_time_s": 41.119999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 41.219999999, "detections": []}
+{"kind": "PnP", "image_time_s": 41.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 41.32, "detections": []}
+{"kind": "PnP", "image_time_s": 41.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 41.42, "detections": []}
+{"kind": "PnP", "image_time_s": 41.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 41.52, "detections": []}
+{"kind": "PnP", "image_time_s": 41.52, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 41.619999999, "detections": []}
+{"kind": "PnP", "image_time_s": 41.619999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 41.719999999, "detections": []}
+{"kind": "PnP", "image_time_s": 41.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 41.82, "detections": []}
+{"kind": "PnP", "image_time_s": 41.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 41.92, "detections": []}
+{"kind": "PnP", "image_time_s": 41.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 42.02, "detections": []}
+{"kind": "PnP", "image_time_s": 42.02, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 42.119999999, "detections": []}
+{"kind": "PnP", "image_time_s": 42.119999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 42.219999999, "detections": []}
+{"kind": "PnP", "image_time_s": 42.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 42.32, "detections": []}
+{"kind": "PnP", "image_time_s": 42.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 42.42, "detections": []}
+{"kind": "PnP", "image_time_s": 42.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 42.52, "detections": []}
+{"kind": "PnP", "image_time_s": 42.52, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 42.619999999, "detections": []}
+{"kind": "PnP", "image_time_s": 42.619999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 42.719999999, "detections": []}
+{"kind": "PnP", "image_time_s": 42.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 42.82, "detections": []}
+{"kind": "PnP", "image_time_s": 42.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 42.92, "detections": []}
+{"kind": "PnP", "image_time_s": 42.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 43.02, "detections": []}
+{"kind": "PnP", "image_time_s": 43.02, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 43.119999999, "detections": []}
+{"kind": "PnP", "image_time_s": 43.119999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 43.219999999, "detections": []}
+{"kind": "PnP", "image_time_s": 43.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 43.32, "detections": []}
+{"kind": "PnP", "image_time_s": 43.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 43.42, "detections": []}
+{"kind": "PnP", "image_time_s": 43.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 43.52, "detections": []}
+{"kind": "PnP", "image_time_s": 43.52, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 43.619999999, "detections": []}
+{"kind": "PnP", "image_time_s": 43.619999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 43.719999999, "detections": []}
+{"kind": "PnP", "image_time_s": 43.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 43.82, "detections": []}
+{"kind": "PnP", "image_time_s": 43.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 43.92, "detections": []}
+{"kind": "PnP", "image_time_s": 43.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 44.02, "detections": []}
+{"kind": "PnP", "image_time_s": 44.02, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 44.119999999, "detections": []}
+{"kind": "PnP", "image_time_s": 44.119999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 44.219999999, "detections": []}
+{"kind": "PnP", "image_time_s": 44.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 44.32, "detections": []}
+{"kind": "PnP", "image_time_s": 44.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 44.42, "detections": []}
+{"kind": "PnP", "image_time_s": 44.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 44.52, "detections": []}
+{"kind": "PnP", "image_time_s": 44.52, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 44.619999999, "detections": []}
+{"kind": "PnP", "image_time_s": 44.619999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 44.719999999, "detections": []}
+{"kind": "PnP", "image_time_s": 44.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 44.82, "detections": []}
+{"kind": "PnP", "image_time_s": 44.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 44.92, "detections": []}
+{"kind": "PnP", "image_time_s": 44.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 45.02, "detections": []}
+{"kind": "PnP", "image_time_s": 45.02, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 45.119999999, "detections": []}
+{"kind": "PnP", "image_time_s": 45.119999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 45.219999999, "detections": []}
+{"kind": "PnP", "image_time_s": 45.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 45.32, "detections": []}
+{"kind": "PnP", "image_time_s": 45.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 45.42, "detections": []}
+{"kind": "PnP", "image_time_s": 45.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 45.52, "detections": []}
+{"kind": "PnP", "image_time_s": 45.52, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 45.619999999, "detections": []}
+{"kind": "PnP", "image_time_s": 45.619999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 45.719999999, "detections": []}
+{"kind": "PnP", "image_time_s": 45.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 45.82, "detections": []}
+{"kind": "PnP", "image_time_s": 45.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 45.92, "detections": []}
+{"kind": "PnP", "image_time_s": 45.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 46.02, "detections": []}
+{"kind": "PnP", "image_time_s": 46.02, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 46.119999999, "detections": []}
+{"kind": "PnP", "image_time_s": 46.119999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 46.219999999, "detections": []}
+{"kind": "PnP", "image_time_s": 46.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 46.32, "detections": []}
+{"kind": "PnP", "image_time_s": 46.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 46.42, "detections": []}
+{"kind": "PnP", "image_time_s": 46.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 46.52, "detections": []}
+{"kind": "PnP", "image_time_s": 46.52, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 46.619999999, "detections": []}
+{"kind": "PnP", "image_time_s": 46.619999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 46.719999999, "detections": []}
+{"kind": "PnP", "image_time_s": 46.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 46.82, "detections": []}
+{"kind": "PnP", "image_time_s": 46.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 46.92, "detections": []}
+{"kind": "PnP", "image_time_s": 46.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 47.02, "detections": []}
+{"kind": "PnP", "image_time_s": 47.02, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 47.119999999, "detections": []}
+{"kind": "PnP", "image_time_s": 47.119999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 47.219999999, "detections": []}
+{"kind": "PnP", "image_time_s": 47.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 47.32, "detections": []}
+{"kind": "PnP", "image_time_s": 47.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 47.42, "detections": []}
+{"kind": "PnP", "image_time_s": 47.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 47.52, "detections": []}
+{"kind": "PnP", "image_time_s": 47.52, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 47.619999999, "detections": []}
+{"kind": "PnP", "image_time_s": 47.619999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 47.719999999, "detections": []}
+{"kind": "PnP", "image_time_s": 47.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 47.82, "detections": []}
+{"kind": "PnP", "image_time_s": 47.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 47.92, "detections": []}
+{"kind": "PnP", "image_time_s": 47.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 48.02, "detections": []}
+{"kind": "PnP", "image_time_s": 48.02, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 48.119999999, "detections": []}
+{"kind": "PnP", "image_time_s": 48.119999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 48.219999999, "detections": []}
+{"kind": "PnP", "image_time_s": 48.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 48.32, "detections": []}
+{"kind": "PnP", "image_time_s": 48.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 48.42, "detections": []}
+{"kind": "PnP", "image_time_s": 48.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 48.52, "detections": []}
+{"kind": "PnP", "image_time_s": 48.52, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 48.619999999, "detections": []}
+{"kind": "PnP", "image_time_s": 48.619999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 48.719999999, "detections": []}
+{"kind": "PnP", "image_time_s": 48.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 48.82, "detections": []}
+{"kind": "PnP", "image_time_s": 48.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 48.92, "detections": []}
+{"kind": "PnP", "image_time_s": 48.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 49.02, "detections": []}
+{"kind": "PnP", "image_time_s": 49.02, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 49.119999999, "detections": []}
+{"kind": "PnP", "image_time_s": 49.119999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 49.219999999, "detections": []}
+{"kind": "PnP", "image_time_s": 49.219999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 49.32, "detections": []}
+{"kind": "PnP", "image_time_s": 49.32, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 49.42, "detections": []}
+{"kind": "PnP", "image_time_s": 49.42, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 49.52, "detections": []}
+{"kind": "PnP", "image_time_s": 49.52, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 49.619999999, "detections": []}
+{"kind": "PnP", "image_time_s": 49.619999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 49.719999999, "detections": []}
+{"kind": "PnP", "image_time_s": 49.719999999, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 49.82, "detections": []}
+{"kind": "PnP", "image_time_s": 49.82, "image_processed": true, "frame": "map", "centers": [], "radii": []}
+{"kind": "YOLO", "image_time_s": 49.92, "detections": []}
+{"kind": "PnP", "image_time_s": 49.92, "image_processed": true, "frame": "map", "centers": [], "radii": []}

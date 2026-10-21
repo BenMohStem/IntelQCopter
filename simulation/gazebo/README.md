@@ -78,6 +78,21 @@ the drone computer reports landing complete.
 
 ## PC endpoint selection
 
+To choose endpoints yourself while the simulator supplies neutral Xbox reports
+and selects navigation, use this command (one environment at a time):
+
+```powershell
+.\qcopter.ps1 gazebo-suite --prefix my-map-flight --only navigation --env env07 --operator
+```
+
+Open http://127.0.0.1:8086, wait for `mode: navigation` and fresh pilot telemetry,
+click **Use live pose as start**, choose the finish and send. The drone handles
+planning and flight. The virtual Xbox sends no automatic mission request in this
+mode. The run ends after landing/disarm; its HTTP endpoint requests and replies
+are preserved in `pc-map-missions.jsonl`.
+
+For an already running separate drone/ROS2 setup, start only the PC tool:
+
 ```powershell
 .\qcopter.ps1 pc-map
 ```
@@ -85,7 +100,10 @@ the drone computer reports landing complete.
 Open **http://127.0.0.1:8086**. Click the current start position, then the finish;
 set ground z/cruise height and send. This calls the same ROS2 service used by the
 tests. Do not send another mission while an automated suite owns that aircraft.
-The purple marker is the live pose received from the drone over DDS.
+The purple marker is the live pose received from the drone over DDS. Teal shows
+the drone's planned path; orange shows observed panel estimates. Unobserved
+space is unknown. These displays read drone topics; they do not inject obstacles
+or motor commands.
 
 Coordinates are metres in a shared local `map` frame. This is a local grid,
 not GPS/geographic navigation or automatic map alignment. The drone rejects a

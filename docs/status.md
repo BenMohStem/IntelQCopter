@@ -7,7 +7,7 @@
 - Physical arming remains disabled: motor pins are inputs, and no ESC output driver is connected.
 - ESP32-S3 hardware build succeeds: 31,836 bytes static RAM, 590,573 bytes reported program flash. Real heap, task timing and hardware remain unmeasured.
 - Latest Espressif QEMU ESP32-S3 replay passes 39 named checks, including raw HID gestures, calibration, stale inputs and CRC/sequence/range-checked UART commands. These are synthetic input tests, not flight physics.
-- The active C core also drives native Gazebo 10.5/OGRE2 through simulated IMU/barometer samples at logical 500 Hz. Five virtual Xbox manual flights passed. Original navigation trials and subsequent corrections remain in `artifacts/gazebo-suite/`; final layout verification is recorded in its reports.
+- The active C core also drives native Gazebo 10.5/OGRE2 through simulated IMU/barometer samples at logical 500 Hz. Five virtual Xbox manual flights passed. All ten final navigation layouts also passed, plus an additional PC-map endpoint workflow. Original trials and corrections remain in `artifacts/gazebo-suite/`; see [final evidence](gazebo-results-2026-10-21.md).
 - ROS2 C++ drone mission/perception/UART software and a PC endpoint map are implemented. PC supplies endpoints over DDS; the drone plans/replans from RGB YOLO and known-size panel PnP observations.
 - Initial Windows DLL mismatch, recording serializer failure, gesture timing gap, occlusion-distance failure and interrupted trials are retained. No failing check or native contact is suppressed.
 

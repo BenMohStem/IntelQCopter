@@ -1,0 +1,41 @@
+{
+  "completed": true,
+  "timeout": false,
+  "simulated_seconds": 48.66,
+  "hid_packets": 2367,
+  "companion_packets": 1957,
+  "yolo_frames": 474,
+  "pnp_frames": 474,
+  "mission_status": "phase=7,done=1,mapped=3,plans=8,images=447,requests=1,camera=1",
+  "final_state": {
+    "sim_time_s": 48.68,
+    "position": [
+      8.898512235066686,
+      0.01173957627240335,
+      0.07999732337809906
+    ],
+    "quaternion": [
+      1.9322040042911097e-05,
+      4.0948253717182146e-05,
+      1.4212446901655752e-06,
+      0.9999999989739397
+    ],
+    "velocity": [
+      0.0034660362199306124,
+      -0.001635517191625783,
+      -0.001416441639607479
+    ],
+    "omega": [
+      0.020444120467620598,
+      0.04332638500614367,
+      4.657638522794239e-09
+    ],
+    "ground_contact": true,
+    "obstacle_contact": false,
+    "mode": 1,
+    "disarm": true,
+    "mapped_input_packets": 1957,
+    "xbox_packets": 2367
+  },
+  "scope": "Native Gazebo physics and cameras; real ROS2 DDS; ESP32 C core host build. C++ mission/YOLO/PnP enabled only for navigation cases. Not Xtensa emulation or physical BLE."
+}

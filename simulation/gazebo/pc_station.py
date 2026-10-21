@@ -36,7 +36,7 @@ class Station(Node):
     self.spec=next(s for s in json.loads((ROOT/'simulation/gazebo/environments.json').read_text()) if s['id']==args.env)
     out=ROOT/'artifacts/gazebo-suite'/args.run;out.mkdir(parents=True,exist_ok=True)
     self.file=(out/'xbox-reports.csv').open('w',newline='');self.writer=csv.writer(self.file);self.writer.writerow(['time_s','phase','raw_hid_hex','roll_stick','pitch_stick','yaw_stick','vertical_stick','LT','RT'])
-    self.pc_log=(out/'pc-mission.json');self.pc_log.write_text(json.dumps({'role':'ground PC','mission_requests':0,'manual':args.manual is not None}))
+    self.pc_log=(out/'pc-mission.json');self.pc_log.write_text(json.dumps({'role':'ground PC','mission_requests':0,'manual':args.manual is not None,'external_mission':args.external_mission}))
     print('PC READY: simulated Xbox packets and endpoint service requests only',flush=True)
  def pose(self,m):
     p=m.pose.pose.position;v=m.twist.twist.linear;q=m.pose.pose.orientation
@@ -57,7 +57,7 @@ class Station(Node):
     if selecting:values=dict(down=True,a=self.args.manual is not None,b=self.args.manual is None)
     elif self.args.manual is None:
         phase='navigation-neutral-xbox'
-        if not self.requested and self.mode==1 and self.client.service_is_ready():
+        if not self.args.external_mission and not self.requested and self.mode==1 and self.client.service_is_ready():
             req=RequestMission.Request();req.start.x,req.start.y,req.start.z=self.spec['start'];req.finish.x,req.finish.y,req.finish.z=self.spec['finish'];req.cruise_height_m=self.spec['cruise']
             self.requested=True
             future=self.client.call_async(req)
@@ -100,7 +100,7 @@ class Station(Node):
     self.state_pub.publish(String(data=json.dumps(dict(time=now,phase=phase,mode=self.mode,mission_requests=int(self.requested),accepted=self.accepted,virtual_human=self.args.manual is not None))))
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('--env',required=True);p.add_argument('--run',required=True);p.add_argument('--manual',type=int);args,ros=p.parse_known_args()
+ p=argparse.ArgumentParser();p.add_argument('--env',required=True);p.add_argument('--run',required=True);p.add_argument('--manual',type=int);p.add_argument('--external-mission',action='store_true');args,ros=p.parse_known_args()
  rclpy.init(args=ros);node=Station(args)
  try:rclpy.spin(node)
  finally:node.file.close();node.destroy_node();rclpy.shutdown()

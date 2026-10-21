@@ -1,0 +1,106 @@
+{
+  "engine": "Native Gazebo 10.5 + OGRE2 RGB; ESP32 C core host build",
+  "environment": {
+    "id": "env01",
+    "name": "campus_garden",
+    "seed": 3200,
+    "panels": [
+      [
+        2.8,
+        0.15,
+        -0.06
+      ],
+      [
+        4.8,
+        0.6,
+        0.08
+      ],
+      [
+        6.7,
+        0.2,
+        -0.1
+      ]
+    ],
+    "decor": [
+      [
+        1.0,
+        3.6,
+        1.0,
+        0.4,
+        0.6,
+        2.0
+      ],
+      [
+        4.0,
+        3.8,
+        1.0,
+        0.4,
+        0.6,
+        2.0
+      ],
+      [
+        7.0,
+        -3.7,
+        1.0,
+        0.4,
+        0.6,
+        2.0
+      ]
+    ],
+    "ground_color": [
+      0.22,
+      0.4,
+      0.15
+    ],
+    "decor_color": [
+      0.3,
+      0.35,
+      0.4
+    ],
+    "start": [
+      0.0,
+      0.0,
+      0.082
+    ],
+    "finish": [
+      8.0,
+      -0.3,
+      0.082
+    ],
+    "cruise": 1.25
+  },
+  "steps": 47500,
+  "obstacle_contact_steps": 0,
+  "min_evaluated_clearance_m": 2.403284072296332,
+  "xbox_packets": 4749,
+  "companion_packets": 4477,
+  "final_state": {
+    "sim_time_s": 95.02,
+    "position": [
+      -0.00069177574922182,
+      -0.02090338093092056,
+      1.2497735098734586
+    ],
+    "quaternion": [
+      1.9926123309510285e-06,
+      1.2963659036510876e-05,
+      1.7551165321446205e-06,
+      0.9999999999124463
+    ],
+    "velocity": [
+      9.85873291626733e-05,
+      -3.030328467665781e-05,
+      -0.0007309597201954834
+    ],
+    "omega": [
+      7.257828594690166e-05,
+      -3.0411759528922477e-05,
+      -3.1824446925954875e-05
+    ],
+    "ground_contact": false,
+    "obstacle_contact": false
+  },
+  "calibration": "Synthetic six-face sensor bench; no real coefficients",
+  "hardware_motor_arming": false,
+  "simulation_motor_gate": "First completed mode gesture and fresh pilot/calibrated sensors; physical outputs remain disabled"
+}

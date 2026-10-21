@@ -1,0 +1,12 @@
+[INFO] [1792579052.287631800] [drone.drone_mission_computer]: READY: endpoints via mission/request; authority via Xbox FC mode; raw UART frames on fc/companion_tx
+[INFO] [1792579056.889555900] [drone.drone_mission_computer]: RGB_OBSTACLE x=2.832 y=0.162 r=0.882 count=1
+[INFO] [1792579060.439050000] [drone.drone_mission_computer]: PC_MISSION_ACCEPTED start=(0.00,0.00) finish=(8.90,-0.30)
+[INFO] [1792579060.464829400] [drone.drone_mission_computer]: MISSION phase=1,done=0,mapped=1,plans=1,images=34,requests=1,camera=1
+[INFO] [1792579061.385369300] [drone.drone_mission_computer]: MISSION phase=2,done=0,mapped=1,plans=1,images=43,requests=1,camera=1
+[INFO] [1792579063.934063100] [drone.drone_mission_computer]: MISSION phase=3,done=0,mapped=1,plans=1,images=70,requests=1,camera=1
+[INFO] [1792579065.009998100] [drone.drone_mission_computer]: MISSION phase=4,done=0,mapped=1,plans=1,images=82,requests=1,camera=1
+[INFO] [1792579067.982621600] [drone.drone_mission_computer]: RGB_OBSTACLE x=6.872 y=0.111 r=0.910 count=2
+[INFO] [1792579071.824726400] [drone.drone_mission_computer]: RGB_OBSTACLE x=4.773 y=0.650 r=0.851 count=3
+[INFO] [1792579093.629575500] [drone.drone_mission_computer]: MISSION phase=5,done=0,mapped=3,plans=8,images=368,requests=1,camera=1
+[INFO] [1792579102.026737300] [drone.drone_mission_computer]: MISSION phase=6,done=0,mapped=3,plans=8,images=452,requests=1,camera=1
+[INFO] [1792579109.249252500] [drone.drone_mission_computer]: MISSION phase=7,done=1,mapped=3,plans=8,images=524,requests=1,camera=1

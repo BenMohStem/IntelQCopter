@@ -1,0 +1,13 @@
+BOUNDARY READY: real ROS2 DDS; native Gazebo sensors; raw HID and companion UART input only
+PROGRESS t=0.0s position=[2.811177619046952e-20, -1.7080412526787678e-20, 0.07985757992983432] mode=0 
+PROGRESS t=5.0s position=[9.067791666291532e-19, 3.306507271384017e-19, 0.07999981982562351] mode=0 
+PROGRESS t=10.0s position=[-0.0010226437793111796, -0.007250392627294579, 0.5155684505396992] mode=1 phase=2,done=0,mapped=1,plans=1,images=78,requests=1,camera=1
+PROGRESS t=15.0s position=[0.7531425781654228, 0.6073255888658888, 1.2163975613121345] mode=1 phase=4,done=0,mapped=1,plans=1,images=128,requests=1,camera=1
+PROGRESS t=20.0s position=[3.236207742727525, 1.223771445239103, 1.2505441949111764] mode=1 phase=4,done=0,mapped=3,plans=3,images=178,requests=1,camera=1
+PROGRESS t=25.0s position=[5.240752755995585, 1.213862520645843, 1.250396465035803] mode=1 phase=4,done=0,mapped=3,plans=3,images=228,requests=1,camera=1
+PROGRESS t=30.0s position=[7.35727912859415, 1.0284344326722001, 1.2477200789700509] mode=1 phase=4,done=0,mapped=3,plans=3,images=278,requests=1,camera=1
+PROGRESS t=35.0s position=[8.878543490144416, -0.2581243160309857, 1.2465882606833778] mode=1 phase=5,done=0,mapped=3,plans=3,images=328,requests=1,camera=1
+PROGRESS t=40.0s position=[8.828260522221832, -0.33694803064461454, 1.2495835800008506] mode=1 phase=5,done=0,mapped=3,plans=3,images=378,requests=1,camera=1
+PROGRESS t=45.0s position=[8.889674846305132, -0.32637502068745555, 0.23012438190811593] mode=1 phase=6,done=0,mapped=3,plans=3,images=428,requests=1,camera=1
+PROGRESS t=50.0s position=[8.89825419467418, -0.31636316470053427, 0.07996076411946891] mode=1 phase=7,done=1,mapped=3,plans=3,images=451,requests=1,camera=1
+BOUNDARY RESULT {"completed": true, "timeout": false, "simulated_seconds": 50.019999999999996, "hid_packets": 2376, "companion_packets": 1966, "yolo_frames": 478, "pnp_frames": 478, "mission_status": "phase=7,done=1,mapped=3,plans=3,images=451,requests=1,camera=1", "final_state": {"sim_time_s": 50.04, "position": [8.89825419467418, -0.31636316470053427, 0.07996076411946891], "quaternion": [-2.6204360663620156e-06, 1.1155556322095567e-05, 2.5222397675642346e-06, 0.9999999999311626], "velocity": [0.0008983899153285681, 0.0002110390742816971, -0.019655933600042877], "omega": [-0.0026385295407636436, 0.01123241051093079, -4.681520361873553e-10], "ground_contact": true, "obstacle_contact": false, "mode": 1, "disarm": true, "mapped_input_packets": 1966, "xbox_packets": 2376}, "scope": "Native Gazebo physics and cameras; real ROS2 DDS; ESP32 C core host build. C++ mission/YOLO/PnP enabled only for navigation cases. Not Xtensa emulation or physical BLE."}

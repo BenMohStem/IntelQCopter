@@ -1,0 +1,46 @@
+{
+  "passed": true,
+  "request": {
+    "start": [
+      -0.04151804621208488,
+      0.49719719209634183,
+      0.08076757512654505
+    ],
+    "finish": [
+      8.9,
+      1.0,
+      0.082
+    ],
+    "cruise": 1.3
+  },
+  "response": {
+    "accepted": true,
+    "reason": "Accepted by drone ROS2 computer in Xbox-selected navigation mode"
+  },
+  "fc_state_before": {
+    "position": [
+      -0.04151804621208488,
+      0.49719719209634183,
+      0.08076757512654505
+    ],
+    "path": [],
+    "obstacles": [
+      [
+        2.831661024264106,
+        0.29552645672937916,
+        0.8855527349659865
+      ],
+      [
+        6.924452626972157,
+        0.8530690532105697,
+        0.9099999999999999
+      ]
+    ],
+    "fc": {
+      "mode": "navigation",
+      "pilot_fresh": true,
+      "disarmed": false
+    }
+  },
+  "scope": "HTTP PC map endpoint submits an actual ROS2 service request using the live start pose and a custom finish/height. Not a browser click or direct FC/motor input."
+}

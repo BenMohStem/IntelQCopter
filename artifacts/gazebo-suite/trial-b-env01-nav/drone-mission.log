@@ -1,0 +1,6 @@
+[INFO] [1792577487.772647800] [drone.drone_mission_computer]: READY: endpoints via mission/request; authority via Xbox FC mode; raw UART frames on fc/companion_tx
+[INFO] [1792577495.025952100] [drone.drone_mission_computer]: PC_MISSION_ACCEPTED start=(0.00,0.00) finish=(8.00,-0.30)
+[INFO] [1792577495.035273100] [drone.drone_mission_computer]: MISSION phase=1,done=0,mapped=0,plans=1,images=0,requests=1,camera=0
+[INFO] [1792577496.088010600] [drone.drone_mission_computer]: MISSION phase=2,done=0,mapped=0,plans=1,images=0,requests=1,camera=0
+[INFO] [1792577498.557466900] [drone.drone_mission_computer]: MISSION phase=3,done=0,mapped=0,plans=1,images=0,requests=1,camera=0
+[INFO] [1792577499.775188300] [drone.drone_mission_computer]: MISSION phase=4,done=0,mapped=0,plans=1,images=0,requests=1,camera=0

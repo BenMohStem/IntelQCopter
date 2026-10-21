@@ -1,0 +1,38 @@
+START suite-20261021-env01-manual
+suite-20261021-env01-manual PROGRESS t=20.0s position=[0.3215003435499815, 0.024603938448194716, 0.6591238968827574] mode=0 
+RESULT suite-20261021-env01-manual PASS
+START suite-20261021-env02-manual
+suite-20261021-env02-manual PROGRESS t=20.0s position=[1.1206695532033015, -0.37013399316359785, 0.6717229776737403] mode=0 
+RESULT suite-20261021-env02-manual PASS
+START suite-20261021-env03-manual
+suite-20261021-env03-manual PROGRESS t=20.0s position=[0.31128680771701633, 0.025738092403737745, 0.6611095936617198] mode=0 
+RESULT suite-20261021-env03-manual PASS
+START suite-20261021-env04-manual
+suite-20261021-env04-manual PROGRESS t=20.0s position=[1.1209539798729302, -0.36985333987209873, 0.6725445805198901] mode=0 
+RESULT suite-20261021-env04-manual PASS
+START suite-20261021-env05-manual
+suite-20261021-env05-manual PROGRESS t=20.0s position=[0.31000748113449633, 0.02551794122792815, 0.660093515772231] mode=0 
+RESULT suite-20261021-env05-manual PASS
+START suite-20261021-env01-nav
+suite-20261021-env01-nav PROGRESS t=20.0s position=[4.286850592902823, -1.4442034691735666, 1.2498247720365552] mode=1 phase=4,done=0,mapped=2,plans=7,images=179,requests=1,camera=1
+suite-20261021-env01-nav PROGRESS t=45.0s position=[8.93723706324694, -0.1295994979991732, 1.2528229579193007] mode=1 phase=5,done=0,mapped=2,plans=7,images=429,requests=1,camera=1
+RESULT suite-20261021-env01-nav PASS
+START suite-20261021-env02-nav
+FAIL suite-20261021-env02-nav [Errno 2] No such file or directory: 'C:\\Users\\Mohamed\\Desktop\\Work\\QCopter-ESP32-Xbox\\artifacts\\gazebo-suite\\suite-20261021-env02-nav\\transport.json'
+START suite-20261021-env03-nav
+FAIL suite-20261021-env03-nav [Errno 2] No such file or directory: 'C:\\Users\\Mohamed\\Desktop\\Work\\QCopter-ESP32-Xbox\\artifacts\\gazebo-suite\\suite-20261021-env03-nav\\transport.json'
+START suite-20261021-env04-nav
+FAIL suite-20261021-env04-nav [Errno 2] No such file or directory: 'C:\\Users\\Mohamed\\Desktop\\Work\\QCopter-ESP32-Xbox\\artifacts\\gazebo-suite\\suite-20261021-env04-nav\\transport.json'
+START suite-20261021-env05-nav
+FAIL suite-20261021-env05-nav [Errno 2] No such file or directory: 'C:\\Users\\Mohamed\\Desktop\\Work\\QCopter-ESP32-Xbox\\artifacts\\gazebo-suite\\suite-20261021-env05-nav\\transport.json'
+START suite-20261021-env06-nav
+FAIL suite-20261021-env06-nav [Errno 2] No such file or directory: 'C:\\Users\\Mohamed\\Desktop\\Work\\QCopter-ESP32-Xbox\\artifacts\\gazebo-suite\\suite-20261021-env06-nav\\transport.json'
+START suite-20261021-env07-nav
+FAIL suite-20261021-env07-nav [Errno 2] No such file or directory: 'C:\\Users\\Mohamed\\Desktop\\Work\\QCopter-ESP32-Xbox\\artifacts\\gazebo-suite\\suite-20261021-env07-nav\\transport.json'
+START suite-20261021-env08-nav
+FAIL suite-20261021-env08-nav [Errno 2] No such file or directory: 'C:\\Users\\Mohamed\\Desktop\\Work\\QCopter-ESP32-Xbox\\artifacts\\gazebo-suite\\suite-20261021-env08-nav\\transport.json'
+START suite-20261021-env09-nav
+FAIL suite-20261021-env09-nav [Errno 2] No such file or directory: 'C:\\Users\\Mohamed\\Desktop\\Work\\QCopter-ESP32-Xbox\\artifacts\\gazebo-suite\\suite-20261021-env09-nav\\transport.json'
+START suite-20261021-env10-nav
+FAIL suite-20261021-env10-nav [Errno 2] No such file or directory: 'C:\\Users\\Mohamed\\Desktop\\Work\\QCopter-ESP32-Xbox\\artifacts\\gazebo-suite\\suite-20261021-env10-nav\\transport.json'
+SUITE 15 runs 6 passed
