@@ -61,7 +61,7 @@ $$
 
 Use that equation only when the uniform model is justified.
 A quoted ± limit alone does not establish a Gaussian standard deviation.
-See the [full mathematical guide](../output/pdf/IntelQcopter-model-guide.pdf) for correlated samples,
+See the [full mathematical guide](../docs/reports/IntelQcopter-model-guide.pdf) for correlated samples,
 Allan variance, apparatus procedures, propagation and worked examples.
 
 ## Session notes
