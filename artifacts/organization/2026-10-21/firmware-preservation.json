@@ -1,0 +1,20 @@
+{
+  "base_commit": "8432cf3",
+  "files": [
+    {
+      "path": "firmware/src/flight_controller.c",
+      "sha256": "7810604bd3f80970ef13781165a871688c35317a57b6ef72a6ab3e1ff59655c1",
+      "unchanged_source": true
+    },
+    {
+      "path": "firmware/src/esp32_platform.cpp",
+      "sha256": "70bcd3114cddd35e296819ae01d88c334b9fdc83edb4388e0c318307b4068181",
+      "unchanged_source": true
+    },
+    {
+      "path": "firmware/include/fc_api.h",
+      "sha256": "af24cfb3eee981e3182e32e9d3d65bd0840258ce177bcfb47b019660a1fdcb99",
+      "unchanged_source": true
+    }
+  ]
+}

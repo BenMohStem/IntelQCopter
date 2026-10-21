@@ -1,2 +1,0 @@
-FLASH            0x10000000         0x003fe000         xr
-                0x1000a600                        PROVIDE (__flash_binary_end = .)

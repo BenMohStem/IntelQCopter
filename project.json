@@ -1,0 +1,95 @@
+{
+  "schema": 1,
+  "name": "IntelQCopter",
+  "branch": "esp32-xbox",
+  "architecture": "ESP32-S3 aircraft + Xbox Series X/S",
+  "domains": {
+    "firmware": "firmware/",
+    "simulation": "simulation/",
+    "documentation": "docs/",
+    "knowledge": "knowledge/",
+    "evidence": "artifacts/",
+    "history": "archive/"
+  },
+  "local": {
+    "build": "build/",
+    "cache": ".cache/",
+    "settings": ".local/"
+  },
+  "commands": {
+    "build": {
+      "runtime": "pio",
+      "path": "platformio.ini",
+      "description": "Compile the ESP32-S3 hardware target",
+      "args": [
+        "run",
+        "-e",
+        "esp32-s3"
+      ]
+    },
+    "emulator-setup": {
+      "runtime": "python",
+      "path": "simulation/emulation/setup.py",
+      "description": "Install the verified QEMU build locally",
+      "args": []
+    },
+    "emulator-build": {
+      "runtime": "python",
+      "path": "simulation/emulation/build.py",
+      "description": "Compile/merge the QEMU firmware",
+      "args": []
+    },
+    "emulator-run": {
+      "runtime": "python",
+      "path": "simulation/emulation/run.py",
+      "description": "Run QEMU and retain original UART logs",
+      "args": []
+    },
+    "model": {
+      "runtime": "python",
+      "path": "tools/model/model_lti.py",
+      "description": "Calculate the LTI model and figures",
+      "args": []
+    },
+    "docs": {
+      "runtime": "node",
+      "path": "tools/docs/render_math_guides.cjs",
+      "description": "Render the offline mathematical guide",
+      "args": []
+    },
+    "knowledge-build": {
+      "runtime": "python",
+      "path": "tools/knowledge/update_knowledge.py",
+      "description": "Validate and build the search cache",
+      "args": [
+        "build"
+      ]
+    },
+    "knowledge-query": {
+      "runtime": "python",
+      "path": "tools/knowledge/update_knowledge.py",
+      "description": "Search current project facts",
+      "args": [
+        "query"
+      ]
+    },
+    "knowledge-check": {
+      "runtime": "python",
+      "path": "tools/knowledge/check_knowledge.py",
+      "description": "Check knowledge-index integrity handling",
+      "args": []
+    },
+    "archive": {
+      "runtime": "python",
+      "path": "tools/archive/manage.py",
+      "description": "Inspect, verify or restore the historical cache",
+      "args": []
+    },
+    "check-layout": {
+      "runtime": "python",
+      "path": "tools/validation/check_layout.py",
+      "description": "Validate active paths and script syntax",
+      "args": []
+    }
+  }
+}

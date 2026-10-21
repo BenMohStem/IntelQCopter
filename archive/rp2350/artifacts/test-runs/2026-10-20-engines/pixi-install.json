@@ -1,7 +1,0 @@
-{
-  "release": "v0.82.0",
-  "source": "https://github.com/prefix-dev/pixi/releases/download/v0.82.0/pixi-x86_64-pc-windows-msvc.zip",
-  "sha256": "9173d5621f5752441aba577f482d67fd2544305dcc39c9d925ac19f395dc1a6b",
-  "release_digest": "sha256:9173d5621f5752441aba577f482d67fd2544305dcc39c9d925ac19f395dc1a6b",
-  "executable": "C:\\WinLibs\\pixi\\pixi.exe"
-}

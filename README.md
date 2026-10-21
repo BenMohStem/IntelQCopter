@@ -10,7 +10,7 @@ radio endpoints with a commercial Xbox controller connected directly to the ESP3
 > No ESC pulse driver or arming action is included. Gains, axes and timing are not validated on this airframe.
 
 **Start here:** [Illustrated F450 linear/discrete guide](docs/current-model-and-fc-integration.html) ·
-[Run the ESP32-S3 emulator](emulation/README.md) · [Code map](docs/code-map.md).
+[Run the ESP32-S3 emulator](simulation/emulation/README.md) · [Code map](docs/code-map.md).
 
 ## What is active
 
@@ -53,16 +53,18 @@ Build is separate from flashing. See [setup, wiring and calibration](docs/setup.
 |---|---|
 | firmware/ | Active C control core and minimal C++ platform adapter |
 | docs/ | Illustrated LTI/discrete model, setup, code map and current status |
-| emulation/ | Reproducible ESP32-S3 CPU replay and original-check runner |
+| simulation/emulation/ | Reproducible ESP32-S3 CPU replay and original-check runner |
 | knowledge/ | Versioned facts, evidence sources and dependency relationships |
 | simulation/ | Flight simulation integration plan; QEMU replay is separate |
 | artifacts/ | Original evidence produced for this branch |
 | archive/reference-drone/ | Unmodified source snapshot from the user's Drone folder |
-| archive/rp2350/ | Earlier firmware, docs, PCB, ROS/simulation assets and recordings |
+| archive/ | Historical Git snapshot index and original Drone reference |
+| .cache/archive/ | Verified local snapshot payload; recoverable from Git |
 
 **Read next:** [Current status](docs/status.md) · [Knowledge index](knowledge/README.md) ·
 [Review of Drone](docs/drone-review.md).
 
+Use `.\qcopter.ps1 help` for the command catalog. See [architecture and migration](docs/architecture.md).
 Open `IntelQCopter.code-workspace` for an editor view focused on active files.
 Generated tools, firmware images and the searchable SQLite index live in ignored `build/`.
 
@@ -77,6 +79,6 @@ QEMU executed 4,982 logical steps and passed 19 checks. [Original UART log](arti
 [Recorded samples](artifacts/emulation/verified-replay/telemetry.png).
 The replay uses stationary synthetic sensors; motor demands do not drive a flight plant.
 
-The [mathematical paper](archive/rp2350/output/pdf/IntelQcopter-model-guide.pdf)
+The [mathematical paper](https://github.com/BenMohStem/IntelQCopter/blob/8432cf33300fc1f92aeab97f01548aac2b1d2e48/archive/rp2350/output/pdf/IntelQcopter-model-guide.pdf)
 remains useful for airframe/control equations. Its RP2350 flash and old runtime descriptions
 are historical and do not describe the ESP32 NVS/platform layer.

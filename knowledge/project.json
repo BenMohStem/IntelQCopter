@@ -33,7 +33,7 @@
     {
       "id": "source-006",
       "kind": "file",
-      "locator": "tools/patch_xbox.py"
+      "locator": "tools/platformio/patch_xbox.py"
     },
     {
       "id": "source-007",
@@ -97,8 +97,9 @@
     },
     {
       "id": "source-019",
-      "kind": "file",
-      "locator": "archive/rp2350/measurements/README.md"
+      "kind": "git",
+      "locator": "8432cf33300fc1f92aeab97f01548aac2b1d2e48:archive/rp2350/measurements/README.md",
+      "original_kind": "file"
     },
     {
       "id": "source-020",
@@ -117,8 +118,9 @@
     },
     {
       "id": "source-023",
-      "kind": "directory",
-      "locator": "archive/rp2350/artifacts"
+      "kind": "git",
+      "locator": "8432cf33300fc1f92aeab97f01548aac2b1d2e48:archive/rp2350/artifacts",
+      "original_kind": "directory"
     },
     {
       "id": "source-024",
@@ -132,8 +134,9 @@
     },
     {
       "id": "source-026",
-      "kind": "directory",
-      "locator": "archive/rp2350/docs"
+      "kind": "git",
+      "locator": "8432cf33300fc1f92aeab97f01548aac2b1d2e48:archive/rp2350/docs",
+      "original_kind": "directory"
     },
     {
       "id": "source-027",
@@ -161,7 +164,7 @@
     {
       "id": "qemu-guide",
       "kind": "file",
-      "locator": "emulation/README.md"
+      "locator": "simulation/emulation/README.md"
     },
     {
       "id": "lti-guide",
@@ -740,6 +743,17 @@
           ],
           "evidence_level": "source",
           "reason": "Keep durable evidence and facts separate from regenerable tool/search caches."
+        },
+        {
+          "revision": 3,
+          "date": "2026-10-21",
+          "status": "implemented",
+          "statement": "The duplicate RP2350 snapshot is stored locally at .cache/archive/rp2350 with a versioned SHA-256 inventory and immutable Git recovery reference. Active source remains in the main branch. Tools are grouped by purpose, emulation is under simulation/emulation, and both worktrees have a root command catalog.",
+          "sources": [
+            "code-map"
+          ],
+          "evidence_level": "source",
+          "reason": "User requested project-wide architecture and cache cleanup. Original evidence is preserved."
         }
       ]
     },

@@ -1,5 +1,0 @@
-Warning: Possible version incompatibility. Attempting to load carb::ujitso::IFactory with version v0.3 against v0.2.
-2026-10-20T13:16:11Z [16,712ms] [Error] [omni.kit.app._impl] [py stderr]: c:/users/mohamed/desktop/work/qcopter/sim/isaac/engine_server.py:33: DeprecationWarning: Conversion of an array with ndim > 0 to a scalar is deprecated, and will error in future. Ensure you extract a single element from your array before performing this operation. (Deprecated NumPy 1.25.)
-  mass=float(body.get_masses()[0]);physics_dt=SM.get_physics_dt()
-2026-10-20T13:16:28Z [33,736ms] [Error] [omni.kit.app._impl] [py stderr]: c:/users/mohamed/desktop/work/qcopter/sim/isaac/engine_server.py:48: DeprecationWarning: get_contact_force_matrix() is deprecated; use get_normal_contact_force_matrix(); returns normal forces only
-  matrix=contact.get_contact_force_matrix(.002)

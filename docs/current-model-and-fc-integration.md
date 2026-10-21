@@ -802,7 +802,7 @@ X_{k+1}=A_dX_k+B_du_k,\qquad
 A_d=e^{A\Delta t},\quad B_d=\int_0^{\Delta t}e^{A\xi}B\,d\xi.
 $$
 
-You do not need to calculate a general matrix exponential by hand. `tools/model_lti.py` calculates these matrices once using a numerical library. The microcontroller can then multiply by constant precomputed coefficients if that plant model is needed there. Its actual estimator already has small explicit equations.
+You do not need to calculate a general matrix exponential by hand. `tools/model/model_lti.py` calculates these matrices once using a numerical library. The microcontroller can then multiply by constant precomputed coefficients if that plant model is needed there. Its actual estimator already has small explicit equations.
 
 For the simple height/velocity constant-acceleration model, the exact matrices are familiar:
 
@@ -1072,7 +1072,7 @@ This is the exact scalar-observation form expanded in `covariance_correct()`. St
 | Timing | Actual sensor/controller timestamps, missed cycles and report-age histograms | Sampling delay and jitter |
 | Battery | Measured usable capacity and calibrated voltage/current logging; rested pack characterization | SOC confidence and usable endurance |
 
-Thrust/torque measurements require a fixture intended for spinning propellers; do not hold a running motor by hand. The archived [measurement worksheets](../archive/rp2350/measurements/README.md) retain the detailed apparatus procedures and blank tables.
+Thrust/torque measurements require a fixture intended for spinning propellers; do not hold a running motor by hand. The archived [measurement worksheets](https://github.com/BenMohStem/IntelQCopter/blob/8432cf33300fc1f92aeab97f01548aac2b1d2e48/archive/rp2350/measurements/README.md) retain the detailed apparatus procedures and blank tables.
 
 For an uncertain quantity $b=4ak_T/J_x$, independent small relative uncertainties approximately combine as
 
@@ -1101,14 +1101,14 @@ If 2%, 10% and 15% are justified **standard deviations**, then $\sigma_b/b\appro
 
 All these symbols are in [flight_controller.c](../firmware/src/flight_controller.c). [The platform adapter](../firmware/src/esp32_platform.cpp) handles Arduino, I²C, BLE, task scheduling and NVS. Physical motor pins remain inputs; no ESC output driver is attached.
 
-The new [ESP32-S3 emulator](../emulation/README.md) executes the compiled C core on QEMU with synthetic inputs. The graphs in this guide come from the separate mathematical LTI calculation script. Keeping those evidence types explicit lets us see what each result actually establishes.
+The new [ESP32-S3 emulator](../simulation/emulation/README.md) executes the compiled C core on QEMU with synthetic inputs. The graphs in this guide come from the separate mathematical LTI calculation script. Keeping those evidence types explicit lets us see what each result actually establishes.
 
 ## 15. Reproduce and continue the calculation
 
 From the `esp32-xbox` checkout, with Python plus NumPy/SciPy/Matplotlib:
 
 ```powershell
-python tools/model_lti.py
+python tools/model/model_lti.py
 ```
 
 This generates [parameters, allocation, continuous/discrete matrices and poles](assets/lti/calculations.json) and the response figure. The current calculation uses ideal feedback states. Next refinements should add measured delay, estimator dynamics, parameter ranges and actuator constraints before any physical flight claim.
@@ -1117,7 +1117,7 @@ To rebuild this offline reading view after editing its LaTeX-authored Markdown:
 
 ```powershell
 npm --prefix build/doc-math install --ignore-scripts --no-audit --no-fund --save-exact katex@0.19.0 marked@18.1.1
-node tools/render_math_guides.cjs
+node tools/docs/render_math_guides.cjs
 ```
 
 The reader itself needs no network, JavaScript or installed LaTeX package. The old nonlinear paper remains in the archive for later study. This guide is the active explanation for learning the F450 hover model in smaller steps.

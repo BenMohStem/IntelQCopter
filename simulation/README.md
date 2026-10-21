@@ -1,22 +1,13 @@
-# Simulation integration — next step
+# Simulation and emulation
 
-ESP32-S3 CPU emulation now runs: see [emulation/README.md](../emulation/README.md).
-It replays synthetic inputs and checks the active C code; it is not a flight plant.
-No new ESP32/Gazebo flight recording is claimed.
-The C core was ported from main, but its Pico host ABI/launchers are not the active ESP32 build.
+- [ESP32-S3 QEMU replay](emulation/README.md): active C core running on the emulated
+  Xtensa CPU with deterministic synthetic inputs. Use qcopter.ps1 emulator-build,
+  then emulator-run --name UNIQUE-NAME. This does not close a flight-physics loop.
+- [Linear/discrete hover guide](../docs/current-model-and-fc-integration.html):
+  independent numerical LTI response calculations with assumed aircraft parameters.
+- The Pico branch's existing Gazebo/ROS workflow remains in the sibling QCopter
+  checkout. Its historical source snapshot is recoverable through archive/README.md.
 
-Retained references:
-
-- F450 URDF: ../archive/rp2350/companion/ros2_ws/src/qcopter_description/urdf/f450.urdf
-- Gazebo scripts/assets: ../archive/rp2350/sim/
-- Original recordings/logs: ../archive/rp2350/artifacts/
-- Mathematical paper: ../archive/rp2350/output/pdf/IntelQcopter-model-guide.pdf
-
-The active [linear/discrete guide](../docs/current-model-and-fc-integration.html)
-and `tools/model_lti.py` provide separate calculated hover responses and a 16-state
-plant model, with assumed parameters clearly recorded.
-
-Next: build a host adapter for fc_api.h, supply timestamped virtual sensor/pilot samples,
-keep synthetic calibration distinct from measured calibration, reconnect ROS/Gazebo feedback,
-then record new logs, parameters, graphs and video. Later compare actual ESP32/Xbox timing.
-Do not relabel old Pico/emulator/Gazebo evidence as ESP32 execution.
+No ESP32/Gazebo flight recording is claimed. Next integration work is to connect
+fc_api.h to timestamped plant samples and pilot commands, then record flight-loop
+results with their actual engine, parameters and interface limits.

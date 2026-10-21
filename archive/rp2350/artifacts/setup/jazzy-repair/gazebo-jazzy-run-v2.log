@@ -1,8 +1,0 @@
-C:\Users\Mohamed\Desktop\Work\QCopter\sim\gazebo\garden.sdf
-python.exe : pybullet build time: Oct 20 2026 11:40:51
-At C:\Users\Mohamed\Desktop\Work\QCopter\tools\run_native_garden.ps1:34 char:2
-+  & $taskPy @taskClientArgs 2>&1 | Tee-Object (Join-Path $taskLogs "$t ...
-+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: (pybullet build ...0 2026 11:40:51:String) [], RemoteException
-    + FullyQualifiedErrorId : NativeCommandError
- 

@@ -1,8 +1,0 @@
-Single-file protocol consistency check passed.
-IMU calibration: injected accel bias/gain and gyro bias recovered; moving capture rejected. gyro sigma=0.020020 deg/s
-Magnetometer: known offsets recovered from 504 sphere samples; tilted planar sweep rejected.
-BMP280 reference: T=25.082478 C P=100653.266776 Pa; synthetic ground-reference height=10.000000 m sigma=0.085286 m
-Reference regression: gain=4.00018182 offset=0.01972727 residual sigma=0.00110096; zero-span and noisy fits rejected.
-RT boost slew/neutral hold/collective reserve and bounded coupled allocation checks passed
-matrix prediction, Joseph product, PSD covariance and FLU pitch mixer checks passed
-flight-controller host tests passed (math only; no hardware I/O)

@@ -1,6 +1,0 @@
-{
-  "controlled_steps": 27350,
-  "native_physics": "PhysX CPU",
-  "native_cameras": "Isaac MinimalRendering",
-  "physical_arming": false
-}

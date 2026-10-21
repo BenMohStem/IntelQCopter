@@ -48,5 +48,6 @@ not measured aircraft mass. The battery's approximate 150 g remains unverified.
 
 Current summaries supersede scattered historical status claims.
 Prior reports, source, failed trials, videos, PCB drafts and math remain in
-archive/rp2350/. Original launchers assume the old root layout: use main for that workflow.
+the verified .cache/archive/rp2350 snapshot, recoverable through archive/README.md.
+Original launchers assume the old root layout; main has the current Pico workflow.
 Historical evidence does not establish ESP32 pairing, deadlines or flight.

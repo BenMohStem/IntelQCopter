@@ -24,7 +24,7 @@ flowchart LR
 |---|---|
 | Fact | Stable ID, topic and scope: ESP32 branch, airframe, or historical |
 | Revision | Dated statement, status, evidence level and reason for change |
-| Source | Reusable file, directory, HTTPS URL, user decision or explicit note |
+| Source | Reusable file, directory, HTTPS URL, immutable Git object, user decision or explicit note |
 | Evidence link | Connects each revision to one or more sources |
 | Relation | depends_on, limited_by, supersedes, related_to |
 | Search | Latest revision only, indexed with SQLite FTS5; history available by ID |
@@ -51,11 +51,11 @@ Run from the branch root with Python 3.10+ and SQLite FTS5 support (included in
 the installed PlatformIO Python):
 
 ```powershell
-python tools/update_knowledge.py validate
-python tools/update_knowledge.py build
-python tools/update_knowledge.py query "calibration"
-python tools/update_knowledge.py query --status pending --scope esp32-xbox
-python tools/update_knowledge.py show emulation
+python tools/knowledge/update_knowledge.py validate
+python tools/knowledge/update_knowledge.py build
+python tools/knowledge/update_knowledge.py query "calibration"
+python tools/knowledge/update_knowledge.py query --status pending --scope esp32-xbox
+python tools/knowledge/update_knowledge.py show emulation
 ```
 
 `query` treats search words literally, uses parameterized SQL and ranks results
@@ -94,3 +94,7 @@ credentials and unrelated files out of the commit.
 Read [current status](../docs/status.md), [the active code map](../docs/code-map.md),
 [the illustrated model](../docs/current-model-and-fc-integration.html), or
 [the original archive](../archive/README.md) when a search points there.
+
+Historical RP2350 sources now use immutable commit:path Git locators. They remain
+resolvable without requiring the local archive cache to be present. Git locators
+are syntax-validated; the archive verifier checks the restored payload hashes.
