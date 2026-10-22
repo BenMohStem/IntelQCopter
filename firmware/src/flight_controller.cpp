@@ -1,5 +1,7 @@
 /* IntelQCopter ESP32 branch: one C-style C++ firmware translation unit.
  * C-style control/calibration/estimation below; minimal C++ library boundary at end.
+ * Required physical sensors: MPU6050 + BMP280 only, sharing Arduino Wire I2C.
+ * No lidar/magnetometer is required; no absolute heading or onboard XY localization.
  * Physical arming/output is disabled. No scenario gains are certified for flight.
  */
 #include <stdbool.h>
@@ -1482,10 +1484,13 @@ static const int MOTOR_PINS[4]={12,1,2,14}; // FL, FR, RR, RL; INPUT ONLY.
 static const uint32_t CONTROL_PERIOD_US=2000;
 static const int64_t PRESSURE_TIMEOUT_US=150000;
 static XboxSeriesXControllerESP32_asukiaaa::Core xbox;
-static MPU6050 mpu;
+// Existing library has constructor-selected addresses; keep both statically allocated.
+static MPU6050 imu_devices[2]={MPU6050(0x68),MPU6050(0x69)};
+static MPU6050 *mpu=&imu_devices[0];
 static Adafruit_BMP280 bmp;
 static bool imu_available,bmp_available;
-static uint8_t imu_address=0x68;
+static uint8_t imu_address=0,barometer_address=0;
+static bool i2c_available;
 static SemaphoreHandle_t i2c_mutex;
 static TaskHandle_t control_handle;
 static QueueHandle_t command_queue,calibration_queue;
@@ -1509,6 +1514,38 @@ static void xbox_report(uint8_t *bytes,size_t length) {
     HidPacket packet={};memcpy(packet.data,bytes,16);packet.received_us=esp_timer_get_time();
     // The control task owns all gesture timing and authority state.
     if(xQueueSend(hid_queue,&packet,0)!=pdTRUE){portENTER_CRITICAL(&state_lock);hid_drops++;portEXIT_CRITICAL(&state_lock);}
+}
+/* Boot only, before either core starts using Wire. Only these two sensors are
+ * required. Never substitute dummy data when a required sensor is absent.
+ * The register readback matches the scale factors in acquire_imu(). */
+static bool initialize_required_sensors(void) {
+    i2c_available=Wire.begin(SDA_PIN,SCL_PIN);
+    if(!i2c_available) return false;
+    Wire.setClock(400000); Wire.setTimeOut(2);
+    for(unsigned i=0;i<2;i++) {
+        imu_address=static_cast<uint8_t>(0x68+i); mpu=&imu_devices[i];
+        if(!mpu->testConnection()) continue;
+        mpu->initialize();
+        mpu->setFullScaleAccelRange(MPU6050_ACCEL_FS_8);
+        mpu->setFullScaleGyroRange(MPU6050_GYRO_FS_500);
+        mpu->setDLPFMode(MPU6050_DLPF_BW_42); mpu->setRate(1);
+        mpu->setIntDataReadyEnabled(true);
+        imu_available=mpu->testConnection()
+            && mpu->getFullScaleAccelRange()==MPU6050_ACCEL_FS_8
+            && mpu->getFullScaleGyroRange()==MPU6050_GYRO_FS_500
+            && mpu->getDLPFMode()==MPU6050_DLPF_BW_42 && mpu->getRate()==1;
+        if(imu_available) break;
+    }
+    if(!imu_available) imu_address=0; // Log absence, not the last attempted address.
+    for(unsigned i=0;i<2;i++) {
+        const uint8_t address=static_cast<uint8_t>(0x76+i);
+        if(!bmp.begin(address)) continue;
+        bmp_available=true; barometer_address=address; break;
+    }
+    if(bmp_available) bmp.setSampling(Adafruit_BMP280::MODE_NORMAL,
+        Adafruit_BMP280::SAMPLING_X1,Adafruit_BMP280::SAMPLING_X1,
+        Adafruit_BMP280::FILTER_X4,Adafruit_BMP280::STANDBY_MS_1);
+    return imu_available && bmp_available;
 }
 static bool read_registers(uint8_t reg,uint8_t *data,size_t count) {
     Wire.beginTransmission(imu_address); Wire.write(reg);
@@ -1673,18 +1710,12 @@ void setup() {
     calibration_queue=xQueueCreate(1,FC_CAL_RECORD_BYTES);
     hid_queue=xQueueCreate(8,sizeof(HidPacket));companion_queue=xQueueCreate(8,sizeof(CompanionPacket));
     configASSERT(i2c_mutex && command_queue && calibration_queue && hid_queue && companion_queue);
-    Wire.begin(SDA_PIN,SCL_PIN); Wire.setClock(400000); Wire.setTimeOut(2);
-    mpu.initialize(); imu_available=mpu.testConnection();
-    if(imu_available) {
-        mpu.setFullScaleAccelRange(MPU6050_ACCEL_FS_8);
-        mpu.setFullScaleGyroRange(MPU6050_GYRO_FS_500);
-        mpu.setDLPFMode(MPU6050_DLPF_BW_42); mpu.setRate(1);
-        mpu.setIntDataReadyEnabled(true);
-    }
-    bmp_available=bmp.begin(0x76) || bmp.begin(0x77);
-    if(bmp_available) bmp.setSampling(Adafruit_BMP280::MODE_NORMAL,
-        Adafruit_BMP280::SAMPLING_X1,Adafruit_BMP280::SAMPLING_X1,
-        Adafruit_BMP280::FILTER_X4,Adafruit_BMP280::STANDBY_MS_1);
+    const bool required_sensors_present=initialize_required_sensors();
+    Serial.printf("SENSORS,required=MPU6050+BMP280,i2c=%d,mpu=%d,mpu_addr=0x%02x,bmp=%d,bmp_addr=0x%02x,lidar=NOT_REQUIRED,magnetometer=NOT_REQUIRED,motors=DISABLED\n",
+        i2c_available,imu_available,(unsigned)imu_address,bmp_available,(unsigned)barometer_address);
+    if(!required_sensors_present)
+        Serial.println("SENSOR_FAULT: check regulated3V3/commonGND/SDA9/SCL8 and MPU6050/BMP280 chip identity; fix wiring then reboot. No dummy sensor data.");
+    Serial.println("AIDING,roll_pitch=accel_gyro,yaw=gyro_rate,height=relative_baro+vertical_accel,xy=NO_ONBOARD_LOCALIZATION");
     fc_init(ESP.getEfuseMac());
     fc_debug_configure(FC_DEBUG_LEVEL);
     uint8_t record[FC_CAL_RECORD_BYTES]; bool loaded=false;
