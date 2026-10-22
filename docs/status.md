@@ -1,4 +1,4 @@
-# Current status — 21 October 2026
+# Current status — 22 October 2026
 
 ## Implemented and exercised in software
 
@@ -11,6 +11,8 @@
 Latest implementation: [one-file FC, optional ROS2 and profiling evidence](../artifacts/validation/single-cpp-optional-ros-20261021/README.md). The ESP32 GND pads now connect directly to the common copper fill; W22 was removed. [Annotated mask continuity proof](../artifacts/hardware/direct-common-ground-20261021/ground-connection-proof.png).
 
 Latest PCB: [solid GND pads, round drill openings and full power/mask audit](../artifacts/hardware/solid-ground-power-audit-20261021/README.md). Thirteen insulated links are required, including lidar5V W23. [Key source shelf](../important_sources/README.md).
+
+Latest sensor configuration: [MPU6050 + BMP280 only](esp32-mpu6050-bmp280.md), with auto-detected I2C addresses, required-device configuration checks and explicit absent optional-sensor logs. [Both Arduino hardware builds](../artifacts/build/mpu6050-bmp280-20261022/README.md) compile; physical operation remains unmeasured.
 
 ## Still unvalidated
 

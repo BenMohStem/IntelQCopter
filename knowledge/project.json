@@ -2,7 +2,7 @@
   "schema": 2,
   "branch": "esp32-xbox",
   "baseline_main": "3803437",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "purpose": "Factual project knowledge, decisions, assumptions and evidence index",
   "sources": [
     {
@@ -480,6 +480,16 @@
       "id": "source-arduino-interface-guide",
       "kind": "file",
       "locator": "docs/esp32-arduino-interfaces.md"
+    },
+    {
+      "id": "source-two-sensor-build",
+      "kind": "file",
+      "locator": "artifacts/build/mpu6050-bmp280-20261022/summary.json"
+    },
+    {
+      "id": "source-two-sensor-guide",
+      "kind": "file",
+      "locator": "docs/esp32-mpu6050-bmp280.md"
     }
   ],
   "facts": [
@@ -1884,6 +1894,25 @@
             "source-important-shelf"
           ],
           "reason": "User asks for one clearly indexed folder with only the most important sources, while preserving the separate Pico architecture."
+        }
+      ]
+    },
+    {
+      "id": "two_sensor_hardware",
+      "topic": "hardware",
+      "scope": "esp32-xbox",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-22",
+          "status": "implemented",
+          "evidence_level": "build",
+          "statement": "The canonical one-file ESP32 FC explicitly requires only MPU6050 and BMP280. Boot detects MPU6050 at0x68/0x69 and BMP280 at0x76/0x77; checks MPU scale/filter/rate register readback and logs required/absent optional sensors. No lidar/magnetometer driver or ROS2 computer is required for stable Xbox mode. Both normal and standalone Arduino builds compile. Real I2C operation/mounting/timing remain unmeasured. No absolute heading, hardware XY localization, battery ADC integration or enabled physical ESC output is introduced.",
+          "sources": [
+            "source-two-sensor-build",
+            "source-two-sensor-guide"
+          ],
+          "reason": "User requests original FC adapted to only plugged MPU6050 and barometer, with an updated curated source copy rather than a separate temporary main.cpp."
         }
       ]
     }

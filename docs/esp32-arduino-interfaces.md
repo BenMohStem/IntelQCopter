@@ -18,3 +18,5 @@ The installed Arduino core exposes ledcSetup, ledcAttachPin, ledcWrite and ledcD
 An ESC accepts its specified pulse protocol, not a servo angle. If the actual ESC supports conventional servo-style pulses, the future output adapter can use an ESP32-compatible Servo library or built-in LEDC with explicit microsecond mapping. Do not assume its PWM frequency from the 500Hz PID update rate; the ESC model/protocol is still unknown. This request changes the preferred interface style; it does not enable motor outputs or claim a working physical ESC driver.
 
 The optional companion cannot bypass the FC: stable Xbox control works without it; selected navigation commands pass through the same control core. The real ADC, magnetometer and lidar drivers remain unfinished. The simulator uses synthetic sensor inputs and ideal localization, not those unfinished physical interfaces.
+
+Current physical sensor setup: [MPU6050 + BMP280 only](esp32-mpu6050-bmp280.md). Lidar and magnetometer connectors can remain empty; the original source supports this setup.

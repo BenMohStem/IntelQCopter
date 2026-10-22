@@ -2,6 +2,10 @@
 
 A small reading shelf of the files that matter. **These are byte-identical reference copies**, with source locations, branch/commit and SHA-256 in [manifest.json](manifest.json). Edit the canonical files linked below, then refresh these copies. Builds and the live simulator continue to use canonical paths, so edits in this reading shelf will not silently affect a flight.
 
+## Current ESP32 sensor setup
+
+Use the original FC with **MPU6050 + BMP280 only**; lidar and magnetometer may remain unplugged. The updated copy is [flight_controller.cpp](firmware/esp32/flight_controller.cpp). [Wiring, build and first-use calibration](../docs/esp32-mpu6050-bmp280.md). Both optional-ROS2 and Xbox-only versions compile; physical motor outputs remain disabled.
+
 ## 1. Flight controllers
 
 | Read here | Active source / role |

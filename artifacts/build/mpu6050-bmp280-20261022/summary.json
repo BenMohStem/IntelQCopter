@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-22",
+  "engine": "PlatformIO espressif32 7.1.3 / Arduino ESP32, hardware cross-compiler only",
+  "scope": "Compile/link of MPU6050+BMP280 adapter; no physical sensor run, flash, emulator run or new Gazebo flight",
+  "environments": {
+    "esp32-s3": "SUCCESS",
+    "esp32-s3-standalone": "SUCCESS"
+  },
+  "hashes": {
+    "firmware/src/flight_controller.cpp": "6c878556e7ab29629a0cf954b4883ad87dad9f817349e1cd706c23733cf6d59c",
+    "firmware/include/fc_api.h": "fbd292de8d170cb35beb10294bac95182913cb77336e7355823f8a91e3b0a4e0",
+    "platformio.ini": "f362b1f9689debaaf1518fc1b4a281faf1a9be145a0ad45cea3145b5dd658d07"
+  },
+  "physical_motor_outputs_enabled": false,
+  "required_sensors": [
+    "MPU6050",
+    "BMP280"
+  ],
+  "optional_sensor_drivers_required": [],
+  "unvalidated": [
+    "Real I2C wiring/address detection/config readback",
+    "Sensor mounting/axis transform and calibration",
+    "Real loop timing and altitude performance",
+    "ESC output driver absent; physical arming disabled"
+  ]
+}

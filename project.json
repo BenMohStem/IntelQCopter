@@ -23,7 +23,7 @@
     "build": {
       "runtime": "pio",
       "path": "platformio.ini",
-      "description": "Compile the ESP32-S3 hardware target",
+      "description": "Compile ESP32-S3 / MPU6050 + BMP280 with optional companion",
       "args": [
         "run",
         "-e",
