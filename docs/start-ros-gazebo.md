@@ -1,6 +1,6 @@
 # Open ROS2, RViz and Gazebo yourself
 
-Use **Command Prompt (`cmd.exe`)**, not PowerShell, for these commands. If your terminal says `PS`, enter `cmd` first. Enter the commands in order, waiting for `pixi shell` to show its activated prompt before continuing.
+The original blocks below use **Command Prompt (`cmd.exe`)**. If your terminal says `PS`, use the PowerShell alternative in section 1 instead, or enter `cmd` first. Enter the commands in order, waiting for `pixi shell` to show its activated prompt before continuing.
 
 There is no Python `import` here: Pixi activates an environment, and the ROS batch file loads ROS commands into that terminal.
 
@@ -19,6 +19,39 @@ ros2 run rviz2 rviz2
 RViz should open. RViz visualises ROS data; it is not a physics simulator. An empty view or missing fixed-frame warning is expected before a robot/TF/data publisher is configured. No drone is loaded by these commands.
 
 For another ROS2 terminal, repeat the activation/setup lines, then use commands such as `ros2 topic list` or `ros2 node list`. Keep the same middleware/domain settings for nodes you want to communicate.
+
+### PowerShell alternative for ROS2/RViz
+
+In a fresh PowerShell terminal, enter these first two lines and wait for the activated Pixi prompt:
+
+```powershell
+cd C:\dev
+& C:\WinLibs\pixi\pixi.exe shell
+```
+
+Then enter:
+
+```powershell
+. C:\dev\jazzy\install\local_setup.ps1
+$env:PATH = "C:\dev\jazzy\install\opt\gz_math_vendor\bin;" + $env:PATH
+$env:RMW_IMPLEMENTATION = "rmw_cyclonedds_cpp"
+$env:QT_QPA_PLATFORM_PLUGIN_PATH = "C:\dev\.pixi\envs\default\Library\plugins\platforms"
+ros2 run rviz2 rviz2
+```
+
+The leading dot loads the ROS PowerShell setup into this session. `$env:NAME = "value"` sets an environment variable inherited by programs launched here. CMD's `call` and `set NAME=value` are not the PowerShell equivalents. These settings affect this terminal only.
+
+### If RViz reports a GLSL/OpenGL error
+
+The latest supplied console output contains `rviz/glsl120/black.frag` followed by repeated `Error using GLSL Program Object : GL_INVALID_OPERATION`. It no longer contains the earlier DLL-load error126. This is a rendering failure; the text `Validation successful` does not cancel the accompanying OpenGL error. Its root cause has not been established.
+
+First relaunch with the correct environment block for your terminal above. If the same error returns, close RViz and launch with Ogre logging:
+
+```powershell
+ros2 run rviz2 rviz2 -l
+```
+
+The local RViz source confirms `-l` enables Ogre logging. Preserve the first error and the Ogre renderer/vendor/version information for diagnosis. Do not publish full logs without reviewing private paths and environment details. This is a diagnostic run, not a verified graphics fix. No graphics driver or ROS installation was modified. The installed CLI does not expose the older RViz `--opengl 210` option.
 
 ## 2. Activate Gazebo — two fresh terminals
 
