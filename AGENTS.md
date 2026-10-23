@@ -19,6 +19,12 @@
 - The user requests a local commit and GitHub push after every prompt that changes
   the project. Use descriptive commits and preserve existing history. Do not make
   empty commits for conversation-only prompts, rewrite history or force-push.
+- Publishing exception from the user on 2026-10-23: exclude the recent friend
+  assistance and ESP32 rework from GitHub publishing unless explicitly included
+  later. Keep that work isolated; do not import the friend export into this repo.
+- After project source changes, refresh important_sources with
+  qcopter.ps1 important-sources and check it with qcopter.ps1 important-check
+  before the iteration commit/push. Copy only project sources, not excluded work.
 - Before publishing, exclude credentials, local environments, downloaded SDKs and
   unrelated personal/coursework files. Never put authentication tokens in URLs.
 - If authentication/network access blocks a push, retain local commits and report

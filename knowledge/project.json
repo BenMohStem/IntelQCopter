@@ -500,6 +500,11 @@
       "id": "source-dimension-audit",
       "kind": "file",
       "locator": "artifacts/hardware/reference-dimensions-20261023/README.md"
+    },
+    {
+      "id": "source-iteration-publishing-agreement",
+      "kind": "file",
+      "locator": "AGENTS.md"
     }
   ],
   "facts": [
@@ -1928,6 +1933,18 @@
             "source-important-shelf"
           ],
           "reason": "User asks for one clearly indexed folder with only the most important sources, while preserving the separate Pico architecture."
+        },
+        {
+          "revision": 2,
+          "date": "2026-10-23",
+          "status": "implemented",
+          "evidence_level": "source",
+          "statement": "Refresh important_sources after project source changes, verify hashes/freshness before each project iteration commit/push, and keep the recent friend assistance and ESP32 rework excluded from publishing unless explicitly included later. The current48 source copies remain project-only; no friend export is imported.",
+          "sources": [
+            "source-important-shelf",
+            "source-iteration-publishing-agreement"
+          ],
+          "reason": "User reiterates GitHub publishing for each project iteration, explicitly excludes the recent friend/ESP32 rework and requests an updated important_sources folder."
         }
       ]
     },

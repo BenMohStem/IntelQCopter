@@ -62,3 +62,7 @@ From the ESP32 project root:
 Refresh refuses to overwrite a hand-edited reference file. Copy your edits into its canonical source first. Downloaded SDKs, environments, credentials, videos and old trial output stay outside this shelf; original evidence remains under artifacts and history under archive.
 
 Latest PCB edition: [manufacturer-reference dimensions and fit](../hardware/home-etched-fc/component-dimensions.md), with the current native KiCad package and three actual-size masks linked above.
+
+## Iteration policy
+
+Refresh this folder after project source changes and verify it before each project commit/push. The recent friend assistance and ESP32 rework are excluded from publishing unless explicitly included later. Keep the independent friend export outside this reading shelf and the project history.
