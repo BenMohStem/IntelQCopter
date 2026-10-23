@@ -23,7 +23,8 @@
       ],
       "sources": [
         "firmware/main.cpp",
-        "platformio.ini"
+        "platformio.ini",
+        "tools/stamp_build.py"
       ],
       "acceptance_kind": "physical",
       "implemented": true,
@@ -36,10 +37,11 @@
       ],
       "sources": [
         "firmware/main.cpp",
-        "platformio.ini"
+        "platformio.ini",
+        "tools/stamp_build.py"
       ],
       "acceptance_kind": "physical",
-      "implemented": false,
+      "implemented": true,
       "locked": false
     },
     {
@@ -49,7 +51,8 @@
       ],
       "sources": [
         "firmware/main.cpp",
-        "platformio.ini"
+        "platformio.ini",
+        "tools/stamp_build.py"
       ],
       "acceptance_kind": "physical",
       "implemented": false,
