@@ -1,4 +1,4 @@
-# IntelQCopter — small software steps
+# IntelQCopter â€” small software steps
 
 **Current lesson: print one sentence every second.**
 
@@ -21,4 +21,6 @@ cd C:\Users\Mohamed\Desktop\Work\QCopter-Stepwise
 .\qcopter.ps1 build
 ```
 
-[PlatformIO configuration](platformio.ini) · [Important links](important_sources/README.md) · [Advanced validation/repair workflow](docs/validation.md).
+[PlatformIO configuration](platformio.ini) Â· [Important links](important_sources/README.md) Â· [Advanced validation/repair workflow](docs/validation.md).
+
+You build the simulation too. [Commands to open ROS2, RViz and Gazebo yourself](docs/start-ros-gazebo.md).

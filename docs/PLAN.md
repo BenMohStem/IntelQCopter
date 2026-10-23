@@ -1,4 +1,4 @@
-# Software plan — one small change at a time
+# Software plan â€” one small change at a time
 
 ## How we will work
 
@@ -6,7 +6,7 @@ You design and make the PCB. This plan covers software only.
 
 There will be **one active `firmware/main.cpp`**, written in Arduino style with C-style functions. Braces go on their own lines. One statement per line. Clear names, short functions, and comments explaining why.
 
-The first programme will be about20lines. Afterwards, aim for **3–10 new lines per step**. If a feature needs more, split it again. Do not paste the full prepared controller back into the file.
+The first programme will be about 20 lines. Afterwards, aim for **3â€“10 new lines per step**. If a feature needs more, split it again. Do not paste the full prepared controller back into the file.
 
 For each step:
 
@@ -27,7 +27,7 @@ For each step:
 | 05 | Read only the accelerometer Z axis | Value changes when the sensor is turned |
 | 06 | Read only the gyroscope Z axis | Value changes when the sensor rotates |
 
-Only **step01** will be active after this simplification. Steps02–06 are planned, not secretly included.
+Only **step01** will be active after this simplification. Steps02â€“06 are planned, not secretly included.
 
 ## After those small steps
 
@@ -57,6 +57,10 @@ The eventual standalone mode stays **yaw rate, pitch/roll angle, altitude hold p
 
 ## If a step fails
 
-If06 fails after07–10 were prepared, return to06's implementation checkpoint in a repair branch. Fix and test06. Old07–10 do not remain in the active build. Implement a fresh07, reusing old ideas only after reviewing them. Preserve old code, commits and failed evidence as history. Never force-push to hide attempts.
+If06 fails after07â€“10 were prepared, return to06's implementation checkpoint in a repair branch. Fix and test06. Old07â€“10 do not remain in the active build. Implement a fresh07, reusing old ideas only after reviewing them. Preserve old code, commits and failed evidence as history. Never force-push to hide attempts.
 
 The existing gate/repair tools stay available behind the lessons. You do not have to read those tools to understand the first main.cpp. Earlier sensor diagnostics are archived in `archive/before-small-lessons/` and Git at `a47d4b5`.
+
+## Simulation is yours too
+
+You create the Gazebo worlds, models and simulation. I explain the terminal commands and help with one small problem at a time; I will not build a complete simulation unless you ask. Start independently with [opening ROS2, RViz and the built-in Gazebo world](start-ros-gazebo.md). This does not add simulation code to the18-line firmware lesson. Robot loading, ROS topics, bridges and FC integration are separate later lessons.
