@@ -1,7 +1,18 @@
 BasedOnStyle: LLVM
 IndentWidth: 4
-BreakBeforeBraces: Custom
-BraceWrapping:
-  AfterFunction: true
+BreakBeforeBraces: Allman
 AllowShortFunctionsOnASingleLine: None
-ColumnLimit: 0
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortBlocksOnASingleLine: Never
+ColumnLimit: 100
+BinPackArguments: false
+SortIncludes: Never
+SortUsingDeclarations: Never
+ReflowComments: Never
+BreakStringLiterals: false
+FixNamespaceComments: false
+InsertBraces: false
+RemoveBracesLLVM: false
+QualifierAlignment: Leave
+LineEnding: LF
