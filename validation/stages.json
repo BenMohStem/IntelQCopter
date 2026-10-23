@@ -55,7 +55,7 @@
         "tools/stamp_build.py"
       ],
       "acceptance_kind": "physical",
-      "implemented": false,
+      "implemented": true,
       "locked": false
     },
     {

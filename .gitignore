@@ -1,6 +1,6 @@
 .pio/
 .venv*/
-build/
+/build/
 .cache/
 .local/
 __pycache__/

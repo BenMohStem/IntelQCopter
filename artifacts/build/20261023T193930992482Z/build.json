@@ -1,0 +1,19 @@
+{
+  "engine": "PlatformIO espressif32@7.1.3 Arduino / ESP32-S3-DevKitC-1 bench build",
+  "command": [
+    "C:\\Users\\Mohamed\\.platformio\\penv\\Scripts\\platformio.exe",
+    "run",
+    "-e",
+    "bench"
+  ],
+  "exit_code": 1,
+  "source_sha256": {
+    "firmware/main.cpp": "e61edd149a3acb84c3340f6418fb5fb9bc6f51c9b051ca62d4863f35d3deaad3",
+    "platformio.ini": "553ae953158a8af2bfce2a4391128bf735088e4c0f9412bce8371096b1c90dc2",
+    "config/hardware.json": "cfcf7d3423fb723ac5c08f0573e0f93538ce42df9c3f46a7bd30ef7962badb27",
+    "tools/stamp_build.py": "bd8709fb781710b4bef805c45baa36131b421e9e85828a2933bfed1957fd187a"
+  },
+  "embedded_source_sha": "e9bc014c18ac58637e773e6979a2fb52b2f894f8912312792af01095fac4aa83",
+  "uploaded": false,
+  "physical_test": false
+}
