@@ -1,51 +1,13 @@
-# Local SDK builds, Python environments, and generated binaries
-/.pio/
-**/.pio/
-/.vscode/
-/build/
-/.venv-*/
-/node_modules/
-/sim/gazebo/.pixi/
+.pio/
+.venv*/
+build/
+.cache/
+.local/
 __pycache__/
-*.py[cod]
-CMakeCache.txt
-CMakeFiles/
-cmake_install.cmake
-compile_commands.json
-*.elf
-*.uf2
-*.bin
-*.hex
-*.sqlite-journal
-*.sqlite-wal
-*.sqlite-shm
-
-# Local coursework (not QCopter project content)
-/Compte_rendu_TP1_SLM_LaTeX/
-/Compte_rendu_TP1_SLM_*.docx
-/render_original_latex/
-
-# KiCad per-user editor state; keep board/project design files
-*.kicad_prl
-
-# LaTeX intermediates; the report PDF is intentionally versioned
-/docs/modelisation/*.log
-/docs/modelisation/*.aux
-/docs/modelisation/*.out
-/docs/modelisation/*.toc
-/docs/modelisation/*.synctex.gz
-/docs/model-guide/*.log
-/docs/model-guide/*.aux
-/docs/model-guide/*.out
-/docs/model-guide/*.toc
-/docs/model-guide/*.synctex.gz
-
-# Local caches and machine-specific configuration
-/.cache/
-/.local/
-
-# Native Gazebo dependency environment
-/simulation/gazebo/.pixi/
-
-# Original retained locally; lossless gzip + SHA256 manifest versioned alongside it.
-/artifacts/gazebo-suite/live-reset-20261021-130025-env01/flight.csv
+*.pyc
+*.tmp
+.env
+.env.*
+!*.example
+*.pem
+*.key

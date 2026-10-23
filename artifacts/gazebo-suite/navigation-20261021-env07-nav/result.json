@@ -1,8 +1,0 @@
-{
-  "name": "navigation-20261021-env07-nav",
-  "environment": "env07",
-  "kind": "navigation",
-  "passed": false,
-  "interrupted": true,
-  "error": "Background run ended before a transport result. Original partial logs/CSV/video retained; no completed-flight claim."
-}

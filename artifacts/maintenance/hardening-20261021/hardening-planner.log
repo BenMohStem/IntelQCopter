@@ -1,9 +1,0 @@
-**********************************************************************
-** Visual Studio 2026 Developer Command Prompt v18.10.3
-** Copyright (c) 2026 Microsoft Corporation
-**********************************************************************
-[vcvarsall.bat] Environment initialized for: 'x86_x64'
-navigation_regression.cpp
-navigation.cpp
-Generating Code...
-PASS: margin exit, hard obstacle block, unsafe goal block, normal path, freshness and config validation

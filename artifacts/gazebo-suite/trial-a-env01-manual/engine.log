@@ -1,4 +1,0 @@
-DynamicFactory(): Unable to parse descriptor set from [C:\Users\Mohamed\Desktop\Work\QCopter\sim\gazebo\.pixi\envs\default\Library\share\gz\protos\gz-msgs12.gz_desc]
-Synthetic sensor bench calibration complete; not physical calibration.
-READY GAZEBO env01 campus_garden port=9251; actual physics + OGRE2; input=HID/UART only
-ENGINE COMPLETE {"engine": "Native Gazebo 10.5 + OGRE2 RGB; ESP32 C core host build", "steps": 13390, "obstacle_contact_steps": 0, "min_evaluated_clearance_m": 0.801784097867881, "xbox_packets": 1339, "companion_packets": 0, "calibration": "Synthetic six-face sensor bench; no real coefficients", "hardware_motor_arming": false, "simulation_motor_gate": "First completed mode gesture and fresh pilot/calibrated sensors; physical outputs remain disabled"}

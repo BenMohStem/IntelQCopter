@@ -1,3 +1,0 @@
-Play at http://127.0.0.1:8087 | missions at :8086 when companion enabled
-Down+A 5s stable; then left-stick up starts simulation thrust. Down+B 5s navigation. Physical motor outputs remain disabled.
-Session saved: C:\Users\Mohamed\Desktop\Work\QCopter-ESP32-Xbox\artifacts\gazebo-suite\live-standalone-spawn-20261021

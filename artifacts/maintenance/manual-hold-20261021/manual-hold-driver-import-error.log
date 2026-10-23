@@ -1,6 +1,0 @@
-Traceback (most recent call last):
-  File "C:\Users\Mohamed\Desktop\Work\QCopter-ESP32-Xbox\simulation\gazebo\check_manual_hold.py", line 11, in <module>
-    from pc_station import packet
-  File "C:\Users\Mohamed\Desktop\Work\QCopter-ESP32-Xbox\simulation\gazebo\pc_station.py", line 9, in <module>
-    import rclpy
-ModuleNotFoundError: No module named 'rclpy'

@@ -1,5 +1,0 @@
-PC map available at http://127.0.0.1:8086; endpoints travel over ROS2 DDS.
-127.0.0.1 - - [21/Oct/2026 11:36:14] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [21/Oct/2026 11:36:14] "GET /pose HTTP/1.1" 200 -
-127.0.0.1 - - [21/Oct/2026 11:36:14] code 403, message Forbidden
-127.0.0.1 - - [21/Oct/2026 11:36:14] "POST /mission HTTP/1.1" 403 -

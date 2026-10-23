@@ -1,3 +1,0 @@
-[
-  "component=drone_mission_computer,clock=steady_wall,level=3,calls=28,rejected=20,mean_us=96.1393,max_us=373.7,budget_us=20000,over_budget=0,histogram=2:18:7:1:0:0:0:0:0:0:"
-]

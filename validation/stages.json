@@ -1,0 +1,148 @@
+{
+  "schema": 1,
+  "global_inputs": [
+    "config/hardware.json"
+  ],
+  "stages": [
+    {
+      "id": "00-inspection",
+      "requires": [],
+      "sources": [
+        "docs/bench-tests.md",
+        "measurements/bench-template.csv"
+      ],
+      "acceptance_kind": "physical",
+      "implemented": true,
+      "locked": false
+    },
+    {
+      "id": "01-board",
+      "requires": [
+        "00-inspection"
+      ],
+      "sources": [
+        "firmware/main.cpp",
+        "platformio.ini"
+      ],
+      "acceptance_kind": "physical",
+      "implemented": false,
+      "locked": false
+    },
+    {
+      "id": "02-i2c",
+      "requires": [
+        "01-board"
+      ],
+      "sources": [
+        "firmware/main.cpp",
+        "platformio.ini"
+      ],
+      "acceptance_kind": "physical",
+      "implemented": false,
+      "locked": false
+    },
+    {
+      "id": "03-imu-baro",
+      "requires": [
+        "02-i2c"
+      ],
+      "sources": [
+        "firmware/main.cpp",
+        "platformio.ini"
+      ],
+      "acceptance_kind": "physical",
+      "implemented": false,
+      "locked": false
+    },
+    {
+      "id": "04-calibration",
+      "requires": [
+        "03-imu-baro"
+      ],
+      "sources": [],
+      "acceptance_kind": "physical",
+      "implemented": false,
+      "locked": false
+    },
+    {
+      "id": "05-xbox",
+      "requires": [
+        "04-calibration"
+      ],
+      "sources": [],
+      "acceptance_kind": "physical",
+      "implemented": false,
+      "locked": false
+    },
+    {
+      "id": "06-estimator",
+      "requires": [
+        "05-xbox"
+      ],
+      "sources": [],
+      "acceptance_kind": "physical",
+      "implemented": false,
+      "locked": false
+    },
+    {
+      "id": "07-controller-bench",
+      "requires": [
+        "06-estimator"
+      ],
+      "sources": [],
+      "acceptance_kind": "physical",
+      "implemented": false,
+      "locked": false
+    },
+    {
+      "id": "08-companion",
+      "requires": [
+        "07-controller-bench"
+      ],
+      "sources": [],
+      "acceptance_kind": "physical",
+      "implemented": false,
+      "locked": false
+    },
+    {
+      "id": "09-simulation",
+      "requires": [
+        "08-companion"
+      ],
+      "sources": [],
+      "acceptance_kind": "simulation",
+      "implemented": false,
+      "locked": false
+    },
+    {
+      "id": "10-pcb",
+      "requires": [
+        "09-simulation"
+      ],
+      "sources": [],
+      "acceptance_kind": "physical",
+      "implemented": false,
+      "locked": false
+    },
+    {
+      "id": "11-actuators",
+      "requires": [
+        "10-pcb"
+      ],
+      "sources": [],
+      "acceptance_kind": "physical",
+      "implemented": false,
+      "locked": true
+    },
+    {
+      "id": "12-flight",
+      "requires": [
+        "11-actuators"
+      ],
+      "sources": [],
+      "acceptance_kind": "physical",
+      "implemented": false,
+      "locked": true
+    }
+  ]
+}

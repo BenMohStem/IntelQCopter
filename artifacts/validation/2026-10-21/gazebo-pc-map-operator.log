@@ -1,9 +1,0 @@
-START pc-map-operator-20261021-env07-nav
-OPERATOR: open http://127.0.0.1:8086 and send start/finish after the mode hold.
-pc-map-operator-20261021-env07-nav PROGRESS t=20.0s position=[-0.006422053549912272, 0.5282170795915238, 0.08296377911827088] mode=1 
-pc-map-operator-20261021-env07-nav PROGRESS t=45.0s position=[-0.028021880883547026, 0.6586023097309611, 0.08002976959972621] mode=1 
-pc-map-operator-20261021-env07-nav PROGRESS t=70.0s position=[-0.044464923224204235, 1.0527586044905948, 0.08033375481236381] mode=1 
-pc-map-operator-20261021-env07-nav PROGRESS t=95.0s position=[0.5157961954455432, 1.0036323759813583, 1.2636805798752684] mode=1 phase=4,done=0,mapped=3,plans=2,images=935,requests=1,camera=1
-pc-map-operator-20261021-env07-nav PROGRESS t=125.0s position=[8.89304631907471, 0.976501614642978, 0.16081731158434429] mode=1 phase=6,done=0,mapped=3,plans=18,images=1235,requests=1,camera=1
-RESULT pc-map-operator-20261021-env07-nav PASS
-SUITE 1 runs 1 passed

@@ -1,7 +1,0 @@
-{
-  "esp32_headers": "https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/user_guide_v1.0.html",
-  "esp32_chip": "https://www.espressif.com/sites/default/files/documentation/esp32-s3_datasheet_en.pdf",
-  "bmp280_i2c": "https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp280-ds001.pdf",
-  "tofsense_wires": "https://support.nooploop.com/tofsense/hardware/",
-  "user_photos": "User supplied 2026-10-23: screenshots26/27/28 and GY-271 hand photo. No personal screenshots republished."
-}

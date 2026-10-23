@@ -1,346 +1,52 @@
 {
   "schema": 1,
-  "name": "IntelQCopter",
-  "branch": "esp32-xbox",
-  "architecture": "ESP32-S3 aircraft + Xbox Series X/S",
-  "domains": {
-    "firmware": "firmware/",
-    "simulation": "simulation/",
-    "documentation": "docs/",
-    "knowledge": "knowledge/",
-    "evidence": "artifacts/",
-    "history": "archive/",
-    "companion": "companion/",
-    "hardware": "hardware/",
-    "important_sources": "important_sources/"
-  },
-  "local": {
-    "build": "build/",
-    "cache": ".cache/",
-    "settings": ".local/"
-  },
+  "name": "IntelQCopter stepwise rebuild",
+  "branch": "codex/stepwise-esp32",
+  "architecture": "ESP32-S3 bench diagnostics first",
   "commands": {
+    "status": {
+      "runtime": "python",
+      "path": "tools/validation/gates.py",
+      "args": [
+        "status"
+      ],
+      "description": "Show evidence-gated stage state (tool added next)"
+    },
+    "gate": {
+      "runtime": "python",
+      "path": "tools/validation/gates.py",
+      "args": [],
+      "description": "Record pass/fail/build evidence and inspect validation"
+    },
     "build": {
-      "runtime": "pio",
-      "path": "platformio.ini",
-      "description": "Compile ESP32-S3 / MPU6050 + BMP280 with optional companion",
-      "args": [
-        "run",
-        "-e",
-        "esp32-s3"
-      ]
-    },
-    "emulator-setup": {
       "runtime": "python",
-      "path": "simulation/emulation/setup.py",
-      "description": "Install the verified QEMU build locally",
-      "args": []
-    },
-    "emulator-build": {
-      "runtime": "python",
-      "path": "simulation/emulation/build.py",
-      "description": "Compile/merge the QEMU firmware",
-      "args": []
-    },
-    "emulator-run": {
-      "runtime": "python",
-      "path": "simulation/emulation/run.py",
-      "description": "Run QEMU and retain original UART logs",
-      "args": []
-    },
-    "model": {
-      "runtime": "python",
-      "path": "tools/model/model_lti.py",
-      "description": "Calculate the LTI model and figures",
-      "args": []
-    },
-    "docs": {
-      "runtime": "node",
-      "path": "tools/docs/render_math_guides.cjs",
-      "description": "Render the offline mathematical guide",
-      "args": []
-    },
-    "knowledge-build": {
-      "runtime": "python",
-      "path": "tools/knowledge/update_knowledge.py",
-      "description": "Validate and build the search cache",
-      "args": [
-        "build"
-      ]
-    },
-    "knowledge-query": {
-      "runtime": "python",
-      "path": "tools/knowledge/update_knowledge.py",
-      "description": "Search current project facts",
-      "args": [
-        "query"
-      ]
-    },
-    "knowledge-check": {
-      "runtime": "python",
-      "path": "tools/knowledge/check_knowledge.py",
-      "description": "Check knowledge-index integrity handling",
-      "args": []
-    },
-    "archive": {
-      "runtime": "python",
-      "path": "tools/archive/manage.py",
-      "description": "Inspect, verify or restore the historical cache",
-      "args": []
-    },
-    "check-layout": {
-      "runtime": "python",
-      "path": "tools/validation/check_layout.py",
-      "description": "Validate active paths and script syntax",
-      "args": []
-    },
-    "build-host": {
-      "runtime": "powershell",
-      "path": "tools/build/build_host_fc.ps1",
-      "description": "Compile the active C flight core for native Gazebo",
-      "args": []
-    },
-    "build-companion": {
-      "runtime": "cmd",
-      "path": "tools/build/build_companion_windows.cmd",
-      "description": "Build the ROS2 C++ companion overlay",
-      "args": []
-    },
-    "gazebo-suite": {
-      "runtime": "python",
-      "path": "simulation/gazebo/run_suite.py",
-      "description": "Run five virtual Xbox flights and ten ROS2 navigation worlds",
-      "args": []
-    },
-    "gazebo-report": {
-      "runtime": "python",
-      "path": "tools/reports/gazebo_suite_report.py",
-      "description": "Plot original Gazebo flight data and build the video index",
-      "args": []
-    },
-    "ros2": {
-      "runtime": "cmd",
-      "path": "tools/ros2/ros2_windows.cmd",
-      "description": "Run a command in the project ROS2 overlay",
-      "args": []
-    },
-    "pc-map": {
-      "runtime": "cmd",
-      "path": "tools/ros2/pc_map_windows.cmd",
-      "description": "Open the ground-PC ROS2 endpoint map server on localhost:8086",
-      "args": []
-    },
-    "gazebo-audit": {
-      "runtime": "python",
-      "path": "tools/validation/check_gazebo_evidence.py",
-      "description": "Audit final original flight files, CRC frames, videos and source fingerprints",
-      "args": []
-    },
-    "play": {
-      "runtime": "python",
-      "path": "simulation/gazebo/live_session.py",
+      "path": "tools/build.py",
       "args": [],
-      "description": "Live Xbox manual flight with ESP32 C core; no ROS2 companion"
+      "description": "Compile bench firmware and preserve original output"
     },
-    "play-ros": {
+    "capture": {
       "runtime": "python",
-      "path": "simulation/gazebo/live_session.py",
-      "args": [
-        "--with-companion"
-      ],
-      "description": "Unified Xbox flight station, native cameras and approved 2..64-node ROS2 routes"
-    },
-    "xbox-check": {
-      "runtime": "python",
-      "path": "simulation/gazebo/xinput_controller.py",
+      "path": "tools/capture.py",
       "args": [],
-      "description": "Probe actual Windows XInput controllers; no generated input"
+      "description": "Capture actual serial bytes; requires explicit COM port"
     },
-    "build-standalone": {
+    "upload": {
       "runtime": "pio",
       "path": "platformio.ini",
       "args": [
         "run",
         "-e",
-        "esp32-s3-standalone"
+        "bench",
+        "-t",
+        "upload"
       ],
-      "description": "Compile FC-only ESP32-S3 firmware; companion mode disabled"
+      "description": "Manually upload bench firmware; add --upload-port COMx"
     },
-    "check-live-controls": {
+    "check-gates": {
       "runtime": "python",
-      "path": "simulation/gazebo/live_controls_check.py",
+      "path": "tools/validation/test_gates.py",
       "args": [],
-      "description": "Check XInput/HID axis, button and trigger encoding"
-    },
-    "check-route": {
-      "runtime": "python",
-      "path": "simulation/gazebo/check_routes.py",
-      "args": [],
-      "description": "Replay a 2/3/5-node regression via PC route service and native Gazebo"
-    },
-    "live-report": {
-      "runtime": "python",
-      "path": "tools/reports/live_routes_report.py",
-      "args": [],
-      "description": "Plot original 2/3-point native route trials with video links"
-    },
-    "check-station": {
-      "runtime": "python",
-      "path": "simulation/gazebo/check_station_controls.py",
-      "args": [],
-      "description": "Check PC simulator gestures, actual disarm priority and gentle input shaping"
-    },
-    "analyse-recordings": {
-      "runtime": "python",
-      "path": "tools/reports/analyse_recordings.py",
-      "args": [],
-      "description": "Review native video frames, telemetry, yaw/height metrics and graph summaries"
-    },
-    "station": {
-      "runtime": "powershell",
-      "path": "tools/simulation/start_station.ps1",
-      "description": "Open persistent launch/settings/recording workshop on port 8088",
-      "args": []
-    },
-    "station-stop": {
-      "runtime": "python",
-      "path": "simulation/gazebo/station_manager.py",
-      "description": "Gracefully end current flight and save video/data",
-      "args": [
-        "--stop"
-      ]
-    },
-    "authority-proof": {
-      "runtime": "python",
-      "path": "simulation/gazebo/run_authority.py",
-      "description": "Run isolated one-request/neutral-pilot onboard navigation proof",
-      "args": []
-    },
-    "check-workbench": {
-      "runtime": "python",
-      "path": "simulation/gazebo/check_workbench.py",
-      "args": [],
-      "description": "Verify validated boot-only profiles against the actual C host library"
-    },
-    "check-planner": {
-      "runtime": "cmd",
-      "path": "tools/validation/check_navigation_windows.cmd",
-      "args": [],
-      "description": "Compile/run observed-clearance and blocked-goal planner regressions"
-    },
-    "check-workshop-api": {
-      "runtime": "python",
-      "path": "simulation/gazebo/check_workshop_api.py",
-      "args": [],
-      "description": "Check local workshop API, original recordings and offline guide"
-    },
-    "audit-authority": {
-      "runtime": "python",
-      "path": "simulation/gazebo/audit_authority.py",
-      "args": [],
-      "description": "Audit original HID/UART and onboard mission evidence and generate plots"
-    },
-    "replay-manual-input": {
-      "runtime": "python",
-      "path": "simulation/gazebo/replay_real_manual.py",
-      "args": [],
-      "description": "Replay unchanged recorded human HID through standalone C FC / native Gazebo; no feedback pilot"
-    },
-    "audit-manual-input": {
-      "runtime": "python",
-      "path": "simulation/gazebo/audit_real_manual.py",
-      "args": [],
-      "description": "Compare original real HID shaping and unchanged standalone replay against native movement"
-    },
-    "check-manual-hold": {
-      "runtime": "python",
-      "path": "simulation/gazebo/check_manual_hold.py",
-      "args": [],
-      "description": "Native Gazebo predetermined angle/release-braking/yaw test; --run NAME, optional --no-aiding ablation"
-    },
-    "check-horizontal-aiding": {
-      "runtime": "python",
-      "path": "simulation/gazebo/check_horizontal_aiding.py",
-      "args": [],
-      "description": "Validate C horizontal observation rejection, hold entry and 100ms expiry"
-    },
-    "manual-control-report": {
-      "runtime": "python",
-      "path": "tools/reports/manual_control_report.py",
-      "args": [],
-      "description": "Render original sustained-angle, release-braking and yaw evidence with preserved failures"
-    },
-    "check-hardening": {
-      "runtime": "python",
-      "path": "simulation/gazebo/check_hardening.py",
-      "args": [],
-      "description": "Seeded malformed-packet fuzz, saturation, Gentle equivalence, finite soak and diagnostics; --name UNIQUE"
-    },
-    "build-debug": {
-      "runtime": "pio",
-      "path": "platformio.ini",
-      "args": [
-        "run",
-        "-e",
-        "esp32-s3-debug"
-      ],
-      "description": "ESP32 hardware compile with level-3 bounded trace; physical outputs disabled"
-    },
-    "check-ros-faults": {
-      "runtime": "cmd",
-      "path": "tools/validation/check_ros_faults_windows.cmd",
-      "args": [],
-      "description": "Actual C++ ROS2 process invalid/stale input and authority fault injection; --name UNIQUE"
-    },
-    "hardening-report": {
-      "runtime": "python",
-      "args": [],
-      "path": "tools/reports/hardening_report.py",
-      "description": "Rebuild the original final C/QEMU/ROS2/Gazebo hardening graphs and authority report"
-    },
-    "knowledge-overview": {
-      "runtime": "python",
-      "path": "tools/knowledge/render_overview.py",
-      "args": [],
-      "description": "Render latest validated facts while preserving the append-only ledger history"
-    },
-    "check-fc-optimization": {
-      "runtime": "python",
-      "path": "tools/validation/check_fc_optimization.py",
-      "args": [],
-      "description": "Compare isolated baseline/optimized C DLL replay and profile accounting; --before DLL --after DLL --name UNIQUE"
-    },
-    "pcb-check-mask": {
-      "runtime": "python",
-      "path": "tools/hardware/check_mask_connectivity.py",
-      "args": [],
-      "description": "Verify actual rendered mask ground continuity; --image PNG --output evidence-folder"
-    },
-    "check-optional-ros-link": {
-      "runtime": "cmd",
-      "path": "tools/validation/check_optional_ros_link_windows.cmd",
-      "args": [],
-      "description": "Actual ROS2 + host FC discovery/loss/restart proof; --dll DLL --name UNIQUE"
-    },
-    "important-sources": {
-      "runtime": "python",
-      "path": "tools/organization/refresh_important_sources.py",
-      "description": "Refresh curated firmware, ROS2 and simulation reading copies",
-      "args": []
-    },
-    "important-check": {
-      "runtime": "python",
-      "path": "tools/organization/refresh_important_sources.py",
-      "description": "Check important source hashes and freshness",
-      "args": [
-        "--check"
-      ]
-    },
-    "pcb-check-pinouts": {
-      "runtime": "powershell",
-      "path": "tools/hardware/check_photo_pinouts.ps1",
-      "description": "Check native PCB photo-header and DevKit GPIO assignments",
-      "args": []
+      "description": "Test failure/staleness behaviour in temporary synthetic fixtures only"
     }
   }
 }

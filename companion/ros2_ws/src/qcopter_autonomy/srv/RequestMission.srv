@@ -1,6 +1,0 @@
-geometry_msgs/Point start
-geometry_msgs/Point finish
-float64 cruise_height_m
----
-bool accepted
-string reason

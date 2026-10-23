@@ -1,7 +1,0 @@
-[INFO] [1792605765.651663800] [drone.drone_mission_computer]: NAV_CONFIG position_gain=1 velocity_gain=1.8 max_speed_mps=0.8 max_acceleration_mps2=1.4 max_angle_deg=15 heading_gain=1.2 max_yaw_rate_dps=45
-[INFO] [1792605765.656951200] [drone.drone_mission_computer]: READY: endpoints via mission/request; authority via Xbox FC mode; raw UART frames on fc/companion_tx
-[INFO] [1792605766.991287400] [drone.drone_mission_computer]: PC_ROUTE_ACCEPTED points=2 finish=(3.00,0.00)
-[INFO] [1792605766.993498100] [drone.drone_mission_computer]: PLANNER waypoint=1 planned=1 reason=OK
-[INFO] [1792605766.993744900] [drone.drone_mission_computer]: MISSION phase=1,done=0,mapped=0,plans=1,images=7,requests=1,camera=1,waypoint=1,points=2,planned=1,planner_reason=OK
-[INFO] [1792605767.659119000] [drone.drone_mission_computer]: PROFILE component=drone_mission_computer,clock=steady_wall,level=3,calls=29,rejected=20,mean_us=106.059,max_us=709.3,budget_us=20000,over_budget=0,histogram=7:11:10:0:1:0:0:0:0:0:
-[INFO] [1792605768.007499000] [drone.drone_mission_computer]: MISSION phase=2,done=0,mapped=0,plans=1,images=39,requests=1,camera=1,waypoint=1,points=2,planned=1,planner_reason=OK

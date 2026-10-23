@@ -1,2 +1,0 @@
-[INFO] [1792621431.481930500] [linkproof.drone_mission_computer]: NAV_CONFIG position_gain=1 velocity_gain=1.8 max_speed_mps=0.8 max_acceleration_mps2=1.4 max_angle_deg=15 heading_gain=1.2 max_yaw_rate_dps=45
-[INFO] [1792621431.484720300] [linkproof.drone_mission_computer]: READY: endpoints via mission/request; authority via Xbox FC mode; raw UART frames on fc/companion_tx

@@ -1,7 +1,0 @@
-Synthetic sensor bench calibration complete; not physical calibration.
-PASS Manual button completes real C five-second mode gesture
-PASS Navigation button completes real C five-second mode gesture
-PASS Disarm button latches real C disarm
-PASS Disconnected controller cannot generate PC gesture
-PASS Stale ROS Xbox state cannot generate PC gesture
-PASS Actual Xbox disarm has priority over PC mode gesture

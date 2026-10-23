@@ -1,9 +1,0 @@
-{
-  "passed": true,
-  "checks": {
-    "GET_map": true,
-    "GET_pose": true,
-    "reject_external_origin": true
-  },
-  "scope": "HTTP map/pose endpoints and rejection of external-origin command; no flight mission submitted."
-}

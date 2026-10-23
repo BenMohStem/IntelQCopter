@@ -1,63 +1,30 @@
-# IntelQCopter · ESP32-S3 + Xbox
+# IntelQCopter — stepwise ESP32-S3 rebuild
 
-F450 research quadcopter: ESP32-S3 flight controller, Xbox Series X/S manual input and an optional ROS2 companion for navigation.
+This branch starts with hardware diagnostics. **There is no flight controller or motor-output driver yet.**
 
-**Branch: `esp32-xbox`.** The [main branch](https://github.com/BenMohStem/IntelQCopter/tree/main) retains the RP2350 aircraft + RP2040 handheld + LoRa/CC1101 architecture.
+Target: ESP32-S3, Arduino framework / PlatformIO, MPU6050 and BMP280 first; Xbox next. The RP2350/RP2040 project stays on `main`. The earlier ESP32 project and PCB stay on `esp32-xbox`, with baseline commit `c194112` in this branch's ancestry.
 
-> Bench prototype: physical motor arming and ESC outputs remain disabled. Simulation gains and hardware interfaces are not flight-validated.
+Start with [the plan](docs/PLAN.md), then [the bench checklist](docs/bench-tests.md). Current acceptance state lives in [the stage catalogue](validation/stages.json) and immutable validation events, not in conversational claims.
 
-## Key files and PCB
+## Working method
 
-Start with [important_sources/](important_sources/README.md): firmware, ROS2/YOLO, Gazebo and RViz sources in one indexed folder. [PCB mask and KiCad package](hardware/home-etched-fc/README.md).
+- Implement one small capability, commit it, compile/check it, retain original output.
+- Real hardware acceptance is a separate action with an operator, hardware identity, measurements and evidence.
+- Builds and simulations never stand in for a physical sensor test.
+- Later code may be prepared offline. It remains unvalidated until its prerequisites pass.
+- Failure blocks dependent steps. Fix the earliest failure; revalidate it and each affected descendant in order.
+- Preserve failed attempts and old commits. Remove rejected later code from the active implementation with normal new commits or start a repair branch from the last accepted checkpoint. Do not rewrite or force-push shared history.
 
-## Fly the simulation
+## Folder map
 
-On the configured Windows PC, open PowerShell in this checkout:
-
-```powershell
-cd C:\Users\Mohamed\Desktop\Work\QCopter-ESP32-Xbox
-.\qcopter.ps1 xbox-check
-.\qcopter.ps1 station
-```
-
-Open [the workshop](http://127.0.0.1:8088/), select manual or ROS2 navigation and a garden, then **Start simulation**. It opens in a new tab. Recordings save automatically at 15 fps; **End session** finalizes them and closes the flight tab. Closing a tab alone does not stop the simulation.
-
-**[Complete launch instructions, fresh-clone prerequisites and troubleshooting](docs/run-simulation.md).**
-
-## How commands reach the aircraft
-
-```mermaid
-flowchart LR
-  X[Xbox / recorded pilot input] --> C[Actual C flight controller]
-  PC[PC approves route nodes] --> ROS[Onboard ROS2 mission / obstacle planner]
-  ROS -->|CRC UART commands| C
-  C --> M[Four motor commands]
-  M --> G[Native Gazebo dynamics / synthetic sensors]
-  G --> C
-  G --> ROS
-```
-
-Manual uses roll/pitch **angle** targets, yaw rate and vertical speed/hover. Gentle is the default. RT raises the collective ceiling to 0.80, LT lowers it; attitude corrections retain headroom. Position-aided braking on release currently relies on ideal simulated localization. ROS2 is optional for manual FC operation.
-
-## Read and build
-
-| Area | Entry point |
+| Folder | Purpose |
 |---|---|
-| All documentation | [Documentation map](docs/README.md) |
-| Detailed math, six PIDs and Kalman derivations | [Illustrated F450 guide](docs/current-model-and-fc-integration.html) |
-| Editable settings and command authority | [Control workshop](docs/control-workbench.html) |
-| Current facts, assumptions and open work | [Knowledge overview](knowledge/current.md), [status](docs/status.md) |
-| ESP32 C / ROS2 implementation | [Code map](docs/code-map.md), [protocol](docs/xbox-ros2-protocol.md) |
-| Home-etched competition PCB | [Schematic, board and assembly](hardware/home-etched-fc/README.md) |
-| Real measurement procedures | [Worksheets](measurements/README.md) |
-| Preserved verification results | [Hardening report](artifacts/reports/hardening-20261021/index.html), [ESP32 emulation](simulation/emulation/README.md) |
+| `firmware/` | One Arduino-style `main.cpp` for the current bench step |
+| `docs/` | Plan and procedures |
+| `config/` | Explicit hardware assumptions and bench identity |
+| `validation/` | Stage dependencies and immutable acceptance history |
+| `artifacts/` | Original build logs, serial captures and measurements |
+| `tools/` | Small build, capture and validation tools |
+| `important_sources/` | Links to canonical current files, no duplicate implementations |
 
-## Repository layout
-
-`firmware/` one C-style `flight_controller.cpp` + API declarations · `companion/` ROS2 packages · `simulation/` Gazebo/emulation · `hardware/` current CAD · `docs/` maintained guides · `measurements/` procedures · `knowledge/` factual versioned ledger · `tools/` commands grouped by purpose · `artifacts/` original evidence · `archive/` historical references.
-
-`project.json` and `.\qcopter.ps1 help` are the command catalog. Local environments, downloaded SDKs, caches and build outputs are ignored. [Earlier document versions](archive/documentation/README.md) remain recoverable without duplicating them throughout the active guides.
-
-## What the results mean
-
-Native Gazebo trials run the host-compiled C-style C++ FC with actual ROS2 C++ nodes. They use provisional mass/inertia/thrust, synthetic sensors and ideal localization. QEMU demonstrates compiled firmware execution with synthetic inputs; neither establishes physical BLE/UART/ESC behavior, MCU deadlines or real flight stability. Original failed trials are preserved alongside successful ones.
+Use `project.json` and `qcopter.ps1` for commands. Do not flash automatically; select the actual COM port deliberately. Physical motor arming remains disabled.
