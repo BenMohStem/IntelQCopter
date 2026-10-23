@@ -10,3 +10,5 @@
 - Offline work is permitted but cannot bypass acceptance dependencies. Planned later stages must not silently become validated.
 - User instructions supersede local guidelines. Keep friend assistance isolated from project publishing.
 - Use project.json/qcopter.ps1, grouped tools, and important_sources links. Exclude environments, SDKs, credentials and personal files from commits. Source checkouts stay outside build/ and .cache/.
+
+- Function style: opening and closing braces on separate lines (Allman function braces), four-space indentation. Do not place a function opening brace after its signature.

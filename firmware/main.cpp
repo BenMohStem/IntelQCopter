@@ -5,7 +5,8 @@
 #define BENCH_SOURCE_SHA "UNSTAMPED"
 #endif
 static const int MOTOR_PINS[]={12,1,2,14};
-static void board_report(void){
+static void board_report(void)
+{
     Serial.printf("BOARD,uptime_ms=%lu,chip=%s,revision=%u,cores=%u,reset_reason=%d,heap=%u\n",
         (unsigned long)millis(),ESP.getChipModel(),ESP.getChipRevision(),ESP.getChipCores(),(int)esp_reset_reason(),ESP.getFreeHeap());
     Serial.printf("SOURCE_SHA,%s\n",BENCH_SOURCE_SHA);
@@ -19,7 +20,8 @@ static MPU6050 mpu68(0x68),mpu69(0x69);
 static MPU6050 *mpu=&mpu68;
 static uint8_t imu_address=0,baro_address=0;
 static bool bus_ready=false;
-static bool read_regs(uint8_t address,uint8_t reg,uint8_t *data,size_t count){
+static bool read_regs(uint8_t address,uint8_t reg,uint8_t *data,size_t count)
+{
     if(!bus_ready || count>32)return false;
     Wire.beginTransmission(address);Wire.write(reg);
     if(Wire.endTransmission(false)!=0)return false;
@@ -28,11 +30,13 @@ static bool read_regs(uint8_t address,uint8_t reg,uint8_t *data,size_t count){
     for(size_t i=0;i<count;i++)data[i]=(uint8_t)Wire.read();
     return true;
 }
-static bool write_reg(uint8_t address,uint8_t reg,uint8_t value){
+static bool write_reg(uint8_t address,uint8_t reg,uint8_t value)
+{
     Wire.beginTransmission(address);Wire.write(reg);Wire.write(value);
     return Wire.endTransmission(true)==0;
 }
-static void sensor_identities(void){
+static void sensor_identities(void)
+{
     imu_address=baro_address=0;
     if(!bus_ready){Serial.println("ERROR,I2C_BEGIN_FAILED");return;}
     Serial.println("SCAN,GPIO_SDA=9,GPIO_SCL=8,clock_hz=100000");
@@ -67,10 +71,20 @@ static void sensor_identities(void){
 #include <Adafruit_BMP280.h>
 #include <math.h>
 struct Statistics{uint32_t n;double mean,m2;};
-static void add_sample(Statistics *s,double x){s->n++;double d=x-s->mean;s->mean+=d/s->n;s->m2+=d*(x-s->mean);}
-static double sigma(const Statistics *s){return s->n>1?sqrt(s->m2/(s->n-1)):NAN;}
-static int16_t signed_be(const uint8_t *v){return (int16_t)((uint16_t)v[0]<<8|v[1]);}
-static bool configure_imu(void){
+static void add_sample(Statistics *s,double x)
+{
+    s->n++;double d=x-s->mean;s->mean+=d/s->n;s->m2+=d*(x-s->mean);
+}
+static double sigma(const Statistics *s)
+{
+    return s->n>1?sqrt(s->m2/(s->n-1)):NAN;
+}
+static int16_t signed_be(const uint8_t *v)
+{
+    return (int16_t)((uint16_t)v[0]<<8|v[1]);
+}
+static bool configure_imu(void)
+{
     if(!imu_address)sensor_identities();
     if(!imu_address)return false;
     mpu->initialize();mpu->setFullScaleAccelRange(MPU6050_ACCEL_FS_8);
@@ -83,7 +97,8 @@ static bool configure_imu(void){
     return ok;
 }
 static float last_imu_temperature;
-static bool capture_imu(unsigned count,Statistics output[6]){
+static bool capture_imu(unsigned count,Statistics output[6])
+{
     memset(output,0,6*sizeof(Statistics));
     if(!configure_imu()){Serial.println("ERROR,MPU_CONFIG_FAILED");return false;}
     uint32_t began=millis(),previous=0,min_dt=UINT32_MAX,max_dt=0,errors=0,clipped=0;
@@ -107,7 +122,8 @@ static bool capture_imu(unsigned count,Statistics output[6]){
     Serial.printf("IMU_END,read_errors=%lu,clipped=%lu,min_dt_us=%lu,max_dt_us=%lu; not_hardware_acceptance\n",(unsigned long)errors,(unsigned long)clipped,(unsigned long)(min_dt==UINT32_MAX?0:min_dt),(unsigned long)max_dt);
     return output[0].n==count && errors==0 && clipped==0;
 }
-static void sample_barometer(void){
+static void sample_barometer(void)
+{
     if(!baro_address)sensor_identities();
     Adafruit_BMP280 bmp;
     if(!baro_address || !bmp.begin(baro_address,0x58)){Serial.println("ERROR,BMP280_NOT_READY");return;}
@@ -131,7 +147,8 @@ static void sample_barometer(void){
     for(unsigned i=0;i<2;i++)Serial.printf("BARO_STATS,axis=%u,n=%lu,mean=%.8f,sample_std=%.8f\n",i,(unsigned long)stats[i].n,stats[i].mean,sigma(&stats[i]));
     Serial.printf("BARO_END,errors=%u; no_automatic_acceptance_or_absolute_altitude_calibration\n",errors);
 }
-static void sample_magnetometer(void){
+static void sample_magnetometer(void)
+{
     uint8_t id[3];
     if(!read_regs(0x1E,0x0A,id,3)||id[0]!=0x48||id[1]!=0x34||id[2]!=0x33){Serial.println("ERROR,HMC_ID_NOT_H43; QMC_requires_its_own_driver");return;}
     if(!write_reg(0x1E,0,0x70)||!write_reg(0x1E,1,0x20)||!write_reg(0x1E,2,0)){Serial.println("ERROR,MAG_CONFIG");return;}
@@ -148,7 +165,8 @@ static void sample_magnetometer(void){
     }
     Serial.printf("MAG_END,n=%u,errors=%u; raw_field_not_heading_or_calibration\n",n,errors);
 }
-static void sample_lidar(void){
+static void sample_lidar(void)
+{
     Serial1.setRxBufferSize(2048);Serial1.begin(921600,SERIAL_8N1,6,7);
     uint8_t frame[16];unsigned used=0,good=0,bad=0;uint32_t began=millis();
     Serial.println("LIDAR_CONFIG,passive_TOFSense_UART,baud=921600,FC_RX=6,FC_TX=7; no_transmitted_command");
@@ -179,19 +197,22 @@ struct Calibration{
 static Calibration calibration={};
 static float faces[6][3];static uint8_t face_mask;
 static bool gyro_verified_this_boot;
-static uint32_t crc32_bytes(const void *memory,size_t count){
+static uint32_t crc32_bytes(const void *memory,size_t count)
+{
     const uint8_t *v=(const uint8_t*)memory;uint32_t crc=0xFFFFFFFF;
     for(size_t i=0;i<count;i++){
         crc^=v[i];for(unsigned bit=0;bit<8;bit++)crc=(crc>>1)^((0u-(crc&1))&0xEDB88320);
     }
     return ~crc;
 }
-static void calibration_reset_ram(void){
+static void calibration_reset_ram(void)
+{
     memset(&calibration,0,sizeof(calibration));calibration.magic=0x51535431;calibration.version=1;
     calibration.board_id=ESP.getEfuseMac();for(unsigned i=0;i<3;i++)calibration.accel_scale[i]=1;
     memset(faces,0,sizeof(faces));face_mask=0;gyro_verified_this_boot=false;
 }
-static bool valid_record(const Calibration *c){
+static bool valid_record(const Calibration *c)
+{
     if(c->magic!=0x51535431 || c->version!=1 || c->board_id!=ESP.getEfuseMac() || c->flags!=3
        || c->crc!=crc32_bytes(c,offsetof(Calibration,crc)))return false;
     for(unsigned i=0;i<3;i++)if(!isfinite(c->gyro_bias[i]) || fabs(c->gyro_bias[i])>5
@@ -199,7 +220,8 @@ static bool valid_record(const Calibration *c){
         ||!isfinite(c->accel_scale[i])||c->accel_scale[i]<.7f||c->accel_scale[i]>1.3f)return false;
     return isfinite(c->temperature_C);
 }
-static void calibration_load(void){
+static void calibration_load(void)
+{
     Preferences storage;Calibration saved={};calibration_reset_ram();
     if(!storage.begin("qstep_bench",true)){Serial.println("CAL_LOAD,NO_NAMESPACE; capture_new_calibration");return;}
     bool ok=storage.getBytesLength("imu")==sizeof(saved) && storage.getBytes("imu",&saved,sizeof(saved))==sizeof(saved);
@@ -207,17 +229,20 @@ static void calibration_load(void){
     if(!ok||!valid_record(&saved)){Serial.println("CAL_LOAD,ABSENT_OR_INVALID; no_default_acceptance");return;}
     calibration=saved;Serial.println("CAL_LOAD,CRC_BOARD_VERSION_OK; gyro_reverification_required_this_boot");
 }
-static void calibration_print(void){
+static void calibration_print(void)
+{
     Serial.printf("CAL_STATE,flags=%lu,faces=0x%02X,gyro_reverified=%d,temperature_C=%.4f\n",(unsigned long)calibration.flags,face_mask,gyro_verified_this_boot,calibration.temperature_C);
     for(unsigned i=0;i<3;i++)Serial.printf("CAL_AXIS,%u,gyro_bias_dps=%.7f,accel_offset_g=%.7f,accel_scale=%.7f\n",i,calibration.gyro_bias[i],calibration.accel_offset[i],calibration.accel_scale[i]);
     Serial.println("CAL_NOTE,sensor_axes_only; no_airframe_alignment_or_automatic_physical_acceptance");
 }
-static bool stationary_window(const Statistics s[6]){
+static bool stationary_window(const Statistics s[6])
+{
     for(unsigned i=0;i<3;i++)if(!isfinite(sigma(&s[i]))||sigma(&s[i])>.02||!isfinite(sigma(&s[i+3]))||sigma(&s[i+3])>.25||fabs(s[i+3].mean)>5)return false;
     double norm=sqrt(s[0].mean*s[0].mean+s[1].mean*s[1].mean+s[2].mean*s[2].mean);
     return norm>.85 && norm<1.15;
 }
-static void calibrate_gyro(void){
+static void calibrate_gyro(void)
+{
     calibration.flags&=~1u;gyro_verified_this_boot=false;
     Statistics s[6];bool ok=capture_imu(500,s) && stationary_window(s);
     if(!ok){Serial.println("CAL_GYRO,REJECTED; inspect_motion_or_noise");return;}
@@ -225,7 +250,8 @@ static void calibrate_gyro(void){
     calibration.temperature_C=last_imu_temperature;calibration.flags|=1;gyro_verified_this_boot=true;
     Serial.println("CAL_GYRO,RAM_CANDIDATE; operator_must_have_held_board_still");calibration_print();
 }
-static void capture_face(unsigned face){
+static void capture_face(unsigned face)
+{
     // A repeated/failed face invalidates the old fit before collecting new data.
     calibration.flags&=~2u;face_mask&=~(1u<<face);
     Statistics s[6];bool ok=capture_imu(100,s) && stationary_window(s);
@@ -245,7 +271,8 @@ static void capture_face(unsigned face){
     if(fit){calibration.flags|=2;}
     Serial.printf("CAL_ACCEL,fit=%d; six_face_diagonal_model_only\n",fit);calibration_print();
 }
-static void calibration_save(void){
+static void calibration_save(void)
+{
     if(calibration.flags!=3 || !gyro_verified_this_boot){Serial.println("CAL_SAVE,REFUSED; require_gyro_this_boot_and_valid_six_face_fit");return;}
     calibration.crc=crc32_bytes(&calibration,offsetof(Calibration,crc));
     Preferences storage;Calibration check={};
@@ -255,13 +282,15 @@ static void calibration_save(void){
         && !memcmp(&check,&calibration,sizeof(check)) && valid_record(&check);
     storage.end();Serial.printf("CAL_SAVE,%s; namespace=qstep_bench,old_FC_namespace_untouched\n",ok?"BYTE_READBACK_OK":"FAILED");
 }
-static void calibration_erase(void){
+static void calibration_erase(void)
+{
     Preferences storage;bool ok=storage.begin("qstep_bench",false);
     if(ok){if(storage.isKey("imu"))ok=storage.remove("imu");storage.end();}
     calibration_reset_ram();Serial.printf("CAL_ERASE,%s; bench_record_only\n",ok?"OK":"FAILED");
 }
 
-static void calibration_residual_test(void){
+static void calibration_residual_test(void)
+{
     if(calibration.flags!=3){Serial.println("CAL_TEST,REFUSED; load_or_capture_complete_record_first");return;}
     Statistics measured[6];if(!capture_imu(200,measured)){Serial.println("CAL_TEST,READ_FAILURE");return;}
     double norm2=0;
@@ -274,13 +303,15 @@ static void calibration_residual_test(void){
     Serial.printf("CAL_RESIDUAL,gravity_norm_g=%.8f; compare_known_face_and_stationary_reference; no_automatic_acceptance\n",sqrt(norm2));
 }
 
-void setup(void){
+void setup(void)
+{
     for(unsigned i=0;i<4;i++)pinMode(MOTOR_PINS[i],INPUT_PULLDOWN);
     Serial.begin(115200);delay(1000);board_report();calibration_load();
     bus_ready=Wire.begin(SDA_PIN,SCL_PIN);Wire.setClock(100000);Wire.setTimeOut(20);
     Serial.println("COMMAND,p=board,i=identities,m=gyro_candidate,b=baro,h=HMC_raw,l=LiDAR;0..5=faces;t=residual;w=save;v=reload;e=erase_bench");
 }
-void loop(void){
+void loop(void)
+{
     if(Serial.available()){int c=Serial.read();if(c=='p')board_report();else if(c=='i')sensor_identities();else if(c=='m')calibrate_gyro();else if(c=='b')sample_barometer();else if(c=='h')sample_magnetometer();else if(c=='l')sample_lidar();else if(c>='0' && c<='5')capture_face((unsigned)(c-'0'));else if(c=='t')calibration_residual_test();else if(c=='w')calibration_save();else if(c=='v'){calibration_load();calibration_print();}else if(c=='e')calibration_erase();}
     static uint32_t previous;
     if(millis()-previous>=5000){previous=millis();Serial.printf("HEARTBEAT,%lu\n",(unsigned long)millis());}
