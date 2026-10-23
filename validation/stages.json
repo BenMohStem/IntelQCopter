@@ -1,7 +1,8 @@
 {
   "schema": 1,
   "global_inputs": [
-    "config/hardware.json"
+    "config/hardware.json",
+    "tools/validation/gates.py"
   ],
   "stages": [
     {
@@ -25,7 +26,7 @@
         "platformio.ini"
       ],
       "acceptance_kind": "physical",
-      "implemented": false,
+      "implemented": true,
       "locked": false
     },
     {

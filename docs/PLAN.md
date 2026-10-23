@@ -48,3 +48,7 @@ A fresh pass for A does not silently restore B's old pass. B must be tested agai
 ## Questions resolved later by measurement
 
 Exact ESP32/module revisions; sensor orientation; supply after breakout regulators; I2C pull-ups; mass/CG/inertia; motor identity; thrust/current/lag with9047 props and3S; ESC protocol/range; LiDAR placement; companion platform. The initial programme measures sensors, not these unknown flight parameters.
+
+## Confirmed control scope
+
+The user has the full ESP32-S3 drone assembly, including MPU6050, barometer, magnetometer, LiDAR and companion. Only sensor/calibration diagnostics are authorized in this iteration. The future standalone mode is yaw rate, roll/pitch angle, and fixed altitude plus vertical-speed commands, using PIDs. **No automatic XY brake or position hold.** Zero tilt does not itself cancel horizontal momentum. ROS2 is a later optional extension. The initial host probe found no COM ports; no firmware was uploaded.
