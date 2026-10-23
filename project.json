@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "name": "IntelQCopter stepwise rebuild",
+  "name": "IntelQCopter small software lessons",
   "branch": "codex/stepwise-esp32",
-  "architecture": "ESP32-S3 bench diagnostics first",
+  "architecture": "ESP32-S3 / one small Arduino lesson at a time",
   "commands": {
     "status": {
       "runtime": "python",
@@ -10,7 +10,7 @@
       "args": [
         "status"
       ],
-      "description": "Show evidence-gated stage state (tool added next)"
+      "description": "Show acceptance state for the small lessons"
     },
     "gate": {
       "runtime": "python",
@@ -22,13 +22,13 @@
       "runtime": "python",
       "path": "tools/build.py",
       "args": [],
-      "description": "Compile bench firmware and preserve original output"
+      "description": "Compile only the current small lesson, preserving output"
     },
     "capture": {
       "runtime": "python",
       "path": "tools/capture.py",
       "args": [],
-      "description": "Capture actual serial bytes; requires explicit COM port"
+      "description": "Receive real serial output only; select COM port explicitly"
     },
     "upload": {
       "runtime": "pio",
@@ -53,6 +53,17 @@
       "path": "tools/repair.py",
       "args": [],
       "description": "Start from a failed step implementation checkpoint, excluding its later descendants"
+    },
+    "monitor": {
+      "runtime": "pio",
+      "path": "platformio.ini",
+      "args": [
+        "device",
+        "monitor",
+        "--baud",
+        "115200"
+      ],
+      "description": "Open Serial Monitor; append --port COMx"
     }
   }
 }
