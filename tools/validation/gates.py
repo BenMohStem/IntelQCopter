@@ -43,7 +43,9 @@ class Gates:
         if stage['locked']:return {'state':'locked'}
         if not stage['implemented']:return {'state':'planned'}
         relevant=[e for e in self.events if e['stage']==name and e['kind']==stage['acceptance_kind']]
-        if not relevant:return {'state':'pending-'+stage['acceptance_kind']}
+        if not relevant:
+            blocked=[dep for dep in stage['requires'] if self.state(dep)['state']!='passed']
+            return {'state':'blocked','by':blocked} if blocked else {'state':'pending-'+stage['acceptance_kind']}
         e=relevant[-1]
         if e['result']=='fail':return {'state':'failed','receipt':e['event_hash']}
         if e['source_fingerprint']!=self.fingerprint(name):return {'state':'stale-source'}

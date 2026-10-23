@@ -23,3 +23,13 @@ Keep failed later code in Git history. Remove or replace it in the active build 
 Source/config/evidence edits invalidate old acceptance. Changing a stage's prerequisite policy also changes its fingerprint. A calibration/configuration change should be reflected in the tracked inputs rather than hidden as a local tweak.
 
 The gate's unit tests use temporary **synthetic** evidence and never touch the project ledger. Passing them validates gate behaviour only.
+
+## Discard prepared steps after a failure
+
+Every implementation commit has a `Step-ID:` trailer. Use the implementation commit of the failed step, before later implementations were added:
+
+```powershell
+.\qcopter.ps1 repair --step 06-estimator --checkpoint REAL-COMMIT-SHA --branch codex/repair-step06 --destination C:\Users\Mohamed\Desktop\Work\QCopter-Repair06
+```
+
+This is an example for a future stage, not an existing step06 checkpoint. The tool checks the commit's Step-ID and catalogue, rejects checkpoints containing implemented descendants, and creates a **new** worktree/branch at that commit. Old steps07–10 are absent from that active tree. Fix06, build and physically retest it, commit, then implement07 anew. Selectively reference the old branch where useful. The original failed06 event and rejected later code remain in its original branch/history; a lineage file points back to them. No Git history is rewritten or physical pass fabricated. Push the repair branch when ready.

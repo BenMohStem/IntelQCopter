@@ -34,3 +34,23 @@ The program reports raw samples and sample standard deviation: `s = sqrt(sum((x-
 - [Espressif DevKitC-1 header/supply reference](https://documentation.espressif.com/api/resource/path/docs/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/user_guide.html).
 - [Bosch BMP280 datasheet and ID/I2C interface](https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp280-ds001.pdf).
 - MPU6050 registers/scales: installed ElectronicCats MPU6050 library sources, pinned in PlatformIO; inspect its WHO_AM_I and full-scale constants with the raw register readback.
+
+##04 — Calibration diagnostics (prepared offline)
+
+Use `m` while truly stationary. It records500 fresh samples, prints per-axis mean/sample standard deviation, and proposes a gyro bias in RAM. Provisional motion screening is accelerometer sigma<=0.02g, gyro sigma<=0.25deg/s, bias magnitude<=5deg/s per axis, and gravity-vector norm0.85–1.15g. These are initial diagnostic bounds, not measured sensor specifications or proof the aircraft is still.
+
+Capture the six sensor orientations with `0=+X`, `1=-X`, `2=+Y`, `3=-Y`, `4=+Z`, `5=-Z` (the selected axis measures the stated acceleration sign). Each command collects100 fresh samples. Align the selected axis with gravity; wait for `CAL_FACE,CAPTURED` before moving. A rejected/repeated face clears the old fit. All six valid faces are required. This is a diagonal bias/scale fit: offset=(positive+negative)/2; scale=2/(positive-negative); corrected_g=(raw_g-offset)*scale. It does not estimate cross-axis misalignment or temperature dependence.
+
+`w` writes only when a valid six-face fit and a gyro verification from this boot are present. The `qstep_bench` Preferences namespace is separate from the original FC's calibration namespace. `CAL_SAVE,BYTE_READBACK_OK` verifies immediate bytes, board identity, version and CRC. It does not prove persistence across power loss: power-cycle physically and use `v`/boot logs to verify reload, then use `m` again. `v` reloads the bench record and resets this-boot gyro verification and unsaved face captures. `e` deliberately erases **only** this bench record. No old-flight-controller settings are read or overwritten.
+
+When testing again, compare corrected accelerometer samples with each face's expected vector and gyro-minus-bias while stationary. Record residuals and repeats; the current firmware prints the proposed parameters rather than claiming a flight estimator is calibrated. NVS interruption/corruption and reboot cases remain **physical tests pending**.
+
+### Other sensors
+
+`h` collects64 HMC5883L raw field vectors only after its H43 identity matches. A possible QMC at0x0D is identified as unsupported, without guessing a driver. This is not hard/soft-iron or heading calibration. Keep magnets/motors/power wiring effects in the measurement plan.
+
+`l` listens for10seconds to TOFSense UART at921600baud on FC RX6/TX7. It sends no query/control commands and never uses the ROS UART. It retains all16 frame bytes in hex, checksum failures, module status, distance and signal strength. Compare readings with a ruler/tape at several distances and target colours/angles. A valid checksum is not a claim of correct distance; query-mode sensors or changed baud rates may produce no active frames. Confirm the actual module/model/status interpretation first.
+
+[Official F2 Mini voltage/default baud reference](https://ftp.nooploop.com/downloads/tofsense/TOFSense_F2_Mini_Datasheet_V1.0_en.pdf) and [UART frame format](https://support.nooploop.com/tofsense/protocol/). The LiDAR and magnetometer are not used in a flight controller in this diagnostic build.
+
+` t ` (send the single character `t`, without spaces) captures200 new samples and prints corrected per-axis means/std and gravity-vector norm for residual testing. Repeat each known face and stationary gyro test before/after saving and rebooting. No pass is automatic. The hardware assembly is reported by the user, not inspected; it is unavailable now, so there are no physical readings.

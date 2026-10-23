@@ -1,0 +1,53 @@
+{
+  "scope": "Offline Arduino/PlatformIO compilation and validation-tool tests only",
+  "firmware_lines": 288,
+  "gate_software_tests": 9,
+  "embedded_source_sha_found_in_firmware": true,
+  "source_sha256": {
+    "firmware/main.cpp": "bbab1a2a63d2b2a2182d568bb465fd036e1acb499a650980933dd3293ba029fa",
+    "platformio.ini": "553ae953158a8af2bfce2a4391128bf735088e4c0f9412bce8371096b1c90dc2",
+    "config/hardware.json": "b435645953e7406b4892cf6657445360883c4cb46fb2ad4cbc23d08dfd6c6f19",
+    "tools/stamp_build.py": "bd8709fb781710b4bef805c45baa36131b421e9e85828a2933bfed1957fd187a"
+  },
+  "firmware_sha256": "6f0608ee230a40f5288f16f10f5a3f64c232c5df6ec977f764ef703a06fbba31",
+  "latest_original_build_log": "artifacts/build/20261023T194329859967Z/compiler.log",
+  "build_attempts": [
+    {
+      "path": "artifacts/build/20261023T193520310501Z",
+      "exit_code": 0
+    },
+    {
+      "path": "artifacts/build/20261023T193758942954Z",
+      "exit_code": 0
+    },
+    {
+      "path": "artifacts/build/20261023T193930992482Z",
+      "exit_code": 1
+    },
+    {
+      "path": "artifacts/build/20261023T193955378917Z",
+      "exit_code": 0
+    },
+    {
+      "path": "artifacts/build/20261023T194154161127Z",
+      "exit_code": 0
+    },
+    {
+      "path": "artifacts/build/20261023T194329859967Z",
+      "exit_code": 0
+    }
+  ],
+  "hardware_available": false,
+  "uploaded": false,
+  "physical_tests_passed": 0,
+  "motor_outputs_enabled": false,
+  "calibration": "Bench-only gyro bias and six-face diagonal fit with board/version/CRC NVS readback; hardware persistence and residual tests pending",
+  "repair": "Dry-run verified real step03 checkpoint excludes implemented descendants; no repair checkout created",
+  "limits": [
+    "No physical readings, sensor accuracy, NVS persistence, UART performance or flight stability established",
+    "MPU/BMP use pinned Arduino libraries; raw Wire reads enforce complete IMU transactions",
+    "HMC capture requires H43; QMC driver not guessed",
+    "LiDAR UART assumes F2 Mini active output at921600; checksum is not distance accuracy",
+    "All sensor commands are blocking bench jobs, not a500Hz FC runtime"
+  ]
+}

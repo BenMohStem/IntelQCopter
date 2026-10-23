@@ -14,6 +14,8 @@ class GateTests(unittest.TestCase):
     def tearDown(self):self.tmp.cleanup()
     def record(self,g,stage,result='pass',kind='physical'):
         return g.record(stage,kind,result,'artifacts/fake.log','Synthetic unit fixture','TEST','SYNTHETIC',True)
+    def test_pending_child_is_blocked(self):
+        self.assertEqual(Gates(self.r).state('b')['state'],'blocked')
     def test_blocked_order(self):
         with self.assertRaises(AssertionError):self.record(Gates(self.r),'b')
     def test_fail_then_parent_repass_keeps_child_blocked(self):

@@ -63,9 +63,13 @@
       "requires": [
         "03-imu-baro"
       ],
-      "sources": [],
+      "sources": [
+        "firmware/main.cpp",
+        "platformio.ini",
+        "tools/stamp_build.py"
+      ],
       "acceptance_kind": "physical",
-      "implemented": false,
+      "implemented": true,
       "locked": false
     },
     {

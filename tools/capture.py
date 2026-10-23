@@ -4,7 +4,7 @@ import argparse,datetime,hashlib,json,time
 import serial
 R=Path(__file__).resolve().parents[1]
 p=argparse.ArgumentParser(description=__doc__);p.add_argument('--port',required=True);p.add_argument('--seconds',type=float,default=30)
-p.add_argument('--send',choices=list('pimblh012345wve'),default='p');p.add_argument('--bench-id',required=True)
+p.add_argument('--send',choices=list('pimblh012345wvet'),default='p');p.add_argument('--bench-id',required=True)
 a=p.parse_args();assert 0<a.seconds<=600
 stamp=datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ');out=R/'artifacts/hardware'/stamp;out.mkdir(parents=True)
 report=dict(port=a.port,baud=115200,requested_seconds=a.seconds,command=a.send,bench_id=a.bench_id,

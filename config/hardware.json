@@ -1,11 +1,40 @@
 {
   "target": "ESP32-S3-DevKitC-1 reference, actual board not identified yet",
   "bench_id": "UNMEASURED",
-  "required_sensors": ["MPU6050", "BMP280"],
+  "required_sensors": [
+    "MPU6050",
+    "BMP280"
+  ],
   "i2c_sda_gpio": 9,
   "i2c_scl_gpio": 8,
   "i2c_clock_hz": 100000,
-  "motor_gpio_input_only": [12, 1, 2, 14],
+  "motor_gpio_input_only": [
+    12,
+    1,
+    2,
+    14
+  ],
   "module_identity_confirmed": false,
-  "physical_motor_outputs_enabled": false
+  "physical_motor_outputs_enabled": false,
+  "reported_assembly": [
+    "ESP32-S3",
+    "MPU6050",
+    "BMP280",
+    "GY-271 magnetometer",
+    "TOFSense F2 Mini",
+    "ROS2 companion"
+  ],
+  "currently_available_for_testing": false,
+  "assumed_propellers_removed": true,
+  "lidar_uart": {
+    "rx_gpio": 6,
+    "tx_gpio": 7,
+    "baud": 921600
+  },
+  "future_stable_mode": {
+    "yaw": "rate",
+    "roll_pitch": "angle",
+    "vertical": "altitude_hold_and_vertical_speed",
+    "xy_braking": false
+  }
 }

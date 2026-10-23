@@ -52,3 +52,7 @@ Exact ESP32/module revisions; sensor orientation; supply after breakout regulato
 ## Confirmed control scope
 
 The user has the full ESP32-S3 drone assembly, including MPU6050, barometer, magnetometer, LiDAR and companion. Only sensor/calibration diagnostics are authorized in this iteration. The future standalone mode is yaw rate, roll/pitch angle, and fixed altitude plus vertical-speed commands, using PIDs. **No automatic XY brake or position hold.** Zero tilt does not itself cancel horizontal momentum. ROS2 is a later optional extension. The initial host probe found no COM ports; no firmware was uploaded.
+
+## Hardware availability correction
+
+The user clarified that the drone is not available now. Prepare on the assumption of a full sensor/companion assembly without propellers, but do not mark any bench condition as inspected. No upload or physical sensor test is to be performed in this iteration. The code remains bench-only with inactive motor pins.

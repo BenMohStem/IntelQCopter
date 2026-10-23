@@ -1,4 +1,4 @@
-/* Step01: board diagnostics only. No motor output and no flight loop. */
+/* Bench diagnostics and calibration only. No motor output and no flight loop. */
 #include <Arduino.h>
 #include <esp_system.h>
 #ifndef BENCH_SOURCE_SHA
@@ -120,6 +120,8 @@ static void sample_barometer(void){
         uint8_t status=8;
         while(ok && (status&8) && millis()-start<50){ok=read_regs(baro_address,0xF3,&status,1);delay(1);}
         if(!ok || (status&8)){errors++;Serial.println("ERROR,BARO_CONVERSION");continue;}
+        uint8_t checked_raw[6];
+        if(!read_regs(baro_address,0xF7,checked_raw,6)){errors++;Serial.println("ERROR,BARO_RAW_READ");continue;}
         float pressure=bmp.readPressure(),temperature=bmp.readTemperature();
         if(!isfinite(pressure)||!isfinite(temperature)||pressure<30000||pressure>110000){errors++;Serial.println("ERROR,BARO_RANGE_OR_READ");continue;}
         add_sample(&stats[0],pressure);add_sample(&stats[1],temperature);
@@ -166,14 +168,120 @@ static void sample_lidar(void){
     Serial1.end();Serial.printf("LIDAR_END,frames=%u,bad_checksums=%u; verify_model_status_and_measured_target_distance\n",good,bad);
 }
 
+/* Step04: bench-only calibration namespace; never overwrites the old FC record. */
+#include <Preferences.h>
+#include <stddef.h>
+struct Calibration{
+    uint32_t magic,version;uint64_t board_id;
+    float gyro_bias[3],accel_offset[3],accel_scale[3],temperature_C;
+    uint32_t flags,crc;
+};
+static Calibration calibration={};
+static float faces[6][3];static uint8_t face_mask;
+static bool gyro_verified_this_boot;
+static uint32_t crc32_bytes(const void *memory,size_t count){
+    const uint8_t *v=(const uint8_t*)memory;uint32_t crc=0xFFFFFFFF;
+    for(size_t i=0;i<count;i++){
+        crc^=v[i];for(unsigned bit=0;bit<8;bit++)crc=(crc>>1)^((0u-(crc&1))&0xEDB88320);
+    }
+    return ~crc;
+}
+static void calibration_reset_ram(void){
+    memset(&calibration,0,sizeof(calibration));calibration.magic=0x51535431;calibration.version=1;
+    calibration.board_id=ESP.getEfuseMac();for(unsigned i=0;i<3;i++)calibration.accel_scale[i]=1;
+    memset(faces,0,sizeof(faces));face_mask=0;gyro_verified_this_boot=false;
+}
+static bool valid_record(const Calibration *c){
+    if(c->magic!=0x51535431 || c->version!=1 || c->board_id!=ESP.getEfuseMac() || c->flags!=3
+       || c->crc!=crc32_bytes(c,offsetof(Calibration,crc)))return false;
+    for(unsigned i=0;i<3;i++)if(!isfinite(c->gyro_bias[i]) || fabs(c->gyro_bias[i])>5
+        ||!isfinite(c->accel_offset[i])||fabs(c->accel_offset[i])>.3f
+        ||!isfinite(c->accel_scale[i])||c->accel_scale[i]<.7f||c->accel_scale[i]>1.3f)return false;
+    return isfinite(c->temperature_C);
+}
+static void calibration_load(void){
+    Preferences storage;Calibration saved={};calibration_reset_ram();
+    if(!storage.begin("qstep_bench",true)){Serial.println("CAL_LOAD,NO_NAMESPACE; capture_new_calibration");return;}
+    bool ok=storage.getBytesLength("imu")==sizeof(saved) && storage.getBytes("imu",&saved,sizeof(saved))==sizeof(saved);
+    storage.end();
+    if(!ok||!valid_record(&saved)){Serial.println("CAL_LOAD,ABSENT_OR_INVALID; no_default_acceptance");return;}
+    calibration=saved;Serial.println("CAL_LOAD,CRC_BOARD_VERSION_OK; gyro_reverification_required_this_boot");
+}
+static void calibration_print(void){
+    Serial.printf("CAL_STATE,flags=%lu,faces=0x%02X,gyro_reverified=%d,temperature_C=%.4f\n",(unsigned long)calibration.flags,face_mask,gyro_verified_this_boot,calibration.temperature_C);
+    for(unsigned i=0;i<3;i++)Serial.printf("CAL_AXIS,%u,gyro_bias_dps=%.7f,accel_offset_g=%.7f,accel_scale=%.7f\n",i,calibration.gyro_bias[i],calibration.accel_offset[i],calibration.accel_scale[i]);
+    Serial.println("CAL_NOTE,sensor_axes_only; no_airframe_alignment_or_automatic_physical_acceptance");
+}
+static bool stationary_window(const Statistics s[6]){
+    for(unsigned i=0;i<3;i++)if(!isfinite(sigma(&s[i]))||sigma(&s[i])>.02||!isfinite(sigma(&s[i+3]))||sigma(&s[i+3])>.25||fabs(s[i+3].mean)>5)return false;
+    double norm=sqrt(s[0].mean*s[0].mean+s[1].mean*s[1].mean+s[2].mean*s[2].mean);
+    return norm>.85 && norm<1.15;
+}
+static void calibrate_gyro(void){
+    calibration.flags&=~1u;gyro_verified_this_boot=false;
+    Statistics s[6];bool ok=capture_imu(500,s) && stationary_window(s);
+    if(!ok){Serial.println("CAL_GYRO,REJECTED; inspect_motion_or_noise");return;}
+    for(unsigned i=0;i<3;i++)calibration.gyro_bias[i]=(float)s[i+3].mean;
+    calibration.temperature_C=last_imu_temperature;calibration.flags|=1;gyro_verified_this_boot=true;
+    Serial.println("CAL_GYRO,RAM_CANDIDATE; operator_must_have_held_board_still");calibration_print();
+}
+static void capture_face(unsigned face){
+    // A repeated/failed face invalidates the old fit before collecting new data.
+    calibration.flags&=~2u;face_mask&=~(1u<<face);
+    Statistics s[6];bool ok=capture_imu(100,s) && stationary_window(s);
+    unsigned axis=face/2;float sign=face%2?-1.f:1.f;
+    for(unsigned i=0;i<3;i++)if(fabs(s[i].mean-(i==axis?sign:0))>.2)ok=false;
+    if(!ok){Serial.println("CAL_FACE,REJECTED; wrong_orientation_motion_noise_or_read_failure");return;}
+    for(unsigned i=0;i<3;i++)faces[face][i]=(float)s[i].mean;
+    face_mask|=1u<<face;Serial.printf("CAL_FACE,CAPTURED,%u,mask=0x%02X\n",face,face_mask);
+    if(face_mask!=0x3F)return;
+    bool fit=true;
+    for(unsigned i=0;i<3;i++){
+        float positive=faces[2*i][i],negative=faces[2*i+1][i];
+        float offset=(positive+negative)*.5f,scale=2.f/(positive-negative);
+        if(!isfinite(scale)||scale<.7f||scale>1.3f||fabs(offset)>.3f)fit=false;
+        calibration.accel_offset[i]=offset;calibration.accel_scale[i]=scale;
+    }
+    if(fit){calibration.flags|=2;}
+    Serial.printf("CAL_ACCEL,fit=%d; six_face_diagonal_model_only\n",fit);calibration_print();
+}
+static void calibration_save(void){
+    if(calibration.flags!=3 || !gyro_verified_this_boot){Serial.println("CAL_SAVE,REFUSED; require_gyro_this_boot_and_valid_six_face_fit");return;}
+    calibration.crc=crc32_bytes(&calibration,offsetof(Calibration,crc));
+    Preferences storage;Calibration check={};
+    if(!storage.begin("qstep_bench",false)){Serial.println("CAL_SAVE,NVS_OPEN_FAILED");return;}
+    bool ok=storage.putBytes("imu",&calibration,sizeof(calibration))==sizeof(calibration)
+        && storage.getBytes("imu",&check,sizeof(check))==sizeof(check)
+        && !memcmp(&check,&calibration,sizeof(check)) && valid_record(&check);
+    storage.end();Serial.printf("CAL_SAVE,%s; namespace=qstep_bench,old_FC_namespace_untouched\n",ok?"BYTE_READBACK_OK":"FAILED");
+}
+static void calibration_erase(void){
+    Preferences storage;bool ok=storage.begin("qstep_bench",false);
+    if(ok){if(storage.isKey("imu"))ok=storage.remove("imu");storage.end();}
+    calibration_reset_ram();Serial.printf("CAL_ERASE,%s; bench_record_only\n",ok?"OK":"FAILED");
+}
+
+static void calibration_residual_test(void){
+    if(calibration.flags!=3){Serial.println("CAL_TEST,REFUSED; load_or_capture_complete_record_first");return;}
+    Statistics measured[6];if(!capture_imu(200,measured)){Serial.println("CAL_TEST,READ_FAILURE");return;}
+    double norm2=0;
+    for(unsigned i=0;i<3;i++){
+        double mean=(measured[i].mean-calibration.accel_offset[i])*calibration.accel_scale[i];
+        norm2+=mean*mean;
+        Serial.printf("CAL_RESIDUAL,axis=%u,accel_mean_g=%.8f,accel_std_g=%.8f,gyro_mean_dps=%.8f,gyro_std_dps=%.8f\n",i,
+            mean,sigma(&measured[i])*fabs(calibration.accel_scale[i]),measured[i+3].mean-calibration.gyro_bias[i],sigma(&measured[i+3]));
+    }
+    Serial.printf("CAL_RESIDUAL,gravity_norm_g=%.8f; compare_known_face_and_stationary_reference; no_automatic_acceptance\n",sqrt(norm2));
+}
+
 void setup(void){
     for(unsigned i=0;i<4;i++)pinMode(MOTOR_PINS[i],INPUT_PULLDOWN);
-    Serial.begin(115200);delay(1000);board_report();
+    Serial.begin(115200);delay(1000);board_report();calibration_load();
     bus_ready=Wire.begin(SDA_PIN,SCL_PIN);Wire.setClock(100000);Wire.setTimeOut(20);
-    Serial.println("COMMAND,p=board,i=identities,m=500_IMU,b=100_baro,h=HMC_raw,l=LiDAR_10s");
+    Serial.println("COMMAND,p=board,i=identities,m=gyro_candidate,b=baro,h=HMC_raw,l=LiDAR;0..5=faces;t=residual;w=save;v=reload;e=erase_bench");
 }
 void loop(void){
-    if(Serial.available()){int c=Serial.read();if(c=='p')board_report();else if(c=='i')sensor_identities();else if(c=='m'){Statistics stats[6];capture_imu(500,stats);}else if(c=='b')sample_barometer();else if(c=='h')sample_magnetometer();else if(c=='l')sample_lidar();}
+    if(Serial.available()){int c=Serial.read();if(c=='p')board_report();else if(c=='i')sensor_identities();else if(c=='m')calibrate_gyro();else if(c=='b')sample_barometer();else if(c=='h')sample_magnetometer();else if(c=='l')sample_lidar();else if(c>='0' && c<='5')capture_face((unsigned)(c-'0'));else if(c=='t')calibration_residual_test();else if(c=='w')calibration_save();else if(c=='v'){calibration_load();calibration_print();}else if(c=='e')calibration_erase();}
     static uint32_t previous;
     if(millis()-previous>=5000){previous=millis();Serial.printf("HEARTBEAT,%lu\n",(unsigned long)millis());}
     delay(1);

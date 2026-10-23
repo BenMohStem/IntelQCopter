@@ -47,6 +47,12 @@
       "path": "tools/validation/test_gates.py",
       "args": [],
       "description": "Test failure/staleness behaviour in temporary synthetic fixtures only"
+    },
+    "repair": {
+      "runtime": "python",
+      "path": "tools/repair.py",
+      "args": [],
+      "description": "Start from a failed step implementation checkpoint, excluding its later descendants"
     }
   }
 }
