@@ -1,35 +1,17 @@
-# Acceptance and repair
+# Advanced validation and repair — optional reading
 
-`qcopter.ps1 status` derives current state from source hashes, configuration, evidence and upstream acceptance receipts. The ledger is append-only and hash-chained; Git additionally preserves revisions. It detects edits but is not a trusted hardware instrument or cryptographic operator identity system.
+For everyday lessons: understand the change, build if requested, run it on the real board when available, keep the original result, and commit separately. A compiled or prepared lesson is not physically accepted.
 
-## Record observations
+The gate tool stores hash-chained observations with source/configuration/evidence fingerprints and dependency receipts. Physical acceptance additionally requires an actual bench identity and an operator's explicit attestation. It cannot independently prove that an operator took a measurement. The first programme deliberately has no embedded fingerprint or protocol; its purpose is learning serial output.
 
-Build output belongs under `artifacts/build/`. A successful build event does not advance physical acceptance. Simulator evidence names the actual engine and cannot substitute for required physical evidence.
+`qcopter.ps1 status` shows the active small-step catalogue. Historical events for the retired, larger catalogue remain preserved; they do not accept any new lesson. Source changes conservatively invalidate previous source-bound acceptance, so repeat the simple earlier smoke checks with a new build.
 
-After actually performing a physical procedure, fill the bench identity and module identity in `config/hardware.json`. Then record the result, for example:
-
-```powershell
-.\qcopter.ps1 gate record 00-inspection --kind physical --result pass --evidence artifacts/hardware/YOUR-RUN/inspection.csv --note "Actual readings and acceptance review" --operator YOUR-NAME --hardware-id YOUR-BENCH-ID --attest-real-hardware
-```
-
-Replace placeholders with real values. Do not execute this example as an unperformed test. Physical pass is refused unless prerequisites have current acceptance receipts. The software cannot verify an operator's claim that a measurement is real; attach original instrument/serial data and review it.
-
-## A failed step
-
-Record `--result fail` with original evidence. The failed stage and dependent acceptances are blocked. Fix the source/configuration in a new commit, rebuild, then repeat real tests in dependency order. A new parent pass does not restore old child passes; each child needs a new receipt.
-
-Keep failed later code in Git history. Remove or replace it in the active build using descriptive new commits when its assumptions were wrong. Do not delete evidence, rewrite shared history or automatically revert unrelated work. For a larger restart, create a repair branch at the last accepted commit, replay corrected work step by step, and retain the rejected branch as history.
-
-Source/config/evidence edits invalidate old acceptance. Changing a stage's prerequisite policy also changes its fingerprint. A calibration/configuration change should be reflected in the tracked inputs rather than hidden as a local tweak.
-
-The gate's unit tests use temporary **synthetic** evidence and never touch the project ledger. Passing them validates gate behaviour only.
-
-## Discard prepared steps after a failure
-
-Every implementation commit has a `Step-ID:` trailer. Use the implementation commit of the failed step, before later implementations were added:
+If06 fails after07–10 were prepared, use the implementation commit of06 **before** those later lessons were added:
 
 ```powershell
-.\qcopter.ps1 repair --step 06-estimator --checkpoint REAL-COMMIT-SHA --branch codex/repair-step06 --destination C:\Users\Mohamed\Desktop\Work\QCopter-Repair06
+.\qcopter.ps1 repair --step ACTUAL-STEP-ID --checkpoint ACTUAL-COMMIT-SHA --branch codex/repair-example --destination C:\Users\Mohamed\Desktop\Work\QCopter-Repair
 ```
 
-This is an example for a future stage, not an existing step06 checkpoint. The tool checks the commit's Step-ID and catalogue, rejects checkpoints containing implemented descendants, and creates a **new** worktree/branch at that commit. Old steps07�10 are absent from that active tree. Fix06, build and physically retest it, commit, then implement07 anew. Selectively reference the old branch where useful. The original failed06 event and rejected later code remain in its original branch/history; a lineage file points back to them. No Git history is rewritten or physical pass fabricated. Push the repair branch when ready.
+Replace all placeholders; this example is not a current physical test. The tool verifies the commit's Step-ID and rejects checkpoints containing implemented descendants. It creates a new branch/worktree at06, leaving07–10 out of the active code. Fix and test06, then implement a fresh07. Old failed code and evidence remain in their original branch/Git history. No reset or force-push is needed.
+
+The new tiny first-lesson implementation has its own `Step-ID: 01-serial` checkpoint. Earlier diagnostic checkpoints belong to the older plan, kept as reference.

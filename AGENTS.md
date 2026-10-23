@@ -1,7 +1,7 @@
 # Stepwise IntelQCopter agreement
 
 - Work on `codex/stepwise-esp32`; preserve `main` and `esp32-xbox`.
-- Current scope: bench hardware diagnostics before control or a new PCB.
+- Current scope: software teaching in very small increments. The user designs/makes the PCB; do not work on PCB design unless explicitly asked again.
 - Use PlatformIO/Arduino libraries, C-style functions/structs, one firmware main.cpp.
 - Implement the smallest next capability. Commit plan, implementation and validation evidence separately where practical. Push each completed iteration; no empty commits or force-push.
 - Physical motor arming and outputs stay disabled. No PWM/Servo/ESC pulses or actuator tests without a later explicit instruction changing that restriction.
@@ -14,3 +14,5 @@
 - Function style: opening and closing braces on separate lines (Allman function braces), four-space indentation. Do not place a function opening brace after its signature.
 
 - Readability: one statement per line, four-space indentation, opening/closing braces on separate lines for functions and control blocks. Expand compact if/for/while bodies. Formatting must preserve C++ token spelling/order and behaviour.
+
+- Teaching pace: keep the first firmware about20lines. Aim for3–10 added lines and one new idea per later step. Explain the delta and expected real result. Do not automatically expand future lessons or re-import archived diagnostics; wait for the user to follow the current lesson.

@@ -1,156 +1,190 @@
 {
   "schema": 1,
+  "plan": "Small software lessons, supersedes earlier diagnostic milestones",
   "global_inputs": [
     "config/hardware.json",
     "tools/validation/gates.py"
   ],
   "stages": [
     {
-      "id": "00-inspection",
+      "id": "01-serial",
+      "title": "Print one sentence",
       "requires": [],
       "sources": [
-        "docs/bench-tests.md",
-        "measurements/bench-template.csv"
+        "firmware/main.cpp",
+        "platformio.ini"
       ],
       "acceptance_kind": "physical",
-      "implemented": true,
+      "implemented": false,
       "locked": false
     },
     {
-      "id": "01-board",
+      "id": "02-uptime",
+      "title": "Print uptime",
       "requires": [
-        "00-inspection"
+        "01-serial"
       ],
       "sources": [
         "firmware/main.cpp",
-        "platformio.ini",
-        "tools/stamp_build.py"
+        "platformio.ini"
       ],
       "acceptance_kind": "physical",
-      "implemented": true,
+      "implemented": false,
       "locked": false
     },
     {
-      "id": "02-i2c",
+      "id": "03-i2c-start",
+      "title": "Start Wire",
       "requires": [
-        "01-board"
+        "02-uptime"
       ],
       "sources": [
         "firmware/main.cpp",
-        "platformio.ini",
-        "tools/stamp_build.py"
+        "platformio.ini"
       ],
       "acceptance_kind": "physical",
-      "implemented": true,
+      "implemented": false,
       "locked": false
     },
     {
-      "id": "03-imu-baro",
+      "id": "04-mpu-id",
+      "title": "Check MPU connection",
       "requires": [
-        "02-i2c"
+        "03-i2c-start"
       ],
       "sources": [
         "firmware/main.cpp",
-        "platformio.ini",
-        "tools/stamp_build.py"
+        "platformio.ini"
       ],
       "acceptance_kind": "physical",
-      "implemented": true,
+      "implemented": false,
       "locked": false
     },
     {
-      "id": "04-calibration",
+      "id": "05-accel-z",
+      "title": "Read accel Z",
       "requires": [
-        "03-imu-baro"
+        "04-mpu-id"
       ],
       "sources": [
         "firmware/main.cpp",
-        "platformio.ini",
-        "tools/stamp_build.py"
+        "platformio.ini"
       ],
-      "acceptance_kind": "physical",
-      "implemented": true,
-      "locked": false
-    },
-    {
-      "id": "05-xbox",
-      "requires": [
-        "04-calibration"
-      ],
-      "sources": [],
       "acceptance_kind": "physical",
       "implemented": false,
       "locked": false
     },
     {
-      "id": "06-estimator",
+      "id": "06-gyro-z",
+      "title": "Read gyro Z",
       "requires": [
-        "05-xbox"
+        "05-accel-z"
       ],
-      "sources": [],
+      "sources": [
+        "firmware/main.cpp",
+        "platformio.ini"
+      ],
       "acceptance_kind": "physical",
       "implemented": false,
       "locked": false
     },
     {
-      "id": "07-controller-bench",
+      "id": "07-accel-x",
+      "title": "Read accel X",
       "requires": [
-        "06-estimator"
+        "06-gyro-z"
       ],
-      "sources": [],
+      "sources": [
+        "firmware/main.cpp",
+        "platformio.ini"
+      ],
       "acceptance_kind": "physical",
       "implemented": false,
       "locked": false
     },
     {
-      "id": "08-companion",
+      "id": "08-accel-y",
+      "title": "Read accel Y",
       "requires": [
-        "07-controller-bench"
+        "07-accel-x"
       ],
-      "sources": [],
+      "sources": [
+        "firmware/main.cpp",
+        "platformio.ini"
+      ],
       "acceptance_kind": "physical",
       "implemented": false,
       "locked": false
     },
     {
-      "id": "09-simulation",
+      "id": "09-gyro-x",
+      "title": "Read gyro X",
       "requires": [
-        "08-companion"
+        "08-accel-y"
       ],
-      "sources": [],
-      "acceptance_kind": "simulation",
-      "implemented": false,
-      "locked": false
-    },
-    {
-      "id": "10-pcb",
-      "requires": [
-        "09-simulation"
+      "sources": [
+        "firmware/main.cpp",
+        "platformio.ini"
       ],
-      "sources": [],
       "acceptance_kind": "physical",
       "implemented": false,
       "locked": false
     },
     {
-      "id": "11-actuators",
+      "id": "10-gyro-y",
+      "title": "Read gyro Y",
       "requires": [
-        "10-pcb"
+        "09-gyro-x"
       ],
-      "sources": [],
+      "sources": [
+        "firmware/main.cpp",
+        "platformio.ini"
+      ],
       "acceptance_kind": "physical",
       "implemented": false,
-      "locked": true
+      "locked": false
     },
     {
-      "id": "12-flight",
+      "id": "11-bmp-start",
+      "title": "Start BMP280",
       "requires": [
-        "11-actuators"
+        "10-gyro-y"
       ],
-      "sources": [],
+      "sources": [
+        "firmware/main.cpp",
+        "platformio.ini"
+      ],
       "acceptance_kind": "physical",
       "implemented": false,
-      "locked": true
+      "locked": false
+    },
+    {
+      "id": "12-pressure",
+      "title": "Read pressure",
+      "requires": [
+        "11-bmp-start"
+      ],
+      "sources": [
+        "firmware/main.cpp",
+        "platformio.ini"
+      ],
+      "acceptance_kind": "physical",
+      "implemented": false,
+      "locked": false
+    },
+    {
+      "id": "13-temperature",
+      "title": "Read temperature",
+      "requires": [
+        "12-pressure"
+      ],
+      "sources": [
+        "firmware/main.cpp",
+        "platformio.ini"
+      ],
+      "acceptance_kind": "physical",
+      "implemented": false,
+      "locked": false
     }
   ]
 }

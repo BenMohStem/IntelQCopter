@@ -1,58 +1,62 @@
-# Plan before implementation
+# Software plan — one small change at a time
 
-23 October 2026. Baseline: previous ESP32 branch commit `c194112`. This is a clean active tree with preserved Git ancestry, not an assertion that older work passed on hardware.
+## How we will work
 
-## Acceptance ladder
+You design and make the PCB. This plan covers software only.
 
-| Step | Small deliverable | Evidence required before acceptance |
+There will be **one active `firmware/main.cpp`**, written in Arduino style with C-style functions. Braces go on their own lines. One statement per line. Clear names, short functions, and comments explaining why.
+
+The first programme will be about20lines. Afterwards, aim for **3–10 new lines per step**. If a feature needs more, split it again. Do not paste the full prepared controller back into the file.
+
+For each step:
+
+1. Explain the one new idea and show the small change.
+2. Change only what that idea needs.
+3. State exactly what you should see on the real board.
+4. Commit the step separately. A build is not a hardware pass.
+5. With hardware available, test before continuing. Without it, label the step prepared and untested. Prepare later lessons only when you ask; do not automatically grow the active file.
+
+## Start here
+
+| Step | One new idea | Expected real result |
 |---|---|---|
-| 00-inspection | Wiring/material worksheet, supply and continuity checks | Actual board/module identity; unpowered checks; measured rails; propellers removed, ESCs disconnected |
-| 01-board | Boot banner, uptime, reset reason, chip identity; no outputs | Real serial log after boot and repeat boot; correct board identity, stable operation |
-| 02-i2c | Bus scan and chip-ID reports | Real ACKs and identity registers for MPU6050/BMP280; address/pin map confirmed |
-| 03-imu-baro | Fresh raw IMU samples, stationary mean/std; compensated pressure/temperature | Real stationary and orientation/height-change captures; no read failures; timing and noise reviewed |
-| 04-calibration | Stationary gyro bias, six-face accelerometer calibration, flash persistence | Actual six orientations, movement rejection, save/readback/reboot, corrupt/absent-record handling |
-| 05-xbox | Gentle stick/trigger mapping, disarm gesture, disconnect detection | Real Xbox reports; direction/centering/latency/reconnect logs; motor pins inactive |
-| 06-estimator | Angle/bias and height/vertical-speed estimates | Tilt/height reference measurements, residuals, covariance/noise checks; no invented sensor accuracy |
-| 07-controller-bench | 500Hz task, six control loops, mixer and headroom; calculated demands only | Hardware timing/jitter and saturation traces; neutral/recovery/fault behaviour; no ESC output |
-| 08-companion | Optional framed UART, heartbeat, mode arbitration | Real serial cable and companion test; standalone works; loss/CRC/stale-command tests |
-| 09-simulation | Same control implementation in Gazebo; manual and multi-node navigation | Original simulation logs/video/graphs; actual engine, assumptions and interfaces identified |
-| 10-pcb | New schematic, layout, mask and assembled carrier | Known module dimensions, native CAD checks, etched continuity/shorts/rails, repeat earlier affected tests |
-| 11-actuators | A separately authorized props-off actuator experiment | **Locked:** current instruction forbids motor output. Requires explicit authorization and a separate procedure |
-| 12-flight | Incremental flight acceptance | **Locked:** no flight readiness claimed. Requires preceding acceptances and explicit authorization |
+| 01 | Print one sentence every second | Serial Monitor repeatedly shows `ESP32 is running` |
+| 02 | Add `millis()` to that message | Time increases by approximately1000ms per message |
+| 03 | Start Wire on SDA9/SCL8 | Programme still runs; no sensor readings yet |
+| 04 | Ask the MPU6050 library whether it responds | A clear connected/missing result |
+| 05 | Read only the accelerometer Z axis | Value changes when the sensor is turned |
+| 06 | Read only the gyroscope Z axis | Value changes when the sensor rotates |
 
-Magnetometer and LiDAR are optional later branches of sensor work. They do not become dependencies of the first MPU6050/BMP280 bench program. Identify actual magnetometer silicon first; a GY-271 label alone is not enough.
+Only **step01** will be active after this simplification. Steps02–06 are planned, not secretly included.
 
-## Current iteration
+## After those small steps
 
-1. Commit this plan and minimal project architecture.
-2. Implement a validation ledger that binds acceptance to exact source, hardware configuration and upstream acceptance events. Exercise failure/invalidation with temporary synthetic fixtures only.
-3. Implement board/I2C/MPU6050/BMP280 bench diagnostics in one main.cpp. No PID, Xbox, ROS2, NVS or motor driver in this first implementation.
-4. Compile and retain the real compiler output. If hardware is not connected, stop at **built, physical test pending**.
-5. When the real bench is ready, run 00, then 01, then 02, then 03. Only after reviewing those measurements add calibration in a new commit.
+Continue with separate commits: add accelerometerX; add accelerometerY; add gyroX; add gyroY; initialise BMP280; print pressure; print temperature. Each is its own lesson.
 
-## Offline work and failed steps
+Then test the actual magnetometer identity, and later one LiDAR reading, using a suitable Arduino library for the identified device. Do not guess an HMC driver for a QMC chip. Do not add ROS2 or Xbox while learning these sensor calls.
 
-```text
-Implement A -> compile A -> physical acceptance A -> implement B -> acceptance B
-                   |
-                   +-> optional offline preparation of B (not accepted)
+### Calibration, one idea at a time
 
-A fails -> record failure -> block B and descendants -> fix A -> retest A
-       -> discard/replace obsolete active B implementation -> retest new B
-```
+1. Average a small group of stationary gyroX readings.
+2. Subtract that one bias and print the result.
+3. Repeat for gyroY, then gyroZ, in separate steps.
+4. Explain and add standard deviation for one axis.
+5. Record one accelerometer orientation, then its opposite.
+6. Calculate offset/scale for that one axis; test it.
+7. Repeat the other axes individually.
+8. Save one calibration value with Preferences; test reading it back.
+9. Add reboot persistence, then a complete versioned record and corruption checks, separately.
 
-The code can be developed without hardware. What cannot be done without hardware is claiming its physical acceptance. Do not automatically erase a later step's code after a failure: it may be useful diagnostic evidence. Keep it in Git history; remove it from the active build with a descriptive new commit when it relies on an invalid assumption. Never force-reset shared history to hide a failed trial.
+Barometer baseline and LiDAR/reference-distance tests are later small lessons too. Magnetometer calibration follows identification and raw-data tests. Nothing here claims a sensor has already passed in reality.
 
-A fresh pass for A does not silently restore B's old pass. B must be tested against the new accepted A. Changes to source, bench wiring/configuration or original evidence similarly make old acceptance stale. A simulation pass remains simulation evidence; its parameter assumptions still require measurement.
+### Flight software later
 
-## Questions resolved later by measurement
+After understanding and testing sensors/calibration: Xbox connection; one stick; one mapping; one disconnect check. Then one angle estimate, one control loop, and one mixer calculation at a time. Introduce the Arduino libraries only when their lesson needs them.
 
-Exact ESP32/module revisions; sensor orientation; supply after breakout regulators; I2C pull-ups; mass/CG/inertia; motor identity; thrust/current/lag with9047 props and3S; ESC protocol/range; LiDAR placement; companion platform. The initial programme measures sensors, not these unknown flight parameters.
+The eventual standalone mode stays **yaw rate, pitch/roll angle, altitude hold plus vertical-speed command, with no XY braking**. ROS2 communication/navigation comes after the standalone fundamentals. No motor pulses or arming are added under the current instruction.
 
-## Confirmed control scope
+## If a step fails
 
-The user has the full ESP32-S3 drone assembly, including MPU6050, barometer, magnetometer, LiDAR and companion. Only sensor/calibration diagnostics are authorized in this iteration. The future standalone mode is yaw rate, roll/pitch angle, and fixed altitude plus vertical-speed commands, using PIDs. **No automatic XY brake or position hold.** Zero tilt does not itself cancel horizontal momentum. ROS2 is a later optional extension. The initial host probe found no COM ports; no firmware was uploaded.
+If06 fails after07–10 were prepared, return to06's implementation checkpoint in a repair branch. Fix and test06. Old07–10 do not remain in the active build. Implement a fresh07, reusing old ideas only after reviewing them. Preserve old code, commits and failed evidence as history. Never force-push to hide attempts.
 
-## Hardware availability correction
-
-The user clarified that the drone is not available now. Prepare on the assumption of a full sensor/companion assembly without propellers, but do not mark any bench condition as inspected. No upload or physical sensor test is to be performed in this iteration. The code remains bench-only with inactive motor pins.
+The existing gate/repair tools stay available behind the lessons. You do not have to read those tools to understand the first main.cpp. Earlier sensor diagnostics are archived in `archive/before-small-lessons/` and Git at `a47d4b5`.
