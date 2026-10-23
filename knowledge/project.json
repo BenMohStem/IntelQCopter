@@ -505,6 +505,11 @@
       "id": "source-iteration-publishing-agreement",
       "kind": "file",
       "locator": "AGENTS.md"
+    },
+    {
+      "id": "source-photo-header-audit",
+      "kind": "file",
+      "locator": "artifacts/hardware/photo-headers-20261023/README.md"
     }
   ],
   "facts": [
@@ -1794,6 +1799,17 @@
             "source-dimension-audit"
           ],
           "reason": "User asks to search manufacturer/KiCad reference dimensions, correct PCB and regenerate three real-size masks; purchased-part photos unavailable."
+        },
+        {
+          "revision": 6,
+          "date": "2026-10-23",
+          "status": "implemented",
+          "evidence_level": "build",
+          "statement": "Photo-matched GY-5218pin, BMP2806pin and GY-2715pin2.54mm solder/header landings replace the generic4pin ports. VCC/GND/SCL/SDA order follows supplied photos; AD0 and SDO grounded, BMP280 CSB high through new insulated W24.14 jumpers total. Four large5.08mm-pitch F2 Mini wire pads retained with explicit TX/RX wire map. Existing ESP32 firmware GPIO assignments retained; all four DevKit GND pins on solid common ground. Native DRC/ERC/unrouted/parity zero, independently checked41 expected pin nets. Final mask digital short/continuity audit passes;133 pads,21 ground pads,399 white drill centres over3copies. No hardware validation.",
+          "sources": [
+            "source-photo-header-audit"
+          ],
+          "reason": "User supplies actual sensor photos and requests corrected one-sided KiCad wiring and LiDAR solder holes."
         }
       ]
     },
@@ -1836,6 +1852,17 @@
             "source-dimension-audit"
           ],
           "reason": "User asks to search manufacturer/KiCad reference dimensions, correct PCB and regenerate three real-size masks; purchased-part photos unavailable."
+        },
+        {
+          "revision": 4,
+          "date": "2026-10-23",
+          "status": "pending",
+          "evidence_level": "source",
+          "statement": "Signal labels now come from user module photos. Nominal2.54mm header pitch is not physically measured; module bodies/mounting holes remain unmodelled and use offboard wires. DevKit geometry still genuine/reference2x22DevKitC-1. Confirm real clone fit, HMC versus QMC identity, actual sensor supply after breakout LDO, bus pull-up resistance, regulator/current sensor and etching/drilling before assembly.",
+          "sources": [
+            "source-photo-header-audit"
+          ],
+          "reason": "User supplies actual sensor photos and requests corrected one-sided KiCad wiring and LiDAR solder holes."
         }
       ]
     },

@@ -28,3 +28,7 @@ Latest PCB dimensions: [selected manufacturer reference guide](../hardware/home-
 [Documentation map](README.md) · [Current factual knowledge](../knowledge/current.md) · [Launch](run-simulation.md) · [Math](current-model-and-fc-integration.html) · [Measurement worksheets](../measurements/README.md).
 
 The RP2350/RP2040 radio architecture remains on main. Earlier chronological status text is [retained in the documentation archive](../archive/documentation/README.md).
+
+## 23 October: photo-matched PCB correction
+
+[Current PCB assembly/wiring](../hardware/home-etched-fc/README.md) supersedes the generic4pin sensor ports: MPU6050/BMP280/GY-271 now8/6/5pin landings, BMP CSB via W24,14 insulated links. [Original audit](../artifacts/hardware/photo-headers-20261023/README.md). Bodies remain offboard on wires; no flight or physical fit validation.

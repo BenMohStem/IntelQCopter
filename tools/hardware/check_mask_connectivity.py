@@ -33,6 +33,6 @@ for a in data['pads']:
  if key in targets:
   x,y=(30+10*a['xy'][0],80+10*a['xy'][1]);tx,ty=targets[key]
   draw.ellipse((x-15,y-15,x+15,y+15),outline='#00ad70',width=4);draw.line((x+15,y,tx-8,ty+10),fill='#00ad70',width=3);draw.text((tx,ty),f'{key[0]} pin {key[1]} = GND',fill='#15654e',font=font)
-draw.text((1060,810),'No W22 required.\nSolid pad connections.\n13 insulated wire links remain.\n\nThis annotated proof is\nNOT the print mask.',fill='#24495c',font=font,spacing=9)
+draw.text((1060,810),'No W22 required.\nSolid pad connections.\n14 insulated wire links remain.\n\nThis annotated proof is\nNOT the print mask.',fill='#24495c',font=font,spacing=9)
 canvas.save(A/'ground-connection-proof.png')
 print(json.dumps(report,indent=2))

@@ -7,7 +7,7 @@
 		(at 0 0 0)
 		(layer "F.SilkS")
 		(hide yes)
-		(uuid "755be4f0-f014-4100-8dbf-24e32481d934")
+		(uuid "2a1b6499-5094-49ee-b8e5-4e9315cf33f2")
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -18,7 +18,7 @@
 		(at 0 0 0)
 		(layer "F.Fab")
 		(hide yes)
-		(uuid "68a7c2c7-d0ab-47f5-ac90-309f3ce02a65")
+		(uuid "ff9ca2f4-cae9-48c8-b25f-26a8f46dc8d7")
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -29,7 +29,7 @@
 		(at 0 0 0)
 		(layer "F.Fab")
 		(hide yes)
-		(uuid "4b689392-2492-44ec-a9d9-3842e1fe43d9")
+		(uuid "75d59d32-181c-4715-adb5-078341759e88")
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -40,7 +40,7 @@
 		(at 0 0 0)
 		(layer "F.Fab")
 		(hide yes)
-		(uuid "25a7192f-e5cb-43b1-be4e-cb062d82aa9d")
+		(uuid "ec687e83-d923-4029-bb80-879c7fd976b1")
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -56,7 +56,7 @@
 			(type default)
 		)
 		(layer "F.Fab")
-		(uuid "735e3d39-28f5-4659-b988-9d2f54f72541")
+		(uuid "aec1093e-bd50-4ebb-8453-6c68bbaa9734")
 	)
 	(fp_line
 		(start -4.5 1.3)
@@ -66,7 +66,7 @@
 			(type default)
 		)
 		(layer "F.Fab")
-		(uuid "c94ad6ae-3a8e-42ac-91cc-366ea664eee4")
+		(uuid "6bdb72d5-eaf0-4600-b198-49c4a77b4235")
 	)
 	(fp_line
 		(start -0.5 -1.3)
@@ -76,7 +76,7 @@
 			(type default)
 		)
 		(layer "F.Fab")
-		(uuid "0724577e-82ca-46f6-87b0-48fa7442ffc7")
+		(uuid "297be54e-d72b-4fdf-ba09-092625f2642e")
 	)
 	(fp_line
 		(start -0.5 1.3)
@@ -86,7 +86,7 @@
 			(type default)
 		)
 		(layer "F.Fab")
-		(uuid "8904abc6-d6d1-4a3c-884f-83a1b6882a4d")
+		(uuid "b9663b98-3468-4726-88da-8c555167266a")
 	)
 	(pad "1" thru_hole circle
 		(at 0 0)
@@ -94,7 +94,7 @@
 		(drill 1.2)
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
-		(uuid "7d421fc2-1a23-4cfe-9db9-366933a51bd2")
+		(uuid "c896570a-29fa-4048-bc74-5b8befa24571")
 	)
 	(pad "2" thru_hole circle
 		(at -5 0)
@@ -103,7 +103,7 @@
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
 		(zone_connect 2)
-		(uuid "73b6e146-f817-4963-9346-c50dca037ff0")
+		(uuid "8bd9b33b-fded-4486-9dce-9a6d432fe00e")
 	)
 	(embedded_fonts no)
 )

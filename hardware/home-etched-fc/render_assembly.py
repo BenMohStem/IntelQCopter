@@ -2,7 +2,7 @@
 from pathlib import Path
 import json,csv,xml.etree.ElementTree as E,hashlib,math
 from PIL import Image,ImageDraw,ImageFont
-D=Path(__file__).resolve().parent;R=D.parents[1];A=R/'artifacts/hardware/reference-dimensions-20261023'
+D=Path(__file__).resolve().parent;R=D.parents[1];A=R/'artifacts/hardware/photo-headers-20261023'
 def main():
  data=json.loads((D/'components-and-nets.json').read_text());model={}
  for c in data['components']:
@@ -14,7 +14,7 @@ def main():
  actual={k:v for k,v in actual.items() if not k.startswith('unconnected-')}
  mismatch={k:dict(model=sorted(model.get(k,set())),schematic=sorted(actual.get(k,set()))) for k in set(model)|set(actual) if model.get(k,set())!=actual.get(k,set())}
  drc=json.loads((A/'drc.json').read_text());erc=json.loads((A/'erc.json').read_text())
- report=dict(engine='KiCad 10.0.6 native DRC/ERC/netlist export; independent model-to-netlist comparison',DRC_violations=len(drc['violations']),unrouted=len(drc['unconnected_items']),schematic_parity_issues=len(drc.get('schematic_parity',[])),ERC_violations=sum(len(x['violations']) for x in erc['sheets']),schematic_matches_pad_nets=not mismatch,mismatches=mismatch,net_count=len(model),component_count=len(data['components']),insulated_links=len(data['wire_links']),assumptions=['Genuine/reference ESP32-S3-DevKitC-1 2x22 header geometry; purchased board must fit paper template','3.3V-compatible external sensor breakouts with mapped pigtails; no assumed clone pin order','External regulated5V; no motor current on PCB','Exact F2 Mini uses regulated5V via W23 and 3.3V UART; current sensor not selected; ADC/HMC/lidar firmware unfinished','100x100mm carrier and its mounting pattern not checked on actual F450 frame','DRC/ERC validate carrier connectivity/geometry; external modules are passive connectors, no voltage-domain or dynamic flight proof'],hashes={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in [D/'esp32_home_etch.kicad_pcb',D/'esp32_home_etch.kicad_sch',D/'generate_board.py',D/'generate_schematic.py']})
+ report=dict(engine='KiCad 10.0.6 native DRC/ERC/netlist export; independent model-to-netlist comparison',DRC_violations=len(drc['violations']),unrouted=len(drc['unconnected_items']),schematic_parity_issues=len(drc.get('schematic_parity',[])),ERC_violations=sum(len(x['violations']) for x in erc['sheets']),schematic_matches_pad_nets=not mismatch,mismatches=mismatch,net_count=len(model),component_count=len(data['components']),insulated_links=len(data['wire_links']),assumptions=['Genuine/reference ESP32-S3-DevKitC-1 2x22 header geometry; purchased board must fit paper template','GY-521 8pin, BMP280 6pin, GY-271 5pin signal order from user photos; 2.54mm pitch nominal, bodies on wires','External regulated5V; no motor current on PCB','Exact F2 Mini uses regulated5V via W23 and 3.3V UART; current sensor not selected; ADC/HMC/lidar firmware unfinished','100x100mm carrier and its mounting pattern not checked on actual F450 frame','DRC/ERC validate carrier connectivity/geometry; external modules are passive connectors, no voltage-domain or dynamic flight proof'],hashes={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in [D/'esp32_home_etch.kicad_pcb',D/'esp32_home_etch.kicad_sch',D/'generate_board.py',D/'generate_schematic.py']})
  (A/'verification-summary.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf8')
  if mismatch:raise RuntimeError('Schematic/model net mismatch: '+str(mismatch))
  with (D/'drill-table.csv').open('w',newline='',encoding='utf8') as f:
@@ -26,7 +26,7 @@ def main():
   w=csv.writer(f);w.writerow(['Reference','Role','Value','Pad_mm','Drill_mm'])
   for c in data['components']:w.writerow([c['ref'],c['role'],c['value'],c['pad_diameter_mm'],c['drill_mm']])
  # Connector map is always regenerated from the actual component specification.
- mapping=['# Connector pin map','', 'Component-side view. These are carrier wire ports, not assumed module header pin orders. J2 is the DevKit right header (Espressif calls it J3).','', '| Reference | Function | Pin: net |','|---|---|---|']
+ mapping=['# Connector pin map','', 'Component-side view. J4/J5/J6 match photographed signal order; all start VCC,GND,SCL,SDA. Module bodies mount offboard on wires. J2 is the DevKit right header (Espressif calls it J3).','', '| Reference | Function | Pin: net |','|---|---|---|']
  for component in data['components']:
   if not component['ref'].startswith('J'):continue
   pins='; '.join(pad['number']+': '+(pad['net'] or 'NC') for pad in component['pads'])
@@ -48,7 +48,7 @@ def main():
  ox,oy,scale=55,135,10.3
  def xy(x,y):return (round(ox+x*scale),round(oy+y*scale))
  draw.text((55,22),'ESP32-S3 / Xbox competition carrier',(238,247,255),font=font(32))
- draw.text((55,65),'Component-side assembly view | 100 x 100 mm | bottom copper + 13 insulated links',(170,203,222),font=font(20))
+ draw.text((55,65),'Component-side assembly view | 100 x 100 mm | bottom copper + 14 insulated links',(170,203,222),font=font(20))
  draw.rectangle([xy(0,0),xy(100,100)],fill='#e8d4a9',outline='white',width=2)
  native=json.loads((D/'output/native-copper-geometry.json').read_text())
  for zone in native['zones']:

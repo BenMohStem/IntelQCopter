@@ -8,7 +8,7 @@
       "canonical_source": "firmware/src/flight_controller.cpp",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "6c878556e7ab29629a0cf954b4883ad87dad9f817349e1cd706c23733cf6d59c"
     },
     {
@@ -16,7 +16,7 @@
       "canonical_source": "firmware/include/fc_api.h",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "fbd292de8d170cb35beb10294bac95182913cb77336e7355823f8a91e3b0a4e0"
     },
     {
@@ -24,7 +24,7 @@
       "canonical_source": "platformio.ini",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "f362b1f9689debaaf1518fc1b4a281faf1a9be145a0ad45cea3145b5dd658d07"
     },
     {
@@ -32,7 +32,7 @@
       "canonical_source": "tools/platformio/patch_xbox.py",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "26ad33e8b365822f1f8e41587c10312837cfa072e47f1c0f95ff7cabfdf3359a"
     },
     {
@@ -56,7 +56,7 @@
       "canonical_source": "companion/ros2_ws/src/qcopter_autonomy/CMakeLists.txt",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "6ca98a30a98d2449fdd722aa8b227600a04ffd9ff1a9876cd04194f5ac3025ef"
     },
     {
@@ -64,7 +64,7 @@
       "canonical_source": "companion/ros2_ws/src/qcopter_autonomy/include/qcopter_autonomy/mission.hpp",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "6869bf9d9422501679d92dba561b487328e63304d31db1f54b53b8ceeb9baa3c"
     },
     {
@@ -72,7 +72,7 @@
       "canonical_source": "companion/ros2_ws/src/qcopter_autonomy/include/qcopter_autonomy/navigation.hpp",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "a6a845b1aced9f5eec369bb487ed55db4de5c9cd08054cb31fad76b1c2cae7eb"
     },
     {
@@ -80,7 +80,7 @@
       "canonical_source": "companion/ros2_ws/src/qcopter_autonomy/launch/esp32_companion.launch.py",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "5c58c32d317f02fa7e22c8f06d3ef461910077d177d8abf26b80f0ee1c05b1ef"
     },
     {
@@ -88,7 +88,7 @@
       "canonical_source": "companion/ros2_ws/src/qcopter_autonomy/launch/garden_mission.launch.py",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "fcf7bcf48ab7ce7b7830b516df78e976e0f5166ea5edfb31d56580f1a5e75496"
     },
     {
@@ -96,7 +96,7 @@
       "canonical_source": "companion/ros2_ws/src/qcopter_autonomy/launch/simulation.launch.py",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "3ae17a2539814682f3318a77254394f0cd0a57f65c42f07107b2192127323db4"
     },
     {
@@ -104,7 +104,7 @@
       "canonical_source": "companion/ros2_ws/src/qcopter_autonomy/msg/AutonomySetpoint.msg",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "122da3df907984e11815da78eefaea0e4437574f7d8373bc3ed525f5de5e08d9"
     },
     {
@@ -112,7 +112,7 @@
       "canonical_source": "companion/ros2_ws/src/qcopter_autonomy/msg/MetricObstacles.msg",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "72df14a80aaf1b29ccbcebc1e616153396ca1cea807808528f8638f104c0f94c"
     },
     {
@@ -120,7 +120,7 @@
       "canonical_source": "companion/ros2_ws/src/qcopter_autonomy/msg/SemanticDetection.msg",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "de859cbab22ff888251d1e4ac7c1cffb90237d6e670c8a7119a017644ce240ac"
     },
     {
@@ -128,7 +128,7 @@
       "canonical_source": "companion/ros2_ws/src/qcopter_autonomy/msg/SemanticDetections.msg",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "6e65f484a0278b071ff50afa13a9968634f3386708b64926e99fd6b7d427ed3f"
     },
     {
@@ -136,7 +136,7 @@
       "canonical_source": "companion/ros2_ws/src/qcopter_autonomy/package.xml",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "2f2a2996461a4c013c813e1312f85fced1c94b49a4628428d2750c58088d9155"
     },
     {
@@ -144,7 +144,7 @@
       "canonical_source": "companion/ros2_ws/src/qcopter_autonomy/src/image_view.hpp",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "13e8d337abb4f67806c9105e9e85456026630cd34fb5ef39358cae6c12eb428b"
     },
     {
@@ -152,7 +152,7 @@
       "canonical_source": "companion/ros2_ws/src/qcopter_autonomy/src/mission.cpp",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "177339842ae1e7a4b16ab907f7af0ceaae61262a22616930d7cc6e75458350e5"
     },
     {
@@ -160,7 +160,7 @@
       "canonical_source": "companion/ros2_ws/src/qcopter_autonomy/src/mission_client.cpp",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "70415381d2e2e1031644c731c1f92886dc4ac0e14fa61a5d7ba44e2da685134f"
     },
     {
@@ -168,7 +168,7 @@
       "canonical_source": "companion/ros2_ws/src/qcopter_autonomy/src/mission_node.cpp",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "a5562ef97934df09f4fc734da53c06d59525d2e3a232e0c1ca68e8362b4e481a"
     },
     {
@@ -176,7 +176,7 @@
       "canonical_source": "companion/ros2_ws/src/qcopter_autonomy/src/navigation.cpp",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "e0446fedd3d92c1296a68ef6cd4bcac4f37201700c6f2a696da5e51409fef4cf"
     },
     {
@@ -184,7 +184,7 @@
       "canonical_source": "companion/ros2_ws/src/qcopter_autonomy/src/navigator_node.cpp",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "144276bdf99ccd00e8662b556a3d4d7d16c70a9f4d2cbcd810afb53e6ae104c5"
     },
     {
@@ -192,7 +192,7 @@
       "canonical_source": "companion/ros2_ws/src/qcopter_autonomy/src/panel_pose_node.cpp",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "a6d365ec13f3086bfb79b1c1995f544bc9f07a3509bc5f939b01757e29e82a8c"
     },
     {
@@ -200,7 +200,7 @@
       "canonical_source": "companion/ros2_ws/src/qcopter_autonomy/src/pilot_mission_node.cpp",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "6aada02cf5c5f219d5f3bcd1c548cef7a8ca3ae71733bbf3caa533576a7fe260"
     },
     {
@@ -208,7 +208,7 @@
       "canonical_source": "companion/ros2_ws/src/qcopter_autonomy/src/profile.hpp",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "e8d79ed492c9e609a602fb9912bb66d5d69874c2ab0e5185e64a62f6a8095b46"
     },
     {
@@ -216,7 +216,7 @@
       "canonical_source": "companion/ros2_ws/src/qcopter_autonomy/src/uart_bridge_node.cpp",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "132851d81450025a6481457a5313c5d9289ffe4d8d95736e6343b1481d95d44f"
     },
     {
@@ -224,7 +224,7 @@
       "canonical_source": "companion/ros2_ws/src/qcopter_autonomy/src/yolo_node.cpp",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "a205a0a538fc6d8d21daa265a479640b4a0c1ca5f73116e8a4ef7bea9856045b"
     },
     {
@@ -232,7 +232,7 @@
       "canonical_source": "companion/ros2_ws/src/qcopter_autonomy/srv/RequestMission.srv",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "0ed5def5c13d7bae414926a2e1b0281c919cae77b7fb3a9feaa3fbb11ba62f69"
     },
     {
@@ -240,7 +240,7 @@
       "canonical_source": "companion/ros2_ws/src/qcopter_autonomy/srv/RequestRoute.srv",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "1880bc9583dd78b68801fb05f17f1abd3554830858086a7f3f4aa16746871922"
     },
     {
@@ -248,7 +248,7 @@
       "canonical_source": "simulation/gazebo/engine.py",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "22b9f06d5d392f1fd8d6b4142e57994c4cf0e560c470ab8b7202de9be50185f5"
     },
     {
@@ -256,7 +256,7 @@
       "canonical_source": "simulation/gazebo/fc_binding.py",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "f26fd5571f32662e2503fb3764a98542fbae4e200e32f7a2ebaec5699367bf1c"
     },
     {
@@ -264,7 +264,7 @@
       "canonical_source": "simulation/gazebo/build_world.py",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "8828340939d2ccc56ba391ac3394932a9f3843c6ef881fccaecf8f06c9bebaf5"
     },
     {
@@ -272,7 +272,7 @@
       "canonical_source": "simulation/gazebo/environments.json",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "8b282721aae87589c834ae591b0e51562cebf93578f7ebd925c7740ae3b25088"
     },
     {
@@ -280,7 +280,7 @@
       "canonical_source": "simulation/gazebo/ros_bridge.py",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "f488a986891f9369f2247ad7de696df93a66eadf70ced6f11d87f2ef40bc115f"
     },
     {
@@ -288,7 +288,7 @@
       "canonical_source": "simulation/gazebo/live_session.py",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "eb88f868ce33987e1cd9fa5eb2308ebacbf3bf3710df1faee0b80f793fa3e0ba"
     },
     {
@@ -296,7 +296,7 @@
       "canonical_source": "simulation/gazebo/live_standalone.py",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "0a9247153f01022ffdd72d4fc614ea8f1e45b3b5ce0ce0b0c364862dd6618f6c"
     },
     {
@@ -304,7 +304,7 @@
       "canonical_source": "simulation/gazebo/session_controls.py",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "96af28568c0d2a05323d793bde22e6ef75ef935e59ed84b8dbc8f0ce5e25fa3c"
     },
     {
@@ -312,7 +312,7 @@
       "canonical_source": "simulation/gazebo/experiment_settings.py",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "91560878766f00f58d1642061eb33602ab124afeb4d6b443783d936d59c01f56"
     },
     {
@@ -320,7 +320,7 @@
       "canonical_source": "simulation/gazebo/station_manager.py",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "38c24f7391b351358f80d652c5a9c980a3fe9fec6f4e1b090958c0e6c905d59b"
     },
     {
@@ -328,7 +328,7 @@
       "canonical_source": "simulation/model/parameters.json",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "61a2b6134211269edfcf9024b6390c5a9fff68b3e00cfac8c20dbc212df83103"
     },
     {
@@ -336,7 +336,7 @@
       "canonical_source": "companion/pc_mission_map.py",
       "source_branch": "esp32-xbox",
       "source_kind": "working-tree",
-      "source_commit": "64794c8cc81293c8cfeca4c92e2dd801e32cc4ad",
+      "source_commit": "f8b87729676a9abbce9a392a855110d47ed7c3bc",
       "sha256": "7baa4d84569ad552c278456472c0467ed8af7f4d0e36fae624d6dd82a3ddd80d"
     },
     {

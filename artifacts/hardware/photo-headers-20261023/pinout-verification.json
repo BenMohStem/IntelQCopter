@@ -1,0 +1,18 @@
+{
+  "engine": "KiCad10.0.6 pcbnew native pad net and geometry inspection",
+  "passed": true,
+  "scope": "Digital module header signal order and selected genuine DevKit header GPIOs; purchased board/body fit not measured",
+  "independent_expected_pin_nets": 41,
+  "sensor_pin_counts": [
+    8,
+    6,
+    5
+  ],
+  "lidar_wire_pads": 4,
+  "sensor_pitch_mm": 2.54,
+  "only_bottom_copper_routes": true,
+  "no_vias": true,
+  "board_sha256": "9e69b516cc867ca4360189467a4b509a1d2e779de47718b449ab7142d16e865d",
+  "physical_bench_test": false,
+  "source_references": "sources.json"
+}

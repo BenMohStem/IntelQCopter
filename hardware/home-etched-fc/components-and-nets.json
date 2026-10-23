@@ -307,99 +307,162 @@
     {
       "ref": "J4",
       "role": "J_IMU",
-      "value": "MPU6050 WIRE PORT",
-      "pad_diameter_mm": 3.2,
-      "drill_mm": 1.2,
+      "value": "GY-521 MPU6050",
+      "pad_diameter_mm": 1.94,
+      "drill_mm": 1.1,
       "pads": [
         {
           "number": "1",
-          "x": 8,
-          "y": 45,
-          "net": "GND"
-        },
-        {
-          "number": "2",
-          "x": 13.08,
+          "x": 8.0,
           "y": 45,
           "net": "SENS_3V3"
         },
         {
+          "number": "2",
+          "x": 10.54,
+          "y": 45,
+          "net": "GND"
+        },
+        {
           "number": "3",
-          "x": 18.16,
+          "x": 13.08,
+          "y": 45,
+          "net": "I2C_SCL"
+        },
+        {
+          "number": "4",
+          "x": 15.62,
           "y": 45,
           "net": "I2C_SDA"
         },
         {
-          "number": "4",
+          "number": "5",
+          "x": 18.16,
+          "y": 45,
+          "net": ""
+        },
+        {
+          "number": "6",
+          "x": 20.7,
+          "y": 45,
+          "net": ""
+        },
+        {
+          "number": "7",
           "x": 23.24,
           "y": 45,
-          "net": "I2C_SCL"
+          "net": "GND"
+        },
+        {
+          "number": "8",
+          "x": 25.78,
+          "y": 45,
+          "net": ""
         }
       ]
     },
     {
       "ref": "J5",
       "role": "J_BARO",
-      "value": "BMP280 WIRE PORT",
-      "pad_diameter_mm": 3.2,
-      "drill_mm": 1.2,
+      "value": "GY-BM280 I2C",
+      "pad_diameter_mm": 1.94,
+      "drill_mm": 1.1,
       "pads": [
         {
           "number": "1",
-          "x": 8,
-          "y": 55,
-          "net": "GND"
-        },
-        {
-          "number": "2",
-          "x": 13.08,
+          "x": 8.0,
           "y": 55,
           "net": "SENS_3V3"
         },
         {
+          "number": "2",
+          "x": 10.54,
+          "y": 55,
+          "net": "GND"
+        },
+        {
           "number": "3",
-          "x": 18.16,
+          "x": 13.08,
+          "y": 55,
+          "net": "I2C_SCL"
+        },
+        {
+          "number": "4",
+          "x": 15.62,
           "y": 55,
           "net": "I2C_SDA"
         },
         {
-          "number": "4",
-          "x": 23.24,
+          "number": "5",
+          "x": 18.16,
           "y": 55,
-          "net": "I2C_SCL"
+          "net": "BARO_CSB"
+        },
+        {
+          "number": "6",
+          "x": 20.7,
+          "y": 55,
+          "net": "GND"
         }
       ]
     },
     {
       "ref": "J6",
       "role": "J_MAG",
-      "value": "HMC5883L WIRE PORT",
-      "pad_diameter_mm": 3.2,
+      "value": "GY-271 MAG",
+      "pad_diameter_mm": 1.94,
+      "drill_mm": 1.1,
+      "pads": [
+        {
+          "number": "1",
+          "x": 8.0,
+          "y": 75,
+          "net": "SENS_3V3"
+        },
+        {
+          "number": "2",
+          "x": 10.54,
+          "y": 75,
+          "net": "GND"
+        },
+        {
+          "number": "3",
+          "x": 13.08,
+          "y": 75,
+          "net": "I2C_SCL"
+        },
+        {
+          "number": "4",
+          "x": 15.62,
+          "y": 75,
+          "net": "I2C_SDA"
+        },
+        {
+          "number": "5",
+          "x": 18.16,
+          "y": 75,
+          "net": ""
+        }
+      ]
+    },
+    {
+      "ref": "W24",
+      "role": "W24",
+      "value": "INSULATED_WIRE",
+      "pad_diameter_mm": 2.8,
       "drill_mm": 1.2,
       "pads": [
         {
           "number": "1",
           "x": 8,
-          "y": 75,
-          "net": "GND"
-        },
-        {
-          "number": "2",
-          "x": 13.08,
-          "y": 75,
+          "y": 62,
           "net": "SENS_3V3"
         },
         {
-          "number": "3",
+          "number": "2",
           "x": 18.16,
-          "y": 75,
-          "net": "I2C_SDA"
-        },
-        {
-          "number": "4",
-          "x": 23.24,
-          "y": 75,
-          "net": "I2C_SCL"
+          "y": 62,
+          "net": "BARO_CSB"
         }
       ]
     },
@@ -706,7 +769,7 @@
     {
       "ref": "J13",
       "role": "J_LIDAR",
-      "value": "F2 MINI: REG 5V",
+      "value": "F2 MINI WIRE PADS",
       "pad_diameter_mm": 3.2,
       "drill_mm": 1.2,
       "pads": [
@@ -820,7 +883,7 @@
         },
         {
           "number": "2",
-          "x": 13.08,
+          "x": 8,
           "y": 39,
           "net": "SENS_3V3"
         }
@@ -967,8 +1030,8 @@
         },
         {
           "number": "2",
-          "x": 23.24,
-          "y": 39,
+          "x": 13.08,
+          "y": 38,
           "net": "I2C_SCL"
         }
       ]
@@ -988,8 +1051,8 @@
         },
         {
           "number": "2",
-          "x": 18.16,
-          "y": 39,
+          "x": 15.62,
+          "y": 41,
           "net": "I2C_SDA"
         }
       ]
@@ -1081,6 +1144,21 @@
   ],
   "wire_links": [
     {
+      "ref": "W24",
+      "from_xy_mm": [
+        8,
+        62
+      ],
+      "from_net": "SENS_3V3",
+      "to_xy_mm": [
+        18.16,
+        62
+      ],
+      "to_net": "BARO_CSB",
+      "minimum_straight_length_mm": 10.2,
+      "instruction": "BMP280 CSB HIGH for I2C: fit this insulated wire"
+    },
+    {
       "ref": "W1",
       "from_xy_mm": [
         30,
@@ -1088,11 +1166,11 @@
       ],
       "from_net": "3V3",
       "to_xy_mm": [
-        13.08,
+        8,
         39
       ],
       "to_net": "SENS_3V3",
-      "minimum_straight_length_mm": 30.2,
+      "minimum_straight_length_mm": 33.3,
       "instruction": "3V3 sensor supply"
     },
     {
@@ -1193,11 +1271,11 @@
       ],
       "from_net": "GPIO8",
       "to_xy_mm": [
-        23.24,
-        39
+        13.08,
+        38
       ],
       "to_net": "I2C_SCL",
-      "minimum_straight_length_mm": 11.2,
+      "minimum_straight_length_mm": 21.3,
       "instruction": "Shared I2C clock"
     },
     {
@@ -1208,11 +1286,11 @@
       ],
       "from_net": "GPIO9",
       "to_xy_mm": [
-        18.16,
-        39
+        15.62,
+        41
       ],
       "to_net": "I2C_SDA",
-      "minimum_straight_length_mm": 15.9,
+      "minimum_straight_length_mm": 16.7,
       "instruction": "Shared I2C data"
     },
     {
@@ -1284,7 +1362,19 @@
         19.08
       ],
       "end": [
-        8,
+        4,
+        19.08
+      ],
+      "width": 2.0
+    },
+    {
+      "net": "GND",
+      "start": [
+        4,
+        19.08
+      ],
+      "end": [
+        4,
         93
       ],
       "width": 2.0
@@ -1292,7 +1382,7 @@
     {
       "net": "GND",
       "start": [
-        8,
+        4,
         93
       ],
       "end": [
@@ -1314,25 +1404,37 @@
       "width": 2.0
     },
     {
-      "net": "SENS_3V3",
+      "net": "GND",
       "start": [
-        13.08,
-        39
+        10.54,
+        45
       ],
       "end": [
-        13.08,
-        75
+        10.54,
+        77.5
       ],
-      "width": 1.5
+      "width": 0.8
     },
     {
-      "net": "I2C_SDA",
+      "net": "GND",
       "start": [
-        18.16,
+        10.54,
+        77.5
+      ],
+      "end": [
+        30.32,
+        77.5
+      ],
+      "width": 0.8
+    },
+    {
+      "net": "SENS_3V3",
+      "start": [
+        8,
         39
       ],
       "end": [
-        18.16,
+        8,
         75
       ],
       "width": 1.0
@@ -1340,12 +1442,36 @@
     {
       "net": "I2C_SCL",
       "start": [
-        23.24,
-        39
+        13.08,
+        38
       ],
       "end": [
-        23.24,
+        13.08,
         75
+      ],
+      "width": 1.0
+    },
+    {
+      "net": "I2C_SDA",
+      "start": [
+        15.62,
+        41
+      ],
+      "end": [
+        15.62,
+        75
+      ],
+      "width": 1.0
+    },
+    {
+      "net": "BARO_CSB",
+      "start": [
+        18.16,
+        55
+      ],
+      "end": [
+        18.16,
+        62
       ],
       "width": 1.0
     },
@@ -1392,7 +1518,7 @@
         34
       ],
       "end": [
-        8,
+        4,
         34
       ],
       "width": 1.0
@@ -1644,7 +1770,7 @@
         83
       ],
       "end": [
-        8,
+        4,
         83
       ],
       "width": 1.0
@@ -1652,26 +1778,26 @@
     {
       "net": "SENS_3V3",
       "start": [
-        13.08,
+        8,
         75
       ],
       "end": [
-        13.08,
+        8,
         79.5
       ],
-      "width": 1.5
+      "width": 1.0
     },
     {
       "net": "SENS_3V3",
       "start": [
-        13.08,
+        8,
         79.5
       ],
       "end": [
         20.08,
         79.5
       ],
-      "width": 1.5
+      "width": 1.0
     },
     {
       "net": "SENS_3V3",
@@ -1683,7 +1809,7 @@
         20.08,
         83
       ],
-      "width": 1.5
+      "width": 1.0
     },
     {
       "net": "CURRENT_IN",

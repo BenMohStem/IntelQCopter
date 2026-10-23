@@ -335,6 +335,12 @@
       "args": [
         "--check"
       ]
+    },
+    "pcb-check-pinouts": {
+      "runtime": "powershell",
+      "path": "tools/hardware/check_photo_pinouts.ps1",
+      "description": "Check native PCB photo-header and DevKit GPIO assignments",
+      "args": []
     }
   }
 }

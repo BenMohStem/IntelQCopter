@@ -1,13 +1,14 @@
 Link,From XY mm,From net,To XY mm,To net,Straight distance mm (add routing/slack),Instruction
-W1,"(30, 14.0)",3V3,"(13.08, 39)",SENS_3V3,30.2,3V3 sensor supply
+W24,"(8, 62)",SENS_3V3,"(18.16, 62)",BARO_CSB,10.2,BMP280 CSB HIGH for I2C: fit this insulated wire
+W1,"(30, 14.0)",3V3,"(8, 39)",SENS_3V3,33.3,3V3 sensor supply
 W4,"(34, 21.62)",GPIO4,"(18.16, 34)",VBAT_ADC,20.1,Voltage RC output to GPIO4; disconnect sense when MCU unpowered
 W5,"(30, 24.16)",GPIO5,"(35.32, 77)",CURRENT_ADC,53.1,Filtered external current signal to GPIO5
 W6,"(34, 26.7)",GPIO6,"(68, 50.16)",LIDAR_RX_FC,41.3,Future lidar TX -> FC RX; driver pending
 W7,"(30, 29.240000000000002)",GPIO7,"(68, 55.24)",LIDAR_TX_FC,46.0,Future lidar RX <- FC TX; driver pending
 W10,"(34, 36.86)",GPIO17,"(78, 40)",COMP_TX,44.1,FC TX -> companion RX
 W11,"(30, 39.4)",GPIO18,"(78, 45.08)",COMP_RX,48.3,FC RX <- companion TX
-W12,"(34, 41.94)",GPIO8,"(23.24, 39)",I2C_SCL,11.2,Shared I2C clock
-W15,"(30, 49.56)",GPIO9,"(18.16, 39)",I2C_SDA,15.9,Shared I2C data
+W12,"(34, 41.94)",GPIO8,"(13.08, 38)",I2C_SCL,21.3,Shared I2C clock
+W15,"(30, 49.56)",GPIO9,"(15.62, 41)",I2C_SDA,16.7,Shared I2C data
 W18,"(34, 57.18)",GPIO12,"(69, 60)",GPIO12_ESC,35.1,FL signal via 220R
 W20,"(34, 62.26)",GPIO14,"(69, 70)",GPIO14_ESC,35.8,RL signal via 220R
 W21,"(30, 64.8)",5V_MCU,"(20, 89)",5V_EXT,26.2,REMOVABLE POWER LINK: remove for USB power

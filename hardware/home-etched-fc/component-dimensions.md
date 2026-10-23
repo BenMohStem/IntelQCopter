@@ -1,3 +1,7 @@
+# Current sensor-header correction
+
+The23October photo-matched revision replaces generic four-wire sensor ports with8/6/5-pin2.54mm header landings. Module bodies stay offboard on wires; neither body dimensions nor mounting holes can be measured precisely from these photos. See [current wiring and orientation guide](README.md). The earlier manufacturer-reference dimensions below still apply to the DevKit and passives; previous statements about four-pin sensor ports are superseded.
+
 # Selected component dimensions and fit
 
 All dimensions are millimetres. These are explicit published reference choices, selected because the exact purchased modules cannot be identified. They are not measurements of the user's parts. Sources are manufacturer documents, not marketplace guesses.

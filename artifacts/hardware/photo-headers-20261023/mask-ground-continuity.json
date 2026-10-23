@@ -1,0 +1,36 @@
+{
+  "engine": "300dpi Poppler rendering of final print PDF + SciPy 4-connected black-pixel component analysis",
+  "scope": "Independent digital mask continuity/no-short check; not a measurement of an etched or assembled board",
+  "threshold": 128,
+  "reference": "J3 pin 1 power GND pad annulus",
+  "pdf_sha256": "9e934eec70cd7a9726fbddf1a525968b8d1551a14f664a5616148fa12c3b4132",
+  "esp32_ground_pads": [
+    {
+      "reference": "J1",
+      "pin": "22",
+      "net": "GND",
+      "same_printed_copper_region_as_power_ground": true
+    },
+    {
+      "reference": "J2",
+      "pin": "1",
+      "net": "GND",
+      "same_printed_copper_region_as_power_ground": true
+    },
+    {
+      "reference": "J2",
+      "pin": "21",
+      "net": "GND",
+      "same_printed_copper_region_as_power_ground": true
+    },
+    {
+      "reference": "J2",
+      "pin": "22",
+      "net": "GND",
+      "same_printed_copper_region_as_power_ground": true
+    }
+  ],
+  "all_ground_pads_connected": true,
+  "non_ground_pads_shorting_to_plane": [],
+  "passed": true
+}

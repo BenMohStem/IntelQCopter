@@ -1,0 +1,36 @@
+{
+  "passed": true,
+  "engine": "pypdf actual PDF content-stream transformation inspection",
+  "copies": 3,
+  "mm_to_points_expected": 2.834645669291339,
+  "actual_copy_transforms": [
+    [
+      2.834646,
+      0.0,
+      0.0,
+      -2.834646,
+      14.17323,
+      737.0079
+    ],
+    [
+      2.834646,
+      0.0,
+      0.0,
+      -2.834646,
+      297.6378,
+      737.0079
+    ],
+    [
+      2.834646,
+      0.0,
+      0.0,
+      -2.834646,
+      155.9055,
+      425.1969
+    ]
+  ],
+  "print_scaling": "None",
+  "no_text": true,
+  "physical_printer_scale_measured": false,
+  "pdf_sha256": "9e934eec70cd7a9726fbddf1a525968b8d1551a14f664a5616148fa12c3b4132"
+}

@@ -7,18 +7,18 @@
 		(at 0 0 0)
 		(layer "F.SilkS")
 		(hide yes)
-		(uuid "17ce5219-8922-4cb2-9b45-0df8b8059a04")
+		(uuid "73d48a21-e0e2-4e4a-b3ac-ef7a2fdcb392")
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 		)
 	)
-	(property "Value" "F2 MINI: REG 5V"
+	(property "Value" "F2 MINI WIRE PADS"
 		(at 0 0 0)
 		(layer "F.Fab")
 		(hide yes)
-		(uuid "4cab5088-e096-4af0-8f53-da2f520347de")
+		(uuid "5aa1d0fd-479e-411d-8ef6-502a1c25a7f5")
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -29,7 +29,7 @@
 		(at 0 0 0)
 		(layer "F.Fab")
 		(hide yes)
-		(uuid "eba040c9-35ae-4450-8863-e7382826fef1")
+		(uuid "0069bf16-0fee-4877-9f19-ca05bd9692b4")
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -40,7 +40,7 @@
 		(at 0 0 0)
 		(layer "F.Fab")
 		(hide yes)
-		(uuid "35346676-72fb-475e-b9ae-cb66958f7168")
+		(uuid "ffa58665-65ba-430e-9607-41e7fe9fa645")
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -55,7 +55,7 @@
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
 		(zone_connect 2)
-		(uuid "910aec2e-76e8-4b78-b39b-ac0b8e4d417e")
+		(uuid "cceaeddf-d002-430f-b06b-ffc2058d8659")
 	)
 	(pad "2" thru_hole circle
 		(at 0 5.08)
@@ -63,7 +63,7 @@
 		(drill 1.2)
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
-		(uuid "0b1a19a5-593a-4f17-b909-b41473ac4294")
+		(uuid "cdbe52e9-4c0a-4318-81d9-fcb77e8dbdee")
 	)
 	(pad "3" thru_hole circle
 		(at 0 10.16)
@@ -71,7 +71,7 @@
 		(drill 1.2)
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
-		(uuid "3b7ee107-7de2-4a5b-8b91-cc99b9e80d3b")
+		(uuid "464f3d69-f268-4ef8-be3a-9277a0e145ae")
 	)
 	(pad "4" thru_hole circle
 		(at 0 15.24)
@@ -79,7 +79,7 @@
 		(drill 1.2)
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
-		(uuid "48fc3472-ebcf-4b03-846c-a06dd4857401")
+		(uuid "4af1bbbd-7802-4626-9cc6-f78b53c37a2d")
 	)
 	(embedded_fonts no)
 )

@@ -48,7 +48,7 @@ Session controls, bridge, live-session management and settings are next to the G
 
 ## 4. PCB — fabrication files
 
-[KiCad project](../hardware/home-etched-fc/esp32_home_etch.kicad_pro) · [Board](../hardware/home-etched-fc/esp32_home_etch.kicad_pcb) · [Three-copy print PDF](../hardware/home-etched-fc/output/pdf/etch-mask-3-copies-A4-1to1.pdf) · [Complete CAD ZIP](../hardware/home-etched-fc/output/IntelQCopter-ESP32-home-etch-KiCad.zip) · [Original power/mask audit](../artifacts/hardware/solid-ground-power-audit-20261021/README.md).
+[KiCad project](../hardware/home-etched-fc/esp32_home_etch.kicad_pro) · [Board](../hardware/home-etched-fc/esp32_home_etch.kicad_pcb) · [Three-copy print PDF](../hardware/home-etched-fc/output/pdf/etch-mask-3-copies-A4-1to1.pdf) · [Complete CAD ZIP](../hardware/home-etched-fc/output/IntelQCopter-ESP32-home-etch-KiCad.zip) · [Original power/mask audit](../artifacts/hardware/photo-headers-20261023/README.md).
 
 ## Keep this shelf current
 
@@ -66,3 +66,5 @@ Latest PCB edition: [manufacturer-reference dimensions and fit](../hardware/home
 ## Iteration policy
 
 Refresh this folder after project source changes and verify it before each project commit/push. The recent friend assistance and ESP32 rework are excluded from publishing unless explicitly included later. Keep the independent friend export outside this reading shelf and the project history.
+
+Current PCB: [photo-matched sensor wiring guide](../hardware/home-etched-fc/sensor-wiring-guide.png), [native board and mask](../hardware/home-etched-fc/README.md), [original checks](../artifacts/hardware/photo-headers-20261023/README.md). Supersedes the earlier generic4pin sensor ports.

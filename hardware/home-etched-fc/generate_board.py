@@ -64,16 +64,29 @@ for a,b in [((ux0,uy0),(ux1,uy0)),((ux1,uy0),(ux1,uy1)),((ux1,uy1),(ux0,uy1)),((
 text('ESP32-S3 DevKitC-1',51.4,9,1.0);text('USB / buttons access',51.4,74.2,.9)
 text('ANTENNA: NO COPPER / METAL',51,3,1.)
 text('TOP / COMPONENT VIEW',50,97.2,1.0)
-# Power and sensor buses. Header order is OUR carrier's, never assumed module order.
+# Photo-matched header order: pin1 VCC, pin2 GND, pin3 SCL, pin4 SDA.
+# These are solder/header landings for modules on wires. Body/hole outlines of
+# unknown clone boards are deliberately not asserted by a chip datasheet.
 fp('J_PWR','REGULATED 5V ONLY',[(1,8,89,'GND'),(2,13.08,89,'5V_EXT')])
 text('GND   +5V IN',12,94.2,1.)
-for ref,y,label in [('J_IMU',45,'MPU6050'),('J_BARO',55,'BMP280'),('J_MAG',75,'HMC5883L')]:
- fp(ref,label+' WIRE PORT',[(i+1,x,y,n) for i,(x,n) in enumerate([(8,'GND'),(13.08,'SENS_3V3'),(18.16,'I2C_SDA'),(23.24,'I2C_SCL')])]);text(label,16,y-3.5,1.0)
-text('GND V3 SDA SCL',16,59.5,.9);text('GND V3 SDA SCL',16,79.3,.9)
-route('GND',[(8,19.08),(8,93),(94.08,93),(94.08,20)],2.)
-route('SENS_3V3',[(13.08,39),(13.08,75)],1.5)
-route('I2C_SDA',[(18.16,39),(18.16,75)],1.)
-route('I2C_SCL',[(23.24,39),(23.24,75)],1.)
+sensor_headers=[
+ ('J_IMU',45,'GY-521 MPU6050',['SENS_3V3','GND','I2C_SCL','I2C_SDA','','','GND','']),
+ ('J_BARO',55,'GY-BM280 I2C',['SENS_3V3','GND','I2C_SCL','I2C_SDA','BARO_CSB','GND']),
+ ('J_MAG',75,'GY-271 MAG',['SENS_3V3','GND','I2C_SCL','I2C_SDA',''])]
+for ref,y,label,names in sensor_headers:
+ fp(ref,label,[(i+1,round(8+2.54*i,2),y,n) for i,n in enumerate(names)],1.94,1.1)
+ text(label,16,y-3.0,.9,p.Dwgs_User)
+ text('1:VCC 2:G 3:SCL 4:SDA',16,y+3.1,.8,p.Dwgs_User)
+# Solid common ground trunk kept clear of the new VCC column at x=8.
+route('GND',[(8,19.08),(4,19.08),(4,93),(94.08,93),(94.08,20)],2.)
+route('GND',[(10.54,45),(10.54,77.5),(30.32,77.5)],.8)
+route('SENS_3V3',[(8,39),(8,75)],1.)
+route('I2C_SCL',[(13.08,38),(13.08,75)],1.)
+route('I2C_SDA',[(15.62,41),(15.62,75)],1.)
+# I2C requires CSB high; SDO low chooses address0x76. AD0 low chooses MPU0x68.
+# The removable top wire W24 crosses the I2C columns without top copper.
+wire('W24',(8,62),'SENS_3V3',(18.16,62),'BARO_CSB','BMP280 CSB HIGH for I2C: fit this insulated wire')
+route('BARO_CSB',[(18.16,55),(18.16,62)],1.)
 # Battery voltage low-current input, divider and RC. NOT an ESC power feed.
 fp('J_BAT','SENSE ONLY',[(1,8,14,'VBAT_SENSE'),(2,8,19.08,'GND')]);text('PACK+ sense',10,10,1.)
 fp('R_VTOP','47k 1%',[(1,14,14,'VBAT_SENSE'),(2,24.16,14,'VBAT_DIV')])
@@ -82,7 +95,7 @@ fp('R_VFILTER','1k',[(1,24.16,29,'VBAT_DIV'),(2,14,29,'VBAT_ADC')])
 fp('C_VFILTER','100nF X7R 5mm',[(1,14,34,'VBAT_ADC'),(2,9.0,34,'GND')])
 route('VBAT_SENSE',[(8,14),(14,14)])
 route('VBAT_DIV',[(24.16,14),(24.16,29)])
-route('GND',[(14,24),(8,24)]);route('GND',[(9.0,34),(8,34)])
+route('GND',[(14,24),(8,24)]);route('GND',[(9.0,34),(4,34)])
 route('VBAT_ADC',[(14,29),(14,34),(18.16,34)])
 text('47k',19,11,.9);text('10k',19,21,.9);text('1k',19,27,.9)
 # ESC signal resistors and signal-ground returns; BEC positive omitted.
@@ -99,14 +112,14 @@ fp('J_ROS','OPTIONAL 3V3 UART',[(1,89,40,'COMP_TX'),(2,89,45.08,'COMP_RX'),(3,89
 route('COMP_TX',[(78,40),(89,40)]);route('COMP_RX',[(78,45.08),(89,45.08)]);route('GND',[(89,50.16),(94.08,50.16)])
 text('ROS TX / RX / G',86,36,1.)
 # Exact TOFSense-F2 Mini: 4.3-5.2V supply, 3.3V UART (official V1.0 datasheet).
-fp('J_LIDAR','F2 MINI: REG 5V',[(1,73,40,'GND'),(2,73,45.08,'LIDAR_5V'),(3,73,50.16,'LIDAR_RX_FC'),(4,73,55.24,'LIDAR_TX_FC')])
+fp('J_LIDAR','F2 MINI WIRE PADS',[(1,73,40,'GND'),(2,73,45.08,'LIDAR_5V'),(3,73,50.16,'LIDAR_RX_FC'),(4,73,55.24,'LIDAR_TX_FC')])
 route('GND',[(73,40),(73,36.8),(94.08,36.8)])
 route('LIDAR_RX_FC',[(68,50.16),(73,50.16)]);route('LIDAR_TX_FC',[(68,55.24),(73,55.24)])
 text('LIDAR REG 5V',75,64,1.)
 # Current-sense SIGNAL connector; external current sensor/PDB not designed here.
 fp('J_CURRENT','0-2.5V current input',[(1,15,83,'GND'),(2,20.08,83,'SENS_3V3'),(3,25.16,83,'CURRENT_IN')])
-route('GND',[(15,83),(8,83)])
-route('SENS_3V3',[(13.08,75),(13.08,79.5),(20.08,79.5),(20.08,83)],1.5)
+route('GND',[(15,83),(4,83)])
+route('SENS_3V3',[(8,75),(8,79.5),(20.08,79.5),(20.08,83)],1.)
 fp('R_IFILTER','1k',[(1,25.16,88,'CURRENT_IN'),(2,35.32,88,'CURRENT_ADC')])
 fp('C_IFILTER','100nF X7R 5mm',[(1,35.32,82,'CURRENT_ADC'),(2,30.32,82,'GND')])
 route('CURRENT_IN',[(25.16,83),(25.16,88)])
@@ -114,7 +127,7 @@ route('CURRENT_ADC',[(35.32,88),(35.32,77)])
 route('GND',[(30.32,82),(30.32,74)])
 text('CURRENT: G V3 OUT',60,83.5,.9)
 # Top insulated links isolate crossings and enlarge their soldering points.
-ends={1:((13.08,39),'SENS_3V3','3V3 sensor supply'),4:((18.16,34),'VBAT_ADC','Voltage RC output to GPIO4; disconnect sense when MCU unpowered'),5:((35.32,77),'CURRENT_ADC','Filtered external current signal to GPIO5'),6:((68,50.16),'LIDAR_RX_FC','Future lidar TX -> FC RX; driver pending'),7:((68,55.24),'LIDAR_TX_FC','Future lidar RX <- FC TX; driver pending'),10:((78,40),'COMP_TX','FC TX -> companion RX'),11:((78,45.08),'COMP_RX','FC RX <- companion TX'),12:((23.24,39),'I2C_SCL','Shared I2C clock'),15:((18.16,39),'I2C_SDA','Shared I2C data'),18:((69,60),'GPIO12_ESC','FL signal via 220R'),20:((69,70),'GPIO14_ESC','RL signal via 220R'),21:((20,89),'5V_EXT','REMOVABLE POWER LINK: remove for USB power')}
+ends={1:((8,39),'SENS_3V3','3V3 sensor supply'),4:((18.16,34),'VBAT_ADC','Voltage RC output to GPIO4; disconnect sense when MCU unpowered'),5:((35.32,77),'CURRENT_ADC','Filtered external current signal to GPIO5'),6:((68,50.16),'LIDAR_RX_FC','Future lidar TX -> FC RX; driver pending'),7:((68,55.24),'LIDAR_TX_FC','Future lidar RX <- FC TX; driver pending'),10:((78,40),'COMP_TX','FC TX -> companion RX'),11:((78,45.08),'COMP_RX','FC RX <- companion TX'),12:((13.08,38),'I2C_SCL','Shared I2C clock'),15:((15.62,41),'I2C_SDA','Shared I2C data'),18:((69,60),'GPIO12_ESC','FL signal via 220R'),20:((69,70),'GPIO14_ESC','RL signal via 220R'),21:((20,89),'5V_EXT','REMOVABLE POWER LINK: remove for USB power')}
 for idx,(end,external,desc) in ends.items():
  y=14+(idx-1)*2.54;x=34 if idx%2==0 else 30;gpio=L[idx-1]
  route(gpio,[(40,y),(x,y)],1.)

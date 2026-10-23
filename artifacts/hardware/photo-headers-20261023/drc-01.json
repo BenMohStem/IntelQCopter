@@ -1,0 +1,105 @@
+{
+    "$schema": "https://schemas.kicad.org/drc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-10-23T14:05:32",
+    "ignored_checks": [
+        {
+            "description": "Footprint has no courtyard defined",
+            "key": "missing_courtyard"
+        },
+        {
+            "description": "Track endpoint not centered on via",
+            "key": "track_not_centered_on_via"
+        },
+        {
+            "description": "Tuning profile track geometries",
+            "key": "tuning_profile_track_geometries"
+        },
+        {
+            "description": "Footprint doesn't match symbol's footprint filters",
+            "key": "footprint_filters_mismatch"
+        },
+        {
+            "description": "Footprint component type doesn't match footprint pads",
+            "key": "footprint_type_mismatch"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning"
+    ],
+    "kicad_version": "10.0.6",
+    "schematic_parity": [],
+    "source": "esp32_home_etch.kicad_pcb",
+    "unconnected_items": [],
+    "violations": [
+        {
+            "description": "Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.6500 mm)",
+            "items": [
+                {
+                    "description": "PCB text '1:VCC 2:G 3:SCL 4:SDA' on F.Silkscreen",
+                    "pos": {
+                        "x": 16.0,
+                        "y": 48.1
+                    },
+                    "uuid": "0870ca38-d848-42c0-81f0-78bf91c71ab7"
+                }
+            ],
+            "severity": "warning",
+            "type": "text_height"
+        },
+        {
+            "description": "Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.6500 mm)",
+            "items": [
+                {
+                    "description": "PCB text '1:VCC 2:G 3:SCL 4:SDA' on F.Silkscreen",
+                    "pos": {
+                        "x": 16.0,
+                        "y": 58.1
+                    },
+                    "uuid": "22782086-53f6-4873-bb62-167173e938b4"
+                }
+            ],
+            "severity": "warning",
+            "type": "text_height"
+        },
+        {
+            "description": "Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.6500 mm)",
+            "items": [
+                {
+                    "description": "PCB text '1:VCC 2:G 3:SCL 4:SDA' on F.Silkscreen",
+                    "pos": {
+                        "x": 16.0,
+                        "y": 78.1
+                    },
+                    "uuid": "54dbb18a-0520-4f37-9815-8fd4911005ff"
+                }
+            ],
+            "severity": "warning",
+            "type": "text_height"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "PCB text 'GY-521 MPU6050' on F.Silkscreen",
+                    "pos": {
+                        "x": 16.0,
+                        "y": 42.0
+                    },
+                    "uuid": "abf517d9-9a3a-444b-b1ac-59a64e140c7e"
+                },
+                {
+                    "description": "PTH pad 2 [I2C_SDA] of W15",
+                    "pos": {
+                        "x": 15.62,
+                        "y": 41.0
+                    },
+                    "uuid": "cce32a18-be58-4e92-8e08-51ad5e8cc5cf"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        }
+    ]
+}

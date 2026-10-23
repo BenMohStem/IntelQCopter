@@ -54,7 +54,14 @@
     "pad_connection": "solid",
     "thermal_parameters_active": false
   },
-  "wire_jumpers": 13,
+  "wire_jumpers": 14,
   "capacitor_pitch_mm": 5,
-  "selected_references": "reference-dimensions.json"
+  "selected_references": "reference-dimensions.json",
+  "photo_sensor_headers": {
+    "pitch_mm": 2.54,
+    "pad_mm": 1.94,
+    "drill_mm": 1.1,
+    "physical_fit_measured": false,
+    "module_bodies": "offboard wires; signal order follows user photos"
+  }
 }
