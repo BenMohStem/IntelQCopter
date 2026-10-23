@@ -35,16 +35,16 @@ Native KiCad DRC reports zero violations, unrouted items and schematic-parity is
 | Copper | One etched bottom layer; **13 insulated component-side wire links** |
 | Signal tracks | 1.0 mm; minimum rule 0.8 mm |
 | Logic power/ground | 1.5–2.0 mm; minimum copper gap 0.6 mm |
-| DevKit socket pads | 1.9 mm diameter, 1.0 mm drill, 2.54 mm pitch |
+| DevKit socket pads | 1.94 mm diameter, 1.1 mm drill, 2.54 mm pitch |
 | External connector/passive pads | 3.2 mm diameter, 1.2 mm drill |
 | Wire-link pads | 2.8 mm diameter, 1.2 mm drill |
 | Mounting holes | 3.2 mm, non-plated |
 
-The two dense DevKit socket rows constrain pad enlargement: 1.9 mm pads leave 0.64 mm between pads at 2.54 mm pitch. External wiring uses much larger pads. KiCad represents through-hole pads on two copper layers, but **there are no routed top-copper tracks**. Only B.Cu, including the GND zone, is fabricated; holes are not plated. Solder from the bottom. Wire crossings require insulation.
+The two dense DevKit socket rows constrain pad enlargement: 1.94 mm pads leave 0.60 mm between pads at 2.54 mm pitch. External wiring uses much larger pads. KiCad represents through-hole pads on two copper layers, but **there are no routed top-copper tracks**. Only B.Cu, including the GND zone, is fabricated; holes are not plated. Solder from the bottom. Wire crossings require insulation.
 
 ## Reference components and power
 
-The socket reference is the genuine **Espressif ESP32-S3-DevKitC-1**, two 22-pin rows separated by 22.86 mm. A generic board advertised as “ESP32-S3” may not fit. Compare the printed sheet with the purchased board before etching. The grey assembly area is a reserved clearance envelope, not a measured board-body outline. Sensor modules connect by pigtail, so their clone pin orders are not assumed.
+The socket reference is the genuine **Espressif ESP32-S3-DevKitC-1**, two 22-pin rows separated by 22.86 mm. A generic board advertised as “ESP32-S3” may not fit. Compare the printed sheet with the purchased board before etching. The grey body now follows the published 25.40 x 62.74 mm DevKitC-1 reference outline. RF and USB service envelopes are separate design clearances; purchased clone fit is not established. Sensor modules connect by pigtail, so their clone pin orders are not assumed.
 
 J3 takes an **external regulated 5 V supply**, never the 3S pack. W21 connects that supply to the DevKit 5 V pin: **remove W21 before USB powering/programming**. Use one board power source at a time. Motor and ESC power must remain on the separate rated power-distribution system; no 40 A path exists here. The carrier does not implement a battery cutoff or hardware BMS.
 
@@ -99,7 +99,7 @@ The older carrier used `GND_MCU` and W22. That jumper dependency is removed. Car
 
 There are direct 1.5–2.5 mm copper routes plus the large B.Cu plane. ESP32 ground pads have **solid zone connections**; all other GND pads now also use solid connections (no cross-shaped thermal reliefs). W22 is not fitted; 13 other insulated links remain. The four ESP32 grounds pass a separate 300 dpi printed-mask connected-copper check against the power-input GND pad, with no non-GND pad shorted to that region. This is digital continuity evidence, not a measurement of an etched board.
 
-Current native reports, source hashes, annotated proof and power/mask audit are in `artifacts/hardware/solid-ground-power-audit-20261021/`. The direct-common-ground folder retains the earlier edition. Earlier reports remain under their original folders. Use the regenerated PDF and ZIP for this edition.
+Current dimension, native and print reports are in `artifacts/hardware/reference-dimensions-20261023/`. The solid-ground-power-audit folder retains the earlier edition. The direct-common-ground folder retains the earlier edition. Earlier reports remain under their original folders. Use the regenerated PDF and ZIP for this edition.
 
 ### Reproduce the pour/export in KiCad 10
 
@@ -128,3 +128,13 @@ To reproduce in KiCad 10: open the board, select the B.Cu GND zone, press **E**,
 Both reference DevKit left pins 1 and 2 are 3.3V. The four GND pins and input GND share copper directly. The board has **13 insulated top links**, including W23 for lidar regulated5V. W22 is absent. W21 remains removable: disconnect it before USB powering the DevKit. The companion computer uses its own supply, with signal GND shared.
 
 Before inserting any modules, meter-check the etched board: each GND hole to J3.1 should read essentially probe-lead resistance; no direct short between GND, 3.3V, 5V or battery-sense positive. Test with a current-limited regulated5V supply, and measure sensor rails before fitting sensors. Paper fit and purchased module pinout checks are still required.
+
+## Manufacturer-reference dimensions — current 23 October edition
+
+[Selected parts, dimensions and sources](component-dimensions.md) · [Machine-readable references](reference-dimensions.json) · [Original dimension/native/print audit](../../artifacts/hardware/reference-dimensions-20261023/README.md).
+
+The dense DevKit sockets now have **1.1mm holes and 1.94mm round pads**, allowing the selected socket's recommended1.02mm hole to be met with a standard manual drill. This leaves0.42mm nominal annulus and0.60mm between adjacent pads. The minimum annulus rule is0.4mm; external3.2mm pads keep their much larger1.0mm annulus. Accurate centring remains essential.
+
+Both100nF capacitors now use exact **5.00mm lead spacing** for the selected formed-lead X7R reference. C2 points left, placing its body and pads outside the USB service area. Axial resistor spacing remains10.16mm, suitable for the documented6.5mm-body MRS25 reference. Copper clearances, common GND, three no-text masks and one bottom copper layer remain as before.
+
+**J3–J14 are soldered-wire ports**, not generic plug-in module footprints or unspecified screw-terminal blocks. Their5.08mm hole spacing deliberately allows large pads. Map sensor/power pigtails by signal; do not push a2.54mm module header directly into them. Lidar/magnetometer ports may remain unused in the current two-sensor setup. This is a reference-defined prototype, not proof that every board sold as ESP32-S3/GY-521/BMP280 fits.

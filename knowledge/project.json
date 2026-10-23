@@ -2,7 +2,7 @@
   "schema": 2,
   "branch": "esp32-xbox",
   "baseline_main": "3803437",
-  "updated": "2026-10-22",
+  "updated": "2026-10-23",
   "purpose": "Factual project knowledge, decisions, assumptions and evidence index",
   "sources": [
     {
@@ -490,6 +490,16 @@
       "id": "source-two-sensor-guide",
       "kind": "file",
       "locator": "docs/esp32-mpu6050-bmp280.md"
+    },
+    {
+      "id": "source-reference-dimensions",
+      "kind": "file",
+      "locator": "hardware/home-etched-fc/reference-dimensions.json"
+    },
+    {
+      "id": "source-dimension-audit",
+      "kind": "file",
+      "locator": "artifacts/hardware/reference-dimensions-20261023/README.md"
     }
   ],
   "facts": [
@@ -1767,6 +1777,18 @@
             "source-f2-mini-datasheet"
           ],
           "reason": "User requests clear important source files, complete PCB power audit, solid ground pads with round white drill holes and Arduino-style ESP32 interfaces."
+        },
+        {
+          "revision": 5,
+          "date": "2026-10-23",
+          "status": "implemented",
+          "evidence_level": "build",
+          "statement": "Manufacturer-reference revision: published DevKitC-1 body25.40x62.74mm,44 pin positions compared against Espressif footprint; row pitch2.54mm and spacing22.86mm. Socket drills1.1mm/pads1.94mm leave0.42mm annulus and0.60mm gap. Capacitors now5.00mm pitch; C2 moved left clear of USB envelope. Passive F.Fab bodies added, connector map regenerated from actual nets. Native DRC/ERC/unrouted/parity checks zero; final3-copy mask passes independent net/rail/GND/drill checks. This is selected-reference CAD evidence, not proof of unknown clone/physical fit.",
+          "sources": [
+            "source-reference-dimensions",
+            "source-dimension-audit"
+          ],
+          "reason": "User asks to search manufacturer/KiCad reference dimensions, correct PCB and regenerate three real-size masks; purchased-part photos unavailable."
         }
       ]
     },
@@ -1797,6 +1819,18 @@
             "source-f2-mini-datasheet"
           ],
           "reason": "User requests clear important source files, complete PCB power audit, solid ground pads with round white drill holes and Arduino-style ESP32 interfaces."
+        },
+        {
+          "revision": 3,
+          "date": "2026-10-23",
+          "status": "pending",
+          "evidence_level": "source",
+          "statement": "Component geometry is now tied to explicit published references (DevKitC-1, Samtec socket layout, Vishay MRS25 and K-series5mm capacitor). Sensors remain mapped pigtails with large5.08mm wire ports, not direct-module footprints. Exact purchased modules, connector/plug height, F450 mounting, hand drilling/etching and electrical/RF behavior remain unmeasured. Physical motor outputs remain disabled.",
+          "sources": [
+            "source-reference-dimensions",
+            "source-dimension-audit"
+          ],
+          "reason": "User asks to search manufacturer/KiCad reference dimensions, correct PCB and regenerate three real-size masks; purchased-part photos unavailable."
         }
       ]
     },

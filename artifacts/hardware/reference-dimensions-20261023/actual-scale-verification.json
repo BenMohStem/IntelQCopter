@@ -1,0 +1,14 @@
+{
+  "engine": "Independent pypdf content-stream transform and page analysis",
+  "copies": 3,
+  "board_reference_mm": 100,
+  "computed_board_span_mm": 100.00001166666667,
+  "upper_copy_spacing_mm": 100.00000108333334,
+  "page_mm": [
+    210.00000333333335,
+    297.0000127777778
+  ],
+  "text_characters": 0,
+  "passed": true,
+  "printer_driver_scale_unverified": true
+}

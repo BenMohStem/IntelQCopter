@@ -7,7 +7,7 @@
 		(at 0 0 0)
 		(layer "F.SilkS")
 		(hide yes)
-		(uuid "dc2b628a-6019-4bf5-b416-cec185014e7e")
+		(uuid "e7a43450-09c9-40fc-a084-b5b50b2cfeef")
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -18,7 +18,7 @@
 		(at 0 0 0)
 		(layer "F.Fab")
 		(hide yes)
-		(uuid "df3fea0a-7409-44de-9631-69be32506708")
+		(uuid "eecfc647-05bd-4be1-8fcf-b8b17507e930")
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -29,7 +29,7 @@
 		(at 0 0 0)
 		(layer "F.Fab")
 		(hide yes)
-		(uuid "4f3cdbef-8ab5-4b3d-8378-f0179b4d9a89")
+		(uuid "4621f0ee-3b13-49c4-b7a9-8e79ccc2c9e5")
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -40,7 +40,7 @@
 		(at 0 0 0)
 		(layer "F.Fab")
 		(hide yes)
-		(uuid "14fde560-486d-45b6-a7a9-51d2815b91c4")
+		(uuid "04070c2a-f4f0-4f8a-bc2c-e2e89b379aa1")
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -48,13 +48,53 @@
 		)
 	)
 	(duplicate_pad_numbers_are_jumpers no)
+	(fp_line
+		(start 1.829999 -1.25)
+		(end 8.33 -1.25)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.Fab")
+		(uuid "7c5eca29-a73d-48b2-a2e2-907c47d5dbc2")
+	)
+	(fp_line
+		(start 1.829999 1.25)
+		(end 1.829999 -1.25)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.Fab")
+		(uuid "10193fd1-2385-433c-a489-3b7f14ec11e1")
+	)
+	(fp_line
+		(start 8.33 -1.25)
+		(end 8.33 1.25)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.Fab")
+		(uuid "31b7d41c-6174-4c38-ba86-dea46a79d176")
+	)
+	(fp_line
+		(start 8.33 1.25)
+		(end 1.829999 1.25)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.Fab")
+		(uuid "58636693-ef8e-4b7f-a5b6-0f51d8ed0e01")
+	)
 	(pad "1" thru_hole circle
 		(at 0 0)
 		(size 3.2 3.2)
 		(drill 1.2)
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
-		(uuid "05f0f81b-408e-4b6c-875c-3416a4644dd3")
+		(uuid "11d15fba-367a-41c5-9a46-89c3ded7c63a")
 	)
 	(pad "2" thru_hole circle
 		(at 10.16 0)
@@ -62,7 +102,7 @@
 		(drill 1.2)
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
-		(uuid "f5e697a3-bd90-4b82-84d3-97f603843d16")
+		(uuid "05e3a825-6260-46e2-b9f3-db42d2d56789")
 	)
 	(embedded_fonts no)
 )

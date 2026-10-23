@@ -5,6 +5,7 @@ This is an assembly/review prototype, not a validated flight-board release.
 from pathlib import Path
 import csv,json,math,uuid,pcbnew as p
 D=Path(__file__).resolve().parent
+MECH=json.loads((D/'reference-dimensions.json').read_text(encoding='utf8'))
 (D/'HomeEtch.pretty').mkdir(exist_ok=True)
 def uid(s):return str(uuid.uuid5(uuid.NAMESPACE_URL,'intelqcopter/home-etch/'+s))
 board=p.BOARD();board.SetCopperLayerCount(2) # KiCad format; ONLY B.Cu is routed/etched.
@@ -20,6 +21,12 @@ REFS={'U1L': 'J1', 'U1R': 'J2', 'J_PWR': 'J3', 'J_IMU': 'J4', 'J_BARO': 'J5', 'J
 def fp(ref,value,items,diameter=3.2,drill=1.2):
  role=ref;ref=REFS.get(ref,ref)
  f=p.FOOTPRINT(board);f.SetReference(ref);f.SetValue(value);f.SetPosition(vec(items[0][1],items[0][2]));f.Reference().SetVisible(False);f.Value().SetVisible(False);board.Add(f)
+ # Actual passive bodies on F.Fab, independent from enlarged copper pads.
+ if ref.startswith(('R','C')):
+  cx=sum(a[1] for a in items)/len(items);cy=sum(a[2] for a in items)/len(items)
+  w,h=(6.5,2.5) if ref.startswith('R') else (4.0,2.6)
+  for a,b in [((cx-w/2,cy-h/2),(cx+w/2,cy-h/2)),((cx+w/2,cy-h/2),(cx+w/2,cy+h/2)),((cx+w/2,cy+h/2),(cx-w/2,cy+h/2)),((cx-w/2,cy+h/2),(cx-w/2,cy-h/2))]:
+   shape=p.PCB_SHAPE(f);shape.SetShape(p.SHAPE_T_SEGMENT);shape.SetStart(vec(*a));shape.SetEnd(vec(*b));shape.SetLayer(p.F_Fab);shape.SetWidth(p.FromMM(.1));f.Add(shape)
  for num,x,y,name in items:
   pad=p.PAD(f);pad.SetNumber(str(num));pad.SetShape(p.PAD_SHAPE_CIRCLE);pad.SetAttribute(p.PAD_ATTRIB_PTH)
   pad.SetSize(vec(diameter,diameter));pad.SetDrillSize(vec(drill,drill));pad.SetLayerSet(p.PAD.PTHMask());pad.SetPosition(vec(x,y))
@@ -47,9 +54,13 @@ for a,b in [((0,0),(100,0)),((100,0),(100,100)),((100,100),(0,100)),((0,100),(0,
 L=['3V3','3V3','','GPIO4','GPIO5','GPIO6','GPIO7','','','GPIO17','GPIO18','GPIO8','','','GPIO9','','','GPIO12','','GPIO14','5V_MCU','GND']
 R=['GND','','','GPIO1','GPIO2','','','','','','','','','','','','','','','','','']
 R[20]=R[21]='GND'
-fp('U1L','DevKitC-1 LEFT 1x22',[(i+1,40,14+i*2.54,n) for i,n in enumerate(L)],1.9,1.)
-fp('U1R','DevKitC-1 RIGHT 1x22',[(i+1,62.86,14+i*2.54,n) for i,n in enumerate(R)],1.9,1.)
-for a,b in [((38.5,6.9),(64.36,6.9)),((64.36,6.9),(64.36,76.8)),((64.36,76.8),(38.5,76.8)),((38.5,76.8),(38.5,6.9))]:line(a,b,p.F_SilkS,.15)
+fp('U1L','DevKitC-1 LEFT 1x22',[(i+1,40,14+i*2.54,n) for i,n in enumerate(L)],1.94,1.1)
+fp('U1R','DevKitC-1 RIGHT 1x22',[(i+1,62.86,14+i*2.54,n) for i,n in enumerate(R)],1.94,1.1)
+# Published body, separate from the larger RF/USB service envelopes.
+x0,y0,x1,y1=MECH['devkit']['body_xy_mm']
+for a,b in [((x0,y0),(x1,y0)),((x1,y0),(x1,y1)),((x1,y1),(x0,y1)),((x0,y1),(x0,y0))]:line(a,b,p.F_Fab,.15)
+ux0,uy0,ux1,uy1=MECH['usb_access']['rect_xy_mm']
+for a,b in [((ux0,uy0),(ux1,uy0)),((ux1,uy0),(ux1,uy1)),((ux1,uy1),(ux0,uy1)),((ux0,uy1),(ux0,uy0))]:line(a,b,p.Dwgs_User,.1)
 text('ESP32-S3 DevKitC-1',51.4,9,1.0);text('USB / buttons access',51.4,74.2,.9)
 text('ANTENNA: NO COPPER / METAL',51,3,1.)
 text('TOP / COMPONENT VIEW',50,97.2,1.0)
@@ -57,7 +68,7 @@ text('TOP / COMPONENT VIEW',50,97.2,1.0)
 fp('J_PWR','REGULATED 5V ONLY',[(1,8,89,'GND'),(2,13.08,89,'5V_EXT')])
 text('GND   +5V IN',12,94.2,1.)
 for ref,y,label in [('J_IMU',45,'MPU6050'),('J_BARO',55,'BMP280'),('J_MAG',75,'HMC5883L')]:
- fp(ref,label,[(i+1,x,y,n) for i,(x,n) in enumerate([(8,'GND'),(13.08,'SENS_3V3'),(18.16,'I2C_SDA'),(23.24,'I2C_SCL')])]);text(label,16,y-3.5,1.0)
+ fp(ref,label+' WIRE PORT',[(i+1,x,y,n) for i,(x,n) in enumerate([(8,'GND'),(13.08,'SENS_3V3'),(18.16,'I2C_SDA'),(23.24,'I2C_SCL')])]);text(label,16,y-3.5,1.0)
 text('GND V3 SDA SCL',16,59.5,.9);text('GND V3 SDA SCL',16,79.3,.9)
 route('GND',[(8,19.08),(8,93),(94.08,93),(94.08,20)],2.)
 route('SENS_3V3',[(13.08,39),(13.08,75)],1.5)
@@ -68,10 +79,10 @@ fp('J_BAT','SENSE ONLY',[(1,8,14,'VBAT_SENSE'),(2,8,19.08,'GND')]);text('PACK+ s
 fp('R_VTOP','47k 1%',[(1,14,14,'VBAT_SENSE'),(2,24.16,14,'VBAT_DIV')])
 fp('R_VBOTTOM','10k 1%',[(1,14,24,'GND'),(2,24.16,24,'VBAT_DIV')])
 fp('R_VFILTER','1k',[(1,24.16,29,'VBAT_DIV'),(2,14,29,'VBAT_ADC')])
-fp('C_VFILTER','100nF',[(1,14,34,'VBAT_ADC'),(2,8.92,34,'GND')])
+fp('C_VFILTER','100nF X7R 5mm',[(1,14,34,'VBAT_ADC'),(2,9.0,34,'GND')])
 route('VBAT_SENSE',[(8,14),(14,14)])
 route('VBAT_DIV',[(24.16,14),(24.16,29)])
-route('GND',[(14,24),(8,24)]);route('GND',[(8.92,34),(8,34)])
+route('GND',[(14,24),(8,24)]);route('GND',[(9.0,34),(8,34)])
 route('VBAT_ADC',[(14,29),(14,34),(18.16,34)])
 text('47k',19,11,.9);text('10k',19,21,.9);text('1k',19,27,.9)
 # ESC signal resistors and signal-ground returns; BEC positive omitted.
@@ -97,10 +108,10 @@ fp('J_CURRENT','0-2.5V current input',[(1,15,83,'GND'),(2,20.08,83,'SENS_3V3'),(
 route('GND',[(15,83),(8,83)])
 route('SENS_3V3',[(13.08,75),(13.08,79.5),(20.08,79.5),(20.08,83)],1.5)
 fp('R_IFILTER','1k',[(1,25.16,88,'CURRENT_IN'),(2,35.32,88,'CURRENT_ADC')])
-fp('C_IFILTER','100nF',[(1,35.32,82,'CURRENT_ADC'),(2,40.4,82,'GND')])
+fp('C_IFILTER','100nF X7R 5mm',[(1,35.32,82,'CURRENT_ADC'),(2,30.32,82,'GND')])
 route('CURRENT_IN',[(25.16,83),(25.16,88)])
 route('CURRENT_ADC',[(35.32,88),(35.32,77)])
-route('GND',[(40.4,82),(40.4,93)])
+route('GND',[(30.32,82),(30.32,74)])
 text('CURRENT: G V3 OUT',60,83.5,.9)
 # Top insulated links isolate crossings and enlarge their soldering points.
 ends={1:((13.08,39),'SENS_3V3','3V3 sensor supply'),4:((18.16,34),'VBAT_ADC','Voltage RC output to GPIO4; disconnect sense when MCU unpowered'),5:((35.32,77),'CURRENT_ADC','Filtered external current signal to GPIO5'),6:((68,50.16),'LIDAR_RX_FC','Future lidar TX -> FC RX; driver pending'),7:((68,55.24),'LIDAR_TX_FC','Future lidar RX <- FC TX; driver pending'),10:((78,40),'COMP_TX','FC TX -> companion RX'),11:((78,45.08),'COMP_RX','FC RX <- companion TX'),12:((23.24,39),'I2C_SCL','Shared I2C clock'),15:((18.16,39),'I2C_SDA','Shared I2C data'),18:((69,60),'GPIO12_ESC','FL signal via 220R'),20:((69,70),'GPIO14_ESC','RL signal via 220R'),21:((20,89),'5V_EXT','REMOVABLE POWER LINK: remove for USB power')}
@@ -145,7 +156,7 @@ for x,y in [(2.5,2.5),(36,2.5),(36,17),(67,17),(67,2.5),(97.5,2.5),(97.5,97.5),(
  poly.Append(int(p.FromMM(x)),int(p.FromMM(y)))
 board.Add(plane);board.BuildConnectivity();p.ZONE_FILLER(board).Fill(board.Zones())
 output=D/'esp32_home_etch.kicad_pcb';p.SaveBoard(str(output),board)
-(D/'components-and-nets.json').write_text(json.dumps(dict(status='DRAFT prototype; electrical/mechanical/physical review pending',components=components,wire_links=links,bottom_tracks=segments),indent=2)+'\n',encoding='utf8')
+(D/'components-and-nets.json').write_text(json.dumps(dict(status='DRAFT prototype; electrical/mechanical/physical review pending',components=components,wire_links=links,bottom_tracks=segments,mechanical=MECH),indent=2)+'\n',encoding='utf8')
 with (D/'wire-links.csv').open('w',newline='',encoding='utf8') as f:
  w=csv.writer(f);w.writerow(['Link','From XY mm','From net','To XY mm','To net','Straight distance mm (add routing/slack)','Instruction'])
  for a in links:w.writerow([a['ref'],a['from_xy_mm'],a['from_net'],a['to_xy_mm'],a['to_net'],a['minimum_straight_length_mm'],a['instruction']])

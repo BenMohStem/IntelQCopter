@@ -7,18 +7,18 @@
 		(at 0 0 0)
 		(layer "F.SilkS")
 		(hide yes)
-		(uuid "599ea077-c654-40ef-9407-0b40dd89e902")
+		(uuid "7916c4f8-345d-4f55-abb8-3777e232f76f")
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 		)
 	)
-	(property "Value" "BMP280"
+	(property "Value" "BMP280 WIRE PORT"
 		(at 0 0 0)
 		(layer "F.Fab")
 		(hide yes)
-		(uuid "3542a162-7cab-4a85-9c87-fac5a4ba0b16")
+		(uuid "e7bf4be7-c07a-462b-bbec-8e6de8b23f39")
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -29,7 +29,7 @@
 		(at 0 0 0)
 		(layer "F.Fab")
 		(hide yes)
-		(uuid "9efa20d0-c26f-41fd-a900-832ce9a9e5cd")
+		(uuid "392c69db-0c17-4100-9993-bdc4b8301a02")
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -40,7 +40,7 @@
 		(at 0 0 0)
 		(layer "F.Fab")
 		(hide yes)
-		(uuid "404e2063-0613-454e-aa25-adb0a89ffa65")
+		(uuid "a56455c9-d2c8-4902-aa2c-c7fb47773b15")
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -55,7 +55,7 @@
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
 		(zone_connect 2)
-		(uuid "da57b7f7-c8cd-4ce2-a67a-66eb9c18f35c")
+		(uuid "b1be5c0b-cd2d-4dda-824c-923e600d0c03")
 	)
 	(pad "2" thru_hole circle
 		(at 5.08 0)
@@ -63,7 +63,7 @@
 		(drill 1.2)
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
-		(uuid "2bc81a5d-be63-4c42-ac4a-846d27ec8d92")
+		(uuid "d0524b27-4a4f-414a-ad44-9e78ae8fc516")
 	)
 	(pad "3" thru_hole circle
 		(at 10.16 0)
@@ -71,7 +71,7 @@
 		(drill 1.2)
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
-		(uuid "fb5f854b-55bb-4b9a-ae91-566fdd22a6b6")
+		(uuid "f6ef21ee-53ff-48c8-90d3-7b8431b4da11")
 	)
 	(pad "4" thru_hole circle
 		(at 15.24 0)
@@ -79,7 +79,7 @@
 		(drill 1.2)
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
-		(uuid "99aec468-2f71-4b70-8e55-a34467b2897f")
+		(uuid "7b8e7a9b-35b5-41ab-b3c2-5f4a8d9d4b67")
 	)
 	(embedded_fonts no)
 )

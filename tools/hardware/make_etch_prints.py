@@ -36,12 +36,21 @@ c.showPage();c.save()
 r=PdfReader(path);page=r.pages[0]
 if len(r.pages)!=1 or page.extract_text().strip():raise RuntimeError('Mask must be a single page without text')
 if abs(float(page.mediabox.width)-A4[0])>.01 or abs(float(page.mediabox.height)-A4[1])>.01:raise RuntimeError('Unexpected page size')
-proof=R/'artifacts/hardware/solid-ground-power-audit-20261021/print-verification.json'
+proof=R/'artifacts/hardware/reference-dimensions-20261023/print-verification.json'
 report=dict(engine='KiCad 10.0.6 filled B.Cu extraction + ReportLab vector paths + pypdf',source_sha256=d['source_sha256'],pdf_sha256=hashlib.sha256(path.read_bytes()).hexdigest(),page_mm=[210,297],board_mm=[100,100],copies=3,placements_mm=placements,text_characters=0,mirroring='component view; face-down toner transfer reverses once',polarity='black = retained copper; white = removed copper',connected_ground_polygons=len(d['zones']),tracks=len(d['tracks']),pads=len(d['pads']),physical_fit_and_print_scale_verified=False)
 proof.write_bytes((json.dumps(report,indent=2)+'\n').encode())
 package=H/'output/IntelQCopter-ESP32-home-etch-KiCad.zip'
+# Only canonical files: users may have extracted an older ZIP under output/.
+# Never recursively absorb those stale boards, private editor state or archives.
+selected=[p for p in H.iterdir() if p.is_file() and p.suffix not in ('.zip','.kicad_prl','.lck') and not p.name.endswith('~')]
+selected+=list((H/'HomeEtch.pretty').glob('*.kicad_mod'))
+selected+=[H/'process-coupon'/name for name in ['README.md','etch-coupon-copper-mirrored.svg','etch-coupon-copper.svg','etch-coupon-drill.csv','etch-coupon-preview.svg','etch-coupon.kicad_pcb']]
+selected+=[H/'plots'/name for name in ['copper-component-view.svg','copper-solder-side-view.svg','esp32_home_etch.svg']]
+selected+=[H/'output/native-copper-geometry.json',path]
+contents={p.relative_to(H).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(selected)}
 with zipfile.ZipFile(package,'w',zipfile.ZIP_DEFLATED) as z:
-    for p in sorted(H.rglob('*')):
-        if not p.is_file() or p==package or p.suffix in ('.zip','.kicad_prl') or '-backups' in str(p):continue
-        z.write(p,p.relative_to(H))
+    for p in sorted(selected):z.write(p,p.relative_to(H))
+    z.writestr('package-contents.json',json.dumps(contents,indent=2)+'\n')
+package_report=proof.with_name('package-verification.json')
+package_report.write_bytes((json.dumps(dict(zip_sha256=hashlib.sha256(package.read_bytes()).hexdigest(),files=contents,excluded='Old extracted ZIP folders, archives, SDKs and per-user state'),indent=2)+'\n').encode())
 print('Created text-free A4 / 3 copies / 100% vector mask:',path)

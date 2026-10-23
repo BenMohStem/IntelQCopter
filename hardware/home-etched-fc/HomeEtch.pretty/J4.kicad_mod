@@ -7,18 +7,18 @@
 		(at 0 0 0)
 		(layer "F.SilkS")
 		(hide yes)
-		(uuid "b18f0488-b239-4473-b902-412330700972")
+		(uuid "3e386962-5a1c-41ff-8194-7162daca6013")
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 		)
 	)
-	(property "Value" "MPU6050"
+	(property "Value" "MPU6050 WIRE PORT"
 		(at 0 0 0)
 		(layer "F.Fab")
 		(hide yes)
-		(uuid "c155dbdc-7038-42b2-b97a-6b3359fc8d8f")
+		(uuid "a03d9898-7c61-422b-a041-66563930abae")
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -29,7 +29,7 @@
 		(at 0 0 0)
 		(layer "F.Fab")
 		(hide yes)
-		(uuid "974ae335-3b73-4f7f-8f39-ea9019dfcd9e")
+		(uuid "e19c2990-27f0-4a12-a227-2f6d2cddead3")
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -40,7 +40,7 @@
 		(at 0 0 0)
 		(layer "F.Fab")
 		(hide yes)
-		(uuid "3cb99c49-1b4d-471d-9b8b-8ed29921560e")
+		(uuid "e5a148ca-4e6d-436b-a9e3-5d443d24585e")
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -55,7 +55,7 @@
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
 		(zone_connect 2)
-		(uuid "905b2f39-843a-43d2-8d1f-45295cc33b2c")
+		(uuid "f1572b91-9dec-4fe6-a980-18346e2731a3")
 	)
 	(pad "2" thru_hole circle
 		(at 5.08 0)
@@ -63,7 +63,7 @@
 		(drill 1.2)
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
-		(uuid "03d14041-5099-4531-8c49-59ec99ebb359")
+		(uuid "0177b14a-6457-4862-9e56-ed5da15603f7")
 	)
 	(pad "3" thru_hole circle
 		(at 10.16 0)
@@ -71,7 +71,7 @@
 		(drill 1.2)
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
-		(uuid "77d30d51-3a3f-4c91-98b9-44a4a0b7953f")
+		(uuid "8076b8e4-ce1b-48bb-bec4-feec2f7966f5")
 	)
 	(pad "4" thru_hole circle
 		(at 15.24 0)
@@ -79,7 +79,7 @@
 		(drill 1.2)
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
-		(uuid "9a1a9acf-c774-4e2a-8c08-a37060dc01ec")
+		(uuid "d201285f-f0d2-4420-8fcf-d3ec734a185d")
 	)
 	(embedded_fonts no)
 )

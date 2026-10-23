@@ -7,18 +7,18 @@
 		(at 0 0 0)
 		(layer "F.SilkS")
 		(hide yes)
-		(uuid "52c6f548-291d-4cb3-aadb-6851b04f41e9")
+		(uuid "5b63f7c6-856b-4c0a-81cc-31932dc6d6ba")
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 		)
 	)
-	(property "Value" "HMC5883L"
+	(property "Value" "HMC5883L WIRE PORT"
 		(at 0 0 0)
 		(layer "F.Fab")
 		(hide yes)
-		(uuid "b2ee77f3-d9de-4394-8f71-67753bafa4da")
+		(uuid "9cc4ae39-58b9-4774-a40d-fdbb67815f2b")
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -29,7 +29,7 @@
 		(at 0 0 0)
 		(layer "F.Fab")
 		(hide yes)
-		(uuid "e7427c10-9eaf-440f-8029-5c89cdecd2d0")
+		(uuid "2ae43931-a6f9-4055-b89a-b2bf19f0371d")
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -40,7 +40,7 @@
 		(at 0 0 0)
 		(layer "F.Fab")
 		(hide yes)
-		(uuid "9dddb0b6-4de6-4639-8665-c9f4c1b2d5e4")
+		(uuid "d3666174-5e8f-41d9-b80b-070e1c26d9db")
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -55,7 +55,7 @@
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
 		(zone_connect 2)
-		(uuid "e7b37ec3-b424-44cb-9248-c57849854d86")
+		(uuid "3c8f2100-6409-46f5-b74c-1f795e51e005")
 	)
 	(pad "2" thru_hole circle
 		(at 5.08 0)
@@ -63,7 +63,7 @@
 		(drill 1.2)
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
-		(uuid "5f3fe775-6ee2-45dd-958c-5b691fba6e1e")
+		(uuid "da194163-c5bc-4de7-bff5-5b1068e97166")
 	)
 	(pad "3" thru_hole circle
 		(at 10.16 0)
@@ -71,7 +71,7 @@
 		(drill 1.2)
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
-		(uuid "8bea2bd1-4c56-4dc4-aab9-498af33326b5")
+		(uuid "addfbec8-cdcd-4acf-8a0c-a2328cc57d9d")
 	)
 	(pad "4" thru_hole circle
 		(at 15.24 0)
@@ -79,7 +79,7 @@
 		(drill 1.2)
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
-		(uuid "4fc90d0a-f7b7-4025-bf89-c267c48c178e")
+		(uuid "e698b3dd-8d0a-4516-a93b-60d155a57b85")
 	)
 	(embedded_fonts no)
 )

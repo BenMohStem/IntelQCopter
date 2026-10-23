@@ -9,10 +9,10 @@
   "copper_edge_clearance_mm": 2.0,
   "module_header": {
     "pitch_mm": 2.54,
-    "pad_diameter_mm": 1.9,
-    "drill_mm": 1.0,
-    "annular_ring_mm": 0.45,
-    "pad_gap_mm": 0.64
+    "pad_diameter_mm": 1.94,
+    "drill_mm": 1.1,
+    "annular_ring_mm": 0.42,
+    "pad_gap_mm": 0.6
   },
   "preferred_wire_connection": {
     "pitch_mm": 5.08,
@@ -54,5 +54,7 @@
     "pad_connection": "solid",
     "thermal_parameters_active": false
   },
-  "wire_jumpers": 13
+  "wire_jumpers": 13,
+  "capacitor_pitch_mm": 5,
+  "selected_references": "reference-dimensions.json"
 }
