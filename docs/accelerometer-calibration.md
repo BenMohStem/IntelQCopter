@@ -42,58 +42,43 @@ Calculated C, mapping centred sensor readings to drone axes:
 
 The three opposite-pose midpoints differ: see calculation.json. Their disagreement and the residuals can reflect alignment error, noise, temperature change or model limitations. They do not establish standard deviation, and the three +/− pairs are not independent validation data.
 
-## Simpler code: constants in program flash
+## Current implementation: Adafruit readings, MPU bias registers
 
-The calibration values are known before compilation, so they can be stored as constants inside main.cpp. Uploading the firmware stores the constants in ESP32 program flash along with the code. A power cycle does not erase them. Each boot uses those same constants; no separate Preferences save/load routine is needed for this fixed candidate.
+The user requires bias inside the MPU while retaining Adafruit. main.cpp now uses Adafruit_MPU6050 for data/configuration and Adafruit BusIO (already a dependency) for the three accelerometer offset words. No Electronic Cats library is needed. The preceding mathematical fit remains unchanged.
 
-This is persistence in the ESP32, not nonvolatile storage inside the MPU6050. Old Preferences records, if present from a previous firmware, are no longer read or written. No flash partition is erased by this change. Recalibration means updating the constants from new measurements and uploading again. If we later measure a new calibration on the board itself, Preferences will be appropriate for saving those runtime results without recompiling; that is deliberately deferred.
+write_accel_bias reads the reset-baseline 16-bit word, computes an even trim change, checks signed range, writes a big-endian word and verifies readback. Calls use X=0x06, Y=0x08, Z=0x0A. These offset words are supported by established MPU libraries but are not fully specified in the public revision-4.2 register map; do not treat their semantics as a documented promise for clones or other MPU families. Source: [I2Cdevlib offset/calibration implementation](https://github.com/jrowberg/i2cdevlib/blob/master/Arduino/MPU6050/MPU6050.cpp), particularly its /8 conversion and preservation of BitZero.
 
-## Read main.cpp in order
+For this MPU6050 trim convention:
 
-1. The includes provide Arduino, Wire and the existing Adafruit MPU6050 library. No dependency changed.
-2. accel_bias_x/y/z are the offsets calculated above. They describe MPU sensor axes, in m/s².
-3. setup keeps motor signals inactive, starts I2C on SDA9/SCL8 at 100 kHz, and initializes the MPU at 0x68.
-4. loop reads only after successful initialization.
-5. sensor_x/y/z subtract the three biases from raw sensor readings.
-6. drone_x/y/z are three explicit expressions. Each expression multiplies the centred readings by one row of the calculated correction matrix. This preserves the existing six-pose correction without arrays, loops, structs or flash-record code.
-7. printf prints both raw sensor and corrected drone coordinates. delay keeps the bench output at approximately one update per second.
+$$
+\Delta o_j=-2\operatorname{round}\left(\frac{1024 b_j}{g}\right),\qquad o_{new,j}=o_{baseline,j}+\Delta o_j.
+$$
 
-The old single-pose averaging code and obsolete offsets are absent from the active firmware. Their original source and data remain in the measurement snapshot and Git history.
+The changes are X=-270, Y=+16, Z=+134 counts, relative to each baseline. Even changes preserve the temperature compensation low bit. They leave predicted sensor-coordinate rounding residuals about (+0.000216, -0.002552, +0.002138) m/s². These are numerical quantization estimates, not measured accuracy.
 
-## Why not the suggested setXAccelOffset example?
+The baseline assumption is that the original six-pose recordings used the same sensor's default trims. Adafruit begin resets the device before offsets are applied. Verify baseline values repeat across restarts; do not assume an untested module resets trims exactly as expected. If any write/configuration check fails, corrected measurement output is suppressed until restart. Earlier axes might already have been written before a later failure, so restart/power-cycle before retrying rather than applying offsets again manually.
 
-That API belongs to the I2Cdevlib-style MPU6050 library, rather than the current Adafruit API. The setter writes an integer bias register; it does not provide this combined scale/mounting correction or persistent storage in the MPU. Its integer argument is not an offset in m/s², and the example numbers were not measured for this sensor. No gyro bias measurements were supplied, so its example gyro offsets must not be copied either.
+## What is stored where?
 
-We keep the existing library and one software correction, avoiding unknown hardware-register changes or double subtraction. See the [actual offset setter implementation](https://github.com/jrowberg/i2cdevlib/blob/master/Arduino/MPU6050/MPU6050.cpp).
+| Location | Contents | Power-cycle behavior |
+|---|---|---|
+| ESP32 firmware flash | Your measured biases and correction coefficients | Retained; source of the boot-time restoration |
+| MPU6050 offset registers | Integer acceleration bias trims | Volatile; reapplied by setup |
+| Software expressions | Scale and sensor-to-drone frame mapping | Executed on each sample |
 
-## Your real test - not performed by the assistant
+The complete 3-by-3 scale/mounting matrix cannot be stored as an equivalent transform in those offset words. Gyro offsets remain untouched because none were measured. No full software bias subtraction remains: applying both would double-correct the bias. Old Preferences records are not read or written.
 
-With propellers removed, upload yourself and open Monitor at 115200 baud. Press RESET/EN if necessary. The initialization should say Yes and the calibration message should say stored in firmware flash. The previous SAVED_AND_READ_BACK / LOADED_FROM_FLASH messages no longer apply to this simplified version.
+## Your physical proof
 
-Repeat all six DRONE-axis poses in a stable fixture. The corrected aligned axis should approach ±9.80665 m/s², with the other two near zero. Preserve the raw and corrected values and their variation. Repeat several NEW stationary tilted poses and check that the corrected magnitude stays near g.
+1. Upload yourself with propellers removed. Open Monitor at 115200 baud and reset to capture startup.
+2. Preserve the three MPU_OFFSET lines. Check readback=requested and requested-baseline is -270, +16 and +134 for X/Y/Z respectively.
+3. Check MPU_CONFIG ends in verified=Yes. Enum codes are configuration bits, not physical range/frequency numbers; see the configuration guide.
+4. Record MPU_BIAS_CORRECTED (sensor coordinates after hardware trim) and DRONE (after scale/mounting) in all six poses. Also record new tilted static poses; corrected magnitude should stay near g.
+5. Reset several times, then power-cycle sensor and ESP32. Baseline and applied values should repeat, without accumulating trim. Stop and share logs if they do not.
 
-Reset, then separately disconnect/reconnect power and repeat the same poses. The correction should remain consistent, within sensor variation. This checks the fixed firmware calibration persists, not a separate NVS record. Do not move the sensor relative to the frame: the fit includes the mounting orientation.
+An I2C register readback proves the requested bits were read back, not calibration accuracy. The original fit's maximum training residual was approximately 0.1425 m/s². The recorded software-only test report belongs to revision 100b879; the hardware-trim numerical model and embedded compile now pass, while actual device verification is still required. No current-run physical success is claimed.
 
-Training residual vector norms were:
-
-- +Z: 0.107519 m/s²
-- -Z: 0.107519 m/s²
-- +X: 0.142461 m/s²
-- -X: 0.142461 m/s²
-- +Y: 0.043839 m/s²
-- -Y: 0.043839 m/s²
-
-The largest is approximately 0.1425 m/s². These are fitting residuals on the supplied means, not independent measured accuracy or standard deviations. No acceptance tolerance is inferred from them. If independent checks fail, revisit pose alignment and calibration; do not hide the error in PID gains.
-
-## Adafruit restored: checking that correction is applied
-
-The current dependency is again adafruit/Adafruit MPU6050 2.2.9. Hardware offset setters are absent. The library initializes/resets the MPU; no user offset register changes are requested by this firmware. Fully power-cycle the sensor before comparing with an earlier hardware-trim version, so a retained device state does not confuse the comparison.
-
-The loop reads one event, subtracts each named bias once, and applies the original three scale/mounting expressions. RAW_SENSOR prints the library readings BEFORE our correction; DRONE prints the corrected coordinates and vector magnitude. The user's 100 ms reporting interval is preserved. A stationary corrected norm should be near 9.80665 m/s², not zero.
-
-The project command `qcopter.ps1 check-accel` exercises the actual scalar expressions extracted from main.cpp using IEEE float32 rounding against all six recorded means. It checks both the corrected vectors against the saved fit and the error if bias were omitted or subtracted twice. This checks the source expressions with a host numerical harness, not execution on an ESP32 or a live I2C bus. The PlatformIO build separately checks embedded compilation. Original outputs are preserved under artifacts/calibration-check and artifacts/build, including failed attempts.
-
-Neither test proves the board is running this binary or that the module's readings are accurate. After the user uploads, capture RAW_SENSOR and DRONE in all six poses and several new tilted stationary poses, then repeat after a power cycle. Preserve the actual serial output. No serial connection or upload is initiated by the assistant.
+For editing ranges, DLPF, clock and rate, use [the datasheet/configuration guide](mpu6050-configuration.md).
 
 ## Limits and next step
 
@@ -101,4 +86,4 @@ This calibrates only acceleration provisionally. Gyro bias, gyro-to-drone mounti
 
 See the numerical/build result report for offline checks actually performed. No upload, power-cycle or sensor acceptance was performed by the assistant. The numerical fit and training residuals were calculated from the user-supplied means; these are calculations, not new measurements. Calibration remains the current phase until the user verifies restoration and independent pose checks.
 
-[Recorded results of the requested numerical check and embedded build](calibration-test-results.md). Both passed; no hardware acceptance is implied.
+[Test history, including the current modeled trim check and successful embedded compile](calibration-test-results.md). These offline results do not validate actual hardware offset response or calibration accuracy.

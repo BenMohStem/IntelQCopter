@@ -1,4 +1,6 @@
-# Adafruit calibration checks - 24 October 2026
+# Calibration check history - 24 October 2026
+
+## Earlier software-only revision 100b879
 
 ## Scope
 
@@ -34,3 +36,29 @@ a14e52ab18608b0da9663605d97b11054a7086ec1b15bcd9b1cffbf5c664820a
 Original host-check output and original compiler output are retained locally under artifacts/calibration-check and artifacts/build. Raw local logs are not included in this public documentation commit.
 
 Run the numerical check again with `./qcopter.ps1 check-accel`; compile with `./qcopter.ps1 build`. Follow the [physical verification guide](accelerometer-calibration.md) after uploading yourself. A board pass still requires actual raw/corrected serial readings in the six poses and independent new orientations, plus a power-cycle check.
+
+
+## Current Adafruit + BusIO hardware-trim revision
+
+Adafruit remains the sensor/configuration library; BusIO writes and verifies the MPU offset words. The numerical check MODELS the trim changes (-270,+16,+134), including low-bit preservation examples and quantization. It does not execute I2C, the BusIO helper, or the device's analog offset response. The actual scalar conversion/mounting expressions were evaluated with float32 rounding on all six saved poses against the quantization-adjusted reference. That check passed; deliberately missing/doubled total-bias controls were detected. Independent physical checks remain required.
+
+The embedded PlatformIO build also passed with Adafruit MPU6050 2.2.9 and Adafruit BusIO 1.17.4: RAM 19316 bytes; flash 305157 bytes. No firmware was uploaded. No config readback or offset readback was observed on actual hardware.
+
+Matching main.cpp SHA-256:
+
+```text
+bb104bf32dfd235a7ee7281263b2a22045129faa4f880536117ca70983b0c704
+```
+
+Predicted corrected output for the original means (m/s²):
+
+| Pose | X | Y | Z |
+|---|---:|---:|---:|
+| +Z | -0.028149 | 0.104547 | 9.802646 |
+| -Z | -0.028149 | 0.104546 | -9.810655 |
+| +X | 9.857118 | -0.128545 | 0.031726 |
+| -X | -9.756184 | -0.128545 | 0.031726 |
+| +Y | -0.030181 | 9.831478 | -0.021621 |
+| -Y | -0.030181 | -9.781821 | -0.021621 |
+
+Original local logs are retained under artifacts/calibration-check/20261024T222620874109Z and artifacts/build/20261024T222626810203Z. These raw local logs are not included in the public commit. The previous report and original logs remain preserved.

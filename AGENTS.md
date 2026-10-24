@@ -23,4 +23,4 @@
 
 - Calibration teaching: prefer explicit named scalar corrections and simple library calls. For fixed measured constants, firmware flash is sufficient persistence; do not reintroduce a complex NVS record layer unless runtime recalibration needs it. Preserve accurate frame mapping and distinguish fitted candidates from physically validated calibration.
 
-- Current MPU library is Adafruit MPU6050, restored at user request. Apply the six-pose bias once in software, followed by the scale/mounting correction. Do not also apply user hardware offset writes. No gyro calibration has been measured. Preserve original calibration evidence and distinguish numerical/build checks from live sensor acceptance.
+- Current MPU readings/configuration use Adafruit MPU6050. Its existing Adafruit BusIO dependency writes accelerometer bias registers relative to the reset factory baseline, preserving bit 0 and verifying readback. No second MPU library and no duplicate software bias subtraction. Scale/mounting remains in software. Gyro bias is unmeasured. Config changes require readback and physical checks; never label enum codes as physical units.

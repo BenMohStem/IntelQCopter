@@ -4,6 +4,7 @@ import ctypes
 import datetime
 import hashlib
 import json
+import math
 from pathlib import Path
 import re
 import sys
@@ -39,6 +40,11 @@ def expression(node, values):
             return f32(left - right)
         if isinstance(node.op, ast.Mult):
             return f32(left * right)
+        if isinstance(node.op, ast.Div):
+            return f32(left / right)
+    if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == 'lroundf':
+        value = expression(node.args[0], values)
+        return math.floor(value + 0.5) if value >= 0 else math.ceil(value - 0.5)
     raise ValueError('Unsupported firmware expression')
 
 def source_expression(name):
@@ -52,20 +58,38 @@ try:
     assert '#include <Adafruit_MPU6050.h>' in text
     assert 'mpu.getAccelerometerSensor()->getEvent(&acceleration);' in text
     assert 'setXAccelOffset' not in text and 'apply_accel_offsets' not in text
+    hardware_mode = 'write_accel_bias(0x06, accel_bias_x' in text
+    report['mode'] = 'modeled MPU hardware trim + source expressions' if hardware_mode else 'software-only bias'
+    trim = [0, 0, 0]
+    quantization = [0.0, 0.0, 0.0]
+    if hardware_mode:
+        match = re.search(r'int32_t change\s*=\s*([^;]+);', text)
+        assert match
+        trim_tree = ast.parse(re.sub(r'(?<=\d)f\b', '', match.group(1)), mode='eval').body
+        trim = [-int(expression(trim_tree, {'bias': value})) for value in fit['bias_sensor_m_s2']]
+        assert trim == [-270, 16, 134]
+        assert all(value % 2 == 0 for value in trim)
+        for baseline in (-30000, -1, 0, 1, 30000):
+            for delta in trim:
+                assert ((baseline + delta) & 1) == (baseline & 1)
+        quantization = [fit['bias_sensor_m_s2'][i] + trim[i] * 9.80665 / 2048 for i in range(3)]
+        lines.append('MPU trim model: delta=' + str(trim) + '; low-bit preservation checked on signed baseline examples. No I2C performed.')
     expressions = {name: source_expression(name) for name in
                    ('accel_bias_x','accel_bias_y','accel_bias_z','sensor_x','sensor_y','sensor_z','drone_x','drone_y','drone_z')}
     for pose, raw in fit['raw_means_m_s2'].items():
-        values = {'raw_' + axis: f32(raw[i]) for i,axis in enumerate('xyz')}
+        values = {'raw_' + axis: f32(raw[i] + (trim[i] * 9.80665 / 2048 if hardware_mode else 0)) for i,axis in enumerate('xyz')}
         for name, tree in expressions.items():
             values[name] = expression(tree, values)
         actual = [values['drone_' + axis] for axis in 'xyz']
         expected = fit['training_residuals'][pose]['corrected_drone_m_s2']
+        if hardware_mode:
+            expected = [expected[i] + sum(fit['transform_sensor_to_drone'][i][j] * quantization[j] for j in range(3)) for i in range(3)]
         difference = max(abs(a-b) for a,b in zip(actual,expected))
         assert difference < 0.00001, (pose, actual, expected)
         row = dict(pose=pose, corrected=actual, reference=expected, max_expression_difference=difference)
         report['results'].append(row)
         lines.append(f'{pose}: corrected={actual}; max difference from double-precision fit={difference:.9g}')
-    # Deliberately incorrect variants must not reproduce the reference fit.
+    # Deliberately incorrect total bias corrections must not reproduce the original fit.
     for bias_times in (0, 2):
         worst_difference = 0.0
         for pose, raw in fit['raw_means_m_s2'].items():
