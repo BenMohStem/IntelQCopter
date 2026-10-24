@@ -66,3 +66,7 @@ Original local logs are retained under artifacts/calibration-check/20261024T2226
 ## Subsequent ±8g / DLPF 94 Hz / 500 Hz output settings
 
 These user-requested settings and the stationary-log analyzer were prepared after the preceding tests. No new build, actual noise recording or hardware result is claimed here. See imu-noise.md.
+
+## Filter revision on 25 October 2026
+
+User requested higher bandwidth. The active setting is now MPU6050_BAND_260_HZ with divider 15 (8 kHz / 16 = 500 Hz), retaining ±8g and ±500 degrees/s. Earlier reports are historical; no new build, timing measurement or stationary noise result was produced for this change.

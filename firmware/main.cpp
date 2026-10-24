@@ -12,8 +12,8 @@ static const int scl_pin = 8;
 static const uint32_t i2c_clock_hz = 100000;
 static const mpu6050_accel_range_t accel_range = MPU6050_RANGE_8_G;
 static const mpu6050_gyro_range_t gyro_range = MPU6050_RANGE_500_DEG;
-static const mpu6050_bandwidth_t filter_bandwidth = MPU6050_BAND_94_HZ;
-static const uint8_t sample_divider = 1;
+static const mpu6050_bandwidth_t filter_bandwidth = MPU6050_BAND_260_HZ;
+static const uint8_t sample_divider = 15;
 static const mpu6050_clock_select_t clock_source = MPU6050_PLL_GYROX;
 
 Adafruit_MPU6050 mpu;

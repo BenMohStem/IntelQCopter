@@ -6,12 +6,12 @@
 |---|---|
 | Acceleration range | ±8g |
 | Gyro range | ±500 degrees/s |
-| DLPF mode | 2: 94 Hz acceleration / 98 Hz gyro |
-| Datasheet filter delay | about 3.0 ms acceleration / 2.8 ms gyro |
-| Divider | 1: 1000/(1+1) = 500 Hz MPU output |
+| DLPF mode | 0: 260 Hz acceleration / 256 Hz gyro |
+| Datasheet filter delay | nominally 0 ms acceleration / 0.98 ms gyro (filter only) |
+| Divider | 15: 8000/(1+15) = 500 Hz MPU output |
 | Current bench read/report | About 10 Hz, using delay(100) |
 
-The filter is a reasonable first candidate for limiting high-frequency noise while retaining more response than a very low cutoff. It is not a proven best choice for this drone. Its delay, vibration rejection and aliasing must be measured during later timing/model/controller work. The 500 Hz output setting does not create a 500 Hz FC or lossless 500 Hz recording. The ADC range and filtering changed, so repeat the calibration pose checks rather than assuming old coefficients remain equally accurate.
+The user selected the higher-bandwidth setting to reduce filter delay. It provides less high-frequency attenuation and is not strong anti-alias filtering for a 250 Hz Nyquist limit. It is not a proven best choice for this drone. Its delay, vibration rejection and aliasing must be measured during later timing/model/controller work. The 500 Hz output setting does not create a 500 Hz FC or lossless 500 Hz recording. The ADC range and filtering changed, so repeat the calibration pose checks rather than assuming old coefficients remain equally accurate.
 
 Source: [manufacturer CONFIG/DLPF table](https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Register-Map1.pdf). No high-rate serial streaming, timing ISR or new PID is added in this lesson. The existing hardware bias restoration and software mounting correction remain active.
 
@@ -83,4 +83,4 @@ From the stepwise project folder, after saving the actual stationary log as meas
 .\qcopter.ps1 imu-noise .\measurements\stationary.txt --output .\measurements\stationary-noise.json
 ```
 
-Choose a new output filename for each run. Keep the original log with the report. This command does not connect to the board or upload firmware. No real standard deviation, Q/R or gain is claimed until a valid stationary recording has been supplied. The new configuration and analyzer have not been built or exercised in this iteration; previous numerical/build results describe their earlier source revisions.
+Choose a new output filename for each run. Keep the original log with the report. This command does not connect to the board or upload firmware. No real standard deviation, Q/R or gain is claimed until a valid stationary recording has been supplied. The updated configuration and analyzer have not been built or exercised in this iteration; previous numerical/build results describe their earlier source revisions.

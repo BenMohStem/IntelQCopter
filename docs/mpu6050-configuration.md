@@ -39,12 +39,12 @@ static const int scl_pin = 8;
 static const uint32_t i2c_clock_hz = 100000;
 static const mpu6050_accel_range_t accel_range = MPU6050_RANGE_8_G;
 static const mpu6050_gyro_range_t gyro_range = MPU6050_RANGE_500_DEG;
-static const mpu6050_bandwidth_t filter_bandwidth = MPU6050_BAND_94_HZ;
-static const uint8_t sample_divider = 1;
+static const mpu6050_bandwidth_t filter_bandwidth = MPU6050_BAND_260_HZ;
+static const uint8_t sample_divider = 15;
 static const mpu6050_clock_select_t clock_source = MPU6050_PLL_GYROX;
 ```
 
-Current user-selected ranges are ±8g and ±500 degrees/s. DLPF mode 2 (94 Hz acceleration / 98 Hz gyro) and divider 1 give 500 Hz internal output. This is an initial filter choice, not validated flight tuning. Edit these named values, upload yourself, and compare the MPU_CONFIG readback status and measured output. I2C address follows actual AD0 wiring; changing the code alone does not change the device address. Pin numbers describe ESP32 GPIOs, not MPU package-pin numbers or header-hole positions.
+Current user-selected ranges are ±8g and ±500 degrees/s. At the user's request the current filter is DLPF mode 0 (260 Hz acceleration / 256 Hz gyro). The gyro base rate becomes 8 kHz, so divider 15 retains 500 Hz output. Datasheet filter delays are nominally 0 ms for acceleration and 0.98 ms for gyro; these exclude bus, readout, scheduling and computation latency. This is not validated flight tuning. Edit these named values, upload yourself, and compare the MPU_CONFIG readback status and measured output. I2C address follows actual AD0 wiring; changing the code alone does not change the device address. Pin numbers describe ESP32 GPIOs, not MPU package-pin numbers or header-hole positions.
 
 The Arduino enum names are readable labels for bit-field values. For example an acceleration-range code of 0 selects the 2g setting; logging `accel=0` does not mean the sensor has zero range. The code explicitly calls setters AFTER Adafruit begin, because begin installs its own defaults. A later reset/begin would reinstall defaults and require configuration/calibration again.
 
@@ -183,3 +183,5 @@ Closely spaced filtered samples can be correlated; N readings do not automatical
 This is still one accelerometer calibration lesson. The calibration includes the current sensor-to-drone mounting. Gyro offsets, continuous disconnection detection, sensor timing profiling and filter selection for flight are not validated. Only bias fits in the MPU offset words; the complete scale/mounting matrix stays in software. The registers are volatile and restored by our boot code from ESP32 firmware constants. See [calibration and power-cycle checks](accelerometer-calibration.md) before leaving this phase.
 
 For actual Kalman noise values, follow [stationary noise measurement](imu-noise.md). The current serial report remains about 10 Hz. Internal output rate is not a validated 500 Hz FC scheduler.
+
+A 500 Hz control loop has a 2 ms period. Filter group delay is signal age/phase lag, not CPU execution time: a filter can delay a signal by more than one loop period without blocking that loop. CPU/I2C work must still meet its separate deadline. The present 260/256 Hz setting trades less filter delay for less high-frequency attenuation; it is not strong anti-alias filtering for 500 Hz output (250 Hz Nyquist). Noise and vibration must be measured with this setting before final filter/controller selection.
