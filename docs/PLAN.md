@@ -27,7 +27,7 @@ For each step:
 | 05 | Read only the accelerometer Z axis | Value changes when the sensor is turned |
 | 06 | Read only the gyroscope Z axis | Value changes when the sensor rotates |
 
-**Current active lesson: step02, uptime.** The implementation is prepared for the user to upload and test. Step01 hardware success has not been recorded; no physical acceptance is claimed for either step. Steps03–06 remain planned.
+**Current active lesson: step03, start Wire on SDA9/SCL8 at 100 kHz.** Prepared for the user to upload and test. No physical acceptance is recorded for steps01–03. Steps04–06 remain planned; no sensor is queried yet.
 
 ## After those small steps
 

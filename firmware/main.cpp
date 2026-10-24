@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <Wire.h>
 
 void setup(void)
 {
@@ -9,6 +10,10 @@ void setup(void)
     pinMode(14, INPUT_PULLDOWN);
 
     Serial.begin(115200);
+
+    bool i2c_started = Wire.begin(9, 8, 100000);
+    Serial.print("I2C controller started (1=yes, 0=no): ");
+    Serial.println(i2c_started);
 }
 
 void loop(void)
