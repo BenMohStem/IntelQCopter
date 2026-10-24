@@ -7,3 +7,5 @@
 The files in tools/ manage builds and history; they are not flight code and need not be studied yet. Older diagnostics are in the archive and Git history, not the current firmware.
 
 [Actual offline calibration/build results](../docs/calibration-test-results.md) - numerical/compile evidence only, not a hardware pass.
+
+[MPU6050 datasheet and editable configuration guide](../docs/mpu6050-configuration.md).
