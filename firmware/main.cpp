@@ -138,5 +138,5 @@ void loop(void)
             (unsigned long)micros(), drone_x, drone_y, drone_z,
             rotation.gyro.x, rotation.gyro.y, rotation.gyro.z);
     }
-    delay(100);
+    delay(400);
 }
