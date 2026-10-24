@@ -1,0 +1,89 @@
+# ==============================================================================
+# DRONE DYNAMIC STATE ESTIMATION PARAMETERS (params.txt)
+# Configuration for Kalman Filter State Space, Process Noise (Q), and Inertia
+# Frame Configuration: F450 Quadcopter (X-configuration)
+# Generated: 2026-10-24
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. TOTAL MASS GAUSSIAN DISTRIBUTION MODEL
+# ------------------------------------------------------------------------------
+# Model: M ~ N(mu_m, sigma_m^2)
+TOTAL_MASS_MEAN_G        = 1038.0000     # Expected takeoff mass [grams]
+TOTAL_MASS_STD_G         = 16.0312       # Standard deviation [grams]
+TOTAL_MASS_VARIANCE_G2   = 257.0000      # Total additive variance [g^2]
+
+TOTAL_MASS_MEAN_KG       = 1.0380        # Scalar mass parameter for B matrix [kg]
+TOTAL_MASS_VARIANCE_KG2  = 2.5700e-04    # Mass uncertainty for Q matrix scaling [kg^2]
+
+# ------------------------------------------------------------------------------
+# 2. SPATIAL MASS DISTRIBUTION & COMPONENT GAUSSIAN PARAMETERS
+# ------------------------------------------------------------------------------
+# Format: [MEAN_G, STD_G, VARIANCE_G2]
+# Distances measured along arm axis (r) from geometric center (r = 0.0m)
+# Full arm radius to motor center = 0.225m
+
+# --- HUB ELEMENTS (r = 0.000m) ---
+FRAME_CENTER_GAUSSIAN    = [272.0, 5.0, 25.0]     # Central glass-fiber/PCB plates
+BATTERY_3S_GAUSSIAN      = [320.0, 10.0, 100.0]   # 4200mAh LiPo pack (Center-slung)
+AVIONICS_GAUSSIAN        = [33.0, 4.0, 16.0]      # ESP + MPU6050 + Protoboard
+WIRING_HARNESS_GAUSSIAN  = [45.0, 8.0, 64.0]      # Power lines, solder, fasteners
+
+# --- LEG ELEMENTS (Distributed along r) ---
+ARM_COUNT                = 4              
+ESC_PER_LEG_GAUSSIAN     = [40.0, 1.5, 2.25]      # Individual 40A ESC at r ≈ 0.110m
+MOTOR_PER_LEG_GAUSSIAN   = [52.0, 1.0, 1.0]       # Individual A2212 at r = 0.225m
+
+# --- COMBINED RIGID BODY NODE GROUPS ---
+HUB_MASS_TOTAL_GAUSSIAN  = [670.0, 13.9642, 195.0] # Total core inertial mass
+TOTAL_ESC_MASS_GAUSSIAN  = [160.0, 6.0000, 36.0]   # Combined ESC system variance
+TOTAL_MOTOR_MASS_GAUSSIAN= [208.0, 4.0000, 16.0]   # Combined Propulsion mass variance
+
+# ------------------------------------------------------------------------------
+# 3. SPATIAL POSITION VECTORS (X-Frame Layout)
+# ------------------------------------------------------------------------------
+# Origin (0,0,0) at Center of Mass. Arm Angle = 45 degrees from X/Y axes.
+# Arm Length Radius (R_arm) = 0.225 m
+# ESC Median Radius  (R_esc) = 0.110 m
+
+ARM_ANGLE_RAD            = 0.785398       # 45 degrees in radians
+
+# Motor Positions [x, y, z] in meters
+MOTOR_1_POS              = [0.1591, 0.1591, 0.0]  # Front Right
+MOTOR_2_POS              = [-0.1591, 0.1591, 0.0] # Front Left
+MOTOR_3_POS              = [-0.1591, -0.1591, 0.0]# Rear Left
+MOTOR_4_POS              = [0.1591, -0.1591, 0.0] # Rear Right
+
+# ESC Positions [x, y, z] in meters
+ESC_1_POS                = [0.0778, 0.0778, 0.0]
+ESC_2_POS                = [-0.0778, 0.0778, 0.0]
+ESC_3_POS                = [-0.0778, -0.0778, 0.0]
+ESC_4_POS                = [0.0778, -0.0778, 0.0]
+
+# ------------------------------------------------------------------------------
+# 4. MOMENT OF INERTIA (I) UNCERTAINTY MATRIX
+# ------------------------------------------------------------------------------
+# Computed using deterministic central mass + distributed variances.
+# Rigid Body Point Mass approximation: I = sum(m_i * r_i^2)
+# Units: [kg * m^2]
+
+I_XX_MEAN                = 0.006421       # Roll Moment of Inertia
+I_YY_MEAN                = 0.006421       # Pitch Moment of Inertia
+I_ZZ_MEAN                = 0.011853       # Yaw Moment of Inertia
+
+# Covariance Propagated Variance for Inertia Matrix elements (due to mass variance)
+I_XX_VARIANCE            = 2.1100e-08     # Sigma^2 for Roll State Transition
+I_YY_VARIANCE            = 2.1100e-08     # Sigma^2 for Pitch State Transition
+I_ZZ_VARIANCE            = 4.2200e-08     # Sigma^2 for Yaw State Transition
+
+# ------------------------------------------------------------------------------
+# 5. KALMAN FILTER IMPLEMENTATION DIRECTIVES
+# ------------------------------------------------------------------------------
+# State Vector: x = [p_x, p_y, p_z, v_x, v_y, v_z, phi, theta, psi, p, q, r]^T
+#
+# Process Noise Q Entry Guidance:
+# To map the variance of unmodeled structural vibrations/mass displacement
+# into velocity states, inject the following constants into the diagonal of Q:
+# Q_accel_x_y            = (Thrust_Variance) / (TOTAL_MASS_MEAN_KG^2)
+# Q_mass_random_walk     = 1.0000e-06     # If tracking mass as an augmented state
+# ==============================================================================
