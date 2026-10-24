@@ -64,6 +64,12 @@
         "115200"
       ],
       "description": "Open Serial Monitor; append --port COMx"
+    },
+    "check-accel": {
+      "runtime": "python",
+      "path": "tools/calibration/check_accelerometer.py",
+      "args": [],
+      "description": "Check actual firmware acceleration expressions against six saved poses; no hardware"
     }
   }
 }
