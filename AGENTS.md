@@ -20,3 +20,5 @@
 - The user also builds the Gazebo simulation. Offer commands and small explanations; do not generate worlds/models/complete simulation unless explicitly requested. Keep simulation learning separate from the tiny active MCU lesson.
 
 - Serial output style: use Serial.printf with format specifiers and explicit newline escapes, following the user's examples.
+
+- Calibration teaching: prefer explicit named scalar corrections and simple library calls. For fixed measured constants, firmware flash is sufficient persistence; do not reintroduce a complex NVS record layer unless runtime recalibration needs it. Preserve accurate frame mapping and distinguish fitted candidates from physically validated calibration.

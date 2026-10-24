@@ -27,7 +27,7 @@ For each step:
 | 05 | Read only the accelerometer Z axis | Value changes when the sensor is turned |
 | 06 | Read only the gyroscope Z axis | Value changes when the sensor rotates |
 
-**Current phase: provisional six-pose accelerometer calibration and flash persistence.** User supplied all six means and confirmed drone-axis pose labels. The candidate combines sensor corrections and sensor-to-drone mounting effects; it is prepared, not physically accepted. [Calculation and reboot/pose checks](accelerometer-calibration.md). No further sensor/control lesson is added until these checks are reviewed.
+**Current phase: provisional six-pose accelerometer calibration and flash persistence.** User supplied all six means and confirmed drone-axis pose labels. The candidate combines sensor corrections and sensor-to-drone mounting effects and is now stored as simple firmware constants, without a Preferences routine. It is prepared, not physically accepted. [Calculation and reboot/pose checks](accelerometer-calibration.md). No further sensor/control lesson is added until these checks are reviewed.
 
 ## After those small steps
 
@@ -37,7 +37,7 @@ Then test the actual magnetometer identity, and later one LiDAR reading, using a
 
 ### Calibration, one idea at a time
 
-**User requirement: finish and persist calibration before leaving this phase.** Help the user measure and validate MPU6050 accelerometer/gyroscope calibration, save a versioned calibration record in ESP32-S3 nonvolatile flash using Arduino Preferences, then reboot and verify the same values are loaded and applied. Provide a deliberate recalibration path. Do not advance from calibration to attitude estimation/PID/Xbox integration until the user has checked these results. This requirement is recorded now, not implemented in the current firmware lesson.
+**User requirement: finish and persist calibration before leaving this phase.** Help the user measure and validate MPU6050 accelerometer/gyroscope calibration, persist the calibration in ESP32-S3 flash, then reboot and verify the same values are applied. The current fixed candidate is embedded in firmware flash; use Arduino Preferences with version/integrity checks later if calibration is measured at runtime. Provide a deliberate recalibration path. Do not advance from calibration to attitude estimation/PID/Xbox integration until the user has checked these results. This requirement is recorded now, not implemented in the current firmware lesson.
 
 Clarify storage when implementing: the MPU6050 does not provide general nonvolatile storage for user calibration. Its offset registers are volatile; if used later, restore them from the ESP32 flash record after boot and avoid applying the same offset twice. The future RP2350 version will need its own MCU-flash persistence implementation.
 

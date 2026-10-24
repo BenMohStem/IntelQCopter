@@ -42,50 +42,51 @@ Calculated C, mapping centred sensor readings to drone axes:
 
 The three opposite-pose midpoints differ: see calculation.json. Their disagreement and the residuals can reflect alignment error, noise, temperature change or model limitations. They do not establish standard deviation, and the three +/− pairs are not independent validation data.
 
-## Persistence, line by line
+## Simpler code: constants in program flash
 
-The firmware uses Arduino Preferences, backed by ESP32 nonvolatile storage. The MPU6050 itself has no user-calibration nonvolatile memory. No MPU offset registers are written: correction is applied once in software, also allowing the mounting transform. Do not add MPU offset writes on top of it without reworking the calibration.
+The calibration values are known before compilation, so they can be stored as constants inside main.cpp. Uploading the firmware stores the constants in ESP32 program flash along with the code. A power cycle does not erase them. Each boot uses those same constants; no separate Preferences save/load routine is needed for this fixed candidate.
 
-1. AccelCalibration holds a format version, a measurement-set ID, three bias values and a 3-by-3 correction matrix.
-2. measured_calibration contains the computed candidate coefficients. Updating these requires reviewing a new measurement set; changing the sensor or mounting invalidates this candidate.
-3. load_or_save_calibration opens namespace mpu6050 and reads the accel-v1 blob if its byte length matches.
-4. An exact comparison against this firmware's candidate checks the complete record, including version, ID and coefficient bytes. Storage uses NVS's own integrity protection too. A different, absent or unreadable record is replaced with this candidate once.
-5. A write is accepted only if putBytes reports the full size and an immediate getBytes returns the identical record. Failure leaves corrected output disabled and raw output available. Review the status message; this is not flight-ready health handling.
-6. Matching records print LOADED_FROM_FLASH and cause no flash rewrite. A fresh candidate prints SAVED_AND_READ_BACK. Persistence is called only during setup, never in the sampling loop.
+This is persistence in the ESP32, not nonvolatile storage inside the MPU6050. Old Preferences records, if present from a previous firmware, are no longer read or written. No flash partition is erased by this change. Recalibration means updating the constants from new measurements and uploading again. If we later measure a new calibration on the board itself, Preferences will be appropriate for saving those runtime results without recompiling; that is deliberately deferred.
 
-This procedure installs the provisional uploaded candidate automatically on first boot and on a changed candidate; it does not perform automatic physical recalibration. Recalibration requires collecting six new means, calculating/reviewing new coefficients and updating the candidate/measurement ID. Booting while tilted does not replace the saved calibration with a single-pose average. Flash erase can delete it, after which the embedded candidate will reinstall. Use only on the measured sensor/mount: this lesson cannot detect a substituted module automatically.
+## Read main.cpp in order
+
+1. The includes provide Arduino, Wire and the existing Adafruit MPU6050 library. No dependency changed.
+2. accel_bias_x/y/z are the offsets calculated above. They describe MPU sensor axes, in m/s².
+3. setup keeps motor signals inactive, starts I2C on SDA9/SCL8 at 100 kHz, and initializes the MPU at 0x68.
+4. loop reads only after successful initialization.
+5. sensor_x/y/z subtract the three biases from raw sensor readings.
+6. drone_x/y/z are three explicit expressions. Each expression multiplies the centred readings by one row of the calculated correction matrix. This preserves the existing six-pose correction without arrays, loops, structs or flash-record code.
+7. printf prints both raw sensor and corrected drone coordinates. delay keeps the bench output at approximately one update per second.
+
+The old single-pose averaging code and obsolete offsets are absent from the active firmware. Their original source and data remain in the measurement snapshot and Git history.
+
+## Why not the suggested setXAccelOffset example?
+
+That API belongs to the I2Cdevlib-style MPU6050 library, rather than the current Adafruit API. The setter writes an integer bias register; it does not provide this combined scale/mounting correction or persistent storage in the MPU. Its integer argument is not an offset in m/s², and the example numbers were not measured for this sensor. No gyro bias measurements were supplied, so its example gyro offsets must not be copied either.
+
+We keep the existing library and one software correction, avoiding unknown hardware-register changes or double subtraction. See the [actual offset setter implementation](https://github.com/jrowberg/i2cdevlib/blob/master/Arduino/MPU6050/MPU6050.cpp).
 
 ## Your real test - not performed by the assistant
 
-Keep propellers removed. Close Monitor, upload deliberately, reopen at 115200 baud and press RESET/EN if needed to capture startup. First installation should say:
+With propellers removed, upload yourself and open Monitor at 115200 baud. Press RESET/EN if necessary. The initialization should say Yes and the calibration message should say stored in firmware flash. The previous SAVED_AND_READ_BACK / LOADED_FROM_FLASH messages no longer apply to this simplified version.
 
-```text
-CALIBRATION,SAVED_AND_READ_BACK
-```
+Repeat all six DRONE-axis poses in a stable fixture. The corrected aligned axis should approach ±9.80665 m/s², with the other two near zero. Preserve the raw and corrected values and their variation. Repeat several NEW stationary tilted poses and check that the corrected magnitude stays near g.
 
-Press RESET/EN again, then separately unplug/reconnect power. Both should say:
+Reset, then separately disconnect/reconnect power and repeat the same poses. The correction should remain consistent, within sensor variation. This checks the fixed firmware calibration persists, not a separate NVS record. Do not move the sensor relative to the frame: the fit includes the mounting orientation.
 
-```text
-CALIBRATION,LOADED_FROM_FLASH
-```
+Training residual vector norms were:
 
-If it says saved on every unchanged reboot, or reports any failure, preserve the actual log and stop for diagnosis. A reset alone is not a full power-cycle test.
+- +Z: 0.107519 m/s²
+- -Z: 0.107519 m/s²
+- +X: 0.142461 m/s²
+- -X: 0.142461 m/s²
+- +Y: 0.043839 m/s²
+- -Y: 0.043839 m/s²
 
-Now use a stable fixture and repeat all six DRONE-axis poses. The corrected aligned axis should be near +9.80665 or -9.80665 m/s², with the other two near zero. Record all three values, variation over time and how each pose was aligned. Also check several NEW stationary tilted orientations: the corrected vector magnitude should stay near g. Do not interpret the training fit as proof that these new checks will pass.
-
-Training residual vector norms, in m/s²:
-
-- +Z: 0.107519
-- -Z: 0.107519
-- +X: 0.142461
-- -X: 0.142461
-- +Y: 0.043839
-- -Y: 0.043839
-
-No acceptance tolerance was invented from these means. Without original sample logs or their variability we cannot compute reliable confidence intervals. Failing independent checks means recollecting/revising calibration, not tuning PIDs around the error.
+The largest is approximately 0.1425 m/s². These are fitting residuals on the supplied means, not independent measured accuracy or standard deviations. No acceptance tolerance is inferred from them. If independent checks fail, revisit pose alignment and calibration; do not hide the error in PID gains.
 
 ## Limits and next step
 
 This calibrates only acceleration provisionally. Gyro bias, gyro-to-drone mounting rotation, thermal drift, sensor disconnect detection and attitude estimation are not implemented. Do not apply C directly to gyro readings: its accelerometer scale/shear terms are not a pure rigid rotation. The one-second report rate is for bench inspection only. Motor outputs remain disabled. Mass/inertia and gains remain deferred to standalone-FC Gazebo work.
 
-No build, flash, power-cycle or sensor acceptance was performed by the assistant. The numerical fit and training residuals were calculated from the user-supplied means; these are calculations, not new measurements. Calibration remains the current phase until the user verifies restoration and independent pose checks.
+No build, upload, power-cycle or sensor acceptance was performed by the assistant. The numerical fit and training residuals were calculated from the user-supplied means; these are calculations, not new measurements. Calibration remains the current phase until the user verifies restoration and independent pose checks.
