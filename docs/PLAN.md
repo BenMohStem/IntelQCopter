@@ -27,7 +27,7 @@ For each step:
 | 05 | Read only the accelerometer Z axis | Value changes when the sensor is turned |
 | 06 | Read only the gyroscope Z axis | Value changes when the sensor rotates |
 
-**Current phase: provisional six-pose calibration with Adafruit readings and MPU-resident bias.** Adafruit BusIO writes/readbacks the three volatile hardware offset words each boot; only scale/mounting remains in software. [Calibration verification](accelerometer-calibration.md) must pass before advancing. [Datasheet/configuration learning guide](mpu6050-configuration.md) explains the editable configuration block; no live sensor acceptance is claimed.
+**Current phase: physical calibration verification.** A real stationary level capture on 25 October yielded a provisional rigid level trim and gyro biases. A temporal holdout replay improved mean leveling error but is not a post-upload test. [Actual measurements, statistics and verification steps](precision-2026-10-25.md). Do not advance to control until reset/pose checks are reviewed.
 
 ## After those small steps
 

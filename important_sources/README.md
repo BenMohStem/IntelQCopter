@@ -11,3 +11,5 @@ The files in tools/ manage builds and history; they are not flight code and need
 [MPU6050 datasheet and editable configuration guide](../docs/mpu6050-configuration.md).
 
 [Measure standard deviation for Kalman filtering](../docs/imu-noise.md).
+
+[Actual live sensor recording analysis and precision refinement](../docs/precision-2026-10-25.md).

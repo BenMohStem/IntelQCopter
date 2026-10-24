@@ -5,7 +5,7 @@
 Open these in order:
 
 1. [The small main.cpp](firmware/main.cpp).
-2. [Calibration explanation and verification](docs/accelerometer-calibration.md).
+2. [Latest real-data precision report](docs/precision-2026-10-25.md), then [calibration explanation](docs/accelerometer-calibration.md).
 3. [The revised plan](docs/PLAN.md).
 
 Arduino framework, ESP32-S3, PlatformIO. One firmware file. Braces on separate lines; one statement per line. No sensors, calibration, Xbox, PID or ROS2 in the first lesson. Motor signal pins are inputs, with no motor driver.

@@ -5,7 +5,7 @@
 #include <Adafruit_I2CDevice.h>
 #include <Adafruit_BusIO_Register.h>
 
-// Editable bench configuration: MPU output at 500 Hz; serial reporting at about 10 Hz.
+// Editable bench configuration: MPU output at 500 Hz; serial reporting at about 2.5 Hz.
 static const uint8_t mpu_address = 0x68;
 static const int sda_pin = 9;
 static const int scl_pin = 8;
@@ -26,9 +26,14 @@ static const float accel_bias_x = 1.293084598f;
 static const float accel_bias_y = -0.079166657f;
 static const float accel_bias_z = -0.639507624f;
 
-// Accelerometer offset words: X=0x06, Y=0x08, Z=0x0A.
+// Stationary SENSOR-axis gyro biases, rad/s, measured from a real log.
+static const float gyro_bias_x = 0.003236840207f;
+static const float gyro_bias_y = -0.005887098652f;
+static const float gyro_bias_z = -0.015005241501f;
+
+// Offset words: accel X/Y/Z=0x06/0x08/0x0A; gyro X/Y/Z=0x13/0x15/0x17.
 // BusIO is already used by Adafruit; no second MPU library is needed.
-static bool write_accel_bias(uint8_t address, float bias, const char *axis)
+static bool write_sensor_bias(uint8_t address, float bias, const char *axis, bool accelerometer)
 {
     Adafruit_BusIO_Register offset(&register_device, address, 2, MSBFIRST);
     uint16_t baseline_bits;
@@ -40,12 +45,17 @@ static bool write_accel_bias(uint8_t address, float bias, const char *axis)
 
     int16_t baseline = (int16_t)baseline_bits;
     int32_t change = 2 * lroundf(bias * 1024.0f / 9.80665f);
+    if (!accelerometer)
+    {
+        // Gyro trim uses 32.75 register counts per degree/second.
+        change = lroundf(bias * (180.0f / PI) * 32.75f);
+    }
     int32_t requested = (int32_t)baseline - change;
     if (requested < -32768 || requested > 32767)
     {
         return false;
     }
-    // Even changes preserve the factory temperature-compensation bit.
+    // Accelerometer changes are even, preserving its compensation bit.
     if (!offset.write((uint16_t)requested))
     {
         return false;
@@ -94,16 +104,29 @@ void setup(void)
         mpu_started = config_ok && register_device.begin();
         if (mpu_started)
         {
-            mpu_started = write_accel_bias(0x06, accel_bias_x, "X");
+            mpu_started = write_sensor_bias(0x06, accel_bias_x, "accel X", true);
         }
         if (mpu_started)
         {
-            mpu_started = write_accel_bias(0x08, accel_bias_y, "Y");
+            mpu_started = write_sensor_bias(0x08, accel_bias_y, "accel Y", true);
         }
         if (mpu_started)
         {
-            mpu_started = write_accel_bias(0x0A, accel_bias_z, "Z");
+            mpu_started = write_sensor_bias(0x0A, accel_bias_z, "accel Z", true);
         }
+        if (mpu_started)
+        {
+            mpu_started = write_sensor_bias(0x13, gyro_bias_x, "gyro X", false);
+        }
+        if (mpu_started)
+        {
+            mpu_started = write_sensor_bias(0x15, gyro_bias_y, "gyro Y", false);
+        }
+        if (mpu_started)
+        {
+            mpu_started = write_sensor_bias(0x17, gyro_bias_z, "gyro Z", false);
+        }
+        Serial.printf("CALIBRATION_REF,level-2026-10-25,physical_verification_pending\n");
         Serial.printf("MPU_CONFIG accel=%u gyro=%u dlpf=%u divider=%u clock=%u verified=%s\n",
             (unsigned)accel_range, (unsigned)gyro_range, (unsigned)filter_bandwidth,
             (unsigned)sample_divider, (unsigned)clock_source, mpu_started ? "Yes" : "No");
@@ -124,16 +147,17 @@ void loop(void)
         float sensor_y = acceleration.acceleration.y;
         float sensor_z = acceleration.acceleration.z;
 
-        // Then correct scale/mounting: output is in DRONE axes.
-        float drone_x = 0.046659658f * sensor_x + 0.992539802f * sensor_y - 0.045743511f * sensor_z;
-        float drone_y = -0.955388252f * sensor_x + 0.053316466f * sensor_y + 0.289431328f * sensor_z;
-        float drone_z = 0.272504170f * sensor_x + 0.023832247f * sensor_y + 0.951963666f * sensor_z;
+        // Scale/mounting plus measured level-reference trim: output is in DRONE axes.
+        float drone_x = (0.050469950769f) * sensor_x + (0.992803544943f) * sensor_y + (-0.031256177956f) * sensor_z;
+        float drone_y = (-0.965981480111f) * sensor_x + (0.052583218037f) * sensor_y + (0.249154203796f) * sensor_z;
+        float drone_z = (0.231376149659f) * sensor_x + (0.011045641176f) * sensor_y + (0.963868776624f) * sensor_z;
 
         Serial.printf("MPU_BIAS_CORRECTED X=%.4f Y=%.4f Z=%.4f m/s^2\n",
             acceleration.acceleration.x, acceleration.acceleration.y, acceleration.acceleration.z);
         float magnitude = sqrtf(drone_x * drone_x + drone_y * drone_y + drone_z * drone_z);
         Serial.printf("DRONE X=%.4f Y=%.4f Z=%.4f norm=%.4f m/s^2\n", drone_x, drone_y, drone_z, magnitude);
-        // CSV: uptime_us, drone acceleration (m/s^2), SENSOR gyro (rad/s).
+        Serial.printf("TEMP,%.3f,C\n", temperature.temperature);
+        // CSV: uptime_us, drone acceleration, bias-trimmed SENSOR gyro (rad/s).
         Serial.printf("IMU,%lu,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f\n",
             (unsigned long)micros(), drone_x, drone_y, drone_z,
             rotation.gyro.x, rotation.gyro.y, rotation.gyro.z);

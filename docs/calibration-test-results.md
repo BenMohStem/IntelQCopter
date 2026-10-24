@@ -70,3 +70,7 @@ These user-requested settings and the stationary-log analyzer were prepared afte
 ## Filter revision on 25 October 2026
 
 User requested higher bandwidth. The active setting is now MPU6050_BAND_260_HZ with divider 15 (8 kHz / 16 = 500 Hz), retaining ±8g and ±500 degrees/s. Earlier reports are historical; no new build, timing measurement or stationary noise result was produced for this change.
+
+## Real stationary capture and refinement on 25 October 2026
+
+A receive-only 120-second COM3 capture yielded 291 real samples. All raw/corrected pairs match the prior calibration transform within print rounding. A constrained level rotation and gyro bias were fitted on 174 samples and checked by offline replay on 117 held-out samples. The proposed source passed numerical expression checks and an embedded compile. No upload or post-update physical verification occurred. See [full report, original evidence locations and graphs](precision-2026-10-25.md).

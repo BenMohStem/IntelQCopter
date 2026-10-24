@@ -13,6 +13,15 @@ ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / 'firmware/main.cpp'
 text = SOURCE.read_text()
 fit = json.loads((ROOT / 'measurements/mpu6050/2026-10-24-six-pose/calculation.json').read_text())
+refinement_path = ROOT / 'measurements/mpu6050/2026-10-25-level-refinement/refinement.json'
+if refinement_path.exists():
+    refinement = json.loads(refinement_path.read_text())
+    level = refinement['level_rotation']
+    fit['transform_sensor_to_drone'] = refinement['transform_sensor_to_drone']
+    for result in fit['training_residuals'].values():
+        old = result['corrected_drone_m_s2']
+        result['corrected_drone_m_s2'] = [sum(level[i][j]*old[j] for j in range(3)) for i in range(3)]
+
 stamp = datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
 folder = ROOT / 'artifacts/calibration-check' / stamp
 folder.mkdir(parents=True)
@@ -59,7 +68,8 @@ try:
     assert ('mpu.getAccelerometerSensor()->getEvent(&acceleration);' in text
             or 'mpu.getEvent(&acceleration, &rotation, &temperature);' in text)
     assert 'setXAccelOffset' not in text and 'apply_accel_offsets' not in text
-    hardware_mode = 'write_accel_bias(0x06, accel_bias_x' in text
+    hardware_mode = ('write_accel_bias(0x06, accel_bias_x' in text
+                     or 'write_sensor_bias(0x06, accel_bias_x' in text)
     report['mode'] = 'modeled MPU hardware trim + source expressions' if hardware_mode else 'software-only bias'
     trim = [0, 0, 0]
     quantization = [0.0, 0.0, 0.0]
@@ -100,6 +110,16 @@ try:
             worst_difference = max(worst_difference, max(abs(a-b) for a,b in zip(actual,expected)))
         assert worst_difference > 0.1
         lines.append(f'Negative control, bias applied {bias_times} times: reference mismatch={worst_difference:.6f} m/s^2 (detected)')
+    if refinement_path.exists():
+        match = re.search(r'change = (lroundf\(bias \* \(180\.0f / PI\) \* 32\.75f\));', text)
+        assert match, 'Missing source gyro register conversion'
+        tree = ast.parse(re.sub(r'(?<=\d)f\b', '', match.group(1)), mode='eval').body
+        measured = []
+        for axis in 'xyz':
+            bias = expression(source_expression('gyro_bias_' + axis), {})
+            measured.append(-int(expression(tree, {'bias': bias, 'PI': 3.141592653589793})))
+        assert measured == refinement['gyro_register_delta']
+        lines.append('Gyro source register-conversion model matches measured candidate deltas: ' + str(measured))
     report['passed'] = True
     lines.append('PASS: source-expression check. Not a hardware calibration pass.')
 except Exception as error:

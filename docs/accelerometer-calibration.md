@@ -87,3 +87,7 @@ This calibrates only acceleration provisionally. Gyro bias, gyro-to-drone mounti
 See the numerical/build result report for offline checks actually performed. No upload, power-cycle or sensor acceptance was performed by the assistant. The numerical fit and training residuals were calculated from the user-supplied means; these are calculations, not new measurements. Calibration remains the current phase until the user verifies restoration and independent pose checks.
 
 [Test history, including the current modeled trim check and successful embedded compile](calibration-test-results.md). These offline results do not validate actual hardware offset response or calibration accuracy.
+
+## Level-reference refinement on 25 October 2026
+
+The current matrix is now pre-multiplied by a rigid level-reference rotation fitted to the first 60% of a real stationary recording; the original matrix and measurements above remain historical. The remaining 40% was used for offline temporal holdout checks. Gyro bias is now measured in sensor axes and written through the same readback helper to 0x13/0x15/0x17 at boot. Bias is not subtracted again from the gyro in software. See [precision report](precision-2026-10-25.md) for predicted residuals, uncertainty and physical checks still required. Earlier statements that gyro bias is unmeasured apply only to the earlier revision.
