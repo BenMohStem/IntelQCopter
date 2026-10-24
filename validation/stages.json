@@ -185,6 +185,21 @@
       "acceptance_kind": "physical",
       "implemented": false,
       "locked": false
+    },
+    {
+      "id": "cal-accel-six-pose",
+      "title": "Provisional accelerometer calibration and flash persistence",
+      "requires": [
+        "04-mpu-id"
+      ],
+      "sources": [
+        "firmware/main.cpp",
+        "platformio.ini",
+        "measurements/mpu6050/2026-10-24-six-pose/calculation.json"
+      ],
+      "acceptance_kind": "physical",
+      "implemented": true,
+      "locked": false
     }
   ]
 }

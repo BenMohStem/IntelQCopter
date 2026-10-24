@@ -27,7 +27,7 @@ For each step:
 | 05 | Read only the accelerometer Z axis | Value changes when the sensor is turned |
 | 06 | Read only the gyroscope Z axis | Value changes when the sensor rotates |
 
-**Current active lesson: step06, print gyroscope Z using Serial.printf.** The user added accelerometer X/Y/Z offset subtraction and reports calibration complete; its measurement method and residual errors have not been reviewed. These edits are preserved. GyroZ is prepared for your upload and test, with no physical acceptance claimed. No PID or attitude integration is included.
+**Current phase: provisional six-pose accelerometer calibration and flash persistence.** User supplied all six means and confirmed drone-axis pose labels. The candidate combines sensor corrections and sensor-to-drone mounting effects; it is prepared, not physically accepted. [Calculation and reboot/pose checks](accelerometer-calibration.md). No further sensor/control lesson is added until these checks are reviewed.
 
 ## After those small steps
 
