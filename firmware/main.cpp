@@ -3,6 +3,7 @@
 #include <Adafruit_MPU6050.h>
 
 Adafruit_MPU6050 mpu;
+sensors_event_t acceleration;
 bool mpu_started = false;
 
 // Six-pose accelerometer biases, in MPU sensor axes and m/s^2.
@@ -35,7 +36,6 @@ void loop(void)
 {
     if (mpu_started)
     {
-        sensors_event_t acceleration;
         mpu.getAccelerometerSensor()->getEvent(&acceleration);
 
         // First remove the bias, keeping MPU sensor axes.
@@ -48,9 +48,7 @@ void loop(void)
         float drone_y = -0.955388252f * sensor_x + 0.053316466f * sensor_y + 0.289431328f * sensor_z;
         float drone_z = 0.272504170f * sensor_x + 0.023832247f * sensor_y + 0.951963666f * sensor_z;
 
-        Serial.printf("RAW_SENSOR X=%.4f Y=%.4f Z=%.4f m/s^2\n",
-            acceleration.acceleration.x, acceleration.acceleration.y, acceleration.acceleration.z);
         Serial.printf("DRONE X=%.4f Y=%.4f Z=%.4f m/s^2\n", drone_x, drone_y, drone_z);
     }
-    delay(1000);
+    delay(100);
 }
