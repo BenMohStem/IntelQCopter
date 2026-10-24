@@ -3,7 +3,11 @@
 #include <Adafruit_MPU6050.h>
 
 Adafruit_MPU6050 mpu;
+double avrg_xacc =  3.350011f;
+double avrg_yacc = -0.411099f;
+double avrg_zacc = -0.716789f;
 bool mpu_started = false;
+bool i2c_started = false;
 
 void setup(void)
 {
@@ -15,7 +19,7 @@ void setup(void)
     pinMode(2, INPUT_PULLDOWN);
     pinMode(14, INPUT_PULLDOWN);
 
-    bool i2c_started = Wire.begin(9, 8, 100000);
+    i2c_started = Wire.begin(9, 8, 100000);
     Serial.printf("I2C controller started : %s.\n", (i2c_started) ? "Yes" : "No");
 
     if (i2c_started)
@@ -28,11 +32,13 @@ void setup(void)
 void loop(void)
 {
     Serial.printf("ESP32 is running, uptime = %lu ms\n", millis());
-    if (mpu_started)
+    if (i2c_started && mpu_started)
     {
         sensors_event_t acceleration;
         mpu.getAccelerometerSensor()->getEvent(&acceleration);
-        Serial.printf("Acceleration Z = %.3f m/s^2\n", acceleration.acceleration.z);
+        Serial.printf("Acceleration x = %g m/s^2\n", acceleration.acceleration.x - avrg_xacc);
+        Serial.printf("Acceleration y = %g m/s^2\n", acceleration.acceleration.y - avrg_yacc);
+        Serial.printf("Acceleration z = %g m/s^2\n", acceleration.acceleration.z - avrg_zacc);
     }
     delay(1000);
 }
