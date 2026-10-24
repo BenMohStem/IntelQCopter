@@ -15,22 +15,18 @@ void setup(void)
     pinMode(14, INPUT_PULLDOWN);
 
     bool i2c_started = Wire.begin(9, 8, 100000);
-    Serial.print("I2C controller started (1=yes, 0=no): ");
-    Serial.println(i2c_started);
+    Serial.printf("I2C controller started : %s.\n", (i2c_started) ? "Yes" : "No");
 
     bool mpu_started = false;
     if (i2c_started)
     {
         mpu_started = mpu.begin(0x68, &Wire);
     }
-    Serial.print("MPU6050 initialized (1=yes, 0=no): ");
-    Serial.println(mpu_started);
+    Serial.printf("MPU6050 initialized : %s.\n", (mpu_started) ? "Yes" : "No");
 }
 
 void loop(void)
 {
-    Serial.print("ESP32 is running, uptime = ");
-    Serial.print(millis());
-    Serial.println(" ms");
+    Serial.printf("ESP32 is running, uptime = %lu ms\n", millis());
     delay(1000);
 }

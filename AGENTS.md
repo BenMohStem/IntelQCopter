@@ -18,3 +18,5 @@
 - Teaching pace: keep the first firmware about20lines. Aim for3â€“10 added lines and one new idea per later step. Explain the delta and expected real result. Do not automatically expand future lessons or re-import archived diagnostics; wait for the user to follow the current lesson.
 
 - The user also builds the Gazebo simulation. Offer commands and small explanations; do not generate worlds/models/complete simulation unless explicitly requested. Keep simulation learning separate from the tiny active MCU lesson.
+
+- Serial output style: use Serial.printf with format specifiers and explicit newline escapes, following the user's examples.
