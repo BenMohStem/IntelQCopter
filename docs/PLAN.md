@@ -27,11 +27,11 @@ For each step:
 | 05 | Read only the accelerometer Z axis | Value changes when the sensor is turned |
 | 06 | Read only the gyroscope Z axis | Value changes when the sensor rotates |
 
-**Current active lesson: step05, print accelerometer Z using Serial.printf.** Prepared for your upload and test. No physical acceptance is recorded for steps01–05. Step06 remains planned; no calibration or control loop is included.
+**Current active lesson: step06, print gyroscope Z using Serial.printf.** The user added accelerometer X/Y/Z offset subtraction and reports calibration complete; its measurement method and residual errors have not been reviewed. These edits are preserved. GyroZ is prepared for your upload and test, with no physical acceptance claimed. No PID or attitude integration is included.
 
 ## After those small steps
 
-Continue with separate commits: add accelerometerX; add accelerometerY; add gyroX; add gyroY; initialise BMP280; print pressure; print temperature. Each is its own lesson.
+The user has already added accelerometerX and accelerometerY output. After gyroZ, continue with separate small lessons for gyroX; gyroY; BMP280 initialization; pressure; temperature. The original stage IDs are retained for history; existing user additions are not silently marked physically accepted.
 
 Then test the actual magnetometer identity, and later one LiDAR reading, using a suitable Arduino library for the identified device. Do not guess an HMC driver for a QMC chip. Do not add ROS2 or Xbox while learning these sensor calls.
 

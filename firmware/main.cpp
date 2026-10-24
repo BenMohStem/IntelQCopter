@@ -39,6 +39,10 @@ void loop(void)
         Serial.printf("Acceleration x = %g m/s^2\n", acceleration.acceleration.x - avrg_xacc);
         Serial.printf("Acceleration y = %g m/s^2\n", acceleration.acceleration.y - avrg_yacc);
         Serial.printf("Acceleration z = %g m/s^2\n", acceleration.acceleration.z - avrg_zacc);
+
+        sensors_event_t rotation;
+        mpu.getGyroSensor()->getEvent(&rotation);
+        Serial.printf("Gyro Z = %.3f rad/s\n", rotation.gyro.z);
     }
     delay(1000);
 }
