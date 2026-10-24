@@ -37,6 +37,10 @@ Then test the actual magnetometer identity, and later one LiDAR reading, using a
 
 ### Calibration, one idea at a time
 
+**User requirement: finish and persist calibration before leaving this phase.** Help the user measure and validate MPU6050 accelerometer/gyroscope calibration, save a versioned calibration record in ESP32-S3 nonvolatile flash using Arduino Preferences, then reboot and verify the same values are loaded and applied. Provide a deliberate recalibration path. Do not advance from calibration to attitude estimation/PID/Xbox integration until the user has checked these results. This requirement is recorded now, not implemented in the current firmware lesson.
+
+Clarify storage when implementing: the MPU6050 does not provide general nonvolatile storage for user calibration. Its offset registers are volatile; if used later, restore them from the ESP32 flash record after boot and avoid applying the same offset twice. The future RP2350 version will need its own MCU-flash persistence implementation.
+
 1. Average a small group of stationary gyroX readings.
 2. Subtract that one bias and print the result.
 3. Repeat for gyroY, then gyroZ, in separate steps.
