@@ -13,3 +13,5 @@ The files in tools/ manage builds and history; they are not flight code and need
 [Measure standard deviation for Kalman filtering](../docs/imu-noise.md).
 
 [Actual live sensor recording analysis and precision refinement](../docs/precision-2026-10-25.md).
+
+[Next: calibration valid across drone orientations](../docs/multi-pose-calibration.md).

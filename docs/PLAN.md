@@ -71,4 +71,8 @@ You create the Gazebo worlds, models and simulation. I explain the terminal comm
 
 ## Current noise-data request
 
-User selected ±8g and ±500 degrees/s. User-selected DLPF 260/256 Hz and divider 15 configure the MPU output for 500 Hz; the bench read/report loop is still about 10 Hz. Record stationary IMU CSV lines for measured noise statistics before setting Kalman parameters. See [noise instructions](imu-noise.md). Recheck the old six-pose calibration at the new range/filter. No physical acceptance or 500 Hz FC timing is claimed.
+User selected ±8g and ±500 degrees/s. User-selected DLPF 260/256 Hz and divider 15 configure the MPU output for 500 Hz; the bench read/report loop was measured at about 2.42 Hz. Record stationary IMU CSV lines for measured noise statistics before setting Kalman parameters. See [noise instructions](imu-noise.md). Recheck the old six-pose calibration at the new range/filter. No physical acceptance or 500 Hz FC timing is claimed.
+
+## Required next calibration experiment
+
+The sensor remains fixed to the drone. A single level position cannot validate calibration across tilt. Follow [repeated six-pose measurements and independent tilted-pose validation](multi-pose-calibration.md) before accepting the provisional level trim. Keep firmware unchanged until new evidence supports a correction.
