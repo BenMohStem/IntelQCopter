@@ -1,18 +1,18 @@
 # IntelQCopter â€” small software steps
 
-**Current lesson: step03 - start the I2C controller using Wire.**
+**Current lesson: step04 - check and initialize the MPU6050.**
 
 Open these in order:
 
 1. [The small main.cpp](firmware/main.cpp).
-2. [Step03 explanation](docs/step-03.md), building on [step02](docs/step-02.md).
+2. [Step04 explanation](docs/step-04.md), building on [step03](docs/step-03.md).
 3. [The revised plan](docs/PLAN.md).
 
 Arduino framework, ESP32-S3, PlatformIO. One firmware file. Braces on separate lines; one statement per line. No sensors, calibration, Xbox, PID or ROS2 in the first lesson. Motor signal pins are inputs, with no motor driver.
 
 You handle the PCB. This branch focuses on software. The earlier larger diagnostics are preserved in [the archive](archive/before-small-lessons/README.md) and Git history, not included in the active build.
 
-**Step03 is prepared for your own upload and test.** The user attempted step01 upload; a successful run has not yet been recorded. No physical acceptance is claimed.
+**Step04 is prepared for your own upload and test.** The user attempted step01 upload; a successful run has not yet been recorded. No physical acceptance is claimed.
 
 To compile when you want:
 
