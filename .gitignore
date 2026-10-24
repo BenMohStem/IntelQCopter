@@ -11,3 +11,6 @@ __pycache__/
 !*.example
 *.pem
 *.key
+
+# Keep the reviewed session raw console capture private; derived results are published.
+/artifacts/hardware/20261024T234658557289Z/

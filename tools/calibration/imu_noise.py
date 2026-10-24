@@ -48,7 +48,7 @@ report = dict(source_sha256=hashlib.sha256(args.log.read_bytes()).hexdigest(), s
     stationary_angle_R_rad2=[[stats['roll_accel_rad']['variance'],covariance],
                            [covariance,stats['pitch_accel_rad']['variance']]],
     status='Candidate statistics from user-selected stationary interval; stationarity not automatically verified',
-    caveats=['Current bench reports at about 10 Hz, not verified fresh 500 Hz acquisition',
+    caveats=[f'Observed report rate {1/statistics.mean(intervals):.3f} Hz; not verified fresh 500 Hz acquisition',
              'Gyro values remain in sensor coordinates, not drone coordinates',
              'R is stationary observation covariance, not dynamic flight error',
              'No process Q or final Kalman gain calculated',

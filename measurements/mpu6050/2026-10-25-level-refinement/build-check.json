@@ -1,0 +1,12 @@
+{
+  "engine": "PlatformIO espressif32@7.1.3 Arduino ESP32-S3 lesson build",
+  "exit_code": 0,
+  "source_sha256": {
+    "firmware/main.cpp": "e9b28f025483bcd33c236b25024dec2ba5304471be10469839de2b73cca36e1c",
+    "platformio.ini": "8ea4a59ced7944977462492369582241788e6b2e1576b5a8c9707387d49fc2b6",
+    "config/hardware.json": "b435645953e7406b4892cf6657445360883c4cb46fb2ad4cbc23d08dfd6c6f19"
+  },
+  "firmware_sha256": "6f0e40ac73d0fb41cf352695294eec97217b549b20881cb14fd1d6caf21edf18",
+  "uploaded": false,
+  "post_upload_physical_check": false
+}

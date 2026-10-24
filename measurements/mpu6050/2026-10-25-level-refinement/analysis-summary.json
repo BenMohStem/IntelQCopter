@@ -1,0 +1,298 @@
+{
+  "source_sha256": "9be85e19971140b88204260f927862f4a1ae2718d814910a58bec0b82fff4f30",
+  "user_attestation": "Motionless, independently level",
+  "samples": 291,
+  "duration_s": 119.77000300000013,
+  "observed_rate_hz": 2.421307445404339,
+  "min_interval_s": 0.41298,
+  "max_interval_s": 0.413023,
+  "engine": "NumPy statistics/Huber fit + block bootstrap + Matplotlib replay, not simulator or device execution",
+  "train_samples": 174,
+  "holdout_samples": 117,
+  "gravity_train_robust_m_s2": [
+    -0.14887583299343346,
+    0.4138988592156556,
+    9.838898141060888
+  ],
+  "level_rotation": [
+    [
+      0.9998856924067342,
+      0.00031779356999138083,
+      0.015116253753913383
+    ],
+    [
+      0.00031779356999138083,
+      0.9991164825516623,
+      -0.042025626715620684
+    ],
+    [
+      -0.015116253753913383,
+      0.042025626715620684,
+      0.9990021749583965
+    ]
+  ],
+  "level_rotation_degrees": 2.559770022781821,
+  "transform_sensor_to_drone": [
+    [
+      0.05046995076925424,
+      0.9928035449433249,
+      -0.03125617795642307
+    ],
+    [
+      -0.965981480110871,
+      0.05258321803659162,
+      0.24915420379623798
+    ],
+    [
+      0.23137614965870698,
+      0.011045641176016021,
+      0.9638687766236891
+    ]
+  ],
+  "gyro_bias_sensor_rad_s": [
+    0.003236840207472711,
+    -0.005887098652063285,
+    -0.015005241501394437
+  ],
+  "gyro_register_delta": [
+    -6,
+    11,
+    28
+  ],
+  "all_acceleration": {
+    "mean": [
+      -0.14773072852233662,
+      0.40941987628865956,
+      9.83817943298969
+    ],
+    "stddev": [
+      0.03130173824861275,
+      0.037877912837373684,
+      0.044133573271550604
+    ],
+    "median": [
+      -0.149514,
+      0.408524,
+      9.840221
+    ],
+    "robust_sigma": [
+      0.03296857620000001,
+      0.040692922199999995,
+      0.04657143119999933
+    ]
+  },
+  "all_gyro_sensor": {
+    "mean": [
+      0.003349512027491419,
+      -0.005820934707903777,
+      -0.015031790378006886
+    ],
+    "stddev": [
+      0.001986935530519562,
+      0.0016739061953689807,
+      0.001786704655188599
+    ],
+    "median": [
+      0.003464,
+      -0.005862,
+      -0.014922
+    ],
+    "robust_sigma": [
+      0.0019748231999999998,
+      0.0015804516,
+      0.0015804515999999988
+    ]
+  },
+  "norm": {
+    "mean": 9.847924258030698,
+    "stddev": 0.04433325799552321,
+    "median": 9.849309498506482,
+    "robust_sigma": 0.04746062496892875
+  },
+  "all_angles_degrees": {
+    "mean": [
+      2.3828943604469646,
+      0.8595467996092363
+    ],
+    "stddev": [
+      0.21906501424139002,
+      0.18207518625281063
+    ],
+    "median": [
+      2.3858679035081036,
+      0.8696435527235843
+    ],
+    "robust_sigma": [
+      0.2377737259805979,
+      0.19367301253026992
+    ]
+  },
+  "holdout_angles_before_degrees": {
+    "mean": [
+      2.349749044330458,
+      0.8508279821001147
+    ],
+    "stddev": [
+      0.22130679855135238,
+      0.1763336913635191
+    ],
+    "median": [
+      2.324030711967244,
+      0.8531015506002618
+    ],
+    "robust_sigma": [
+      0.24518397400515649,
+      0.185104059127004
+    ]
+  },
+  "holdout_angles_after_replay_degrees": {
+    "mean": [
+      -0.05911643473417732,
+      -0.01531447124401923
+    ],
+    "stddev": [
+      0.22127515031759565,
+      0.1763417741649228
+    ],
+    "median": [
+      -0.08487237310480512,
+      -0.012995724573038856
+    ],
+    "robust_sigma": [
+      0.2450849568817766,
+      0.18521265462070452
+    ]
+  },
+  "holdout_angles_after_mean_ci95_degrees": {
+    "method": "circular block bootstrap; 2000 resamples; block length 10",
+    "lower": [
+      -0.08844071540418032,
+      -0.042462289719460734
+    ],
+    "upper": [
+      -0.030459615695564723,
+      0.013573288709100096
+    ]
+  },
+  "holdout_gyro_before_rad_s": {
+    "mean": [
+      0.003564170940170941,
+      -0.005709521367521371,
+      -0.015067623931623938
+    ],
+    "stddev": [
+      0.002022849152721351,
+      0.0017351546318764362,
+      0.0018559069663369985
+    ],
+    "median": [
+      0.00373,
+      -0.005596,
+      -0.015188
+    ],
+    "robust_sigma": [
+      0.0019763057999999997,
+      0.0019748231999999998,
+      0.0019748231999999998
+    ]
+  },
+  "holdout_gyro_after_replay_rad_s": {
+    "mean": [
+      0.00036662116552484033,
+      0.00015265321932981504,
+      -0.0001457249832754646
+    ],
+    "stddev": [
+      0.0020228491527213514,
+      0.0017351546318764366,
+      0.001855906966336998
+    ],
+    "median": [
+      0.0005324502253538999,
+      0.00026617458685118233,
+      -0.00026610105165153324
+    ],
+    "robust_sigma": [
+      0.0019763057999999997,
+      0.0019748231999999998,
+      0.0019748231999999998
+    ]
+  },
+  "gyro_train_mean_ci95_rad_s": {
+    "method": "circular block bootstrap; 2000 resamples; block length 10",
+    "lower": [
+      0.0029035114942528757,
+      -0.006104120977011501,
+      -0.015228207183908054
+    ],
+    "upper": [
+      0.003482362212643682,
+      -0.005683016954022998,
+      -0.014774925287356338
+    ]
+  },
+  "angle_covariance_after_replay_rad2": [
+    [
+      1.4914888947957405e-05,
+      1.2557579397904716e-06
+    ],
+    [
+      1.2557579397904716e-06,
+      9.472511625768417e-06
+    ]
+  ],
+  "gyro_covariance_sensor_rad2_s2": [
+    [
+      4.0919186946654875e-06,
+      3.652391329944003e-07,
+      -2.631316079428233e-07
+    ],
+    [
+      3.652391329944003e-07,
+      3.01076159652225e-06,
+      -8.33919487916299e-08
+    ],
+    [
+      -2.631316079428233e-07,
+      -8.33919487916299e-08,
+      3.4443906676982013e-06
+    ]
+  ],
+  "angle_trend_degrees_s": [
+    -0.0008573423198233924,
+    -0.00019307195352631884
+  ],
+  "gyro_trend_rad_s2": [
+    4.532709232875667e-06,
+    2.6701059781675405e-06,
+    -4.963142460815092e-07
+  ],
+  "downweighted_accel_samples": 9,
+  "downweighted_gyro_samples": 12,
+  "observed_transform_check": {
+    "pairs": 291,
+    "max_abs_difference_m_s2": [
+      5.0522461879976e-05,
+      5.818622373221505e-05,
+      5.710462325936305e-05
+    ],
+    "print_rounding_bounds_m_s2": [
+      5.724714853884316e-05,
+      6.790680232122784e-05,
+      6.541500419712854e-05
+    ],
+    "passed": true,
+    "limit": "Confirms logged linear transform consistency, not register bias correctness or complete firmware identity"
+  },
+  "raw_samples_discarded": 0,
+  "limits": [
+    "After values are offline replay predictions, not new hardware measurements",
+    "Temporal holdout only, same pose and mounting; no independent multi-pose validation",
+    "No embedded running-source fingerprint or startup configuration readback captured",
+    "No temperature time series, no spectral/Allan characterization, no true 500Hz acquisition",
+    "Level fixture uncertainty not quantified; mean confidence interval is not absolute attitude accuracy",
+    "A single known pose cannot identify new 3D bias/scale errors; applied level trim is a constrained rigid rotation",
+    "Gyro results in sensor axes; no drone-frame gyro rotation established",
+    "Filter correlation, long-term drift, vibration and future flight behavior remain unvalidated"
+  ]
+}
