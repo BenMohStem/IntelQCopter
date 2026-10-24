@@ -5,15 +5,15 @@
 #include <Adafruit_I2CDevice.h>
 #include <Adafruit_BusIO_Register.h>
 
-// Editable configuration. These defaults match the previous Adafruit setup.
+// Editable bench configuration: MPU output at 500 Hz; serial reporting at about 10 Hz.
 static const uint8_t mpu_address = 0x68;
 static const int sda_pin = 9;
 static const int scl_pin = 8;
 static const uint32_t i2c_clock_hz = 100000;
-static const mpu6050_accel_range_t accel_range = MPU6050_RANGE_2_G;
+static const mpu6050_accel_range_t accel_range = MPU6050_RANGE_8_G;
 static const mpu6050_gyro_range_t gyro_range = MPU6050_RANGE_500_DEG;
-static const mpu6050_bandwidth_t filter_bandwidth = MPU6050_BAND_260_HZ;
-static const uint8_t sample_divider = 0;
+static const mpu6050_bandwidth_t filter_bandwidth = MPU6050_BAND_94_HZ;
+static const uint8_t sample_divider = 1;
 static const mpu6050_clock_select_t clock_source = MPU6050_PLL_GYROX;
 
 Adafruit_MPU6050 mpu;
@@ -115,7 +115,9 @@ void loop(void)
     if (mpu_started)
     {
         sensors_event_t acceleration;
-        mpu.getAccelerometerSensor()->getEvent(&acceleration);
+        sensors_event_t rotation;
+        sensors_event_t temperature;
+        mpu.getEvent(&acceleration, &rotation, &temperature);
 
         // Bias is already corrected in the MPU registers; do not subtract again.
         float sensor_x = acceleration.acceleration.x;
@@ -131,6 +133,10 @@ void loop(void)
             acceleration.acceleration.x, acceleration.acceleration.y, acceleration.acceleration.z);
         float magnitude = sqrtf(drone_x * drone_x + drone_y * drone_y + drone_z * drone_z);
         Serial.printf("DRONE X=%.4f Y=%.4f Z=%.4f norm=%.4f m/s^2\n", drone_x, drone_y, drone_z, magnitude);
+        // CSV: uptime_us, drone acceleration (m/s^2), SENSOR gyro (rad/s).
+        Serial.printf("IMU,%lu,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f\n",
+            (unsigned long)micros(), drone_x, drone_y, drone_z,
+            rotation.gyro.x, rotation.gyro.y, rotation.gyro.z);
     }
     delay(100);
 }

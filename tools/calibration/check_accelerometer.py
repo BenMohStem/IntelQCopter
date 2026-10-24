@@ -56,7 +56,8 @@ def source_expression(name):
 
 try:
     assert '#include <Adafruit_MPU6050.h>' in text
-    assert 'mpu.getAccelerometerSensor()->getEvent(&acceleration);' in text
+    assert ('mpu.getAccelerometerSensor()->getEvent(&acceleration);' in text
+            or 'mpu.getEvent(&acceleration, &rotation, &temperature);' in text)
     assert 'setXAccelOffset' not in text and 'apply_accel_offsets' not in text
     hardware_mode = 'write_accel_bias(0x06, accel_bias_x' in text
     report['mode'] = 'modeled MPU hardware trim + source expressions' if hardware_mode else 'software-only bias'

@@ -70,6 +70,12 @@
       "path": "tools/calibration/check_accelerometer.py",
       "args": [],
       "description": "Check actual firmware acceleration expressions against six saved poses; no hardware"
+    },
+    "imu-noise": {
+      "runtime": "python",
+      "path": "tools/calibration/imu_noise.py",
+      "args": [],
+      "description": "Calculate candidate IMU noise statistics from an original saved stationary serial log; no serial connection"
     }
   }
 }

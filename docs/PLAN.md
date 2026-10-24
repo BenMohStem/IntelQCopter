@@ -68,3 +68,7 @@ The existing gate/repair tools stay available behind the lessons. You do not hav
 ## Simulation is yours too
 
 You create the Gazebo worlds, models and simulation. I explain the terminal commands and help with one small problem at a time; I will not build a complete simulation unless you ask. Start independently with [opening ROS2, RViz and the built-in Gazebo world](start-ros-gazebo.md). This does not add simulation code to the18-line firmware lesson. Robot loading, ROS topics, bridges and FC integration are separate later lessons.
+
+## Current noise-data request
+
+User selected ±8g and ±500 degrees/s. Candidate DLPF 94/98 Hz and divider 1 configure the MPU output for 500 Hz; the bench read/report loop is still about 10 Hz. Record stationary IMU CSV lines for measured noise statistics before setting Kalman parameters. See [noise instructions](imu-noise.md). Recheck the old six-pose calibration at the new range/filter. No physical acceptance or 500 Hz FC timing is claimed.

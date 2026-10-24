@@ -38,7 +38,7 @@ Original host-check output and original compiler output are retained locally und
 Run the numerical check again with `./qcopter.ps1 check-accel`; compile with `./qcopter.ps1 build`. Follow the [physical verification guide](accelerometer-calibration.md) after uploading yourself. A board pass still requires actual raw/corrected serial readings in the six poses and independent new orientations, plus a power-cycle check.
 
 
-## Current Adafruit + BusIO hardware-trim revision
+## Adafruit + BusIO hardware-trim revision 438e9d6
 
 Adafruit remains the sensor/configuration library; BusIO writes and verifies the MPU offset words. The numerical check MODELS the trim changes (-270,+16,+134), including low-bit preservation examples and quantization. It does not execute I2C, the BusIO helper, or the device's analog offset response. The actual scalar conversion/mounting expressions were evaluated with float32 rounding on all six saved poses against the quantization-adjusted reference. That check passed; deliberately missing/doubled total-bias controls were detected. Independent physical checks remain required.
 
@@ -62,3 +62,7 @@ Predicted corrected output for the original means (m/s²):
 | -Y | -0.030181 | -9.781821 | -0.021621 |
 
 Original local logs are retained under artifacts/calibration-check/20261024T222620874109Z and artifacts/build/20261024T222626810203Z. These raw local logs are not included in the public commit. The previous report and original logs remain preserved.
+
+## Subsequent ±8g / DLPF 94 Hz / 500 Hz output settings
+
+These user-requested settings and the stationary-log analyzer were prepared after the preceding tests. No new build, actual noise recording or hardware result is claimed here. See imu-noise.md.

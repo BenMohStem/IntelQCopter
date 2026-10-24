@@ -9,3 +9,5 @@ The files in tools/ manage builds and history; they are not flight code and need
 [Actual offline calibration/build results](../docs/calibration-test-results.md) - numerical/compile evidence only, not a hardware pass.
 
 [MPU6050 datasheet and editable configuration guide](../docs/mpu6050-configuration.md).
+
+[Measure standard deviation for Kalman filtering](../docs/imu-noise.md).
