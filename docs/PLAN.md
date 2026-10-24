@@ -27,7 +27,7 @@ For each step:
 | 05 | Read only the accelerometer Z axis | Value changes when the sensor is turned |
 | 06 | Read only the gyroscope Z axis | Value changes when the sensor rotates |
 
-Only **step01** will be active after this simplification. Steps02â€“06 are planned, not secretly included.
+**Current active lesson: step02, uptime.** The implementation is prepared for the user to upload and test. Step01 hardware success has not been recorded; no physical acceptance is claimed for either step. Steps03–06 remain planned.
 
 ## After those small steps
 

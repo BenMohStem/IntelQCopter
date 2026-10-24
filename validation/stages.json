@@ -29,7 +29,7 @@
         "platformio.ini"
       ],
       "acceptance_kind": "physical",
-      "implemented": false,
+      "implemented": true,
       "locked": false
     },
     {

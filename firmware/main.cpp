@@ -13,6 +13,8 @@ void setup(void)
 
 void loop(void)
 {
-    Serial.println("ESP32 is running");
+    Serial.print("ESP32 is running, uptime = ");
+    Serial.print(millis());
+    Serial.println(" ms");
     delay(1000);
 }
