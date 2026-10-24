@@ -27,7 +27,7 @@ For each step:
 | 05 | Read only the accelerometer Z axis | Value changes when the sensor is turned |
 | 06 | Read only the gyroscope Z axis | Value changes when the sensor rotates |
 
-**Current active lesson: step04, initialize the MPU6050 through its Arduino library.** Prepared for your upload and test. No physical acceptance is recorded for steps01–04. Steps05–06 remain planned; no sensor measurements are printed yet.
+**Current active lesson: step05, print accelerometer Z using Serial.printf.** Prepared for your upload and test. No physical acceptance is recorded for steps01–05. Step06 remains planned; no calibration or control loop is included.
 
 ## After those small steps
 

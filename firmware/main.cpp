@@ -3,6 +3,7 @@
 #include <Adafruit_MPU6050.h>
 
 Adafruit_MPU6050 mpu;
+bool mpu_started = false;
 
 void setup(void)
 {
@@ -17,7 +18,6 @@ void setup(void)
     bool i2c_started = Wire.begin(9, 8, 100000);
     Serial.printf("I2C controller started : %s.\n", (i2c_started) ? "Yes" : "No");
 
-    bool mpu_started = false;
     if (i2c_started)
     {
         mpu_started = mpu.begin(0x68, &Wire);
@@ -28,5 +28,11 @@ void setup(void)
 void loop(void)
 {
     Serial.printf("ESP32 is running, uptime = %lu ms\n", millis());
+    if (mpu_started)
+    {
+        sensors_event_t acceleration;
+        mpu.getAccelerometerSensor()->getEvent(&acceleration);
+        Serial.printf("Acceleration Z = %.3f m/s^2\n", acceleration.acceleration.z);
+    }
     delay(1000);
 }
