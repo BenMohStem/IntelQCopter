@@ -22,3 +22,5 @@
 - Serial output style: use Serial.printf with format specifiers and explicit newline escapes, following the user's examples.
 
 - Calibration teaching: prefer explicit named scalar corrections and simple library calls. For fixed measured constants, firmware flash is sufficient persistence; do not reintroduce a complex NVS record layer unless runtime recalibration needs it. Preserve accurate frame mapping and distinguish fitted candidates from physically validated calibration.
+
+- Current MPU library is Electronic Cats MPU6050 (I2Cdevlib style), per user request. Bias goes into accelerometer offset registers relative to reset baseline with bit 0 preserved; do not also subtract the full bias in software. Scale/mounting stays in software. Gyro offsets require actual measurements.

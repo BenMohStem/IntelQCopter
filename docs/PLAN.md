@@ -27,7 +27,7 @@ For each step:
 | 05 | Read only the accelerometer Z axis | Value changes when the sensor is turned |
 | 06 | Read only the gyroscope Z axis | Value changes when the sensor rotates |
 
-**Current phase: provisional six-pose accelerometer calibration and flash persistence.** User supplied all six means and confirmed drone-axis pose labels. The candidate combines sensor corrections and sensor-to-drone mounting effects and is now stored as simple firmware constants, without a Preferences routine. It is prepared, not physically accepted. [Calculation and reboot/pose checks](accelerometer-calibration.md). No further sensor/control lesson is added until these checks are reviewed.
+**Current phase: provisional six-pose accelerometer calibration.** Bias is now applied using Electronic Cats MPU6050 offset-register setters; scale/mounting correction stays in software. Constants remain in ESP32 firmware flash and are reapplied at each boot. [Register readback, reset and independent-pose checks](accelerometer-calibration.md) must be reviewed before advancing. No physical acceptance is claimed.
 
 ## After those small steps
 
