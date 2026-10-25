@@ -84,6 +84,24 @@ def mean_covariance(vectors):
     return mean, covariance
 
 
+def validate_timing(samples, requested_seconds):
+    if len(samples) < requested_seconds * 20:
+        raise ValueError("Too few gyro reports")
+    elapsed_ms = 0
+    max_gap_ms = 0
+    for previous, current in zip(samples, samples[1:]):
+        gap = (current["ms"] - previous["ms"]) & 0xFFFFFFFF
+        if not 0 < gap <= 100:
+            raise ValueError("Duplicate/reset timestamp or gyro report gap exceeds 100 ms")
+        elapsed_ms += gap
+        max_gap_ms = max(max_gap_ms, gap)
+    duration = elapsed_ms / 1000
+    if not 0.90 * requested_seconds <= duration <= 1.10 * requested_seconds:
+        raise ValueError("Device timestamps do not cover the requested recording duration")
+    return {"device_duration_s": duration, "max_report_gap_ms": max_gap_ms,
+            "observed_report_rate_hz": (len(samples)-1)/duration}
+
+
 def summarize(samples):
     if len(samples) < 100:
         raise ValueError("Too few gyro samples")
@@ -96,6 +114,8 @@ def summarize(samples):
     times = [((row["ms"]-origin) & 0xFFFFFFFF)/1000 for row in samples]
     mean_t = statistics.mean(times)
     denominator = sum((t-mean_t)**2 for t in times)
+    if denominator <= 0:
+        raise ValueError("Cannot estimate drift from identical timestamps")
     all_mean = [statistics.mean(row["gyro_sensor_rad_s"][i] for row in samples) for i in range(3)]
     slopes = [sum((t-mean_t)*(row["gyro_sensor_rad_s"][i]-all_mean[i]) for t,row in zip(times,samples))/denominator
               for i in range(3)]
@@ -128,7 +148,7 @@ def main():
     folder.mkdir(parents=True)
     report = {"engine": "Real ESP32-S3/MPU6050 gyro-observation stream; no simulator",
               "source_sha256": source_sha, "status": "FAILED", "uploaded": False,
-              "commands_sent": ["?"], "gyro_offsets_written": False,
+              "commands_sent": [], "gyro_offsets_written": False,
               "operator_confirmed_motionless": False}
     device = serial.Serial(port=None, baudrate=921600, timeout=0.5, write_timeout=2)
     device.port = args.port
@@ -142,6 +162,7 @@ def main():
         report["operator_confirmed_motionless"] = True
         device.open()
         with (folder/"serial.log").open("xb") as log:
+            report["commands_sent"].append("?")
             header, profile = read_header(device, log, source_sha, fit)
             report["header"] = header
             report["profile"] = profile
@@ -170,16 +191,16 @@ def main():
                     x,y,z=sample["gyro_sensor_rad_s"]
                     print(f"{min(elapsed,args.seconds):5.1f}/{args.seconds:g}s  gyro X={x:+.6f} Y={y:+.6f} Z={z:+.6f} rad/s  T={sample['temperature_C']:.2f} C")
                     log.flush()
-            if len(samples) < args.seconds*20:
-                raise ValueError("Too few gyro reports")
+            timing = validate_timing(samples, args.seconds)
+            report["commands_sent"].append("?")
             final_header, _ = read_header(device, log, source_sha, fit)
             if final_header != header:
                 raise ValueError("Calibration/offset/source state changed during capture")
-            duration = ((samples[-1]["ms"]-samples[0]["ms"]) & 0xFFFFFFFF)/1000
+            report.update(timing)
             report.update(summarize(samples))
             report.update({"status":"CAPTURE_COMPLETE_REVIEW_REQUIRED", "samples":len(samples),
                 "all_packets_verified_including_settling":all_packets,
-                "observed_report_rate_hz":(len(samples)-1)/duration,"final_header_unchanged":True})
+                "final_header_unchanged":True})
             print("Saved. Candidate gyro bias (sensor rad/s):",report["candidate_bias_sensor_rad_s"])
             print("Candidate only: no gyro correction was applied or stored in the MPU.")
     except (Exception,KeyboardInterrupt) as error:

@@ -47,6 +47,31 @@ class GyroTests(unittest.TestCase):
         self.assertAlmostEqual(cov[0][1], 2 * cov[0][0])
         self.assertAlmostEqual(cov[2][0], -cov[0][0])
 
+    def test_timing_accepts_complete_record_and_millis_wrap(self):
+        start = 0xFFFFFF00
+        samples = [{"ms": (start + i * 11) & 0xFFFFFFFF} for i in range(1819)]
+        result = gyro.validate_timing(samples, 20)
+        self.assertAlmostEqual(result["device_duration_s"], 19.998)
+        self.assertEqual(result["max_report_gap_ms"], 11)
+
+    def test_sample_count_alone_does_not_prove_complete_recording(self):
+        short = [{"ms": i * 11} for i in range(500)]
+        with self.assertRaises(ValueError):
+            gyro.validate_timing(short, 20)
+
+    def test_duplicate_reset_and_missing_report_gaps_rejected(self):
+        good = [{"ms": i * 11} for i in range(1819)]
+        for replacement in [good[499]["ms"], 0, good[499]["ms"] + 101]:
+            bad = [dict(row) for row in good]
+            bad[500]["ms"] = replacement
+            with self.assertRaises(ValueError):
+                gyro.validate_timing(bad, 20)
+
+    def test_drift_requires_elapsed_device_time(self):
+        samples = [{"ms": 10, "gyro_sensor_rad_s": [0, 0, 0], "temperature_C": 30} for _ in range(100)]
+        with self.assertRaises(ValueError):
+            gyro.summarize(samples)
+
     def test_sample_covariance_denominator(self):
         mean, cov = gyro.mean_covariance([[1, 2, 3], [3, 6, 9]])
         self.assertEqual(mean, [2, 4, 6])

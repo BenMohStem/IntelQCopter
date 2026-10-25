@@ -21,9 +21,9 @@ static const int16_t expected_baseline[3] = {-2074, 2979, 1074};
 Adafruit_MPU6050 mpu;
 Adafruit_I2CDevice sensor(0x68, &Wire);
 bool sensor_ready = false;
-int16_t applied_offset[3] = {};
-int16_t boot_offset[3] = {};
-float remaining_bias[3] = {};
+int16_t applied_offset[3] = { 0 };
+int16_t boot_offset[3] = { 0 };
+float remaining_bias[3] = { 0 };
 
 static bool restore_accel_bias(void)
 {

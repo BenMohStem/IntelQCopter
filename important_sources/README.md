@@ -8,3 +8,5 @@
 [Fitted model](../measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/report.md) · [Tilt review](../measurements/mpu6050/2026-10-25-tilt-validation/report.md) · [Reset/power-cycle evidence](../measurements/mpu6050/2026-10-25-restart-validation/report.md).
 
 PC recording and analysis tools live in tools/calibration. This index links the real sources rather than maintaining diverging copies. Gyro observation is prepared; it is not yet a physical validation. Original raw recordings remain private. Motor outputs remain disabled.
+
+[Latest code review and pending gyro-calibration steps](../measurements/mpu6050/2026-10-25-gyro-code-review/report.md).

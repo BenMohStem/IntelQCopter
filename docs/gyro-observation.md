@@ -77,3 +77,9 @@ After this capture, review the original data, time history, temperature and held
 The firmware compiles and the offline checks exercise packet units, invalid metadata/conversions, covariance and held-out bias estimation. They model arithmetic and protocols on the PC; they do not execute MCU firmware or prove sensor accuracy. See [preparation verification](../measurements/mpu6050/2026-10-25-gyro-observation-preparation/verification.json).
 
 The older `record-accel` command is for `ACCEL_XYZ_V1` at its Git checkpoint. This lesson emits `IMU_XYZ_V1`; use `record-gyro`. Old raw-pose and tilt protocols still belong to their preserved raw-firmware checkpoint.
+
+## Review: recording integrity and remaining calibration
+
+A sufficient sample count alone does not prove a full recording. The recorder now requires device timestamps to span 90-110% of the requested duration, rejects repeated/backward timestamps and gaps above 100 ms, and records the actual duration/largest gap. The 100 ms threshold tolerates ordinary polling jitter; it is not a promise of capturing all internal 1 kHz samples. Firmware fingerprints and offset words must also agree at both ends. Failed originals remain saved. Both identity-query attempts are listed in the command audit.
+
+**Gyro calibration is mandatory before attitude estimation.** This observation firmware deliberately leaves gyro correction unapplied. The next calibration lesson must apply an accepted measured bias exactly once, restore it each boot and verify it on fresh stationary and restart recordings. No current gyro recording was available at this review; no bias has been fabricated.
