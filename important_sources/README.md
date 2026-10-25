@@ -9,3 +9,5 @@
 Supporting references: [MPU configuration](../docs/mpu6050-configuration.md), [historical calibration math](../docs/accelerometer-calibration.md), [recording six poses](../docs/record-18-poses.md), [recording tilts](../docs/record-45-degree-tilts.md), [ROS2/Gazebo commands](../docs/start-ros-gazebo.md).
 
 PC tools are in tools/calibration/. They are not flight code and do not need to be read to follow main.cpp. The raw recorder and old firmware are preserved; no broad controller was imported into this lesson.
+
+[Where 1.312 m/s² comes from: complete calculation report](../docs/bias-x-provenance.html) · [LaTeX Markdown source](../docs/bias-x-provenance.md).

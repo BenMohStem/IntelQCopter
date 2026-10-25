@@ -20,3 +20,5 @@ It saves raw/corrected/raw intervals automatically (about 66 seconds total). Exp
 [Preserved raw-recorder checkpoint](archive/bench-checkpoints/raw-pose1000/README.md) · [Six-pose analysis](measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/report.md) · [Tilt review](measurements/mpu6050/2026-10-25-tilt-validation/report.md) · [Important files](important_sources/README.md).
 
 The original 18-pose and four-tilt recording commands require the raw-recorder source/firmware, not this partially calibrated lesson. Raw logs and failed attempts stay local; reviewed derived results are published. Mass/inertia parameters are already saved for the later simulation phase. PCB and Gazebo construction remain yours; [terminal setup commands](docs/start-ros-gazebo.md) are available.
+
+[Where 1.312 m/s² comes from: complete calculation report](docs/bias-x-provenance.html) · [LaTeX Markdown source](docs/bias-x-provenance.md).

@@ -1,0 +1,20 @@
+{
+  "engine": "Python arithmetic reconstruction of recorded pose means; Matplotlib SVG math rendering; HTML structure/link checks",
+  "training_pose_means": 12,
+  "training_samples": 240000,
+  "reconstructed_bias_matches_stored_fit": true,
+  "offset_decrement": 274,
+  "predicted_shift_m_s2": 1.3120225097656248,
+  "embedded_svg_equations": 21,
+  "external_rendering_assets": 0,
+  "local_links_checked": true,
+  "firmware_changed": false,
+  "uploaded": false,
+  "new_hardware_measurements": false,
+  "files_sha256": {
+    "bias-x-provenance.html": "6217986013a1d2512735cbd585cd612b430e71870d0f69db9b9daedc4703da35",
+    "bias-x-provenance.md": "bb41454cd3b8e22e94b1bcb05b4d12c3541ecb5d7507593b73b988f75e0e5460",
+    "calculation.json": "65cb778fb74758ebb125786944cd1bd5520aaa4fccdbc4431c3a3e49a0d52424",
+    "make_bias_x_report.py": "2db05ef6c31ecf868cf81af10f73d217fb6de25c56070b8a7009147c5d4aa318"
+  }
+}

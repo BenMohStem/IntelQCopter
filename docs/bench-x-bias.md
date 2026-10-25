@@ -93,3 +93,5 @@ Y/Z, gyro, matrix rows, physical reset/power-cycle verification, attitude/Kalman
 ## Preparation checks actually completed
 
 The final PlatformIO ESP32-S3 build passed (19,376 bytes RAM; 305,645 bytes flash). Five analytic/synthetic comparison tests passed; none executes the MPU. The binary contains the exact current source SHA, and the raw recorder checkpoint retains its original hash. [Verification record](../measurements/mpu6050/2026-10-25-bias-x-preparation/verification.json). Original compiler logs remain local. No upload, serial connection, analog-response or reset/power-cycle result is claimed.
+
+For the full trace from your measured pose means to the rounded register correction, open [the illustrated offline report](bias-x-provenance.html) or [its LaTeX Markdown source](bias-x-provenance.md).
