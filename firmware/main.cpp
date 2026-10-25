@@ -104,7 +104,7 @@ static void report(void)
         Serial.printf("ERROR,SENSOR_OR_OFFSET_CHECK_FAILED\n");
         return;
     }
-    Serial.printf("HELLO,ACCEL_XYZ_V1,%s\n", BENCH_SOURCE_SHA);
+    Serial.printf("HELLO,IMU_XYZ_V1,%s\n", BENCH_SOURCE_SHA);
     Serial.printf("CONFIG,accel_g=8,gyro_dps=500,dlpf=0,divider=7,i2c_hz=400000,user_cal=xyz_mpu_plus_matrix\n");
     Serial.printf("BOARD,%s,%012llX\n", ESP.getChipModel(), ESP.getEfuseMac());
     for (uint8_t axis = 0; axis < 3; axis++)
@@ -116,7 +116,21 @@ static void report(void)
         Serial.printf("OFFSET,%u,%d,%d,%.9f\n", axis,
             expected_baseline[axis], applied_offset[axis], remaining_bias[axis]);
     }
-    Serial.printf("READY,ACCEL_XYZ_V1\n");
+    // Observe gyro offset words only; this lesson does not change them.
+    for (uint8_t axis = 0; axis < 3; axis++)
+    {
+        Adafruit_BusIO_Register reg(&sensor, 0x13 + 2 * axis, 2, MSBFIRST);
+        uint16_t value;
+        if (!reg.read(&value))
+        {
+            sensor_ready = false;
+            Serial.printf("ERROR,GYRO_OFFSET_READ_FAILED\n");
+            return;
+        }
+        Serial.printf("GYRO_OFFSET,%u,%d\n", axis, (int16_t)value);
+    }
+    Serial.printf("GYRO_SCALE,65.5,counts_per_degree_per_second,frame=sensor,correction=none\n");
+    Serial.printf("READY,IMU_XYZ_V1\n");
 }
 
 void setup(void)
@@ -158,19 +172,28 @@ void loop(void)
     if (sensor_ready)
     {
         uint8_t address = 0x3B;
-        uint8_t bytes[6];
+        uint8_t bytes[14];
         sensor_ready = verify_offsets() && sensor.write_then_read(&address, 1, bytes, sizeof(bytes));
         if (sensor_ready)
         {
-            int16_t counts[3];
+            int16_t counts[7];
             float drone[3];
-            for (uint8_t axis = 0; axis < 3; axis++)
+            float gyro[3];
+            // Packet order: accel XYZ, temperature, gyro XYZ.
+            for (uint8_t axis = 0; axis < 7; axis++)
             {
                 counts[axis] = (int16_t)(((uint16_t)bytes[2 * axis] << 8) | bytes[2 * axis + 1]);
             }
             correct_acceleration(counts, drone);
-            Serial.printf("ACCEL,%lu,%d,%d,%d,%.6f,%.6f,%.6f\n", (unsigned long)millis(),
-                counts[0], counts[1], counts[2], drone[0], drone[1], drone[2]);
+            for (uint8_t axis = 0; axis < 3; axis++)
+            {
+                gyro[axis] = counts[axis + 4] * (PI / (180.0f * 65.5f));
+            }
+            float temperature = counts[3] / 340.0f + 36.53f;
+            Serial.printf("IMU,%lu,%d,%d,%d,%d,%d,%d,%d,%.6f,%.6f,%.6f,%.7f,%.7f,%.7f,%.3f\n",
+                (unsigned long)millis(), counts[0], counts[1], counts[2], counts[3],
+                counts[4], counts[5], counts[6], drone[0], drone[1], drone[2],
+                gyro[0], gyro[1], gyro[2], temperature);
         }
     }
     if (!sensor_ready)

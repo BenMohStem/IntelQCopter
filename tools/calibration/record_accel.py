@@ -25,8 +25,8 @@ def register_profile(bias):
     return targets, residual
 
 
-def parse_profile(header, expected_sha, fit):
-    if f"HELLO,ACCEL_XYZ_V1,{expected_sha}" not in header or CONFIG not in header:
+def parse_profile(header, expected_sha, fit, protocol="ACCEL_XYZ_V1"):
+    if f"HELLO,{protocol},{expected_sha}" not in header or CONFIG not in header:
         raise ValueError("Current XYZ firmware/source/configuration does not match; upload bench first")
     if len([line for line in header if line.startswith("BOARD,")]) != 1:
         raise ValueError("Missing board identity")

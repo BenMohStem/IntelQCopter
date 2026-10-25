@@ -1,24 +1,20 @@
-# IntelQCopter - full XYZ calibration bench
+# IntelQCopter - small sensor lessons
 
-**Current main.cpp applies the complete three-axis accelerometer correction to every sample:** drone = C × (sensor − bias), with MPU register trims and software rounding remainders accounted for exactly once.
+**Current step: observe gyro XYZ and temperature while preserving the complete accelerometer calibration.** No gyro correction is applied yet. Motor outputs remain disabled.
 
-[Read the full calibration guide](docs/full-accelerometer-calibration.md) · [Single Arduino main.cpp](firmware/main.cpp) · [Current plan](docs/PLAN.md).
+[Current Arduino main.cpp](firmware/main.cpp) · [Gyro lesson and commands](docs/gyro-observation.md) · [Current plan](docs/PLAN.md) · [Important sources](important_sources/README.md).
 
-All XYZ readings come from one coherent six-byte sensor burst. The matrix includes all nine fitted coefficients and works at arbitrary orientations within the model/range. The code does not zero the starting pose or force the vector length to g. The previous X-only lesson remains in Git history; no separate single-axis bench sequence is required by this implementation.
-
-Build/upload bench yourself in PlatformIO, close Serial Monitor, then run:
+Upload bench firmware yourself in PlatformIO, close Serial Monitor, then keep the drone motionless on a fixed support and run:
 
 ```powershell
 cd C:\Users\Mohamed\Desktop\Work\QCopter-Stepwise
-.\qcopter.ps1 record-accel --port COM3 --seconds 30
+.\qcopter.ps1 record-gyro --port COM3 --seconds 60
 ```
 
-The PC displays X/Y/Z and norm live, saves all emitted samples and recomputes the matrix for consistency. No fixed pose sequence is imposed. Original logs stay local in artifacts/accel-recordings. During movement, real acceleration changes the vector and its norm. Telemetry is a bench stream near/below 100 Hz; this is not yet the 500 Hz flight loop.
+Progress is visible and original logs save automatically. The PC estimates a candidate bias on the first two-thirds, checks the final third and reports covariance, temperature and drift. Nothing is automatically applied. Bench telemetry is near/below 100 Hz; it is not the future 500 Hz flight loop or final Kalman noise acquisition.
 
-The provisional coefficients came from training repetitions 1-2, with repetition 3 and later tilted records held out. [Six-pose analysis](measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/report.md) · [Tilt review](measurements/mpu6050/2026-10-25-tilt-validation/report.md). Reference accuracy was approximately ±1 degree by operator estimate. Compile/math checks do not establish absolute accuracy or reset/power-cycle behavior. Motor outputs remain disabled; no upload has been performed by the assistant.
+The accelerometer still uses all nine coefficients in `C(sensor-bias)` at arbitrary orientations, with MPU trim and software rounding remainder counted once. [Calibration explanation](docs/full-accelerometer-calibration.md) · [Fitted model](measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/report.md) · [Independent tilted-pose review](measurements/mpu6050/2026-10-25-tilt-validation/report.md).
 
-[Original raw-recorder checkpoint](archive/bench-checkpoints/raw-pose1000/README.md) · [Historical X-bias value report](docs/bias-x-provenance.html) · [Important sources](important_sources/README.md) · [ROS2/Gazebo commands](docs/start-ros-gazebo.md). Raw and X-only recording commands belong to their source/protocol checkpoints, not this active firmware.
+[First actual MCU XYZ recording](measurements/mpu6050/2026-10-25-first-live-xyz/report.md) and [reset/full-power-cycle checks](measurements/mpu6050/2026-10-25-restart-validation/report.md) verified implementation in those cases. Reference accuracy and flight acceptance remain separate. Gyro changes have build/offline evidence only until you perform the new capture.
 
-[First actual full-XYZ recording: report and graph](measurements/mpu6050/2026-10-25-first-live-xyz/report.md). One implementation run verified; reference accuracy and repeated-boot behavior remain separate checks.
-
-[Reset and full-power-cycle restoration verified](measurements/mpu6050/2026-10-25-restart-validation/report.md): 910 samples per new run; same final register targets, no accumulation observed. Next lesson is gyro XYZ calibration.
+[Raw-recorder checkpoint](archive/bench-checkpoints/raw-pose1000/README.md) · [Historical X-bias explanation](docs/bias-x-provenance.html) · [ROS2/Gazebo terminal commands](docs/start-ros-gazebo.md).

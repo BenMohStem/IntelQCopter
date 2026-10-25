@@ -60,3 +60,7 @@ Mass/inertia and PID-gain work are deferred to the later standalone-FC simulatio
 ## Earlier lesson history
 
 The initial serial/Wire/MPU lessons, old calibration implementations and original plan remain in Git history. The older large diagnostics are archived under `archive/before-small-lessons/`. [Recording instructions](record-18-poses.md), [MPU configuration](mpu6050-configuration.md), [calibration math](accelerometer-calibration.md), and [ROS2/Gazebo terminal commands](start-ros-gazebo.md) remain available; historical coefficients in those guides are not accepted for the new mounting.
+
+## Current lesson: gyro XYZ observation (prepared, not physically tested)
+
+Accelerometer C5/C6 implementation evidence remains preserved. Next, use [gyro observation](gyro-observation.md) to make one stationary 60-second recording of gyro XYZ and temperature. All gyro axes are observed together, in sensor coordinates; no gyro trim writes, bias correction, integration, attitude estimator or PID is added. Review candidate bias on a held-out segment before applying it in a later lesson. Near/below-100-Hz telemetry is not final 500-Hz Kalman noise data. This is the first small part of C7; longer stationary/temperature/correlation work remains later.

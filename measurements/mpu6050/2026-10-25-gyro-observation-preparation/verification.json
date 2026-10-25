@@ -1,0 +1,33 @@
+{
+  "status": "PREPARED_NOT_HARDWARE_VALIDATED",
+  "engine": "PlatformIO native ESP32-S3 cross compilation plus PC Python arithmetic/protocol tests; no simulator",
+  "uploaded": false,
+  "serial_opened": false,
+  "physical_test": false,
+  "firmware_source_sha256": "b1e18dc32621de9c315e40a411603db4b613311fd3b3116702a1e0bd3ff4e8d9",
+  "firmware_binary_sha256": "ab8651a963dceb2d9647990e1b5b64cf0cb33d793b45b1b7975430fc57875d5f",
+  "embedded_source_fingerprint": true,
+  "original_build_evidence": "artifacts/build/20261025T223136756779Z/build.json",
+  "build_exit_code": 0,
+  "test_exit_code": 0,
+  "test_output": "...........\n----------------------------------------------------------------------\nRan 11 tests in 0.027s\n\nOK\n",
+  "test_scope": "11 offline tests: 6 existing acceleration and 5 gyro protocol/statistical tests. No compiled-MCU execution.",
+  "accelerometer_function_text_unchanged_from_previous_commit": {
+    "restore_accel_bias": true,
+    "verify_offsets": true,
+    "correct_acceleration": true
+  },
+  "gyro_offsets_written": false,
+  "motor_outputs": "Disabled; four pins INPUT_PULLDOWN, no PWM/ESC driver",
+  "unvalidated_interfaces": [
+    "14-byte physical I2C burst on actual board",
+    "actual IMU_XYZ_V1 serial capture",
+    "stationary gyro bias, temperature/drift, body-frame rotation and rate scale"
+  ],
+  "assumptions": [
+    "MPU6050 at 0x68 with unchanged mounting",
+    "fixed stationary support for forthcoming bias measurement",
+    "65.5 counts/(degree/s) at configured +/-500 degree/s range"
+  ],
+  "not_final_kalman_noise": "Wide sensor bandwidth with subsampled telemetry; no IID/Gaussian or noise density claim"
+}

@@ -129,7 +129,7 @@
       "runtime": "python",
       "path": "tools/calibration/record_bias_x.py",
       "args": [],
-      "description": "Historical X-only register lesson; active XYZ firmware uses record-accel"
+      "description": "Historical X-only protocol; not for current IMU_XYZ_V1 firmware"
     },
     "check-bias-x": {
       "runtime": "python",
@@ -141,7 +141,7 @@
       "runtime": "python",
       "path": "tools/calibration/record_accel.py",
       "args": [],
-      "description": "Record live fully corrected XYZ in arbitrary orientations, checking firmware matrix output; sends ? only, no upload"
+      "description": "Historical ACCEL_XYZ_V1 recorder for its matching source checkpoint; current IMU_XYZ_V1 uses record-gyro"
     },
     "check-accel-xyz": {
       "runtime": "python",
@@ -154,6 +154,18 @@
       "path": "tools/calibration/analyze_accel.py",
       "args": [],
       "description": "Verify original MCU XYZ logs, register metadata and per-sample matrix output; save derived report and graphs, no refit"
+    },
+    "record-gyro": {
+      "runtime": "python",
+      "path": "tools/calibration/record_gyro.py",
+      "args": [],
+      "description": "Current IMU_XYZ_V1: automatically record stationary gyro XYZ and temperature; candidate statistics only, no upload or gyro trim writes"
+    },
+    "check-gyro-observation": {
+      "runtime": "python",
+      "path": "tools/calibration/test_gyro_observation.py",
+      "args": [],
+      "description": "Offline IMU packet conversion, held-out statistics and full acceleration checks; no hardware"
     }
   }
 }

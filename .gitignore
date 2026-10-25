@@ -26,3 +26,6 @@ __pycache__/
 
 # Original full-XYZ bench streams stay local.
 /artifacts/accel-recordings/
+
+# Original gyro bench captures remain private.
+/artifacts/gyro-recordings/

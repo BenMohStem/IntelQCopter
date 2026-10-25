@@ -1,13 +1,10 @@
 # Current important files
 
-1. [main.cpp - full coupled XYZ calibration](../firmware/main.cpp).
-2. [Math, register rounding and live recording guide](../docs/full-accelerometer-calibration.md).
-3. [Current plan](../docs/PLAN.md).
+1. [main.cpp - single active Arduino firmware](../firmware/main.cpp).
+2. [Current gyro observation lesson](../docs/gyro-observation.md).
+3. [Complete accelerometer correction and math](../docs/full-accelerometer-calibration.md).
+4. [Current plan](../docs/PLAN.md).
 
-[Six-pose fitted model](../measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/report.md) · [Independent tilted-pose review](../measurements/mpu6050/2026-10-25-tilt-validation/report.md) · [Raw source checkpoint](../archive/bench-checkpoints/raw-pose1000/README.md).
+[Fitted model](../measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/report.md) · [Tilt review](../measurements/mpu6050/2026-10-25-tilt-validation/report.md) · [Reset/power-cycle evidence](../measurements/mpu6050/2026-10-25-restart-validation/report.md).
 
-The historical [X-only register lesson](../docs/bench-x-bias.md) and [value-provenance report](../docs/bias-x-provenance.html) remain explanatory history. The active firmware corrects all axes together. PC tooling is under tools/calibration; it is not flight code.
-
-[First actual full-XYZ recording: report and graph](../measurements/mpu6050/2026-10-25-first-live-xyz/report.md). One implementation run verified; reference accuracy and repeated-boot behavior remain separate checks.
-
-[Reset and full-power-cycle restoration verified](../measurements/mpu6050/2026-10-25-restart-validation/report.md): 910 samples per new run; same final register targets, no accumulation observed. Next lesson is gyro XYZ calibration.
+PC recording and analysis tools live in tools/calibration. This index links the real sources rather than maintaining diverging copies. Gyro observation is prepared; it is not yet a physical validation. Original raw recordings remain private. Motor outputs remain disabled.
