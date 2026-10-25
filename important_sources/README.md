@@ -1,13 +1,9 @@
-# Read these for the current step
+# Current important files
 
-1. [main.cpp: one-axis X-bias lesson](../firmware/main.cpp).
-2. [Explanation, expected readings and automatic bench test](../docs/bench-x-bias.md).
-3. [Current small-step plan](../docs/PLAN.md).
+1. [main.cpp - full coupled XYZ calibration](../firmware/main.cpp).
+2. [Math, register rounding and live recording guide](../docs/full-accelerometer-calibration.md).
+3. [Current plan](../docs/PLAN.md).
 
-[Previous raw-recorder checkpoint](../archive/bench-checkpoints/raw-pose1000/README.md) · [Six-pose report](../measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/report.md) · [Tilt report](../measurements/mpu6050/2026-10-25-tilt-validation/report.md).
+[Six-pose fitted model](../measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/report.md) · [Independent tilted-pose review](../measurements/mpu6050/2026-10-25-tilt-validation/report.md) · [Raw source checkpoint](../archive/bench-checkpoints/raw-pose1000/README.md).
 
-Supporting references: [MPU configuration](../docs/mpu6050-configuration.md), [historical calibration math](../docs/accelerometer-calibration.md), [recording six poses](../docs/record-18-poses.md), [recording tilts](../docs/record-45-degree-tilts.md), [ROS2/Gazebo commands](../docs/start-ros-gazebo.md).
-
-PC tools are in tools/calibration/. They are not flight code and do not need to be read to follow main.cpp. The raw recorder and old firmware are preserved; no broad controller was imported into this lesson.
-
-[Where 1.312 m/s² comes from: complete calculation report](../docs/bias-x-provenance.html) · [LaTeX Markdown source](../docs/bias-x-provenance.md).
+The historical [X-only register lesson](../docs/bench-x-bias.md) and [value-provenance report](../docs/bias-x-provenance.html) remain explanatory history. The active firmware corrects all axes together. PC tooling is under tools/calibration; it is not flight code.

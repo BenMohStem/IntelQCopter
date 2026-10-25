@@ -6,11 +6,11 @@ The new secured-mount session `20261025T132707615977Z` contains 18 completed pos
 
 The deleted detached-mount session is excluded. Earlier calibration/level coefficients do not validate the new mounting.
 
-**Current prepared step: C5a, X-bias register implementation.** [Short firmware lesson and automatic before/after test](bench-x-bias.md). Compile and analytic checks passed; upload and real register-response/reset/power-cycle tests remain pending. Active main.cpp is now a shorter one-axis lesson. The exact raw recorder is preserved in archive/bench-checkpoints/raw-pose1000/main.cpp.txt.
+**Current prepared step: full coupled XYZ calibration.** The user requested applying all three axes together, replacing the sequential X-only implementation. [Complete calibration and live recording](full-accelerometer-calibration.md). Main.cpp restores all three MPU bias words, removes only their software rounding remainders and applies all nine matrix terms to each coherent XYZ sample. No pose-dependent zeroing or norm forcing. Compile and algebra/protocol checks pass; physical response and reset/power-cycle validation remain pending. The exact raw recorder stays preserved in archive/bench-checkpoints/raw-pose1000/main.cpp.txt.
 
 **Previous completed step: rough independent tilted-pose review.** Four new 20-second logs passed integrity checks. The operator confirmed raised-side order +X, -X, +Y, -Y and a hand-held ruler with about ±1° placement error. Frozen-candidate differences are 1.06°, 0.25°, 0.42°, 0.21°, with no refit. See the [tilt report](../measurements/mpu6050/2026-10-25-tilt-validation/report.md). This supports the next controlled bench lesson, not sub-degree accuracy or flight readiness.
 
-**Previous completed step: offline calibration and noise analysis.** See the [derived report and graphs](../measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/report.md). This uses original hardware recordings; the correction curves are mathematical replay. No simulator, upload or new hardware test was performed. The raw 20-second recorder used for those measurements is preserved as a checkpoint; current C5a firmware is a partial one-axis bench lesson.
+**Previous completed step: offline calibration and noise analysis.** See the [derived report and graphs](../measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/report.md). This uses original hardware recordings; the correction curves are mathematical replay. No simulator, upload or new hardware test was performed. The raw 20-second recorder used for those measurements is preserved as a checkpoint; current firmware applies the complete coupled XYZ calibration.
 
 ## Next steps and their acceptance evidence
 
@@ -20,9 +20,9 @@ The deleted detached-mount session is excluded. Earlier calibration/level coeffi
 | C2 | Fit calibration on repetitions 1-2 | Calculated provisional bias and response matrix; equal pose weights |
 | C3 | Reserve repetition 3 and inspect noise | Offline replay complete; direction errors about 0.07-1.11°, with reference uncertainty included; transients/correlation present |
 | C4 | Test independently measured tilted orientations | Four 45° records reviewed with operator-confirmed raised sides and approximate ±1° hand-held reference; combined/fixed-reference checks remain optional refinements; no sub-degree acceptance |
-| C5 | Verify calibration implementation | **C5a prepared, not physically passed:** only X bias register, compile and comparison checks complete. User uploads and runs record-bias-x before Y/Z or matrix rows are added |
+| C5 | Verify calibration implementation | **Full XYZ prepared, not physically passed:** all three bias words and full matrix together, as requested. User uploads and runs record-accel in arbitrary orientations; the isolated X check is superseded |
 | C6 | Restore offsets after reset/power cycle | Save fixed coefficients in firmware flash, restore volatile MPU bias registers using the same baseline convention, preserve compensation bits and verify no duplicate subtraction |
-| C7 | Characterize short-term noise and drift | Prepare a separate 2-3 minute stationary recording after temperature settles; assess full covariance, autocorrelation, block means and transients |
+| C7 | Characterize short-term noise and drift | When characterizing noise specifically, use a separate 2-3 minute stationary recording after temperature settles; assess full covariance, autocorrelation, block means and transients |
 | C8 | Learn one attitude estimate | Only after calibration checks: one roll/pitch observation, then gyro integration and a small Kalman lesson using measured noise assumptions |
 
 C4 is deliberately separate from C5: a smaller same-pose residual is not proof of accuracy at a new angle. C7's independent stationary experiment can be done before C5 if needed to diagnose drift. A long-term Allan/bias study is a later optional measurement, not something claimed from a 20-second capture.
@@ -36,6 +36,8 @@ Keep the MPU/FC fixed in its final mounting. Use an independent reference to mea
 Review reserved-pose errors and fixture uncertainty together before choosing an acceptance threshold. Do not quietly refit a validation dataset and call its residual independent accuracy. If it informs a new fit, collect new validation data.
 
 ## How each lesson is implemented
+
+For this step the user explicitly chose the full 3D matrix at once. Do not require isolated X/Y/Z lessons or prescribe table/flipped runtime modes. Reference poses are metrology inputs, not conditions under which the calibration algorithm is enabled. Apply the same vector transformation at all orientations.
 
 Use one active Arduino-style `firmware/main.cpp`, mostly C-style functions, Adafruit/Wire where suitable, Allman braces, four spaces, one statement per line and `Serial.printf`. Aim for one new idea and 3-10 lines per firmware lesson; explain larger exceptions. PC analysis tools stay in `tools/calibration/` and do not clutter firmware. Do not re-import the archived large controller.
 

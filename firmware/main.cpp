@@ -9,52 +9,114 @@
 #define BENCH_SOURCE_SHA "unknown"
 #endif
 
-// Lesson C5a: sensor X bias only. Y/Z, scale and mounting are not corrected yet.
-static const float accel_bias_x = 1.308683406f;
-static const int16_t expected_baseline_x = -2074;
-static const int32_t offset_decrement = 2 * lroundf(accel_bias_x * 1024.0f / 9.80665f);
-static const int32_t corrected_offset_x = expected_baseline_x - offset_decrement;
+// Fixed calibration from repetitions 1-2. Valid for the unchanged sensor mounting.
+static const float accel_bias[3] = {1.308683406f, -0.067669726f, -0.657188793f};
+static const float accel_matrix[3][3] = {
+    {0.953457734f, -0.085144142f, -0.287271311f},
+    {0.088080052f, 0.990761548f, -0.002594316f},
+    {0.287429504f, -0.030297733f, 0.947299771f}
+};
+static const int16_t expected_baseline[3] = {-2074, 2979, 1074};
 
 Adafruit_MPU6050 mpu;
 Adafruit_I2CDevice sensor(0x68, &Wire);
-Adafruit_BusIO_Register x_offset(&sensor, 0x06, 2, MSBFIRST);
-Adafruit_BusIO_Register x_reading(&sensor, 0x3B, 2, MSBFIRST);
 bool sensor_ready = false;
-int16_t active_offset_x = expected_baseline_x;
+int16_t applied_offset[3] = {};
+int16_t boot_offset[3] = {};
+float remaining_bias[3] = {};
 
-static bool select_x_offset(int32_t requested)
+static bool restore_accel_bias(void)
 {
-    if (requested < -32768 || requested > 32767)
+    // Accept the original baseline or our own retained target, never a new unknown value.
+    // Validate every axis before writing; every write uses an absolute target.
+    for (uint8_t axis = 0; axis < 3; axis++)
     {
-        return false;
+        int32_t decrement = 2 * lroundf(accel_bias[axis] * 1024.0f / 9.80665f);
+        int32_t target = (int32_t)expected_baseline[axis] - decrement;
+        if (target < -32768 || target > 32767)
+        {
+            return false;
+        }
+        applied_offset[axis] = (int16_t)target;
+        remaining_bias[axis] = accel_bias[axis] - decrement * (9.80665f / 2048.0f);
+        Adafruit_BusIO_Register reg(&sensor, 0x06 + 2 * axis, 2, MSBFIRST);
+        uint16_t observed;
+        if (!reg.read(&observed))
+        {
+            return false;
+        }
+        boot_offset[axis] = (int16_t)observed;
+        if (boot_offset[axis] != expected_baseline[axis] && boot_offset[axis] != applied_offset[axis])
+        {
+            Serial.printf("ERROR,UNEXPECTED_BOOT_OFFSET,axis=%u,value=%d\n", axis, boot_offset[axis]);
+            return false;
+        }
     }
-    uint16_t readback;
-    if (!x_offset.write((uint16_t)requested) || !x_offset.read(&readback))
+    for (uint8_t axis = 0; axis < 3; axis++)
     {
-        return false;
+        Adafruit_BusIO_Register reg(&sensor, 0x06 + 2 * axis, 2, MSBFIRST);
+        uint16_t readback;
+        if (!reg.write((uint16_t)applied_offset[axis]) || !reg.read(&readback) || (int16_t)readback != applied_offset[axis])
+        {
+            return false;
+        }
     }
-    if (readback != (uint16_t)requested)
-    {
-        return false;
-    }
-    active_offset_x = (int16_t)readback;
-    Serial.printf("MODE,%d\n", active_offset_x);
+    delay(20);
     return true;
+}
+
+static bool verify_offsets(void)
+{
+    for (uint8_t axis = 0; axis < 3; axis++)
+    {
+        Adafruit_BusIO_Register reg(&sensor, 0x06 + 2 * axis, 2, MSBFIRST);
+        uint16_t readback;
+        if (!reg.read(&readback) || (int16_t)readback != applied_offset[axis])
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+static void correct_acceleration(const int16_t counts[3], float drone[3])
+{
+    float centred[3];
+    for (uint8_t axis = 0; axis < 3; axis++)
+    {
+        centred[axis] = counts[axis] * (9.80665f / 4096.0f) - remaining_bias[axis];
+    }
+    for (uint8_t row = 0; row < 3; row++)
+    {
+        drone[row] = 0.0f;
+        for (uint8_t column = 0; column < 3; column++)
+        {
+            drone[row] += accel_matrix[row][column] * centred[column];
+        }
+    }
 }
 
 static void report(void)
 {
-    uint16_t readback;
-    if (!sensor_ready || !x_offset.read(&readback) || (int16_t)readback != active_offset_x)
+    if (!sensor_ready || !verify_offsets())
     {
         sensor_ready = false;
-        Serial.printf("ERROR,OFFSET_OR_SENSOR_CHECK_FAILED\n");
+        Serial.printf("ERROR,SENSOR_OR_OFFSET_CHECK_FAILED\n");
         return;
     }
-    Serial.printf("HELLO,BIAS_X_V1,%s\n", BENCH_SOURCE_SHA);
-    Serial.printf("OFFSET_X,%d,%ld,%d\n", expected_baseline_x, (long)corrected_offset_x, (int16_t)readback);
-    Serial.printf("CONFIG,accel_g=8,gyro_dps=500,dlpf=0,divider=7,i2c_hz=400000,user_cal=accel_x_mpu_only\n");
-    Serial.printf("READY,BIAS_X_V1\n");
+    Serial.printf("HELLO,ACCEL_XYZ_V1,%s\n", BENCH_SOURCE_SHA);
+    Serial.printf("CONFIG,accel_g=8,gyro_dps=500,dlpf=0,divider=7,i2c_hz=400000,user_cal=xyz_mpu_plus_matrix\n");
+    Serial.printf("BOARD,%s,%012llX\n", ESP.getChipModel(), ESP.getEfuseMac());
+    for (uint8_t axis = 0; axis < 3; axis++)
+    {
+        Serial.printf("BIAS,%u,%.9f\n", axis, accel_bias[axis]);
+        Serial.printf("BOOT_OFFSET,%u,%d\n", axis, boot_offset[axis]);
+        Serial.printf("ROW,%u,%.9f,%.9f,%.9f\n", axis,
+            accel_matrix[axis][0], accel_matrix[axis][1], accel_matrix[axis][2]);
+        Serial.printf("OFFSET,%u,%d,%d,%.9f\n", axis,
+            expected_baseline[axis], applied_offset[axis], remaining_bias[axis]);
+    }
+    Serial.printf("READY,ACCEL_XYZ_V1\n");
 }
 
 void setup(void)
@@ -82,49 +144,38 @@ void setup(void)
         sensor_ready = sensor_ready && mpu.getClock() == MPU6050_PLL_GYROX;
         sensor_ready = sensor_ready && Wire.getClock() == 400000;
     }
-    // Require the recorded post-reset baseline, preventing accumulated correction.
-    uint16_t baseline = 0;
-    sensor_ready = sensor_ready && x_offset.read(&baseline);
-    Serial.printf("BASELINE_X,expected=%d,readback=%d,read_ok=%u\n", expected_baseline_x, (int16_t)baseline, (unsigned)sensor_ready);
-    sensor_ready = sensor_ready && (int16_t)baseline == expected_baseline_x;
-    sensor_ready = sensor_ready && select_x_offset(corrected_offset_x);
+    sensor_ready = sensor_ready && restore_accel_bias();
     report();
 }
 
 void loop(void)
 {
-    if (Serial.available())
+    if (Serial.available() && Serial.read() == '?')
     {
-        char command = Serial.read();
-        if (command == 'r' && sensor_ready)
-        {
-            sensor_ready = select_x_offset(expected_baseline_x);
-        }
-        if (command == 'c' && sensor_ready)
-        {
-            sensor_ready = select_x_offset(corrected_offset_x);
-        }
-        if (command == '?')
-        {
-            Serial.printf("QUERY_REPLY\n");
-            report();
-        }
+        Serial.printf("QUERY_REPLY\n");
+        report();
     }
     if (sensor_ready)
     {
-        uint16_t bits;
-        sensor_ready = x_reading.read(&bits);
+        uint8_t address = 0x3B;
+        uint8_t bytes[6];
+        sensor_ready = verify_offsets() && sensor.write_then_read(&address, 1, bytes, sizeof(bytes));
         if (sensor_ready)
         {
-            // ±8 g gives 4096 counts/g; bias is already handled in the MPU.
-            int16_t counts = (int16_t)bits;
-            float x = counts * (9.80665f / 4096.0f);
-            Serial.printf("AX,%lu,%d,%d,%.6f\n", (unsigned long)millis(), active_offset_x, counts, x);
+            int16_t counts[3];
+            float drone[3];
+            for (uint8_t axis = 0; axis < 3; axis++)
+            {
+                counts[axis] = (int16_t)(((uint16_t)bytes[2 * axis] << 8) | bytes[2 * axis + 1]);
+            }
+            correct_acceleration(counts, drone);
+            Serial.printf("ACCEL,%lu,%d,%d,%d,%.6f,%.6f,%.6f\n", (unsigned long)millis(),
+                counts[0], counts[1], counts[2], drone[0], drone[1], drone[2]);
         }
     }
     if (!sensor_ready)
     {
-        Serial.printf("ERROR,SENSOR_OR_OFFSET_FAILED\n");
+        Serial.printf("ERROR,SENSOR_OR_CALIBRATION_FAILED\n");
     }
-    delay(100);
+    delay(10);
 }

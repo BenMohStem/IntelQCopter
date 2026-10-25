@@ -1,4 +1,6 @@
-# C5a: write and verify only accelerometer X bias
+# Historical C5a: write and verify only accelerometer X bias
+
+**Superseded by the user-requested [full coupled XYZ implementation](full-accelerometer-calibration.md).** This page documents the prior isolated register lesson; its command is not the current workflow.
 
 This is a small **partial calibration lesson**, prepared for your upload. The earlier fit and tilted-pose replay support a provisional candidate; the hand-held angle reference does not establish sub-degree accuracy. We now test whether the physical MPU X-offset register produces the predicted shift.
 

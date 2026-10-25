@@ -23,3 +23,6 @@ __pycache__/
 
 # Original X-bias bench evidence stays local.
 /artifacts/bias-x-recordings/
+
+# Original full-XYZ bench streams stay local.
+/artifacts/accel-recordings/

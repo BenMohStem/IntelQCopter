@@ -129,13 +129,25 @@
       "runtime": "python",
       "path": "tools/calibration/record_bias_x.py",
       "args": [],
-      "description": "After your upload, save raw/corrected/raw X-bias register bench intervals; sends r/c/? only, no flashing"
+      "description": "Historical X-only register lesson; active XYZ firmware uses record-accel"
     },
     "check-bias-x": {
       "runtime": "python",
       "path": "tools/calibration/test_bias_x.py",
       "args": [],
       "description": "Analytic drift/phase-timing checks for X-bias comparison; no sensor or emulator"
+    },
+    "record-accel": {
+      "runtime": "python",
+      "path": "tools/calibration/record_accel.py",
+      "args": [],
+      "description": "Record live fully corrected XYZ in arbitrary orientations, checking firmware matrix output; sends ? only, no upload"
+    },
+    "check-accel-xyz": {
+      "runtime": "python",
+      "path": "tools/calibration/test_accel_xyz.py",
+      "args": [],
+      "description": "Source-coefficient float32 algebra and protocol checks for full XYZ; not MCU/hardware execution"
     }
   }
 }
