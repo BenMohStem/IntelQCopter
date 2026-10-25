@@ -95,3 +95,21 @@ The candidate's existing independent reference was hand-held with approximately 
 Sources: [the measured-data fit](../measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/analysis.json), [tilt review](../measurements/mpu6050/2026-10-25-tilt-validation/report.md), [Adafruit MPU6050](https://github.com/adafruit/Adafruit_MPU6050/blob/master/Adafruit_MPU6050.cpp), [MPU6050 trim implementation](https://github.com/jrowberg/i2cdevlib/blob/master/Arduino/MPU6050/MPU6050.cpp).
 
 Final preparation: the ESP32-S3 PlatformIO build passed (19,372 bytes RAM; 307,597 bytes flash), and six algebra/protocol checks passed. [Verification record](../measurements/mpu6050/2026-10-25-full-xyz-preparation/verification.json). Original compiler output and earlier build remain local. No upload or serial-port connection was performed.
+
+## First actual recording and next restart checks
+
+[Actual MCU data review and graph](../measurements/mpu6050/2026-10-25-first-live-xyz/report.md): 2727 samples passed source/offset/arithmetic checks. The operator reports motionless on a support, not checked level; no coefficient refit was made. One observed boot does not establish repeated reset/power-cycle behavior.
+
+No reflash is needed for these next runs. First reset ESP32, then run:
+
+```powershell
+.\qcopter.ps1 record-accel --port COM3 --seconds 10 --note "after ESP32 reset"
+```
+
+Then power-cycle both ESP32 and MPU and run:
+
+```powershell
+.\qcopter.ps1 record-accel --port COM3 --seconds 10 --note "after ESP32 and MPU power cycle"
+```
+
+Any orientation is allowed; this check compares startup/register targets and numerical consistency, not identical gravity components across different poses. Add --condition stationary_unlevel, stationary_level or moving only if it describes the actual run. Notes/conditions are operator reports, not automatically verified physical references. Original records remain unchanged.

@@ -1,0 +1,34 @@
+{
+  "engine": "Offline verification of original real ESP32-S3/MPU6050 full-XYZ stream; no simulator",
+  "original_serial_sha256": "e4fb9cab7ff45b4b797c712a851a5893c47423f20497f161e49d43ec25866202",
+  "recorded_source_sha256": "650c2078b33b699450f70e0642aa6b9637e21cac11163eabc635a4b4afc4ddb6",
+  "actual_samples_checked": 2727,
+  "per_sample_matrix_recomputed": true,
+  "timestamps_and_saved_samples_checked": true,
+  "observed_report_rate_hz": 90.90605929236003,
+  "matrix_consistency_max_error_m_s2": 1.5415784329064763e-06,
+  "observed_boot_offsets": [
+    -2074,
+    2979,
+    1074
+  ],
+  "observed_verified_targets": [
+    -2348,
+    2993,
+    1212
+  ],
+  "operator_condition": "Motionless on a support; not independently checked level, confirmed in chat",
+  "hardware_runtime_recording_observed": true,
+  "absolute_sensor_accuracy_accepted": false,
+  "repeated_reset_power_cycle_verified": false,
+  "firmware_modified": false,
+  "refitted": false,
+  "serial_port_opened_by_assistant": false,
+  "uploaded_by_assistant": false,
+  "files_sha256": {
+    "actual-xyz.png": "d71a103f2f30363fea05f17b1296096c18ed23b39a138603b88163e226a80793",
+    "analysis.json": "94dd97a70779f3af5f79cf57f7ad0336367b3f634d8b86f76299c8ed82ae82dd",
+    "report.md": "4cfea62147b8c3ce862610629c7e3b1b79a4da1e6aabfd3c82a1f54d3436f512"
+  },
+  "analysis_script_sha256": "201599dbc94ee732e01ae8929ede26c654e41b05b9b0c37959a3a40ed97ae7ef"
+}

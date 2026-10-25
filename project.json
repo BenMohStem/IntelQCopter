@@ -148,6 +148,12 @@
       "path": "tools/calibration/test_accel_xyz.py",
       "args": [],
       "description": "Source-coefficient float32 algebra and protocol checks for full XYZ; not MCU/hardware execution"
+    },
+    "analyze-accel": {
+      "runtime": "python",
+      "path": "tools/calibration/analyze_accel.py",
+      "args": [],
+      "description": "Verify original MCU XYZ logs, register metadata and per-sample matrix output; save derived report and graphs, no refit"
     }
   }
 }

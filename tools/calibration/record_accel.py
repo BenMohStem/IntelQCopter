@@ -91,6 +91,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", required=True)
     parser.add_argument("--seconds", type=float, default=20)
+    parser.add_argument("--note", default="", help="Operator note, e.g. after ESP32 reset or full power cycle")
+    parser.add_argument("--condition", choices=("stationary_unlevel", "stationary_level", "moving", "unknown"), default="unknown")
     args = parser.parse_args()
     if not math.isfinite(args.seconds) or not 5 <= args.seconds <= 600:
         parser.error("Choose 5-600 seconds")
@@ -100,6 +102,7 @@ def main():
     folder.mkdir(parents=True)
     result = {"engine": "Real ESP32-S3/MPU6050 XYZ-calibrated bench stream; no simulator",
               "status": "FAILED", "source_sha256": source_sha, "uploaded": False,
+              "operator_note": args.note, "operator_condition": args.condition,
               "acceptance": "UNREVIEWED; software consistency is not absolute sensor accuracy"}
     device = serial.Serial(port=None, baudrate=921600, timeout=0.5, write_timeout=2)
     device.port = args.port

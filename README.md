@@ -18,3 +18,5 @@ The PC displays X/Y/Z and norm live, saves all emitted samples and recomputes th
 The provisional coefficients came from training repetitions 1-2, with repetition 3 and later tilted records held out. [Six-pose analysis](measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/report.md) · [Tilt review](measurements/mpu6050/2026-10-25-tilt-validation/report.md). Reference accuracy was approximately ±1 degree by operator estimate. Compile/math checks do not establish absolute accuracy or reset/power-cycle behavior. Motor outputs remain disabled; no upload has been performed by the assistant.
 
 [Original raw-recorder checkpoint](archive/bench-checkpoints/raw-pose1000/README.md) · [Historical X-bias value report](docs/bias-x-provenance.html) · [Important sources](important_sources/README.md) · [ROS2/Gazebo commands](docs/start-ros-gazebo.md). Raw and X-only recording commands belong to their source/protocol checkpoints, not this active firmware.
+
+[First actual full-XYZ recording: report and graph](measurements/mpu6050/2026-10-25-first-live-xyz/report.md). One implementation run verified; reference accuracy and repeated-boot behavior remain separate checks.
