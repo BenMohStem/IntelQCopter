@@ -1,12 +1,12 @@
 # IntelQCopter - small software steps
 
-**Current step: collect 18 one-minute MPU6050 recordings, before fitting a new calibration.**
+**Current step: collect 18 20-second MPU6050 recordings, before fitting a new calibration.**
 
 1. [Flash once, then record all 18 poses automatically](docs/record-18-poses.md).
 2. [The single Arduino firmware file](firmware/main.cpp).
 3. [The small-step plan](docs/PLAN.md).
 
-The PC prompts for Z+, Z-, X+, X-, Y+, Y-, repeated three times. Each recording contains 60,000 FIFO samples at nominal 1000 Hz. Original samples and statistical summaries are saved automatically. Firmware applies no user calibration during these measurements; previous calibrated firmware is preserved at commit a1d3c78. No motor driver or motor output is enabled.
+The PC prompts for Z+, Z-, X+, X-, Y+, Y-, repeated three times. Each recording contains 20,000 FIFO samples at nominal 1000 Hz. Original samples and statistical summaries are saved automatically. Firmware applies no user calibration during these measurements; previous calibrated firmware is preserved at commit a1d3c78. No motor driver or motor output is enabled.
 
 ```powershell
 cd C:\Users\Mohamed\Desktop\Work\QCopter-Stepwise

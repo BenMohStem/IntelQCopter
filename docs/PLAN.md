@@ -79,4 +79,4 @@ The sensor remains fixed to the drone. A single level position cannot validate c
 
 ## 18-run recording step (25 October)
 
-User requested 60,000 samples at nominal 1000 Hz for Z+, Z-, X+, X-, Y+, Y-, repeated three times. This supersedes the earlier 2.42 Hz bench reporting configuration while collecting data. New configuration is divider 7 / mode 0, 400 kHz I2C, 921600 baud. The PC recorder saves original samples and means automatically and prompts before each pose. This is prepared for user upload; no physical throughput or calibration acceptance yet. Reserve repetition 3 for initial validation, followed by independent tilted poses.
+User requested 20,000 samples at nominal 1000 Hz for Z+, Z-, X+, X-, Y+, Y-, repeated three times. This supersedes the earlier 2.42 Hz bench reporting configuration while collecting data. New configuration is divider 7 / mode 0, 400 kHz I2C, 921600 baud. The PC recorder saves original samples and means automatically and prompts before each pose. This is prepared for user upload; no physical throughput or calibration acceptance yet. Reserve repetition 3 for initial validation, followed by independent tilted poses.

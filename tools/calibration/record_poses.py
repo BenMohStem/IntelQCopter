@@ -42,8 +42,8 @@ class Samples:
             raise ValueError("Missing, duplicate or malformed sample")
         values = [int(value) for value in fields[2:]]
         payload = struct.pack(">7h", *values)
-        if self.count >= 60000:
-            raise ValueError("More than 60000 samples")
+        if self.count >= 20000:
+            raise ValueError("More than 20000 samples")
         self.count += 1
         for index, value in enumerate(values):
             delta = value - self.mean[index]
@@ -55,7 +55,7 @@ class Samples:
 
     def finish(self, line, firmware_means):
         fields = line.split(",")
-        if len(fields) != 5 or int(fields[1]) != 60000 or self.count != 60000:
+        if len(fields) != 5 or int(fields[1]) != 20000 or self.count != 20000:
             raise ValueError("Incomplete recording")
         elapsed_us = int(fields[2])
         maximum_fifo = int(fields[3])
@@ -137,19 +137,19 @@ def capture(device, attempt, expected_sha, reference_configuration=None):
             samples = Samples()
             firmware_means = {}
             started = False
-            deadline = time.monotonic() + 75
+            deadline = time.monotonic() + 35
             while time.monotonic() < deadline:
                 line = receive(device, log)
                 if not line:
                     continue
-                if line == "BEGIN,60000" and not started:
+                if line == "BEGIN,20000" and not started:
                     started = True
                 elif line.startswith("S,") and started:
                     samples.add(line)
                     if samples.count % 10000 == 0:
                         log.flush()
-                        print(f"  {samples.count}/60000 samples saved")
-                elif line.startswith("MEAN_COUNTS,") and samples.count == 60000:
+                        print(f"  {samples.count}/20000 samples saved")
+                elif line.startswith("MEAN_COUNTS,") and samples.count == 20000:
                     _, axis, mean = line.split(",")
                     if int(axis) in firmware_means or not math.isfinite(float(mean)):
                         raise ValueError("Invalid firmware mean")

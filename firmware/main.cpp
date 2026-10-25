@@ -10,7 +10,7 @@
 #define BENCH_SOURCE_SHA "unknown"
 #endif
 
-static const uint32_t sample_target = 60000;
+static const uint32_t sample_target = 20000;
 static const uint32_t serial_baud = 921600;
 static const uint8_t fifo_enable = 0x23;
 static const uint8_t interrupt_status = 0x3A;
@@ -77,7 +77,7 @@ static bool report_configuration(void)
         int16_t value = (int16_t)(((uint16_t)bytes[0] << 8) | bytes[1]);
         Serial.printf("OFFSET,%02X,%d\n", offsets[index], value);
     }
-    Serial.printf("READY,send_s_to_record_60000_samples\n");
+    Serial.printf("READY,send_s_to_record_20000_samples\n");
     return true;
 }
 
@@ -103,7 +103,7 @@ static void start_recording(void)
     {
         sums[axis] = 0;
     }
-    Serial.printf("BEGIN,60000\n");
+    Serial.printf("BEGIN,20000\n");
     Serial.flush();
     started_us = micros();
     // Packet order: accel XYZ, temperature, gyro XYZ; seven signed 16-bit words.
@@ -237,7 +237,7 @@ void loop(void)
     }
     if (recording)
     {
-        if ((uint32_t)(micros() - started_us) > 65000000u)
+        if ((uint32_t)(micros() - started_us) > 25000000u)
         {
             stop_recording("RECORDING_TIMEOUT");
             return;

@@ -81,7 +81,7 @@
       "runtime": "python",
       "path": "tools/calibration/record_poses.py",
       "args": [],
-      "description": "Automatically save 18 one-minute MPU FIFO recordings, prompting before every pose; never uploads"
+      "description": "Automatically save 18 20-second MPU FIFO recordings, prompting before every pose; never uploads"
     },
     "check-pose-recorder": {
       "runtime": "python",

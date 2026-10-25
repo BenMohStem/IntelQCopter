@@ -27,17 +27,17 @@ class RecorderTests(unittest.TestCase):
     def setUpClass(cls):
         cls.samples = recorder.Samples()
         rows = []
-        for index in range(60000):
+        for index in range(20000):
             ax = -100 if index % 2 == 0 else 100
             line = f"S,{index},{ax},-20,4096,0,1,2,-3"
             rows.append(line)
             cls.samples.add(line)
         cls.means = dict(enumerate(cls.samples.mean))
-        cls.end = f"END,60000,60000000,28,{cls.samples.hash:08X}"
+        cls.end = f"END,20000,20000000,28,{cls.samples.hash:08X}"
         cls.header = "QUERY_REPLY\nHELLO,POSE1000_V1,test-sha\n" + recorder.CONFIG + "\nBOARD,synthetic,0000\n"
         cls.header += "".join(f"OFFSET,{address},0\n" for address in ("06", "08", "0A", "13", "15", "17"))
-        cls.header += "READY,send_s_to_record_60000_samples\n"
-        cls.transcript = cls.header + "BEGIN,60000\n" + "\n".join(rows) + "\n"
+        cls.header += "READY,send_s_to_record_20000_samples\n"
+        cls.transcript = cls.header + "BEGIN,20000\n" + "\n".join(rows) + "\n"
         cls.transcript += "".join(f"MEAN_COUNTS,{index},{mean:.9f}\n" for index, mean in cls.means.items())
         cls.transcript += cls.end + "\n"
 
@@ -45,7 +45,7 @@ class RecorderTests(unittest.TestCase):
         result = self.samples.finish(self.end, self.means)
         self.assertAlmostEqual(result["mean_physical"]["az"], 9.80665)
         self.assertAlmostEqual(result["mean_counts"]["ax"], 0)
-        self.assertAlmostEqual(result["sample_std_counts"]["ax"], 100 * math.sqrt(60000 / 59999))
+        self.assertAlmostEqual(result["sample_std_counts"]["ax"], 100 * math.sqrt(20000 / 19999))
         self.assertEqual(result["observed_average_hz"], 1000)
 
     def test_missing_duplicate_and_out_of_range(self):
@@ -58,8 +58,8 @@ class RecorderTests(unittest.TestCase):
             samples.add("S,0,0,0,0,0,0,0,0")
 
     def test_invalid_completion(self):
-        for ending in (self.end.replace("60000,", "59999,", 1),
-                       self.end.replace("60000000", "120000000"),
+        for ending in (self.end.replace("20000,", "19999,", 1),
+                       self.end.replace("20000000", "120000000"),
                        self.end.replace(",28,", ",1024,"),
                        self.end[:-8] + "00000000"):
             with self.subTest(ending=ending), self.assertRaises(ValueError):
@@ -77,7 +77,7 @@ class RecorderTests(unittest.TestCase):
             self.assertEqual(device.commands, [b"?", b"s"])
 
     def test_overflow_preserves_failed_recording(self):
-        device = FakeSerial(self.header + "BEGIN,60000\nERROR,FIFO_OVERFLOW_OR_BACKLOG\n")
+        device = FakeSerial(self.header + "BEGIN,20000\nERROR,FIFO_OVERFLOW_OR_BACKLOG\n")
         with tempfile.TemporaryDirectory() as temporary, patch.object(recorder.time, "sleep"), patch("builtins.print"):
             folder = Path(temporary)
             with self.assertRaises(ValueError):
