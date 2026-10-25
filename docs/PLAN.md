@@ -6,7 +6,9 @@ The new secured-mount session `20261025T132707615977Z` contains 18 completed pos
 
 The deleted detached-mount session is excluded. Earlier calibration/level coefficients do not validate the new mounting.
 
-**Current observed step: first real full-XYZ implementation recording.** [Actual MCU data and graph](../measurements/mpu6050/2026-10-25-first-live-xyz/report.md). Verified 2727 samples, about 90.91 reports/s, expected startup/target words and matrix arithmetic. User reports motionless on a support, not checked level. Coefficients unchanged; no angular-accuracy pass or repeated-reset claim.
+**Current verified step: accelerometer restart restoration in two operator-performed cases.** [Reset and full-power-cycle evidence](../measurements/mpu6050/2026-10-25-restart-validation/report.md). Each new run contains 910 verified samples; startup words and final targets match, matrix output is consistent, and no correction accumulation is observed. MCU initialization also resets the MPU; these tests verify the actual initialization sequence, not every possible electrical condition. Absolute accuracy remains limited by reference/model uncertainty.
+
+**Next small software lesson: gyro XYZ readings and stationary bias calibration.** Preserve the full accelerometer correction. Do not add PID, motors or ROS2 at this point; this review does not change firmware.
 
 **Implemented step: full coupled XYZ calibration.** The user requested applying all three axes together, replacing the sequential X-only implementation. [Complete calibration and live recording](full-accelerometer-calibration.md). Main.cpp restores all three MPU bias words, removes only their software rounding remainders and applies all nine matrix terms to each coherent XYZ sample. No pose-dependent zeroing or norm forcing. Compile/algebra checks pass and one actual stream confirms source/offset checks and matrix output. Absolute sensor accuracy and repeated reset/power-cycle validation remain pending. The exact raw recorder stays preserved in archive/bench-checkpoints/raw-pose1000/main.cpp.txt.
 
@@ -22,8 +24,8 @@ The deleted detached-mount session is excluded. Earlier calibration/level coeffi
 | C2 | Fit calibration on repetitions 1-2 | Calculated provisional bias and response matrix; equal pose weights |
 | C3 | Reserve repetition 3 and inspect noise | Offline replay complete; direction errors about 0.07-1.11°, with reference uncertainty included; transients/correlation present |
 | C4 | Test independently measured tilted orientations | Four 45° records reviewed with operator-confirmed raised sides and approximate ±1° hand-held reference; combined/fixed-reference checks remain optional refinements; no sub-degree acceptance |
-| C5 | Verify calibration implementation | One actual MCU XYZ stream verified: source, known register words, timestamps and per-sample arithmetic. This is implementation evidence, not a complete accuracy/flight pass; isolated X sequence remains superseded |
-| C6 | Restore offsets after reset/power cycle | **Next physical check:** separate record-accel runs after ESP32 reset and after power-cycling ESP32 + MPU; tag runs with --note. Targets must remain -2348/2993/1212; arbitrary pose allowed |
+| C5 | Verify calibration implementation | Three actual MCU XYZ streams verified: first run, reset and full power cycle; source, register words and per-sample arithmetic agree. This is implementation evidence, not absolute accuracy/flight acceptance |
+| C6 | Restore offsets after reset/power cycle | **Verified in the two requested operator cases:** 910 samples each after reset and full power cycle; targets -2348/2993/1212 repeat without accumulation. Preserve original evidence; no universal reliability claim |
 | C7 | Characterize short-term noise and drift | When characterizing noise specifically, use a separate 2-3 minute stationary recording after temperature settles; assess full covariance, autocorrelation, block means and transients |
 | C8 | Learn one attitude estimate | Only after calibration checks: one roll/pitch observation, then gyro integration and a small Kalman lesson using measured noise assumptions |
 

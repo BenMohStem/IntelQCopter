@@ -20,3 +20,5 @@ The provisional coefficients came from training repetitions 1-2, with repetition
 [Original raw-recorder checkpoint](archive/bench-checkpoints/raw-pose1000/README.md) · [Historical X-bias value report](docs/bias-x-provenance.html) · [Important sources](important_sources/README.md) · [ROS2/Gazebo commands](docs/start-ros-gazebo.md). Raw and X-only recording commands belong to their source/protocol checkpoints, not this active firmware.
 
 [First actual full-XYZ recording: report and graph](measurements/mpu6050/2026-10-25-first-live-xyz/report.md). One implementation run verified; reference accuracy and repeated-boot behavior remain separate checks.
+
+[Reset and full-power-cycle restoration verified](measurements/mpu6050/2026-10-25-restart-validation/report.md): 910 samples per new run; same final register targets, no accumulation observed. Next lesson is gyro XYZ calibration.

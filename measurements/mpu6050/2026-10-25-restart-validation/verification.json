@@ -1,0 +1,25 @@
+{
+  "engine": "Offline verification of operator-performed real ESP32-S3/MPU6050 reset and power-cycle recordings; no simulator",
+  "same_source_and_board": true,
+  "same_profile": true,
+  "restart_samples_verified": 1820,
+  "original_serial_sha256": [
+    "e4fb9cab7ff45b4b797c712a851a5893c47423f20497f161e49d43ec25866202",
+    "719d63d5cffec75c4938fb24bd8000b998b3a2688866ee7277a348422d180e08",
+    "a20da00b9807d7afab55f6660c6f49f4f91b25c55a286a64db3449fed8c64871"
+  ],
+  "targets": [
+    -2348,
+    2993,
+    1212
+  ],
+  "coefficients_changed": false,
+  "firmware_changed": false,
+  "uploaded_by_assistant": false,
+  "original_recordings_modified": false,
+  "scope": "Runtime source/offset/matrix consistency and repeatability for these two restart cases. Not absolute accuracy, temperature qualification, gyro calibration or flight readiness.",
+  "files_sha256": {
+    "analysis.json": "19406cef150c9f0b49bdb09cd5274aee204d15f3d37f50929d6ca5e7a4279130",
+    "report.md": "3dcbbba7ab6397a5db1acc5d9d666f06d7aea7a22c3e8c51da60d759854c56c0"
+  }
+}

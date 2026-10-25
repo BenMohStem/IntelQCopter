@@ -9,3 +9,5 @@
 The historical [X-only register lesson](../docs/bench-x-bias.md) and [value-provenance report](../docs/bias-x-provenance.html) remain explanatory history. The active firmware corrects all axes together. PC tooling is under tools/calibration; it is not flight code.
 
 [First actual full-XYZ recording: report and graph](../measurements/mpu6050/2026-10-25-first-live-xyz/report.md). One implementation run verified; reference accuracy and repeated-boot behavior remain separate checks.
+
+[Reset and full-power-cycle restoration verified](../measurements/mpu6050/2026-10-25-restart-validation/report.md): 910 samples per new run; same final register targets, no accumulation observed. Next lesson is gyro XYZ calibration.

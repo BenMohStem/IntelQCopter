@@ -113,3 +113,7 @@ Then power-cycle both ESP32 and MPU and run:
 ```
 
 Any orientation is allowed; this check compares startup/register targets and numerical consistency, not identical gravity components across different poses. Add --condition stationary_unlevel, stationary_level or moving only if it describes the actual run. Notes/conditions are operator reports, not automatically verified physical references. Original records remain unchanged.
+
+### Restart check results
+
+The user completed both requested cases. [Verified reset/power-cycle review](../measurements/mpu6050/2026-10-25-restart-validation/report.md): 910 samples after reset and 910 after full power cycle, same source/board/profile, expected targets and matching XYZ calculations. No accumulated trim is observed in these runs. Earlier text describing these checks as pending is historical preparation; these two cases are now reviewed. Absolute calibration accuracy and broader operating conditions are not certified by this result.
