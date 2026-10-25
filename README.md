@@ -20,3 +20,5 @@ The accelerometer still uses all nine coefficients in `C(sensor-bias)` at arbitr
 [Raw-recorder checkpoint](archive/bench-checkpoints/raw-pose1000/README.md) · [Historical X-bias explanation](docs/bias-x-provenance.html) · [ROS2/Gazebo terminal commands](docs/start-ros-gazebo.md).
 
 [Three actual gyro runs: verified data, candidate bias and graph](measurements/mpu6050/2026-10-25-three-gyro-runs/report.md). Candidate has now been implemented in V2; fresh corrected firmware testing is next.
+
+[Actual V2 corrected gyro validation: 60 s + 300 s, original logs verified and residual drift graphed](measurements/mpu6050/2026-10-26-corrected-gyro-validation/report.md). Next: labeled reset/power-cycle checks; no calibration changes are needed for those tests.

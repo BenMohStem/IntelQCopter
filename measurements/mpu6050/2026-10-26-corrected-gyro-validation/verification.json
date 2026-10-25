@@ -1,0 +1,28 @@
+{
+  "engine": "Actual preserved ESP32-S3/MPU6050 logs verified offline; no simulator",
+  "physical_measurement_by_user": true,
+  "assistant_uploaded": false,
+  "assistant_opened_serial": false,
+  "firmware_changed": false,
+  "calibration_changed": false,
+  "regression_tests": [
+    {
+      "test": "test_gyro_observation.py",
+      "exit_code": 0,
+      "output": "...............\n----------------------------------------------------------------------\nRan 15 tests in 0.029s\n\nOK\n"
+    },
+    {
+      "test": "test_gyro_bias.py",
+      "exit_code": 0,
+      "output": "........\n----------------------------------------------------------------------\nRan 8 tests in 0.006s\n\nOK\n"
+    },
+    {
+      "test": "test_gyro_selection.py",
+      "exit_code": 0,
+      "output": ".....\n----------------------------------------------------------------------\nRan 5 tests in 0.000s\n\nOK\n"
+    }
+  ],
+  "boundary_fix": "Accept exact contiguous measurement segment with verified post-measurement packet; no edits to original log or samples",
+  "source_and_offset_and_sample_verification": "See analysis.json",
+  "gyro_restart_acceptance": "pending explicit operator reset/power-cycle recordings"
+}

@@ -2,6 +2,8 @@
 
 ## Current position
 
+**Latest evidence (26 October): V2 gyro correction observed in actual 60-second and 300-second stationary recordings.** 30,003 selected samples verified against original logs, offset readbacks [-6,9,27], source and correction arithmetic. Five-minute full-run mean rates [-0.02099362,-0.00986590,-0.00021850] degrees/s, not zero. Firmware/constants unchanged. [Actual corrected gyro report and graphs](../measurements/mpu6050/2026-10-26-corrected-gyro-validation/report.md). Next: explicitly labeled reset and full-power-cycle recordings, 30 seconds each with unchanged firmware. Do not fit away validation residuals or proceed to attitude/PID yet. The remaining text preserves earlier lesson history.
+
 The new secured-mount session `20261025T132707615977Z` contains 18 completed poses and 360,000 samples. Original log hashes, sequences, checksums and configuration/source identities have been checked offline. The user reports completing this session after restarting because the earlier mounting detached. Exact pose angles, fixture uncertainty and continuing mounting rigidity are not independently certified by the software.
 
 The deleted detached-mount session is excluded. Earlier calibration/level coefficients do not validate the new mounting.

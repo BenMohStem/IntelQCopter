@@ -14,3 +14,5 @@ PC recording and analysis tools live in tools/calibration. This index links the 
 [Three actual gyro runs: verified data, candidate bias and graph](../measurements/mpu6050/2026-10-25-three-gyro-runs/report.md). Candidate is offline only; corrected firmware testing is next.
 
 V2 now implements the measured gyro bias. New corrected hardware capture and restart verification are pending; older reports describe their original observation/replay checkpoints.
+
+[Actual V2 corrected gyro validation: 60 s + 300 s, original logs verified and residual drift graphed](../measurements/mpu6050/2026-10-26-corrected-gyro-validation/report.md). Next: labeled reset/power-cycle checks; no calibration changes are needed for those tests.

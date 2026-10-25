@@ -15,7 +15,25 @@ import record_gyro as recording
 ROOT = Path(__file__).resolve().parents[2]
 
 
-def verify_session(path, fit):
+def verify_selection(original, selected, verified_packets):
+    if not selected:
+        raise ValueError('No selected samples')
+    starts = [i for i, sample in enumerate(original) if sample['ms'] == selected[0]['ms']]
+    if len(starts) != 1:
+        raise ValueError('Missing/ambiguous selected start')
+    begin = starts[0]
+    end = begin + len(selected)
+    if original[begin:end] != selected or end != verified_packets or len(original) < verified_packets:
+        raise ValueError('Selected samples do not match the exact original measurement segment')
+    # The final query can preserve a packet produced after the timed capture ended.
+    # Verify its timestamp too; keep it outside the statistics without modifying originals.
+    for previous, current in zip(original, original[1:]):
+        if not 0 < ((current['ms']-previous['ms']) & 0xFFFFFFFF) <= 100:
+            raise ValueError('Invalid timestamp/gap in original capture including boundary packets')
+    return len(original)-end
+
+
+def verify_session(path, fit, requested_seconds=60):
     summary = json.loads((path/'summary.json').read_text(encoding='utf-8'))
     if summary['status'] != 'CAPTURE_COMPLETE_REVIEW_REQUIRED':
         raise ValueError('Incomplete recording: '+path.name)
@@ -48,13 +66,20 @@ def verify_session(path, fit):
     if final_header != header or final_profile != profile:
         raise ValueError('State changed during recording')
     selected = json.loads((path/'samples.json').read_text(encoding='utf-8'))['selected_after_settling']
-    starts = [i for i, sample in enumerate(original) if sample['ms'] == selected[0]['ms']]
-    if len(starts) != 1 or original[starts[0]:] != selected:
-        raise ValueError('Selected samples are not the exact original contiguous suffix')
-    if len(original) != summary['all_packets_verified_including_settling'] or len(selected) != summary['samples']:
+    if len(selected) != summary['samples']:
         raise ValueError('Sample count mismatch')
-    timing = recording.validate_timing(selected, 60)
+    summary['offline_post_measurement_packets_verified'] = verify_selection(
+        original, selected, summary['all_packets_verified_including_settling'])
+    timing = recording.validate_timing(selected, requested_seconds)
     stats = recording.summarize(selected)
+    if "gyro_bias" in profile:
+        stats["residual_bias_sensor_rad_s"] = stats.pop("candidate_bias_sensor_rad_s")
+        stats["residual_bias_sensor_deg_s"] = stats.pop("candidate_bias_sensor_deg_s")
+        stats.pop("offline_predicted_held_out_mean_after_bias_rad_s")
+        stats["held_out_mean_corrected_rad_s"] = stats.pop("held_out_mean_raw_rad_s")
+        stats["note"] = "Rates already corrected by uploaded firmware. Statistics are residuals, not a new bias to add automatically. No correction was written by this recorder."
+        if not summary.get("firmware_gyro_correction_active") or summary.get("gyro_offsets_written_by_recorder") is not False:
+            raise ValueError("Unexpected correction/recorder write state")
     for key, value in {**timing, **stats}.items():
         if key == 'status':
             continue
@@ -79,6 +104,8 @@ def main():
     runs = [verify_session(path, fit) for path in args.sessions]
     if not all(run[1] == runs[0][1] for run in runs):
         raise ValueError('Source/board/profile/offsets differ across runs')
+    if any("gyro_bias" in run[2] for run in runs):
+        raise ValueError("Bias fitting requires V1 observation data; use analyze-corrected-gyro for V2 residuals")
     training = np.concatenate([run[4][:len(run[4])*2//3] for run in runs[:2]])
     bias = training.mean(axis=0)
     covariance = np.cov(training, rowvar=False, ddof=1)

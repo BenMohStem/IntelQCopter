@@ -178,6 +178,18 @@
       "path": "tools/calibration/test_gyro_bias.py",
       "args": [],
       "description": "Source-coefficient nominal gyro trim/remainder and metadata tests; no hardware or MCU execution"
+    },
+    "analyze-corrected-gyro": {
+      "runtime": "python",
+      "path": "tools/calibration/analyze_corrected_gyro.py",
+      "args": [],
+      "description": "Verify original V2 corrected gyro sessions with explicit expected durations; report residuals/graphs without fitting another bias"
+    },
+    "check-gyro-selection": {
+      "runtime": "python",
+      "path": "tools/calibration/test_gyro_selection.py",
+      "args": [],
+      "description": "Offline selection boundary tests including a valid packet after timed recording; no board"
     }
   }
 }
