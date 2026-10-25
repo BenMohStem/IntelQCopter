@@ -10,3 +10,5 @@
 PC recording and analysis tools live in tools/calibration. This index links the real sources rather than maintaining diverging copies. Gyro observation is prepared; it is not yet a physical validation. Original raw recordings remain private. Motor outputs remain disabled.
 
 [Latest code review and pending gyro-calibration steps](../measurements/mpu6050/2026-10-25-gyro-code-review/report.md).
+
+[Three actual gyro runs: verified data, candidate bias and graph](../measurements/mpu6050/2026-10-25-three-gyro-runs/report.md). Candidate is offline only; corrected firmware testing is next.

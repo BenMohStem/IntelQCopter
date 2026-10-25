@@ -72,3 +72,7 @@ Accelerometer C5/C6 implementation evidence remains preserved. Next, use [gyro o
 3. In a separate small firmware step, persist accepted constants in ESP flash and restore the MPU gyro correction at boot with readback and software rounding compensation if needed. Apply the bias exactly once, relative to the recorded gyro offset baseline.
 4. Independently record corrected stationary rates and repeat reset/power-cycle checks. Validate axis orientation and rate scale using known rotations separately; a static mean does not calibrate those.
 5. Only then proceed to attitude estimation; keep the 500 Hz acquisition/noise timing validation separate.
+
+## Three gyro runs reviewed
+
+Completed sessions 20261025T224350179902Z, 20261025T224507970389Z and 20261025T224618695933Z contain 16,366 selected samples. Original logs, both headers, every selected sample and recorded statistics verified offline. See [gyro report](../measurements/mpu6050/2026-10-25-three-gyro-runs/report.md). Bias fitted on estimation segments of runs 1-2 only: [0.17752549, -0.28562158, -0.82708890] degrees/s in sensor axes. Entire run 3 held out; residual mean [-0.01609671, -0.00453835, 0.00130151] degrees/s. Supports a provisional bias-application bench lesson; not yet applied or validated in corrected firmware. Temperature varied; do not fit a temperature law from these three runs. Next: small correction/restoration implementation, followed by fresh residual and reset/power-cycle verification. No attitude/PID progression yet. Failed/interrupted records remain untouched.

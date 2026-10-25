@@ -1,0 +1,259 @@
+{
+  "engine": "Offline verification/replay of real ESP32-S3/MPU6050 recordings; no simulation",
+  "physical_test_by_assistant": false,
+  "uploaded": false,
+  "gyro_calibration_applied_to_firmware": false,
+  "all_original_hashes_headers_conversions_samples_and_statistics_verified": true,
+  "source_sha256": "906190c3ad005d31e514e7524e2a31daad66717b553b0a4ab71001e0c32d8555",
+  "fit_policy": "First two thirds of runs 1 and 2; last thirds and entire run 3 reserved",
+  "candidate_bias_sensor_rad_s": [
+    0.0030984042348410996,
+    -0.004985036958613997,
+    -0.014435424515330643
+  ],
+  "candidate_bias_sensor_deg_s": [
+    0.17752548588185618,
+    -0.28562157844531405,
+    -0.8270889002081278
+  ],
+  "training_covariance_rad2_s2": [
+    [
+      3.6365100641047254e-06,
+      8.268442817633738e-08,
+      -9.723498805485802e-08
+    ],
+    [
+      8.268442817633738e-08,
+      3.2945460756278233e-06,
+      -5.478490804589121e-08
+    ],
+    [
+      -9.723498805485802e-08,
+      -5.478490804589121e-08,
+      3.184000198753978e-06
+    ]
+  ],
+  "training_std_rad_s": [
+    0.0019069635717823047,
+    0.0018150884484310463,
+    0.0017843766975484683
+  ],
+  "runs": [
+    {
+      "session": "20261025T224350179902Z",
+      "samples": 5456,
+      "duration_s": 60.005,
+      "serial_sha256": "cf976043a5766acbf7ba56750af6e5f11f90d9f203e1ede5dc7f1718cb4509f0",
+      "mean_raw_deg_s": [
+        0.1802872537139108,
+        -0.2864466728900044,
+        -0.8285797586998275
+      ],
+      "sample_std_deg_s": [
+        0.11160025875493024,
+        0.1041159133114833,
+        0.10251196395507944
+      ],
+      "covariance_rad2_s2": [
+        [
+          3.7938935247042795e-06,
+          2.147446720554e-08,
+          -9.052078509930558e-08
+        ],
+        [
+          2.147446720554e-08,
+          3.302090421704395e-06,
+          -8.99416916765283e-08
+        ],
+        [
+          -9.052078509930558e-08,
+          -8.99416916765283e-08,
+          3.2011339182068473e-06
+        ]
+      ],
+      "lag1_correlation_per_axis": [
+        0.0028887615666263384,
+        -0.014227917371826337,
+        -0.022872240963164894
+      ],
+      "mean_after_frozen_bias_deg_s": [
+        0.0027617678320602606,
+        -0.0008250944446917589,
+        -0.0014908584916975506
+      ],
+      "last_third_mean_after_frozen_bias_deg_s": [
+        0.003775064154422363,
+        0.0006066620679470613,
+        -8.286962355692586e-05
+      ],
+      "one_second_block_mean_std_deg_s": [
+        0.012014497951024798,
+        0.010519366538244142,
+        0.01211165849745644
+      ],
+      "offline_integrated_residual_angle_deg": [
+        0.16635952700856732,
+        -0.04913399562789069,
+        -0.09026035951582276
+      ],
+      "temperature_range_C": [
+        26.789,
+        27.354
+      ],
+      "temperature_mean_C": 27.105172470674486,
+      "operator_confirmed_motionless": true,
+      "gyro_offset_registers": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "session": "20261025T224507970389Z",
+      "samples": 5455,
+      "duration_s": 59.996,
+      "serial_sha256": "859d036cde954497b93d11f5068c419fa071f57c713cb1437c49d39f084db0d5",
+      "mean_raw_deg_s": [
+        0.1764076089758752,
+        -0.2842126220881186,
+        -0.8244271900454225
+      ],
+      "sample_std_deg_s": [
+        0.10705308126892134,
+        0.10357396860147448,
+        0.10023004160986852
+      ],
+      "covariance_rad2_s2": [
+        [
+          3.4910259659784956e-06,
+          5.018446850632786e-08,
+          -3.261066756232729e-08
+        ],
+        [
+          5.018446850632786e-08,
+          3.267803771556946e-06,
+          -9.869150537791443e-09
+        ],
+        [
+          -3.261066756232729e-08,
+          -9.869150537791443e-09,
+          3.0602052542880473e-06
+        ]
+      ],
+      "lag1_correlation_per_axis": [
+        -0.016172324608940122,
+        0.010470828837464639,
+        0.0156797319998399
+      ],
+      "mean_after_frozen_bias_deg_s": [
+        -0.0011178769059756886,
+        0.001408956357193248,
+        0.0026617101627098754
+      ],
+      "last_third_mean_after_frozen_bias_deg_s": [
+        0.0011563194462286916,
+        0.0011438281125222393,
+        0.0035933176757250423
+      ],
+      "one_second_block_mean_std_deg_s": [
+        0.010497133091548169,
+        0.012587229214472615,
+        0.010618987039763413
+      ],
+      "offline_integrated_residual_angle_deg": [
+        -0.06527436712728889,
+        0.08493567716872041,
+        0.15968434715642668
+      ],
+      "temperature_range_C": [
+        27.165,
+        27.542
+      ],
+      "temperature_mean_C": 27.328219248395964,
+      "operator_confirmed_motionless": true,
+      "gyro_offset_registers": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "session": "20261025T224618695933Z",
+      "samples": 5455,
+      "duration_s": 59.996,
+      "serial_sha256": "0396aa527cf57dfa3c7752d395813a999666fe61339e5e5951eb8e82b64092c1",
+      "mean_raw_deg_s": [
+        0.16142877386293747,
+        -0.2901599313539221,
+        -0.8257873950020692
+      ],
+      "sample_std_deg_s": [
+        0.10994782184885557,
+        0.10313215855976399,
+        0.09831578873006921
+      ],
+      "covariance_rad2_s2": [
+        [
+          3.682374846528575e-06,
+          6.056185346047262e-09,
+          -3.1715387739164675e-08
+        ],
+        [
+          6.056185346047262e-09,
+          3.239984633622485e-06,
+          2.101625157917145e-08
+        ],
+        [
+          -3.1715387739164675e-08,
+          2.101625157917145e-08,
+          2.9444302474865512e-06
+        ]
+      ],
+      "lag1_correlation_per_axis": [
+        0.010125033120041897,
+        0.02117069681868454,
+        0.004534715761209407
+      ],
+      "mean_after_frozen_bias_deg_s": [
+        -0.01609671201891325,
+        -0.0045383529086105295,
+        0.0013015052060640208
+      ],
+      "last_third_mean_after_frozen_bias_deg_s": [
+        -0.01720777165002516,
+        -0.003673817738648019,
+        0.0017804118051316846
+      ],
+      "one_second_block_mean_std_deg_s": [
+        0.013196684029782493,
+        0.01041506950083114,
+        0.011594191066739125
+      ],
+      "offline_integrated_residual_angle_deg": [
+        -0.9665678985354903,
+        -0.2721463887439704,
+        0.07676752511001964
+      ],
+      "temperature_range_C": [
+        27.259,
+        28.577
+      ],
+      "temperature_mean_C": 28.000732172318976,
+      "operator_confirmed_motionless": true,
+      "gyro_offset_registers": [
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "acceptance": "Candidate supports a provisional bias-application bench lesson; corrected hardware validation remains required.",
+  "limitations": [
+    "Operator-attested stationarity, not independently observed",
+    "Chip temperature changes; no fitted temperature compensation",
+    "Telemetry ~90.9 Hz with wide sensor bandwidth, not final 500 Hz noise",
+    "No joint Gaussian/IID assumption or standard error from sigma/sqrt(N)",
+    "Known angular rate/mounting/temperature and restart validation remain pending",
+    "Constant bias subtraction cannot remove random noise or all slow drift"
+  ]
+}

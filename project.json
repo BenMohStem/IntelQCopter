@@ -166,6 +166,12 @@
       "path": "tools/calibration/test_gyro_observation.py",
       "args": [],
       "description": "Offline IMU packet conversion, held-out statistics and full acceleration checks; no hardware"
+    },
+    "analyze-gyro": {
+      "runtime": "python",
+      "path": "tools/calibration/analyze_gyro_runs.py",
+      "args": [],
+      "description": "Offline original-log verification and frozen-bias review of three 60-second gyro runs; no serial or firmware change"
     }
   }
 }
