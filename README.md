@@ -17,3 +17,5 @@ Show level and four gentle side-raised poses, pausing at each. The terminal disp
 [Gyro reset/power-cycle evidence](measurements/mpu6050/2026-10-26-gyro-restart-validation/report.md) verified 5,003 samples and restored targets [-6,9,27] in the two operator-reported cases. Small residuals remain; no zero-drift claim.
 
 [Five-minute corrected gyro results](measurements/mpu6050/2026-10-26-corrected-gyro-validation/report.md) · [Measured gyro bias](measurements/mpu6050/2026-10-25-three-gyro-runs/report.md) · [Gyro trim explanation](docs/gyro-bias-application.md) · [Accelerometer math](docs/full-accelerometer-calibration.md) · [Tilt calibration review](measurements/mpu6050/2026-10-25-tilt-validation/report.md) · [Raw source checkpoint](archive/bench-checkpoints/raw-pose1000/README.md) · [ROS2/Gazebo terminal commands](docs/start-ros-gazebo.md).
+
+[Assistant-run stationary test: measured results and covariance/tilt derivation](measurements/mpu6050/2026-10-26-assistant-stationary-test/report.md). Actual board remains V2; angles in this report are PC replay. No upload or calibration changes.

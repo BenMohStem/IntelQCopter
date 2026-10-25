@@ -5,6 +5,8 @@ import json
 import math
 from pathlib import Path
 import statistics
+import subprocess
+import re
 import time
 
 import serial
@@ -204,17 +206,27 @@ def main():
     parser.add_argument("--port", required=True)
     parser.add_argument("--seconds", type=float, default=60)
     parser.add_argument("--note", default="", help="Optional label: first correction check / after reset / after power cycle")
+    parser.add_argument("--assume-stationary", action="store_true", help="Skip prompt for an explicitly delegated stationary test; condition is assumed, not observed")
+    parser.add_argument("--firmware-commit", help="Verify a known historical firmware source at this local hex Git commit; never upload")
     args = parser.parse_args()
     if not math.isfinite(args.seconds) or not 20 <= args.seconds <= 600:
         parser.error("Choose 20-600 seconds")
-    source_sha = hashlib.sha256((ROOT/"firmware/main.cpp").read_bytes()).hexdigest()
+    source_bytes = (ROOT/"firmware/main.cpp").read_bytes()
+    if args.firmware_commit:
+        if not re.fullmatch(r"[0-9a-fA-F]{7,40}", args.firmware_commit):
+            parser.error("firmware-commit must be a local hex commit ID")
+        source_bytes = subprocess.run(["git", "show", args.firmware_commit+":firmware/main.cpp"], cwd=ROOT,
+                                      capture_output=True, check=True).stdout
+    source_sha = hashlib.sha256(source_bytes).hexdigest()
     fit = json.loads((ROOT/"measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/analysis.json").read_text(encoding="utf-8"))
     folder = ROOT/"artifacts/gyro-recordings"/transport.stamp()
     folder.mkdir(parents=True)
     report = {"engine": "Real ESP32-S3/MPU6050 gyro-observation stream; no simulator",
               "source_sha256": source_sha, "status": "FAILED", "uploaded": False,
               "commands_sent": [], "gyro_offsets_written": False,
-              "operator_confirmed_motionless": False, "note_operator": args.note}
+              "operator_confirmed_motionless": False, "note_operator": args.note,
+              "stationary_assumed_from_delegation": args.assume_stationary,
+              "firmware_commit": args.firmware_commit, "requested_duration_s": args.seconds}
     device = serial.Serial(port=None, baudrate=921600, timeout=0.5, write_timeout=2)
     device.port = args.port
     device.dtr = False
@@ -223,8 +235,11 @@ def main():
     try:
         print(f"Automatic recording folder: {folder}")
         print("Put the drone on a fixed support. Any orientation; do not hold or rotate it. Close Serial Monitor.")
-        input("Press Enter only when completely motionless; keep still until Saved: ")
-        report["operator_confirmed_motionless"] = True
+        if args.assume_stationary:
+            print("Delegated stationary capture: support condition assumed from user request, not independently observed.")
+        else:
+            input("Press Enter only when completely motionless; keep still until Saved: ")
+            report["operator_confirmed_motionless"] = True
         device.open()
         with (folder/"serial.log").open("xb") as log:
             report["commands_sent"].append("?")

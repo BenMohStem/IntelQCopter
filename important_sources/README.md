@@ -8,3 +8,5 @@
 6. [Actual gyro reset/power-cycle evidence](../measurements/mpu6050/2026-10-26-gyro-restart-validation/report.md).
 
 BMP280 deferred until available. The new angle lesson is prepared, not physically tested. Calibration constants are unchanged; no motor output. Tools live in tools/calibration; original logs remain private. These links point to canonical files instead of duplicate source copies.
+
+[Assistant-run stationary test: measured results and covariance/tilt derivation](../measurements/mpu6050/2026-10-26-assistant-stationary-test/report.md). Actual board remains V2; angles in this report are PC replay. No upload or calibration changes.

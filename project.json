@@ -202,6 +202,12 @@
       "path": "tools/calibration/test_tilt_observation.py",
       "args": [],
       "description": "Nominal gravity geometry/signs and V3 protocol checks; no MCU execution"
+    },
+    "analyze-stationary": {
+      "runtime": "python",
+      "path": "tools/calibration/analyze_stationary_imu.py",
+      "args": [],
+      "description": "Verify actual stationary-intended IMU data, compute PC gravity tilt and covariance propagation; no refitting or hardware commands"
     }
   }
 }
