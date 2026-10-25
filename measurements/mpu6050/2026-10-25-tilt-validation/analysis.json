@@ -1,0 +1,229 @@
+{
+  "engine": "Offline NumPy/Matplotlib analysis of original real ESP32-S3/MPU6050 FIFO records; no simulator",
+  "samples": 80000,
+  "source_sha256": "14e0b4afc3e6d8c769ff18261685c2546449f1a052f67b48b71714a24875d6d1",
+  "candidate_sha256": "a7222d590d032c4a2de277ea4d1e75d29355a82fc6c667de6f3d56bc8b017fc9",
+  "frozen_calibration": {
+    "bias_sensor_m_s2": [
+      1.3086834064927786,
+      -0.06766972569847275,
+      -0.6571887930901161
+    ],
+    "correction_sensor_to_body": [
+      [
+        0.9534577336838661,
+        -0.08514414161822155,
+        -0.28727131144184964
+      ],
+      [
+        0.08808005232310127,
+        0.9907615476917261,
+        -0.002594316252313653
+      ],
+      [
+        0.2874295041294001,
+        -0.030297732741746665,
+        0.947299770544198
+      ]
+    ]
+  },
+  "operator_clarification": "Explicitly supplied raised-side order: X+, X-, Y+, Y-",
+  "reference_method_update": "Hand-held 45-degree ruler; operator estimates about +/-1 degree placement error",
+  "reference_error_estimate_deg": 1.0,
+  "reference_uncertainty_distribution": "UNKNOWN; not interpreted as Gaussian sigma or a certified hard bound",
+  "refitted": false,
+  "uploaded": false,
+  "original_files_modified": false,
+  "acceptance": "Approximate static comparison limited by reference; not sub-degree or flight validation",
+  "assumed_g_m_s2": 9.80665,
+  "records": [
+    {
+      "original_pose_label": "roll-plus",
+      "operator_confirmed_raised_side": "X+",
+      "clarified_roll_pitch_deg": [
+        0,
+        -45
+      ],
+      "samples": 20000,
+      "original_sha256": "2759be16e3b85abcc10784f99f4052e2c1ac58f0ccb5d7669be3dafa6e946401",
+      "observed_rate_hz": 1000.6400594140042,
+      "original_label_direction_difference_deg": 59.20739190408028,
+      "clarified_reference_comparison": {
+        "replay_corrected_mean_m_s2": [
+          6.783053473257844,
+          0.04151686438719861,
+          7.032133055712526
+        ],
+        "expected_reference_m_s2": [
+          6.934348715723057,
+          0.0,
+          6.934348715723057
+        ],
+        "direction_difference_deg": 1.061199103531761,
+        "vector_difference_m_s2": 0.1848666480691653,
+        "note": "Offline application of frozen candidate; includes reference/mounting uncertainty. Not a post-upload calibration test."
+      },
+      "unsigned_tilt_deg": 43.96763939282015,
+      "magnitude_m_s2": 9.770487878522184,
+      "corrected_accel_covariance": [
+        [
+          0.0013642907684806218,
+          6.866122253197143e-05,
+          -0.000222242900017383
+        ],
+        [
+          6.866122253197143e-05,
+          0.0009546496740851658,
+          -2.307343212875342e-06
+        ],
+        [
+          -0.000222242900017383,
+          -2.307343212875342e-06,
+          0.001982449423698936
+        ]
+      ],
+      "temperature_mean_C": 28.341247058823537
+    },
+    {
+      "original_pose_label": "roll-minus",
+      "operator_confirmed_raised_side": "X-",
+      "clarified_roll_pitch_deg": [
+        0,
+        45
+      ],
+      "samples": 20000,
+      "original_sha256": "206f4bdd2a127b1988391af9cbfad21afa4d5d44a6cc66dc70d2a469f4db9b23",
+      "observed_rate_hz": 1000.6469182326374,
+      "original_label_direction_difference_deg": 59.85149124482748,
+      "clarified_reference_comparison": {
+        "replay_corrected_mean_m_s2": [
+          -6.985299020422646,
+          -0.041333954320893915,
+          6.965351824195972
+        ],
+        "expected_reference_m_s2": [
+          -6.934348715723057,
+          0.0,
+          6.934348715723057
+        ],
+        "direction_difference_deg": 0.25366812055527854,
+        "vector_difference_m_s2": 0.07256460613664276,
+        "note": "Offline application of frozen candidate; includes reference/mounting uncertainty. Not a post-upload calibration test."
+      },
+      "unsigned_tilt_deg": 45.08242526206633,
+      "magnitude_m_s2": 9.864696494840965,
+      "corrected_accel_covariance": [
+        [
+          0.0013475540800269728,
+          6.858318626758724e-05,
+          -0.00023568080146739868
+        ],
+        [
+          6.858318626758724e-05,
+          0.0009714937917071108,
+          2.1508747515562597e-05
+        ],
+        [
+          -0.00023568080146739868,
+          2.1508747515562597e-05,
+          0.001982961173635234
+        ]
+      ],
+      "temperature_mean_C": 28.645120000000002
+    },
+    {
+      "original_pose_label": "pitch-plus",
+      "operator_confirmed_raised_side": "Y+",
+      "clarified_roll_pitch_deg": [
+        45,
+        0
+      ],
+      "samples": 20000,
+      "original_sha256": "00e970ec8873dacbde1fa1b8bdec21cb7961f1ddf0a6f7145a15cfda806c2c26",
+      "observed_rate_hz": 1000.6480697223557,
+      "original_label_direction_difference_deg": 59.580245694392474,
+      "clarified_reference_comparison": {
+        "replay_corrected_mean_m_s2": [
+          -0.06081881193671013,
+          6.904780688360685,
+          6.959067962595121
+        ],
+        "expected_reference_m_s2": [
+          -0.0,
+          6.934348715723057,
+          6.934348715723057
+        ],
+        "direction_difference_deg": 0.42033496959372313,
+        "vector_difference_m_s2": 0.07200164785209408,
+        "note": "Offline application of frozen candidate; includes reference/mounting uncertainty. Not a post-upload calibration test."
+      },
+      "unsigned_tilt_deg": 44.77675681657558,
+      "magnitude_m_s2": 9.803485206305986,
+      "corrected_accel_covariance": [
+        [
+          0.0013698414654451747,
+          8.711115860329703e-05,
+          -0.0002498447978485891
+        ],
+        [
+          8.711115860329703e-05,
+          0.0009345694879884936,
+          -2.2439674714938193e-05
+        ],
+        [
+          -0.0002498447978485891,
+          -2.2439674714938193e-05,
+          0.0019086365782244766
+        ]
+      ],
+      "temperature_mean_C": 28.699279999999998
+    },
+    {
+      "original_pose_label": "pitch-minus",
+      "operator_confirmed_raised_side": "Y-",
+      "clarified_roll_pitch_deg": [
+        -45,
+        0
+      ],
+      "samples": 20000,
+      "original_sha256": "7c429846103f259b6382687e117e39a0b9f3abf76d6c2e5774ab6912429a7ec0",
+      "observed_rate_hz": 1000.6725520222142,
+      "original_label_direction_difference_deg": 59.99212488388931,
+      "clarified_reference_comparison": {
+        "replay_corrected_mean_m_s2": [
+          -0.019531384630040227,
+          -6.9319260513496985,
+          6.974391583897029
+        ],
+        "expected_reference_m_s2": [
+          -0.0,
+          -6.934348715723057,
+          6.934348715723057
+        ],
+        "direction_difference_deg": 0.20871797886413215,
+        "vector_difference_m_s2": 0.044618108205420844,
+        "note": "Offline application of frozen candidate; includes reference/mounting uncertainty. Not a post-upload calibration test."
+      },
+      "unsigned_tilt_deg": 44.82515091642489,
+      "magnitude_m_s2": 9.833316745732333,
+      "corrected_accel_covariance": [
+        [
+          0.001442534850332411,
+          5.8179078109020926e-05,
+          -0.00021830650406143366
+        ],
+        [
+          5.8179078109020926e-05,
+          0.0009626230784959746,
+          3.65868654009333e-05
+        ],
+        [
+          -0.00021830650406143366,
+          3.65868654009333e-05,
+          0.0019190424836047237
+        ]
+      ],
+      "temperature_mean_C": 28.68933176470588
+    }
+  ]
+}

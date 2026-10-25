@@ -6,7 +6,9 @@ The new secured-mount session `20261025T132707615977Z` contains 18 completed pos
 
 The deleted detached-mount session is excluded. Earlier calibration/level coefficients do not validate the new mounting.
 
-**Current completed step: offline calibration and noise analysis.** See the [derived report and graphs](../measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/report.md). This uses original hardware recordings; the correction curves are mathematical replay. No simulator, upload or new hardware test was performed. Firmware remains the raw 20-second recorder.
+**Current completed step: rough independent tilted-pose review.** Four new 20-second logs passed integrity checks. The operator confirmed raised-side order +X, -X, +Y, -Y and a hand-held ruler with about ±1° placement error. Frozen-candidate differences are 1.06°, 0.25°, 0.42°, 0.21°, with no refit. See the [tilt report](../measurements/mpu6050/2026-10-25-tilt-validation/report.md). This supports the next controlled bench lesson, not sub-degree accuracy or flight readiness.
+
+**Previous completed step: offline calibration and noise analysis.** See the [derived report and graphs](../measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/report.md). This uses original hardware recordings; the correction curves are mathematical replay. No simulator, upload or new hardware test was performed. Firmware remains the raw 20-second recorder.
 
 ## Next steps and their acceptance evidence
 
@@ -15,8 +17,8 @@ The deleted detached-mount session is excluded. Earlier calibration/level coeffi
 | C1 | Record six orientations three times | Recorded: 18 × 20,000 samples; integrity checked |
 | C2 | Fit calibration on repetitions 1-2 | Calculated provisional bias and response matrix; equal pose weights |
 | C3 | Reserve repetition 3 and inspect noise | Offline replay complete; direction errors about 0.07-1.11°, with reference uncertainty included; transients/correlation present |
-| C4 | Test independently measured tilted orientations | **Next physical step.** Recorder prepared for user-selected ±45° roll/pitch, then combined tilts; keep them out of the fit initially |
-| C5 | Verify calibration implementation | After reviewing C4, add named bias values, then one matrix row per small lesson; compare each result with offline predictions |
+| C4 | Test independently measured tilted orientations | Four 45° records reviewed with operator-confirmed raised sides and approximate ±1° hand-held reference; combined/fixed-reference checks remain optional refinements; no sub-degree acceptance |
+| C5 | Verify calibration implementation | **Next small software step:** prepare one named sensor-axis bias correction and its bench check; then add remaining axes/matrix rows separately. No firmware change or upload has occurred yet |
 | C6 | Restore offsets after reset/power cycle | Save fixed coefficients in firmware flash, restore volatile MPU bias registers using the same baseline convention, preserve compensation bits and verify no duplicate subtraction |
 | C7 | Characterize short-term noise and drift | Prepare a separate 2-3 minute stationary recording after temperature settles; assess full covariance, autocorrelation, block means and transients |
 | C8 | Learn one attitude estimate | Only after calibration checks: one roll/pitch observation, then gyro integration and a small Kalman lesson using measured noise assumptions |
@@ -25,9 +27,9 @@ C4 is deliberately separate from C5: a smaller same-pose residual is not proof o
 
 No blanket joint Gaussian or sample-independence assumption is accepted. Marginal distributions and selected projections are diagnostics; off-diagonal covariance remains measured. Covariance of a mean must account for time dependence and reference uncertainty.
 
-## C4: 45-degree recorder prepared, awaiting real measurements
+## C4: measurements reviewed with limited reference accuracy
 
-Keep the MPU/FC fixed in its final mounting. Use an independent reference to measure actual roll/pitch, their signs and uncertainty. For each pose, record the measured angles, temperature and 20 seconds of raw data after settling. User-selected order: +45° roll, -45° roll, +45° pitch, -45° pitch; combined tilts remain a later check. These are approximate targets; actual measured angles determine the reference vectors. Do not use MPU-estimated angles as their own calibration reference. Use [the 45-degree recorder](record-45-degree-tilts.md), which defines signs and records actual reference angles/method/uncertainty. The new `record-tilts` command reuses the existing firmware and strict capture checks; the original `record-poses` command stays for the six axis orientations. No new hardware recording has been made by the assistant.
+Keep the MPU/FC fixed in its final mounting. Use an independent reference to measure actual roll/pitch, their signs and uncertainty. For each pose, record the measured angles, temperature and 20 seconds of raw data after settling. User-selected order: +45° roll, -45° roll, +45° pitch, -45° pitch; combined tilts remain a later check. These are approximate targets; actual measured angles determine the reference vectors. Do not use MPU-estimated angles as their own calibration reference. Use [the 45-degree recorder](record-45-degree-tilts.md), which defines signs and records actual reference angles/method/uncertainty. The new `record-tilts` command reuses the existing firmware and strict capture checks; the original `record-poses` command stays for the six axis orientations. The user completed four new records. Their original roll/pitch labels were clarified after capture; original metadata remains unchanged. The assistant verified logs offline and did not open a serial port or upload firmware.
 
 Review reserved-pose errors and fixture uncertainty together before choosing an acceptance threshold. Do not quietly refit a validation dataset and call its residual independent accuracy. If it informs a new fit, collect new validation data.
 

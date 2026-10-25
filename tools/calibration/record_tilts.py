@@ -110,10 +110,11 @@ def main(argv=None):
         recorder.save_json(folder / "session.json", manifest)
         device.open()
         nominal_angles = ([args.angle, 0], [-args.angle, 0], [0, args.angle], [0, -args.angle])
-        for name, nominal in zip(POSE_NAMES, nominal_angles):
+        raised_sides = ("+Y", "-Y", "-X", "+X")
+        for name, nominal, raised_side in zip(POSE_NAMES, nominal_angles, raised_sides):
             if name in manifest["completed"]:
                 continue
-            print(f"\n{name}: target roll={nominal[0]:g}, pitch={nominal[1]:g} degrees.")
+            print(f"\n{name}: raise {raised_side} side; target roll={nominal[0]:g}, pitch={nominal[1]:g} degrees.")
             while True:
                 try:
                     angles, source = read_angles(input("Position and check reference. Enter actual roll,pitch, or Enter for nominal: "), nominal)

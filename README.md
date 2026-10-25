@@ -32,3 +32,5 @@ To reproduce the offline analysis with a fresh output directory:
 The analysis requires NumPy/Matplotlib in the command's Python environment. Original raw logs stay local. Current firmware is unchanged; coefficients are not installed or physically accepted. Independent tilt validation and power-cycle checks precede attitude/PID work.
 
 Next physical measurement: [four 45-degree tilt recordings](docs/record-45-degree-tilts.md), using `.\qcopter.ps1 record-tilts --port COM3`. No reflash is required.
+
+[Completed 45-degree tilt review and graph](measurements/mpu6050/2026-10-25-tilt-validation/report.md): original labels clarified by the operator, candidate unchanged; reference accuracy about ±1°.

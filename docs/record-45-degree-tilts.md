@@ -60,3 +60,7 @@ If interrupted, keep the folder intact and copy the exact **Resume** command pri
 After all four runs, send the folder path for analysis. A printed direction difference is a provisional comparison against your declared reference, not automatic calibration acceptance. Angle uncertainty, pose consistency, transients and register restoration still need review.
 
 For another nominal angle later, use `--angle 30` or another value strictly between 0 and 90. Do not change the target angle when resuming an existing session.
+
+## Completed session review
+
+[Results for the user-completed four-pose session](../measurements/mpu6050/2026-10-25-tilt-validation/report.md). The operator clarified actual raised-side order +X, -X, +Y, -Y after capture; these differ from the saved roll/pitch label convention. Original records remain unchanged. Future prompts now repeat the side to raise at every pose. The hand-held ruler accuracy is an operator estimate of about ±1 degree, not a measured statistical standard deviation.

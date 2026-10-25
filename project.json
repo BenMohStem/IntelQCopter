@@ -112,6 +112,18 @@
       "path": "tools/calibration/test_record_tilts.py",
       "args": [],
       "description": "Check tilt-reference geometry and synthetic capture/resume flow; no board"
+    },
+    "analyze-tilts": {
+      "runtime": "python",
+      "path": "tools/calibration/analyze_tilts.py",
+      "args": [],
+      "description": "Verify tilted-pose originals and compare frozen calibration using explicit operator-confirmed raised sides"
+    },
+    "check-tilt-analysis": {
+      "runtime": "python",
+      "path": "tools/calibration/test_analyze_tilts.py",
+      "args": [],
+      "description": "Known-vector checks of reference signs and wrong-axis differences; no hardware"
     }
   }
 }
