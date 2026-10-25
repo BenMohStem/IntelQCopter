@@ -1,36 +1,22 @@
 # IntelQCopter - small software steps
 
-**Current step: review the completed 18-pose calibration/noise analysis, then validate independently measured tilted poses.**
+**Current lesson C5a: only accelerometer X bias, stored in the MPU register.**
 
-1. [Current report and real-data graphs](measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/report.md).
-2. [The single Arduino firmware file](firmware/main.cpp).
-3. [The small-step plan](docs/PLAN.md).
+1. [Read the short lesson and bench procedure](docs/bench-x-bias.md).
+2. [Open the single Arduino main.cpp](firmware/main.cpp).
+3. [Follow the updated plan](docs/PLAN.md).
 
-The new session contains all 18 recordings (360,000 samples); their hashes, checksums and sequences were rechecked. Repetitions 1-2 produced a provisional calibration; repetition 3 was reserved for validation. Direction errors are about 0.07-1.11 degrees, including pose-reference uncertainty. Some logs have transients and temporal correlation, so no blanket Gaussian/independence claim or final Kalman gain is made.
+The provisional bias is 1.308683406 m/s² in sensor X. On boot the programme checks the recorded baseline -2074, writes target -2348 and verifies readback. It applies no software bias again. Y/Z, scale/mounting, gyro and flight control are later lessons. Motor outputs stay disabled.
 
-For recording another session, the PC prompts for Z+, Z-, X+, X-, Y+, Y-, repeated three times. Each recording contains 20,000 FIFO samples at nominal 1000 Hz. Original samples and statistical summaries are saved automatically. Firmware applies no user calibration during these measurements; previous calibrated firmware is preserved at commit a1d3c78. No motor driver or motor output is enabled.
+Build/upload bench yourself in PlatformIO, close Serial Monitor, then keep the drone fixed on a support and run:
 
 ```powershell
 cd C:\Users\Mohamed\Desktop\Work\QCopter-Stepwise
-.\qcopter.ps1 build
-# Upload bench yourself using PlatformIO, then close Serial Monitor.
-.\qcopter.ps1 record-poses --port COM3
+.\qcopter.ps1 record-bias-x --port COM3
 ```
 
-Arduino / Adafruit MPU6050 / ESP32-S3 / PlatformIO. Allman braces, one statement per line. Source identity, checked FIFO reads, sample numbering and a payload checksum protect the evidence. A successful recording is not physical calibration acceptance. No controller or simulation is added here.
+It saves raw/corrected/raw intervals automatically (about 66 seconds total). Expected X decrease: 1.312022510 m/s². This is a roughly 10 Hz bench-reporting check; it does not replace the earlier 1000 Hz noise recordings or validate a flight loop. Physical results remain pending. You control all uploads.
 
-[Calibration across multiple orientations](docs/multi-pose-calibration.md) · [Earlier real-data analysis](docs/precision-2026-10-25.md) · [Important files](important_sources/README.md) · [ROS2/Gazebo commands](docs/start-ros-gazebo.md).
+[Preserved raw-recorder checkpoint](archive/bench-checkpoints/raw-pose1000/README.md) · [Six-pose analysis](measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/report.md) · [Tilt review](measurements/mpu6050/2026-10-25-tilt-validation/report.md) · [Important files](important_sources/README.md).
 
-You handle the PCB and simulation. This branch focuses on software lessons. Original evidence and previous implementations remain in local artifacts and Git history. Raw recording folders are excluded from public commits; derived results can be reviewed and published later.
-
-To reproduce the offline analysis with a fresh output directory:
-
-```powershell
-.\qcopter.ps1 analyze-poses --session artifacts/pose-recordings/20261025T132707615977Z --output .local/analysis-review-01
-```
-
-The analysis requires NumPy/Matplotlib in the command's Python environment. Original raw logs stay local. Current firmware is unchanged; coefficients are not installed or physically accepted. Independent tilt validation and power-cycle checks precede attitude/PID work.
-
-Next physical measurement: [four 45-degree tilt recordings](docs/record-45-degree-tilts.md), using `.\qcopter.ps1 record-tilts --port COM3`. No reflash is required.
-
-[Completed 45-degree tilt review and graph](measurements/mpu6050/2026-10-25-tilt-validation/report.md): original labels clarified by the operator, candidate unchanged; reference accuracy about ±1°.
+The original 18-pose and four-tilt recording commands require the raw-recorder source/firmware, not this partially calibrated lesson. Raw logs and failed attempts stay local; reviewed derived results are published. Mass/inertia parameters are already saved for the later simulation phase. PCB and Gazebo construction remain yours; [terminal setup commands](docs/start-ros-gazebo.md) are available.

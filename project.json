@@ -28,7 +28,7 @@
       "runtime": "python",
       "path": "tools/capture.py",
       "args": [],
-      "description": "Receive real serial output only; select COM port explicitly"
+      "description": "Legacy passive 115200-baud receiver; current lesson uses record-bias-x at 921600 baud"
     },
     "upload": {
       "runtime": "pio",
@@ -124,6 +124,18 @@
       "path": "tools/calibration/test_analyze_tilts.py",
       "args": [],
       "description": "Known-vector checks of reference signs and wrong-axis differences; no hardware"
+    },
+    "record-bias-x": {
+      "runtime": "python",
+      "path": "tools/calibration/record_bias_x.py",
+      "args": [],
+      "description": "After your upload, save raw/corrected/raw X-bias register bench intervals; sends r/c/? only, no flashing"
+    },
+    "check-bias-x": {
+      "runtime": "python",
+      "path": "tools/calibration/test_bias_x.py",
+      "args": [],
+      "description": "Analytic drift/phase-timing checks for X-bias comparison; no sensor or emulator"
     }
   }
 }

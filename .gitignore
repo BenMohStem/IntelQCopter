@@ -20,3 +20,6 @@ __pycache__/
 
 # Independent tilt validation: original sensor recordings stay local.
 /artifacts/tilt-recordings/
+
+# Original X-bias bench evidence stays local.
+/artifacts/bias-x-recordings/
