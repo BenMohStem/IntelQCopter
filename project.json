@@ -159,7 +159,7 @@
       "runtime": "python",
       "path": "tools/calibration/record_gyro.py",
       "args": [],
-      "description": "Current IMU_XYZ_V1: automatically record stationary gyro XYZ and temperature; candidate statistics only, no upload or gyro trim writes"
+      "description": "Record IMU_XYZ_V2 corrected gyro residuals (V1 observation remains supported); verifies metadata/output, no upload or recorder trim writes"
     },
     "check-gyro-observation": {
       "runtime": "python",
@@ -172,6 +172,12 @@
       "path": "tools/calibration/analyze_gyro_runs.py",
       "args": [],
       "description": "Offline original-log verification and frozen-bias review of three 60-second gyro runs; no serial or firmware change"
+    },
+    "check-gyro-bias": {
+      "runtime": "python",
+      "path": "tools/calibration/test_gyro_bias.py",
+      "args": [],
+      "description": "Source-coefficient nominal gyro trim/remainder and metadata tests; no hardware or MCU execution"
     }
   }
 }

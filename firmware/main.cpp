@@ -18,6 +18,13 @@ static const float accel_matrix[3][3] = {
 };
 static const int16_t expected_baseline[3] = {-2074, 2979, 1074};
 
+// Frozen from gyro runs 1-2; run 3 was held out. Units: sensor rad/s.
+static const float gyro_bias[3] = {0.003098404f, -0.004985037f, -0.014435425f};
+static const int16_t gyro_baseline[3] = {0, 0, 0};
+int16_t gyro_applied_offset[3] = { 0 };
+int16_t gyro_boot_offset[3] = { 0 };
+float gyro_remaining_bias[3] = { 0 };
+
 Adafruit_MPU6050 mpu;
 Adafruit_I2CDevice sensor(0x68, &Wire);
 bool sensor_ready = false;
@@ -65,6 +72,46 @@ static bool restore_accel_bias(void)
     return true;
 }
 
+static bool restore_gyro_bias(void)
+{
+    // Offset words use nominal 32.8 counts/(degree/s), not the output scale 65.5.
+    // Validate all axes first; write absolute targets to avoid accumulating trim.
+    for (uint8_t axis = 0; axis < 3; axis++)
+    {
+        int32_t decrement = lroundf(gyro_bias[axis] * (180.0f / PI) * 32.8f);
+        int32_t target = (int32_t)gyro_baseline[axis] - decrement;
+        if (target < -32768 || target > 32767)
+        {
+            return false;
+        }
+        gyro_applied_offset[axis] = (int16_t)target;
+        gyro_remaining_bias[axis] = gyro_bias[axis] - decrement * (PI / (180.0f * 32.8f));
+        Adafruit_BusIO_Register reg(&sensor, 0x13 + 2 * axis, 2, MSBFIRST);
+        uint16_t observed;
+        if (!reg.read(&observed))
+        {
+            return false;
+        }
+        gyro_boot_offset[axis] = (int16_t)observed;
+        if (gyro_boot_offset[axis] != gyro_baseline[axis] && gyro_boot_offset[axis] != gyro_applied_offset[axis])
+        {
+            Serial.printf("ERROR,UNEXPECTED_GYRO_BOOT_OFFSET,axis=%u,value=%d\n", axis, gyro_boot_offset[axis]);
+            return false;
+        }
+    }
+    for (uint8_t axis = 0; axis < 3; axis++)
+    {
+        Adafruit_BusIO_Register reg(&sensor, 0x13 + 2 * axis, 2, MSBFIRST);
+        uint16_t readback;
+        if (!reg.write((uint16_t)gyro_applied_offset[axis]) || !reg.read(&readback) || (int16_t)readback != gyro_applied_offset[axis])
+        {
+            return false;
+        }
+    }
+    delay(20);
+    return true;
+}
+
 static bool verify_offsets(void)
 {
     for (uint8_t axis = 0; axis < 3; axis++)
@@ -72,6 +119,11 @@ static bool verify_offsets(void)
         Adafruit_BusIO_Register reg(&sensor, 0x06 + 2 * axis, 2, MSBFIRST);
         uint16_t readback;
         if (!reg.read(&readback) || (int16_t)readback != applied_offset[axis])
+        {
+            return false;
+        }
+        Adafruit_BusIO_Register gyro_reg(&sensor, 0x13 + 2 * axis, 2, MSBFIRST);
+        if (!gyro_reg.read(&readback) || (int16_t)readback != gyro_applied_offset[axis])
         {
             return false;
         }
@@ -104,7 +156,7 @@ static void report(void)
         Serial.printf("ERROR,SENSOR_OR_OFFSET_CHECK_FAILED\n");
         return;
     }
-    Serial.printf("HELLO,IMU_XYZ_V1,%s\n", BENCH_SOURCE_SHA);
+    Serial.printf("HELLO,IMU_XYZ_V2,%s\n", BENCH_SOURCE_SHA);
     Serial.printf("CONFIG,accel_g=8,gyro_dps=500,dlpf=0,divider=7,i2c_hz=400000,user_cal=xyz_mpu_plus_matrix\n");
     Serial.printf("BOARD,%s,%012llX\n", ESP.getChipModel(), ESP.getEfuseMac());
     for (uint8_t axis = 0; axis < 3; axis++)
@@ -116,21 +168,16 @@ static void report(void)
         Serial.printf("OFFSET,%u,%d,%d,%.9f\n", axis,
             expected_baseline[axis], applied_offset[axis], remaining_bias[axis]);
     }
-    // Observe gyro offset words only; this lesson does not change them.
     for (uint8_t axis = 0; axis < 3; axis++)
     {
-        Adafruit_BusIO_Register reg(&sensor, 0x13 + 2 * axis, 2, MSBFIRST);
-        uint16_t value;
-        if (!reg.read(&value))
-        {
-            sensor_ready = false;
-            Serial.printf("ERROR,GYRO_OFFSET_READ_FAILED\n");
-            return;
-        }
-        Serial.printf("GYRO_OFFSET,%u,%d\n", axis, (int16_t)value);
+        Serial.printf("GYRO_BIAS,%u,%.9f\n", axis, gyro_bias[axis]);
+        Serial.printf("GYRO_BOOT_OFFSET,%u,%d\n", axis, gyro_boot_offset[axis]);
+        Serial.printf("GYRO_OFFSET,%u,%d\n", axis, gyro_applied_offset[axis]);
+        Serial.printf("GYRO_TRIM,%u,%d,%d,%.9f\n", axis,
+            gyro_baseline[axis], gyro_applied_offset[axis], gyro_remaining_bias[axis]);
     }
-    Serial.printf("GYRO_SCALE,65.5,counts_per_degree_per_second,frame=sensor,correction=none\n");
-    Serial.printf("READY,IMU_XYZ_V1\n");
+    Serial.printf("GYRO_SCALE,65.5,counts_per_degree_per_second,frame=sensor,correction=mpu_plus_remainder\n");
+    Serial.printf("READY,IMU_XYZ_V2\n");
 }
 
 void setup(void)
@@ -159,6 +206,7 @@ void setup(void)
         sensor_ready = sensor_ready && Wire.getClock() == 400000;
     }
     sensor_ready = sensor_ready && restore_accel_bias();
+    sensor_ready = sensor_ready && restore_gyro_bias();
     report();
 }
 
@@ -187,7 +235,7 @@ void loop(void)
             correct_acceleration(counts, drone);
             for (uint8_t axis = 0; axis < 3; axis++)
             {
-                gyro[axis] = counts[axis + 4] * (PI / (180.0f * 65.5f));
+                gyro[axis] = counts[axis + 4] * (PI / (180.0f * 65.5f)) - gyro_remaining_bias[axis];
             }
             float temperature = counts[3] / 340.0f + 36.53f;
             Serial.printf("IMU,%lu,%d,%d,%d,%d,%d,%d,%d,%.6f,%.6f,%.6f,%.7f,%.7f,%.7f,%.3f\n",

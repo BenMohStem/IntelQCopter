@@ -1,0 +1,55 @@
+{
+  "status": "PREPARED_PHYSICAL_VALIDATION_PENDING",
+  "engine": "ESP32-S3 PlatformIO Arduino cross compilation; Python source-coefficient nominal arithmetic/protocol tests; no simulator",
+  "uploaded": false,
+  "serial_opened": false,
+  "physical_test": false,
+  "firmware_source_sha256": "c145046a129396ee1b49efe1c580bdc842048667eaa1ff66936473ab7a2cc9c0",
+  "firmware_binary_sha256": "6acc8f029948f5dcb57dc69d19129fa82f510380ac476831c91d8041e553e99b",
+  "source_fingerprint_embedded": true,
+  "original_build_evidence": "artifacts/build/20261025T225220143807Z/build.json",
+  "build_exit_code": 0,
+  "tests": [
+    {
+      "test": "tools/calibration/test_gyro_bias.py",
+      "exit_code": 0,
+      "output": "........\n----------------------------------------------------------------------\nRan 8 tests in 0.007s\n\nOK\n"
+    },
+    {
+      "test": "tools/calibration/test_gyro_observation.py",
+      "exit_code": 0,
+      "output": "...............\n----------------------------------------------------------------------\nRan 15 tests in 0.028s\n\nOK\n"
+    }
+  ],
+  "gyro_target_words": [
+    -6,
+    9,
+    27
+  ],
+  "gyro_baseline_words": [
+    0,
+    0,
+    0
+  ],
+  "bias_sensor_rad_s": [
+    0.003098404,
+    -0.004985037,
+    -0.014435425
+  ],
+  "assumptions": [
+    "Unchanged MPU6050 and mounting, sensor-frame bias at zero gyro user offsets",
+    "Nominal offset gain 32.8 counts/(degree/s); actual physical effect must be measured",
+    "Output gain 65.5 counts/(degree/s) at selected +/-500 degree/s"
+  ],
+  "accelerometer_matrix_function_unchanged": true,
+  "motor_outputs": "Disabled input pulldowns; no PWM driver",
+  "pending": [
+    "Fresh V2 stationary residual recording",
+    "Actual trim sign/gain check",
+    "Reset and full-power-cycle restoration checks",
+    "Body-frame rotation and angular-rate scale checks",
+    "500 Hz timing/noise characterization"
+  ],
+  "notes": "23 offline tests, not compiled MCU execution. Fixed bias does not remove random noise or temperature-dependent drift.",
+  "historical_three_run_replay_unchanged": true
+}

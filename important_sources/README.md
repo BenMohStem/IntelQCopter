@@ -1,7 +1,7 @@
 # Current important files
 
 1. [main.cpp - single active Arduino firmware](../firmware/main.cpp).
-2. [Current gyro observation lesson](../docs/gyro-observation.md).
+2. [Current gyro bias application and verification](../docs/gyro-bias-application.md).
 3. [Complete accelerometer correction and math](../docs/full-accelerometer-calibration.md).
 4. [Current plan](../docs/PLAN.md).
 
@@ -12,3 +12,5 @@ PC recording and analysis tools live in tools/calibration. This index links the 
 [Latest code review and pending gyro-calibration steps](../measurements/mpu6050/2026-10-25-gyro-code-review/report.md).
 
 [Three actual gyro runs: verified data, candidate bias and graph](../measurements/mpu6050/2026-10-25-three-gyro-runs/report.md). Candidate is offline only; corrected firmware testing is next.
+
+V2 now implements the measured gyro bias. New corrected hardware capture and restart verification are pending; older reports describe their original observation/replay checkpoints.

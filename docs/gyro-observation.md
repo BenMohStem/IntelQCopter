@@ -1,4 +1,6 @@
-# Next small lesson: observe gyro XYZ
+# Gyro observation lesson (historical V1)
+
+**Current firmware is V2: see [apply and verify measured gyro bias](gyro-bias-application.md).** The observation instructions below explain the preceding step and its preserved recordings.
 
 The accelerometer calibration stays unchanged. We now observe angular velocity and temperature. We do not apply a gyro bias yet. The Arduino-style [main.cpp](../firmware/main.cpp) remains the only firmware file; motor pins remain inputs with pulldowns.
 
