@@ -1,0 +1,20 @@
+{
+  "engine": "Original real MPU6050 V2 serial evidence verified offline",
+  "operator_reported_cases": [
+    "after reset",
+    "after power cycle"
+  ],
+  "samples": 5003,
+  "source_sha256": "c145046a129396ee1b49efe1c580bdc842048667eaa1ff66936473ab7a2cc9c0",
+  "raw_log_hashes_and_samples_and_metadata_verified": true,
+  "no_offset_accumulation_observed": true,
+  "targets": [
+    -6,
+    9,
+    27
+  ],
+  "no_zero_drift_claim": true,
+  "no_assistant_serial_or_upload": true,
+  "power_removal_not_independently_instrumented": true,
+  "full_statistics": "analysis.json"
+}

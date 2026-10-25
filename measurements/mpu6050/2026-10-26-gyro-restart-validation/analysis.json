@@ -1,0 +1,202 @@
+{
+  "status": "GYRO_RESTORATION_OBSERVED_IN_OPERATOR_RESET_AND_POWER_CYCLE_CASES",
+  "engine": "Original real ESP32-S3/MPU6050 serial logs, offline verification/plots; no simulator",
+  "uploaded_by_assistant": false,
+  "serial_port_opened_by_assistant": false,
+  "firmware_modified": false,
+  "bias_refitted": false,
+  "source_sha256": "c145046a129396ee1b49efe1c580bdc842048667eaa1ff66936473ab7a2cc9c0",
+  "all_original_hashes_headers_samples_conversions_statistics_verified": true,
+  "total_selected_samples": 5003,
+  "runs": [
+    {
+      "session": "20261025T230833057140Z",
+      "serial_sha256": "5035a0b7b2517cf985e384371d804b0d640879c5e439ce90217c69e802aab8cd",
+      "selected_samples": 2501,
+      "verified_post_measurement_packets": 0,
+      "duration_s": 30.0,
+      "report_rate_hz": 83.33333333333333,
+      "max_report_gap_ms": 12,
+      "gyro_boot_words": [
+        0,
+        0,
+        0
+      ],
+      "gyro_target_readbacks": [
+        -6,
+        9,
+        27
+      ],
+      "mean_corrected_deg_s": [
+        -0.02095768734311522,
+        -0.007900263265520844,
+        0.005865321526817573
+      ],
+      "sample_std_deg_s": [
+        0.11801478367653863,
+        0.1101891435677836,
+        0.10149089471116499
+      ],
+      "full_covariance_rad2_s2": [
+        [
+          4.242555813921338e-06,
+          2.0386494011732754e-07,
+          3.393463991682369e-08
+        ],
+        [
+          2.0386494011732754e-07,
+          3.6985572908247216e-06,
+          -7.756928437208155e-08
+        ],
+        [
+          3.393463991682369e-08,
+          -7.756928437208155e-08,
+          3.137681791445276e-06
+        ]
+      ],
+      "lag1_correlation": [
+        -0.15371492212545979,
+        -0.10368570479434094,
+        -0.03574764030825493
+      ],
+      "block_1s_mean_std_deg_s": [
+        0.011557204055515658,
+        0.010988031738690122,
+        0.011783381179368382
+      ],
+      "linear_rate_drift_deg_s2": [
+        -0.00018709823095723423,
+        0.0002442362248570029,
+        0.0002195382582718767
+      ],
+      "first_20s_mean_deg_s": [
+        -0.019921931574963497,
+        -0.008532956987396687,
+        0.006244253530889954
+      ],
+      "last_20s_mean_deg_s": [
+        -0.02244972031753554,
+        -0.007699562893462917,
+        0.00865297566315052
+      ],
+      "integrated_gyro_only_angle_deg": [
+        -0.6284973214919595,
+        -0.23769547180049552,
+        0.1748837817570692
+      ],
+      "temperature_range_C": [
+        27.965,
+        28.248
+      ],
+      "temperature_mean_C": 28.14092483006797,
+      "max_recomputed_rate_error_rad_s": [
+        4.64882667829819e-08,
+        4.941314881747039e-08,
+        4.878169237564761e-08
+      ],
+      "operator_confirmed_motionless": true,
+      "operator_note": "after reset"
+    },
+    {
+      "session": "20261025T231003294722Z",
+      "serial_sha256": "b0c3de6d7b40f1ad840100a7cc210b50328e248c134ecb2e416152432d944483",
+      "selected_samples": 2502,
+      "verified_post_measurement_packets": 0,
+      "duration_s": 30.012,
+      "report_rate_hz": 83.33333333333333,
+      "max_report_gap_ms": 12,
+      "gyro_boot_words": [
+        0,
+        0,
+        0
+      ],
+      "gyro_target_readbacks": [
+        -6,
+        9,
+        27
+      ],
+      "mean_corrected_deg_s": [
+        -0.0028914056361369436,
+        0.0017546500426000265,
+        0.016152468004456216
+      ],
+      "sample_std_deg_s": [
+        0.09414133686534085,
+        0.0891722874395474,
+        0.09000927761553912
+      ],
+      "full_covariance_rad2_s2": [
+        [
+          2.6996996964995757e-06,
+          -1.17929394086169e-09,
+          4.397318784504748e-08
+        ],
+        [
+          -1.17929394086169e-09,
+          2.4222253765205543e-06,
+          -5.4779894114379826e-08
+        ],
+        [
+          4.397318784504748e-08,
+          -5.4779894114379826e-08,
+          2.467909828687339e-06
+        ]
+      ],
+      "lag1_correlation": [
+        0.01621341960684353,
+        0.013024668252767895,
+        -0.029950050276844418
+      ],
+      "block_1s_mean_std_deg_s": [
+        0.012809045399587198,
+        0.01274725285452057,
+        0.009372035105687224
+      ],
+      "linear_rate_drift_deg_s2": [
+        0.00024503359412501516,
+        0.00028656479122324827,
+        -0.0004593846650209378
+      ],
+      "first_20s_mean_deg_s": [
+        -0.0037297971415711484,
+        -0.00034527323495896965,
+        0.018937867109913114
+      ],
+      "last_20s_mean_deg_s": [
+        0.00014424994423420875,
+        0.003015913038606172,
+        0.014422743149542649
+      ],
+      "integrated_gyro_only_angle_deg": [
+        -0.08605192391543658,
+        0.05291324825643608,
+        0.4847314734645517
+      ],
+      "temperature_range_C": [
+        28.012,
+        28.295
+      ],
+      "temperature_mean_C": 28.11139528377298,
+      "max_recomputed_rate_error_rad_s": [
+        4.633803084991284e-08,
+        4.941314881747039e-08,
+        4.878169237564761e-08
+      ],
+      "operator_confirmed_motionless": true,
+      "operator_note": "after power cycle"
+    }
+  ],
+  "acceptance_scope": "Offset restoration and correction arithmetic observed in two operator-reported restart cases. Power removal was not independently instrumented; initialization also resets MPU. Nonzero residuals remain and can change between boots.",
+  "remaining": [
+    "Known rotations/body-frame mapping and gyro scale",
+    "Temperature dependence and runtime bias tracking",
+    "Correctly timed 500 Hz acquisition and noise for attitude filter"
+  ],
+  "limitations": [
+    "These tests are separate from earlier V1 recordings; no controlled before/after comparison",
+    "Nominal hardware trim gain is not independently identified",
+    "One minute and five minutes do not establish long-term stability",
+    "No IID/Gaussian or standard-error assumption; full covariance retained",
+    "~83.3 Hz wide-band polling is not 500 Hz flight-loop noise"
+  ]
+}
