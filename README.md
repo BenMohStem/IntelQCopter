@@ -19,3 +19,5 @@ Show level and four gentle side-raised poses, pausing at each. The terminal disp
 [Five-minute corrected gyro results](measurements/mpu6050/2026-10-26-corrected-gyro-validation/report.md) · [Measured gyro bias](measurements/mpu6050/2026-10-25-three-gyro-runs/report.md) · [Gyro trim explanation](docs/gyro-bias-application.md) · [Accelerometer math](docs/full-accelerometer-calibration.md) · [Tilt calibration review](measurements/mpu6050/2026-10-25-tilt-validation/report.md) · [Raw source checkpoint](archive/bench-checkpoints/raw-pose1000/README.md) · [ROS2/Gazebo terminal commands](docs/start-ros-gazebo.md).
 
 [Assistant-run stationary test: measured results and covariance/tilt derivation](measurements/mpu6050/2026-10-26-assistant-stationary-test/report.md). Actual board remains V2; angles in this report are PC replay. No upload or calibration changes.
+
+[Sampling-rate limits and three assistant-run repeatability tests](measurements/mpu6050/2026-10-26-sampling-and-repeatability/report.md): 15,003 actual samples at 83.33 Hz. MPU6050 cannot provide 10 kHz fresh measurements. No high-rate firmware or calibration change was made.

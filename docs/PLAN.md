@@ -2,6 +2,8 @@
 
 ## Current position
 
+**Latest stationary repeatability batch:** three assistant-run 60-second recordings, 15,003 verified samples, actual 83.33 Hz V2 output. [Results and sample-rate theory](../measurements/mpu6050/2026-10-26-sampling-and-repeatability/report.md). MPU6050 maximum new acceleration is 1 kHz and maximum gyro schedule 8 kHz; 10 kHz is unsupported. Future synchronized 1 kHz FIFO acquisition requires a separate lean-output firmware step and user upload. It is not implemented/tested by this batch. Existing source, offsets, calibration and motor-disable state unchanged.
+
 **Stationary tests delegated to assistant:** a fresh 60-second, 5,001-sample COM3 capture was performed using the verified running V2 checkpoint (no flash). [Math and actual results](../measurements/mpu6050/2026-10-26-assistant-stationary-test/report.md). Measured PC gravity tilt mean roll +0.04287 degrees/pitch +1.89316 degrees; no independent level reference, so no calibration-error inference. V3 remains prepared and not physically exercised. Future fixed stationary recordings can be run by the assistant; moving/reference poses still need the user.
 
 **Current step:** gyro restoration checked in 5,003 original samples after operator-labeled reset/power-cycle actions. Nonzero residuals remain; no refit. [Restart evidence](../measurements/mpu6050/2026-10-26-gyro-restart-validation/report.md). BMP280 is unavailable and deferred. Prepare only [gravity-based roll/pitch observation](gravity-tilt-observation.md), then verify physical signs before gyro-body-axis mapping/integration or fusion. No altitude/PID work yet. The chronological entries below preserve earlier states.

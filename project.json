@@ -208,6 +208,12 @@
       "path": "tools/calibration/analyze_stationary_imu.py",
       "args": [],
       "description": "Verify actual stationary-intended IMU data, compute PC gravity tilt and covariance propagation; no refitting or hardware commands"
+    },
+    "analyze-repeatability": {
+      "runtime": "python",
+      "path": "tools/calibration/analyze_imu_repeatability.py",
+      "args": [],
+      "description": "Verify three real 60-second recordings, quantify short-term repeatability and calculate sensor/bus/serial rate budgets; no firmware or calibration changes"
     }
   }
 }
