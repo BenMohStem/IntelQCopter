@@ -12,7 +12,7 @@ import record_poses as recorder
 
 class FakeSerial:
     def __init__(self, text):
-        self.input = io.BytesIO(text.encode("ascii"))
+        self.input = io.BytesIO(text if isinstance(text, bytes) else text.encode("ascii"))
         self.commands = []
 
     def readline(self):
@@ -87,6 +87,28 @@ class RecorderTests(unittest.TestCase):
             self.assertIn("OVERFLOW", result["error"])
             self.assertEqual(device.commands[-1], b"x")
             self.assertTrue((folder / "serial.log").exists())
+
+    def test_idle_noise_before_query_marker_is_preserved(self):
+        # Also reproduce a non-ASCII byte attached directly to QUERY_REPLY.
+        for prefix in (b"\x80\xff\n", b"\x80", b"ERROR,USER_ABORT\n"):
+            transcript = prefix + self.transcript.encode("ascii")
+            device = FakeSerial(transcript)
+            with tempfile.TemporaryDirectory() as temporary, patch.object(recorder.time, "sleep"), patch("builtins.print"):
+                folder = Path(temporary)
+                result = recorder.capture(device, folder, "test-sha")
+                self.assertEqual(result["status"], "CAPTURE_COMPLETE_REVIEW_REQUIRED")
+                self.assertEqual((folder / "serial.log").read_bytes(), transcript)
+
+    def test_non_ascii_during_samples_rejects_attempt(self):
+        transcript = (self.header + "BEGIN,20000\n").encode("ascii") + b"S,0,\x80,0,0,0,0,0,0\n"
+        device = FakeSerial(transcript)
+        with tempfile.TemporaryDirectory() as temporary, patch.object(recorder.time, "sleep"), patch("builtins.print"):
+            folder = Path(temporary)
+            with self.assertRaisesRegex(ValueError, "Non-text serial data"):
+                recorder.capture(device, folder, "test-sha")
+            self.assertEqual(json.loads((folder / "summary.json").read_text())["status"], "FAILED")
+            self.assertEqual((folder / "serial.log").read_bytes(), transcript)
+            self.assertEqual(device.commands[-1], b"x")
 
     def test_wrong_source_and_baseline_refused_before_start(self):
         for sha, baseline in (("wrong-sha", None), ("test-sha", ["changed baseline"])):

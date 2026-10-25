@@ -90,14 +90,23 @@ class Samples:
         }
 
 
-def receive(device, log):
+def receive(device, log, synchronizing=False):
     raw = device.readline()
     if not raw:
         return ""
     log.write(raw)
+    if synchronizing:
+        # Preserve all bytes, but wait for the fresh query marker before decoding.
+        # An idle UART byte may prefix the marker on the same line.
+        if raw.endswith((b"QUERY_REPLY\n", b"QUERY_REPLY\r\n")):
+            return "QUERY_REPLY"
+        return ""
     if not raw.endswith(b"\n"):
         raise ValueError("Truncated serial line; keep failed attempt")
-    return raw.decode("ascii").strip()
+    try:
+        return raw.decode("ascii").strip()
+    except UnicodeDecodeError as error:
+        raise ValueError("Non-text serial data after synchronization; recording rejected and original bytes saved") from error
 
 
 def capture(device, attempt, expected_sha, reference_configuration=None):
@@ -110,7 +119,7 @@ def capture(device, attempt, expected_sha, reference_configuration=None):
             header = []
             reply_started = False
             while time.monotonic() < deadline:
-                line = receive(device, log)
+                line = receive(device, log, synchronizing=not reply_started)
                 if line == "QUERY_REPLY":
                     reply_started = True
                     continue

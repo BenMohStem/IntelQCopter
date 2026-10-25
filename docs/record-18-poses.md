@@ -67,3 +67,7 @@ PlatformIO ESP32-S3 compilation passed (19,412 bytes RAM; 307,905 bytes flash). 
 The requested duration is now 20 seconds / 20,000 samples for every pose. Reflash the updated bench firmware once, then use the same record-poses command. Start a new session; previous recordings remain unchanged and cannot be resumed with a different firmware source SHA. There are still three repetitions of the six poses, with five seconds of settling before each recording.
 
 The updated 20,000-sample version passed compilation and all six synthetic recorder tests. [Updated verification record](../measurements/mpu6050/2026-10-25-pose-recorder-preparation/verification-20-seconds.json). Hardware recording remains untested; nothing was uploaded.
+
+## Serial noise before starting a pose
+
+The recorder preserves all original serial bytes and waits for the fresh QUERY_REPLY marker before decoding configuration. Idle noise before that marker can be skipped, including a byte attached to its line. After synchronization, non-text or truncated data still fails the attempt; sample sequence and checksum checks stay strict. The origin of any idle noise is not diagnosed by this recovery. No firmware upload is needed for this PC-only fix. Resume the existing session to keep completed poses and retry the incomplete pose in a new attempt folder.
