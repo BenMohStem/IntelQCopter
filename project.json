@@ -88,6 +88,18 @@
       "path": "tools/calibration/test_record_poses.py",
       "args": [],
       "description": "Synthetic recording protocol tests; no board, serial port, or upload"
+    },
+    "analyze-poses": {
+      "runtime": "python",
+      "path": "tools/calibration/analyze_poses.py",
+      "args": [],
+      "description": "Verify and analyze a completed 18-pose session offline; save derived report and graphs in a new folder"
+    },
+    "check-pose-analysis": {
+      "runtime": "python",
+      "path": "tools/calibration/test_analyze_poses.py",
+      "args": [],
+      "description": "Analytic/synthetic calibration and covariance checks; no hardware"
     }
   }
 }

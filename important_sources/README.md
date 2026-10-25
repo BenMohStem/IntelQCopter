@@ -1,4 +1,6 @@
-# Current task: record 18 poses
+[Current real-data report and graphs](../measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/report.md) · [Updated small-step plan](../docs/PLAN.md).
+
+# Current task: review calibration, then validate tilted poses
 
 [Upload once and automatically record all 18 poses](../docs/record-18-poses.md). [Active one-file firmware](../firmware/main.cpp).
 

@@ -1,82 +1,52 @@
-# Software plan â€” one small change at a time
+# Software plan: one small, measured step at a time
 
-## How we will work
+## Current position
 
-You design and make the PCB. This plan covers software only.
+The new secured-mount session `20261025T132707615977Z` contains 18 completed poses and 360,000 samples. Original log hashes, sequences, checksums and configuration/source identities have been checked offline. The user reports completing this session after restarting because the earlier mounting detached. Exact pose angles, fixture uncertainty and continuing mounting rigidity are not independently certified by the software.
 
-There will be **one active `firmware/main.cpp`**, written in Arduino style with C-style functions. Braces go on their own lines. One statement per line. Clear names, short functions, and comments explaining why.
+The deleted detached-mount session is excluded. Earlier calibration/level coefficients do not validate the new mounting.
 
-The first programme will be about 20 lines. Afterwards, aim for **3â€“10 new lines per step**. If a feature needs more, split it again. Do not paste the full prepared controller back into the file.
+**Current completed step: offline calibration and noise analysis.** See the [derived report and graphs](../measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/report.md). This uses original hardware recordings; the correction curves are mathematical replay. No simulator, upload or new hardware test was performed. Firmware remains the raw 20-second recorder.
 
-For each step:
+## Next steps and their acceptance evidence
 
-1. Explain the one new idea and show the small change.
-2. Change only what that idea needs.
-3. State exactly what you should see on the real board.
-4. Commit the step separately. A build is not a hardware pass.
-5. With hardware available, test before continuing. Without it, label the step prepared and untested. Prepare later lessons only when you ask; do not automatically grow the active file.
-
-## Start here
-
-| Step | One new idea | Expected real result |
+| Step | One new idea | Status and evidence needed |
 |---|---|---|
-| 01 | Print one sentence every second | Serial Monitor repeatedly shows `ESP32 is running` |
-| 02 | Add `millis()` to that message | Time increases by approximately1000ms per message |
-| 03 | Start Wire on SDA9/SCL8 | Programme still runs; no sensor readings yet |
-| 04 | Ask the MPU6050 library whether it responds | A clear connected/missing result |
-| 05 | Read only the accelerometer Z axis | Value changes when the sensor is turned |
-| 06 | Read only the gyroscope Z axis | Value changes when the sensor rotates |
+| C1 | Record six orientations three times | Recorded: 18 × 20,000 samples; integrity checked |
+| C2 | Fit calibration on repetitions 1-2 | Calculated provisional bias and response matrix; equal pose weights |
+| C3 | Reserve repetition 3 and inspect noise | Offline replay complete; direction errors about 0.07-1.11°, with reference uncertainty included; transients/correlation present |
+| C4 | Test independently measured tilted orientations | **Next physical step.** Start ±30° roll/pitch, then combined tilts; keep them out of the fit initially |
+| C5 | Verify calibration implementation | After reviewing C4, add named bias values, then one matrix row per small lesson; compare each result with offline predictions |
+| C6 | Restore offsets after reset/power cycle | Save fixed coefficients in firmware flash, restore volatile MPU bias registers using the same baseline convention, preserve compensation bits and verify no duplicate subtraction |
+| C7 | Characterize short-term noise and drift | Prepare a separate 2-3 minute stationary recording after temperature settles; assess full covariance, autocorrelation, block means and transients |
+| C8 | Learn one attitude estimate | Only after calibration checks: one roll/pitch observation, then gyro integration and a small Kalman lesson using measured noise assumptions |
 
-**Current phase: collect 18 fresh raw calibration recordings.** Follow [the automatic 1000 Hz recorder](record-18-poses.md). Earlier calibrated firmware is preserved at a1d3c78; active firmware temporarily performs raw FIFO capture, without user bias writes or the level matrix. Physical calibration verification remains pending. A real stationary level capture on 25 October yielded a provisional rigid level trim and gyro biases. A temporal holdout replay improved mean leveling error but is not a post-upload test. [Actual measurements, statistics and verification steps](precision-2026-10-25.md). Do not advance to control until reset/pose checks are reviewed.
+C4 is deliberately separate from C5: a smaller same-pose residual is not proof of accuracy at a new angle. C7's independent stationary experiment can be done before C5 if needed to diagnose drift. A long-term Allan/bias study is a later optional measurement, not something claimed from a 20-second capture.
 
-## After those small steps
+No blanket joint Gaussian or sample-independence assumption is accepted. Marginal distributions and selected projections are diagnostics; off-diagonal covariance remains measured. Covariance of a mean must account for time dependence and reference uncertainty.
 
-The user has already added accelerometerX and accelerometerY output. After gyroZ, continue with separate small lessons for gyroX; gyroY; BMP280 initialization; pressure; temperature. The original stage IDs are retained for history; existing user additions are not silently marked physically accepted.
+## C4 measurement protocol to prepare next
 
-Then test the actual magnetometer identity, and later one LiDAR reading, using a suitable Arduino library for the identified device. Do not guess an HMC driver for a QMC chip. Do not add ROS2 or Xbox while learning these sensor calls.
+Keep the MPU/FC fixed in its final mounting. Use an independent reference to measure actual roll/pitch, their signs and uncertainty. For each pose, record the measured angles, temperature and 20 seconds of raw data after settling. Proposed order: +30° roll, -30° roll, +30° pitch, -30° pitch, then combined tilts. These are approximate targets; actual measured angles determine the reference vectors. Do not use MPU-estimated angles as their own calibration reference. Confirm the angle/frame convention when preparing the tilted-pose recorder; the current `record-poses` command labels only the six axis orientations.
 
-### Calibration, one idea at a time
+Review reserved-pose errors and fixture uncertainty together before choosing an acceptance threshold. Do not quietly refit a validation dataset and call its residual independent accuracy. If it informs a new fit, collect new validation data.
 
-**User requirement: finish and persist calibration before leaving this phase.** Help the user measure and validate MPU6050 accelerometer/gyroscope calibration, persist the calibration in ESP32-S3 flash, then reboot and verify the same values are applied. The current fixed candidate is embedded in firmware flash; use Arduino Preferences with version/integrity checks later if calibration is measured at runtime. Provide a deliberate recalibration path. Do not advance from calibration to attitude estimation/PID/Xbox integration until the user has checked these results. This requirement is recorded now, not implemented in the current firmware lesson.
+## How each lesson is implemented
 
-Clarify storage when implementing: the MPU6050 does not provide general nonvolatile storage for user calibration. Its offset registers are volatile; if used later, restore them from the ESP32 flash record after boot and avoid applying the same offset twice. The future RP2350 version will need its own MCU-flash persistence implementation.
+Use one active Arduino-style `firmware/main.cpp`, mostly C-style functions, Adafruit/Wire where suitable, Allman braces, four spaces, one statement per line and `Serial.printf`. Aim for one new idea and 3-10 lines per firmware lesson; explain larger exceptions. PC analysis tools stay in `tools/calibration/` and do not clutter firmware. Do not re-import the archived large controller.
 
-1. Average a small group of stationary gyroX readings.
-2. Subtract that one bias and print the result.
-3. Repeat for gyroY, then gyroZ, in separate steps.
-4. Explain and add standard deviation for one axis.
-5. Record one accelerometer orientation, then its opposite.
-6. Calculate offset/scale for that one axis; test it.
-7. Repeat the other axes individually.
-8. Save one calibration value with Preferences; test reading it back.
-9. Add reboot persistence, then a complete versioned record and corruption checks, separately.
+For each change: explain it, prepare the smallest implementation, compile/check what is relevant, describe the expected physical result, commit and push. A compiler or synthetic test is not a hardware pass. The user uploads. Keep original successful/failed evidence local and publish reviewed derived reports without raw console dumps, credentials or environments.
 
-Barometer baseline and LiDAR/reference-distance tests are later small lessons too. Magnetometer calibration follows identification and raw-data tests. Nothing here claims a sensor has already passed in reality.
+If step 6 fails after 7-10 were prepared, repair step 6 in a new commit/checkpoint. Rebuild later steps on the repaired step rather than leaving invalid descendants active. Preserve history; no force-push. Hardware/configuration/mounting changes invalidate affected calibrations and downstream acceptances.
 
-### Flight software later
+## After calibration
 
-After understanding and testing sensors/calibration: Xbox connection; one stick; one mapping; one disconnect check. Then one angle estimate, one control loop, and one mixer calculation at a time. Introduce the Arduino libraries only when their lesson needs them.
+Test BMP280, identify the actual magnetometer chip before choosing a driver, and test one LiDAR distance. Use known-height/distance references. Add their calibration/persistence in separate lessons. Temperature and deliberate recalibration need explicit procedures; runtime recalibration can use Arduino Preferences later if required.
 
-The eventual standalone mode stays **yaw rate, pitch/roll angle, altitude hold plus vertical-speed command, with no XY braking**. ROS2 communication/navigation comes after the standalone fundamentals. No motor pulses or arming are added under the current instruction.
+Then add Xbox connection, one stick, one mapping and disconnect behavior in separate steps. Standalone flight stays **yaw rate, roll/pitch angle, altitude hold with vertical-speed command, no XY braking**. Attitude/rate loops, mixer, loop timing and gains come later. The flight-control target remains 500 Hz; the current 1000 Hz bench capture is a separate measurement task. Physical motor arming and output pulses remain disabled under the current instruction.
 
-## If a step fails
+Mass/inertia and PID-gain work are deferred to the later standalone-FC simulation phase. The measured/assumed parameters are preserved in `simulation/parameters/params-2026-10-24.txt`; simulation is not a hardware validation. You build the PCB and Gazebo environment; assistance focuses on commands and small problems unless you ask for more. ROS2 companion/navigation follows the standalone fundamentals and must remain optional.
 
-If06 fails after07â€“10 were prepared, return to06's implementation checkpoint in a repair branch. Fix and test06. Old07â€“10 do not remain in the active build. Implement a fresh07, reusing old ideas only after reviewing them. Preserve old code, commits and failed evidence as history. Never force-push to hide attempts.
+## Earlier lesson history
 
-The existing gate/repair tools stay available behind the lessons. You do not have to read those tools to understand the first main.cpp. Earlier sensor diagnostics are archived in `archive/before-small-lessons/` and Git at `a47d4b5`.
-
-## Simulation is yours too
-
-You create the Gazebo worlds, models and simulation. I explain the terminal commands and help with one small problem at a time; I will not build a complete simulation unless you ask. Start independently with [opening ROS2, RViz and the built-in Gazebo world](start-ros-gazebo.md). This does not add simulation code to the18-line firmware lesson. Robot loading, ROS topics, bridges and FC integration are separate later lessons.
-
-## Earlier noise-data request (superseded during pose capture)
-
-User selected ±8g and ±500 degrees/s. User-selected DLPF 260/256 Hz and divider 15 configure the MPU output for 500 Hz; the bench read/report loop was measured at about 2.42 Hz. Record stationary IMU CSV lines for measured noise statistics before setting Kalman parameters. See [noise instructions](imu-noise.md). Recheck the old six-pose calibration at the new range/filter. No physical acceptance or 500 Hz FC timing is claimed.
-
-## Required next calibration experiment
-
-The sensor remains fixed to the drone. A single level position cannot validate calibration across tilt. Follow [repeated six-pose measurements and independent tilted-pose validation](multi-pose-calibration.md) before accepting the provisional level trim. Keep firmware unchanged until new evidence supports a correction.
-
-## 18-run recording step (25 October)
-
-User requested 20,000 samples at nominal 1000 Hz for Z+, Z-, X+, X-, Y+, Y-, repeated three times. This supersedes the earlier 2.42 Hz bench reporting configuration while collecting data. New configuration is divider 7 / mode 0, 400 kHz I2C, 921600 baud. The PC recorder saves original samples and means automatically and prompts before each pose. This is prepared for user upload; no physical throughput or calibration acceptance yet. Reserve repetition 3 for initial validation, followed by independent tilted poses.
+The initial serial/Wire/MPU lessons, old calibration implementations and original plan remain in Git history. The older large diagnostics are archived under `archive/before-small-lessons/`. [Recording instructions](record-18-poses.md), [MPU configuration](mpu6050-configuration.md), [calibration math](accelerometer-calibration.md), and [ROS2/Gazebo terminal commands](start-ros-gazebo.md) remain available; historical coefficients in those guides are not accepted for the new mounting.

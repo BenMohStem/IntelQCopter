@@ -1,0 +1,30 @@
+{
+  "engine": "NumPy/Matplotlib offline real-recording analysis plus analytic/synthetic checks",
+  "python": "3.11.7",
+  "numpy": "2.4.6",
+  "matplotlib": "3.11.2",
+  "tests_passed": 4,
+  "test_scope": [
+    "known affine calibration recovered",
+    "validation repetition cannot affect fit",
+    "covariance transformation equals covariance of transformed samples",
+    "temporal correlation detected; incomplete/constant data rejected"
+  ],
+  "real_recordings_verified": 18,
+  "real_samples_verified": 360000,
+  "assumed_g_m_s2": 9.80665,
+  "reference_angles_independently_verified": false,
+  "firmware_changed": false,
+  "uploaded": false,
+  "new_hardware_test": false,
+  "analysis_script_sha256": "5f9157739dafa9d66af7666eba0efe03eba99c24080d817dc6b87ddf36ddc21f",
+  "output_sha256": {
+    "analysis.json": "a7222d590d032c4a2de277ea4d1e75d29355a82fc6c667de6f3d56bc8b017fc9",
+    "calibration.png": "12321f083365b7aaa5f76f44fd0e92c1be8d5f25804256fb0dc6f43ac3a88e16",
+    "correlation.png": "f54606505e6409c61a28a048c898f9965b8a79ef632f0bdbbfef239960d9a166",
+    "noise-qq.png": "75feb7581f731fbf026e5869947286e290a2e651380701d5a923c0a55b8cc644",
+    "report.md": "d1d8201c461cd23c76d4501b34b440c9f953e8100fa43efdb64430cbc7583400",
+    "transients.png": "3231b09d78870cf34df6d4e90daa280abd36e4d800eda42e704db205d42df431"
+  },
+  "earlier_analysis_attempt": "Preserved under .local/analysis-history; initial optional dependency directory had a Python ABI mismatch; current run used matching preinstalled libraries. No environments installed or changed."
+}

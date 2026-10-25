@@ -1,5 +1,7 @@
 # Six-pose accelerometer calibration and flash storage
 
+**Historical implementation and coefficients below.** The current secured-mount dataset has a [new provisional analysis](../measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/report.md). Current firmware is the raw recorder; no candidate is accepted yet. Earlier mounting coefficients must not be reused without validation.
+
 ## What changed
 
 The user confirmed that pose labels refer to DRONE axes, while the readings are in MPU sensor axes. The +X pose predominantly excites sensor +Y; the +Y pose predominantly excites sensor -X. Therefore three separate per-sensor-axis scale factors cannot, by themselves, produce drone-frame acceleration. This implementation applies a provisional affine correction containing bias, scale/cross-axis and mounting effects together. It is not a multivariable flight controller.
