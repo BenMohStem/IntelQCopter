@@ -22,7 +22,7 @@ def equation_svg(tex):
     fig.savefig(output, format="svg", bbox_inches="tight", pad_inches=0.12, transparent=True)
     plt.close(fig)
     svg = output.getvalue()
-    return svg[svg.index("<svg"):]
+    return "\n".join(line.rstrip() for line in svg[svg.index("<svg"):].splitlines())
 
 
 def build():
