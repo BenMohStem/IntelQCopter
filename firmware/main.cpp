@@ -1,166 +1,251 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <Adafruit_MPU6050.h>
-#include <math.h>
 #include <Adafruit_I2CDevice.h>
 #include <Adafruit_BusIO_Register.h>
 
-// Editable bench configuration: MPU output at 500 Hz; serial reporting at about 2.5 Hz.
-static const uint8_t mpu_address = 0x68;
-static const int sda_pin = 9;
-static const int scl_pin = 8;
-static const uint32_t i2c_clock_hz = 100000;
-static const mpu6050_accel_range_t accel_range = MPU6050_RANGE_8_G;
-static const mpu6050_gyro_range_t gyro_range = MPU6050_RANGE_500_DEG;
-static const mpu6050_bandwidth_t filter_bandwidth = MPU6050_BAND_260_HZ;
-static const uint8_t sample_divider = 15;
-static const mpu6050_clock_select_t clock_source = MPU6050_PLL_GYROX;
+// Measurement firmware only. No user calibration, attitude filter or motor driver.
+// The build script supplies the exact source SHA; no generated header is needed.
+#ifndef BENCH_SOURCE_SHA
+#define BENCH_SOURCE_SHA "unknown"
+#endif
+
+static const uint32_t sample_target = 60000;
+static const uint32_t serial_baud = 921600;
+static const uint8_t fifo_enable = 0x23;
+static const uint8_t interrupt_status = 0x3A;
+static const uint8_t user_control = 0x6A;
+static const uint8_t fifo_count = 0x72;
+static const uint8_t fifo_data = 0x74;
 
 Adafruit_MPU6050 mpu;
-Adafruit_I2CDevice register_device(mpu_address, &Wire);
-bool mpu_started = false;
+Adafruit_I2CDevice sensor(0x68, &Wire);
+bool sensor_ready = false;
+bool recording = false;
+uint32_t sample_count = 0;
+uint32_t started_us = 0;
+uint16_t maximum_fifo = 0;
+uint32_t data_hash = 2166136261u;
+int64_t sums[7] = {};
 
-// Six-pose accelerometer biases, in MPU sensor axes and m/s^2.
-// These constants are stored with the firmware in ESP32 flash.
-static const float accel_bias_x = 1.293084598f;
-static const float accel_bias_y = -0.079166657f;
-static const float accel_bias_z = -0.639507624f;
-
-// Stationary SENSOR-axis gyro biases, rad/s, measured from a real log.
-static const float gyro_bias_x = 0.003236840207f;
-static const float gyro_bias_y = -0.005887098652f;
-static const float gyro_bias_z = -0.015005241501f;
-
-// Offset words: accel X/Y/Z=0x06/0x08/0x0A; gyro X/Y/Z=0x13/0x15/0x17.
-// BusIO is already used by Adafruit; no second MPU library is needed.
-static bool write_sensor_bias(uint8_t address, float bias, const char *axis, bool accelerometer)
+// Small checked helpers: Adafruit has no public FIFO sample-reading function.
+static bool write_register(uint8_t address, uint8_t value)
 {
-    Adafruit_BusIO_Register offset(&register_device, address, 2, MSBFIRST);
-    uint16_t baseline_bits;
-    if (!offset.read(&baseline_bits))
-    {
-        Serial.printf("MPU_OFFSET %s: baseline read failed\n", axis);
-        return false;
-    }
+    Adafruit_BusIO_Register reg(&sensor, address);
+    return reg.write(value);
+}
 
-    int16_t baseline = (int16_t)baseline_bits;
-    int32_t change = 2 * lroundf(bias * 1024.0f / 9.80665f);
-    if (!accelerometer)
-    {
-        // Gyro trim uses 32.75 register counts per degree/second.
-        change = lroundf(bias * (180.0f / PI) * 32.75f);
-    }
-    int32_t requested = (int32_t)baseline - change;
-    if (requested < -32768 || requested > 32767)
+static bool read_registers(uint8_t address, uint8_t *bytes, uint8_t length)
+{
+    return sensor.write_then_read(&address, 1, bytes, length);
+}
+
+static void stop_recording(const char *reason)
+{
+    recording = false;
+    bool stopped = write_register(fifo_enable, 0);
+    stopped = write_register(user_control, 0) && stopped;
+    Serial.printf("ERROR,%s,samples=%lu,stop_ok=%u\n", reason,
+        (unsigned long)sample_count, (unsigned)stopped);
+}
+
+static bool report_configuration(void)
+{
+    uint8_t config[4];
+    uint8_t power;
+    if (!read_registers(0x19, config, 4) || !read_registers(0x6B, &power, 1))
     {
         return false;
     }
-    // Accelerometer changes are even, preserving its compensation bit.
-    if (!offset.write((uint16_t)requested))
+    // Divider 7 with DLPF mode 0: 8000 / (7 + 1) = 1000 samples/second.
+    if (config[0] != 7 || config[1] != 0 || config[2] != 8 || config[3] != 16 || power != 1)
     {
         return false;
     }
-    uint16_t readback;
-    if (!offset.read(&readback))
+    Serial.printf("HELLO,POSE1000_V1,%s\n", BENCH_SOURCE_SHA);
+    Serial.printf("CONFIG,hz=1000,accel_g=8,gyro_dps=500,dlpf=0,divider=7,i2c_hz=400000,user_cal=none\n");
+    Serial.printf("BOARD,%s,%012llX\n", ESP.getChipModel(), ESP.getEfuseMac());
+    // Preserve the actual post-reset offset words in the evidence. Do not write them.
+    const uint8_t offsets[6] = {0x06, 0x08, 0x0A, 0x13, 0x15, 0x17};
+    for (uint8_t index = 0; index < 6; index++)
     {
-        return false;
+        uint8_t bytes[2];
+        if (!read_registers(offsets[index], bytes, 2))
+        {
+            return false;
+        }
+        int16_t value = (int16_t)(((uint16_t)bytes[0] << 8) | bytes[1]);
+        Serial.printf("OFFSET,%02X,%d\n", offsets[index], value);
     }
-    Serial.printf("MPU_OFFSET %s: baseline=%d requested=%d readback=%d\n",
-        axis, baseline, (int)requested, (int16_t)readback);
-    return readback == (uint16_t)requested;
+    Serial.printf("READY,send_s_to_record_60000_samples\n");
+    return true;
+}
+
+static void start_recording(void)
+{
+    // Disable sources, reset the FIFO, then start with a new complete packet.
+    bool ok = write_register(fifo_enable, 0);
+    ok = write_register(user_control, 0) && ok;
+    ok = write_register(user_control, 0x04) && ok;
+    delay(2);
+    uint8_t status;
+    ok = read_registers(interrupt_status, &status, 1) && ok;
+    ok = write_register(user_control, 0x40) && ok;
+    if (!ok)
+    {
+        stop_recording("FIFO_START_FAILED");
+        return;
+    }
+    sample_count = 0;
+    maximum_fifo = 0;
+    data_hash = 2166136261u;
+    for (uint8_t axis = 0; axis < 7; axis++)
+    {
+        sums[axis] = 0;
+    }
+    Serial.printf("BEGIN,60000\n");
+    Serial.flush();
+    started_us = micros();
+    // Packet order: accel XYZ, temperature, gyro XYZ; seven signed 16-bit words.
+    recording = write_register(fifo_enable, 0xF8);
+    if (!recording)
+    {
+        stop_recording("FIFO_ENABLE_FAILED");
+    }
+}
+
+static void read_one_sample(void)
+{
+    uint8_t status;
+    uint8_t count_bytes[2];
+    if (!read_registers(interrupt_status, &status, 1) || !read_registers(fifo_count, count_bytes, 2))
+    {
+        stop_recording("I2C_READ_FAILED");
+        return;
+    }
+    uint16_t available = ((uint16_t)count_bytes[0] << 8) | count_bytes[1];
+    maximum_fifo = max(maximum_fifo, available);
+    if ((status & 0x10) || available >= 980)
+    {
+        // Stop rather than silently lose or misalign samples in the 1024-byte FIFO.
+        stop_recording("FIFO_OVERFLOW_OR_BACKLOG");
+        return;
+    }
+    if (available < 14)
+    {
+        delayMicroseconds(50);
+        return;
+    }
+    uint8_t bytes[14];
+    if (!read_registers(fifo_data, bytes, sizeof(bytes)))
+    {
+        stop_recording("FIFO_READ_FAILED");
+        return;
+    }
+    int16_t values[7];
+    for (uint8_t axis = 0; axis < 7; axis++)
+    {
+        values[axis] = (int16_t)(((uint16_t)bytes[2 * axis] << 8) | bytes[2 * axis + 1]);
+        sums[axis] += values[axis];
+    }
+    for (uint8_t index = 0; index < sizeof(bytes); index++)
+    {
+        // FNV-1a checksum: the PC checks the full transmitted sample payload.
+        data_hash = (data_hash ^ bytes[index]) * 16777619u;
+    }
+    Serial.printf("S,%lu,%d,%d,%d,%d,%d,%d,%d\n", (unsigned long)sample_count,
+        values[0], values[1], values[2], values[3], values[4], values[5], values[6]);
+    sample_count++;
+    if (sample_count == sample_target)
+    {
+        uint32_t elapsed_us = micros() - started_us;
+        bool stopped = write_register(fifo_enable, 0);
+        stopped = read_registers(interrupt_status, &status, 1) && stopped;
+        stopped = write_register(user_control, 0) && stopped;
+        recording = false;
+        if (!stopped || (status & 0x10))
+        {
+            stop_recording("FINAL_FIFO_CHECK_FAILED");
+            return;
+        }
+        for (uint8_t axis = 0; axis < 7; axis++)
+        {
+            Serial.printf("MEAN_COUNTS,%u,%.9f\n", axis, (double)sums[axis] / sample_target);
+        }
+        Serial.printf("END,%lu,%lu,%u,%08lX\n", (unsigned long)sample_count,
+            (unsigned long)elapsed_us, maximum_fifo, (unsigned long)data_hash);
+    }
 }
 
 void setup(void)
 {
-    Serial.begin(115200);
-
-    // No motor commands: signal pins remain inputs pulled low.
+    Serial.setTxBufferSize(4096);
+    Serial.begin(serial_baud);
     pinMode(12, INPUT_PULLDOWN);
     pinMode(1, INPUT_PULLDOWN);
     pinMode(2, INPUT_PULLDOWN);
     pinMode(14, INPUT_PULLDOWN);
 
-    bool i2c_started = Wire.begin(sda_pin, scl_pin, i2c_clock_hz);
-    if (i2c_started)
+    // 400 kHz is needed to drain complete FIFO packets at 1000 Hz.
+    sensor_ready = Wire.begin(9, 8, 400000);
+    Wire.setTimeOut(10);
+    sensor_ready = sensor_ready && mpu.begin(0x68, &Wire) && sensor.begin();
+    if (sensor_ready)
     {
-        mpu_started = mpu.begin(mpu_address, &Wire);
+        Wire.setClock(400000);
+        mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
+        mpu.setGyroRange(MPU6050_RANGE_500_DEG);
+        mpu.setFilterBandwidth(MPU6050_BAND_260_HZ);
+        mpu.setSampleRateDivisor(7);
+        mpu.setClock(MPU6050_PLL_GYROX);
+        sensor_ready = (Wire.getClock() == 400000) && write_register(0x38, 0x10);
+        sensor_ready = write_register(fifo_enable, 0) && sensor_ready;
+        sensor_ready = write_register(user_control, 0) && sensor_ready;
+        sensor_ready = report_configuration() && sensor_ready;
     }
-    Serial.printf("I2C started : %s.\n", i2c_started ? "Yes" : "No");
-    Serial.printf("MPU6050 initialized : %s.\n", mpu_started ? "Yes" : "No");
-    if (mpu_started)
+    if (!sensor_ready)
     {
-        mpu.setAccelerometerRange(accel_range);
-        mpu.setGyroRange(gyro_range);
-        mpu.setFilterBandwidth(filter_bandwidth);
-        mpu.setSampleRateDivisor(sample_divider);
-        mpu.setClock(clock_source);
-
-        bool config_ok = mpu.getAccelerometerRange() == accel_range;
-        config_ok = config_ok && mpu.getGyroRange() == gyro_range;
-        config_ok = config_ok && mpu.getFilterBandwidth() == filter_bandwidth;
-        config_ok = config_ok && mpu.getSampleRateDivisor() == sample_divider;
-        config_ok = config_ok && mpu.getClock() == clock_source;
-
-        mpu_started = config_ok && register_device.begin();
-        if (mpu_started)
-        {
-            mpu_started = write_sensor_bias(0x06, accel_bias_x, "accel X", true);
-        }
-        if (mpu_started)
-        {
-            mpu_started = write_sensor_bias(0x08, accel_bias_y, "accel Y", true);
-        }
-        if (mpu_started)
-        {
-            mpu_started = write_sensor_bias(0x0A, accel_bias_z, "accel Z", true);
-        }
-        if (mpu_started)
-        {
-            mpu_started = write_sensor_bias(0x13, gyro_bias_x, "gyro X", false);
-        }
-        if (mpu_started)
-        {
-            mpu_started = write_sensor_bias(0x15, gyro_bias_y, "gyro Y", false);
-        }
-        if (mpu_started)
-        {
-            mpu_started = write_sensor_bias(0x17, gyro_bias_z, "gyro Z", false);
-        }
-        Serial.printf("CALIBRATION_REF,level-2026-10-25,physical_verification_pending\n");
-        Serial.printf("MPU_CONFIG accel=%u gyro=%u dlpf=%u divider=%u clock=%u verified=%s\n",
-            (unsigned)accel_range, (unsigned)gyro_range, (unsigned)filter_bandwidth,
-            (unsigned)sample_divider, (unsigned)clock_source, mpu_started ? "Yes" : "No");
+        Serial.printf("ERROR,INITIALIZATION_OR_CONFIG_FAILED\n");
     }
 }
 
 void loop(void)
 {
-    if (mpu_started)
+    if (Serial.available())
     {
-        sensors_event_t acceleration;
-        sensors_event_t rotation;
-        sensors_event_t temperature;
-        mpu.getEvent(&acceleration, &rotation, &temperature);
-
-        // Bias is already corrected in the MPU registers; do not subtract again.
-        float sensor_x = acceleration.acceleration.x;
-        float sensor_y = acceleration.acceleration.y;
-        float sensor_z = acceleration.acceleration.z;
-
-        // Scale/mounting plus measured level-reference trim: output is in DRONE axes.
-        float drone_x = (0.050469950769f) * sensor_x + (0.992803544943f) * sensor_y + (-0.031256177956f) * sensor_z;
-        float drone_y = (-0.965981480111f) * sensor_x + (0.052583218037f) * sensor_y + (0.249154203796f) * sensor_z;
-        float drone_z = (0.231376149659f) * sensor_x + (0.011045641176f) * sensor_y + (0.963868776624f) * sensor_z;
-
-        Serial.printf("MPU_BIAS_CORRECTED X=%.4f Y=%.4f Z=%.4f m/s^2\n",
-            acceleration.acceleration.x, acceleration.acceleration.y, acceleration.acceleration.z);
-        float magnitude = sqrtf(drone_x * drone_x + drone_y * drone_y + drone_z * drone_z);
-        Serial.printf("DRONE X=%.4f Y=%.4f Z=%.4f norm=%.4f m/s^2\n", drone_x, drone_y, drone_z, magnitude);
-        Serial.printf("TEMP,%.3f,C\n", temperature.temperature);
-        // CSV: uptime_us, drone acceleration, bias-trimmed SENSOR gyro (rad/s).
-        Serial.printf("IMU,%lu,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f\n",
-            (unsigned long)micros(), drone_x, drone_y, drone_z,
-            rotation.gyro.x, rotation.gyro.y, rotation.gyro.z);
+        char command = Serial.read();
+        if (command == 'x')
+        {
+            stop_recording("USER_ABORT");
+        }
+        if (command == '?' && !recording)
+        {
+            Serial.printf("QUERY_REPLY\n");
+            if (sensor_ready)
+            {
+                sensor_ready = report_configuration();
+            }
+            if (!sensor_ready)
+            {
+                Serial.printf("ERROR,SENSOR_NOT_READY\n");
+            }
+        }
+        if (command == 's' && !recording && sensor_ready)
+        {
+            start_recording();
+        }
     }
-    delay(400);
+    if (recording)
+    {
+        if ((uint32_t)(micros() - started_us) > 65000000u)
+        {
+            stop_recording("RECORDING_TIMEOUT");
+            return;
+        }
+        read_one_sample();
+    }
+    else
+    {
+        delay(1);
+    }
 }

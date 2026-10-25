@@ -61,7 +61,7 @@
         "device",
         "monitor",
         "--baud",
-        "115200"
+        "921600"
       ],
       "description": "Open Serial Monitor; append --port COMx"
     },
@@ -69,13 +69,25 @@
       "runtime": "python",
       "path": "tools/calibration/check_accelerometer.py",
       "args": [],
-      "description": "Check actual firmware acceleration expressions against six saved poses; no hardware"
+      "description": "Historical corrected-firmware expression check; not applicable to the current raw capture firmware"
     },
     "imu-noise": {
       "runtime": "python",
       "path": "tools/calibration/imu_noise.py",
       "args": [],
       "description": "Calculate candidate IMU noise statistics from an original saved stationary serial log; no serial connection"
+    },
+    "record-poses": {
+      "runtime": "python",
+      "path": "tools/calibration/record_poses.py",
+      "args": [],
+      "description": "Automatically save 18 one-minute MPU FIFO recordings, prompting before every pose; never uploads"
+    },
+    "check-pose-recorder": {
+      "runtime": "python",
+      "path": "tools/calibration/test_record_poses.py",
+      "args": [],
+      "description": "Synthetic recording protocol tests; no board, serial port, or upload"
     }
   }
 }

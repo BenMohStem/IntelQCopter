@@ -1,4 +1,8 @@
-# Read only these first
+# Current task: record 18 poses
+
+[Upload once and automatically record all 18 poses](../docs/record-18-poses.md). [Active one-file firmware](../firmware/main.cpp).
+
+## Earlier calibration references
 
 1. [main.cpp — current tiny programme](../firmware/main.cpp)
 2. [Current lesson explanation](../docs/accelerometer-calibration.md)

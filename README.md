@@ -1,26 +1,22 @@
-# IntelQCopter â€” small software steps
+# IntelQCopter - small software steps
 
-**Current phase: accelerometer six-pose calibration and flash persistence (provisional).**
+**Current step: collect 18 one-minute MPU6050 recordings, before fitting a new calibration.**
 
-Open these in order:
+1. [Flash once, then record all 18 poses automatically](docs/record-18-poses.md).
+2. [The single Arduino firmware file](firmware/main.cpp).
+3. [The small-step plan](docs/PLAN.md).
 
-1. [The small main.cpp](firmware/main.cpp).
-2. [Latest real-data precision report](docs/precision-2026-10-25.md), then [calibration explanation](docs/accelerometer-calibration.md).
-3. [The revised plan](docs/PLAN.md).
-
-Arduino framework, ESP32-S3, PlatformIO. One firmware file. Braces on separate lines; one statement per line. No sensors, calibration, Xbox, PID or ROS2 in the first lesson. Motor signal pins are inputs, with no motor driver.
-
-You handle the PCB. This branch focuses on software. The earlier larger diagnostics are preserved in [the archive](archive/before-small-lessons/README.md) and Git history, not included in the active build.
-
-**Calibration is prepared for your own upload and verification.** Six user measurements were fitted; reboot/power-cycle and independent-pose tests remain unperformed. No physical acceptance is claimed.
-
-To compile when you want:
+The PC prompts for Z+, Z-, X+, X-, Y+, Y-, repeated three times. Each recording contains 60,000 FIFO samples at nominal 1000 Hz. Original samples and statistical summaries are saved automatically. Firmware applies no user calibration during these measurements; previous calibrated firmware is preserved at commit a1d3c78. No motor driver or motor output is enabled.
 
 ```powershell
 cd C:\Users\Mohamed\Desktop\Work\QCopter-Stepwise
 .\qcopter.ps1 build
+# Upload bench yourself using PlatformIO, then close Serial Monitor.
+.\qcopter.ps1 record-poses --port COM3
 ```
 
-[PlatformIO configuration](platformio.ini) Â· [Important links](important_sources/README.md) Â· [Advanced validation/repair workflow](docs/validation.md).
+Arduino / Adafruit MPU6050 / ESP32-S3 / PlatformIO. Allman braces, one statement per line. Source identity, checked FIFO reads, sample numbering and a payload checksum protect the evidence. A successful recording is not physical calibration acceptance. No controller or simulation is added here.
 
-You build the simulation too. [Commands to open ROS2, RViz and Gazebo yourself](docs/start-ros-gazebo.md).
+[Calibration across multiple orientations](docs/multi-pose-calibration.md) · [Earlier real-data analysis](docs/precision-2026-10-25.md) · [Important files](important_sources/README.md) · [ROS2/Gazebo commands](docs/start-ros-gazebo.md).
+
+You handle the PCB and simulation. This branch focuses on software lessons. Original evidence and previous implementations remain in local artifacts and Git history. Raw recording folders are excluded from public commits; derived results can be reviewed and published later.

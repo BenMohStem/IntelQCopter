@@ -27,7 +27,7 @@ For each step:
 | 05 | Read only the accelerometer Z axis | Value changes when the sensor is turned |
 | 06 | Read only the gyroscope Z axis | Value changes when the sensor rotates |
 
-**Current phase: physical calibration verification.** A real stationary level capture on 25 October yielded a provisional rigid level trim and gyro biases. A temporal holdout replay improved mean leveling error but is not a post-upload test. [Actual measurements, statistics and verification steps](precision-2026-10-25.md). Do not advance to control until reset/pose checks are reviewed.
+**Current phase: collect 18 fresh raw calibration recordings.** Follow [the automatic 1000 Hz recorder](record-18-poses.md). Earlier calibrated firmware is preserved at a1d3c78; active firmware temporarily performs raw FIFO capture, without user bias writes or the level matrix. Physical calibration verification remains pending. A real stationary level capture on 25 October yielded a provisional rigid level trim and gyro biases. A temporal holdout replay improved mean leveling error but is not a post-upload test. [Actual measurements, statistics and verification steps](precision-2026-10-25.md). Do not advance to control until reset/pose checks are reviewed.
 
 ## After those small steps
 
@@ -69,10 +69,14 @@ The existing gate/repair tools stay available behind the lessons. You do not hav
 
 You create the Gazebo worlds, models and simulation. I explain the terminal commands and help with one small problem at a time; I will not build a complete simulation unless you ask. Start independently with [opening ROS2, RViz and the built-in Gazebo world](start-ros-gazebo.md). This does not add simulation code to the18-line firmware lesson. Robot loading, ROS topics, bridges and FC integration are separate later lessons.
 
-## Current noise-data request
+## Earlier noise-data request (superseded during pose capture)
 
 User selected ±8g and ±500 degrees/s. User-selected DLPF 260/256 Hz and divider 15 configure the MPU output for 500 Hz; the bench read/report loop was measured at about 2.42 Hz. Record stationary IMU CSV lines for measured noise statistics before setting Kalman parameters. See [noise instructions](imu-noise.md). Recheck the old six-pose calibration at the new range/filter. No physical acceptance or 500 Hz FC timing is claimed.
 
 ## Required next calibration experiment
 
 The sensor remains fixed to the drone. A single level position cannot validate calibration across tilt. Follow [repeated six-pose measurements and independent tilted-pose validation](multi-pose-calibration.md) before accepting the provisional level trim. Keep firmware unchanged until new evidence supports a correction.
+
+## 18-run recording step (25 October)
+
+User requested 60,000 samples at nominal 1000 Hz for Z+, Z-, X+, X-, Y+, Y-, repeated three times. This supersedes the earlier 2.42 Hz bench reporting configuration while collecting data. New configuration is divider 7 / mode 0, 400 kHz I2C, 921600 baud. The PC recorder saves original samples and means automatically and prompts before each pose. This is prepared for user upload; no physical throughput or calibration acceptance yet. Reserve repetition 3 for initial validation, followed by independent tilted poses.
