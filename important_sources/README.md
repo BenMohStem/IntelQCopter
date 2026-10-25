@@ -21,3 +21,5 @@ The files in tools/ manage builds and history; they are not flight code and need
 [Actual live sensor recording analysis and precision refinement](../docs/precision-2026-10-25.md).
 
 [Next: calibration valid across drone orientations](../docs/multi-pose-calibration.md).
+
+[Run the four 45-degree tilt measurements](../docs/record-45-degree-tilts.md).

@@ -1,0 +1,18 @@
+{
+  "engine": "Python analytic geometry and mocked serial-flow tests; no simulator or hardware access",
+  "tests_passed": 4,
+  "test_scope": [
+    "known gravity vectors for +/-45 degree roll/pitch and combined tilt",
+    "nominal targets never marked as measured; invalid inputs rejected",
+    "frozen candidate compared with known reference",
+    "four runs saved and completed poses skipped on resume"
+  ],
+  "nominal_angle_deg": 45,
+  "samples_per_pose": 20000,
+  "poses": 4,
+  "firmware_unchanged_sha256": "14e0b4afc3e6d8c769ff18261685c2546449f1a052f67b48b71714a24875d6d1",
+  "uploaded": false,
+  "serial_port_opened": false,
+  "physical_validation": "PENDING",
+  "script_sha256": "547245b72753bd8d43d4e45337dacf43100ff17ec47019e92f9cc011c4a70c48"
+}

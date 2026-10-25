@@ -100,6 +100,18 @@
       "path": "tools/calibration/test_analyze_poses.py",
       "args": [],
       "description": "Analytic/synthetic calibration and covariance checks; no hardware"
+    },
+    "record-tilts": {
+      "runtime": "python",
+      "path": "tools/calibration/record_tilts.py",
+      "args": [],
+      "description": "Record four 45-degree tilt poses, prompting and saving automatically; no upload"
+    },
+    "check-tilt-recorder": {
+      "runtime": "python",
+      "path": "tools/calibration/test_record_tilts.py",
+      "args": [],
+      "description": "Check tilt-reference geometry and synthetic capture/resume flow; no board"
     }
   }
 }

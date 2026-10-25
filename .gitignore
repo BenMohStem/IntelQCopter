@@ -17,3 +17,6 @@ __pycache__/
 
 # Original automatic pose recordings stay local; publish only reviewed derived evidence.
 /artifacts/pose-recordings/
+
+# Independent tilt validation: original sensor recordings stay local.
+/artifacts/tilt-recordings/
