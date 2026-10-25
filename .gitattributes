@@ -5,3 +5,7 @@
 *.md text eol=lf
 *.csv text eol=lf
 *.log -text
+
+# Preserve exact raw-source fingerprint for the measurement checkpoint.
+archive/bench-checkpoints/raw-pose1000/main.cpp.txt -text
+firmware/main.cpp text eol=lf
