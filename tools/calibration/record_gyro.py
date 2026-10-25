@@ -32,18 +32,18 @@ def read_header(device, log, source_sha, fit):
             raise ValueError(line)
         if line.startswith("HELLO,"):
             parts = line.split(",")
-            if len(parts) != 3 or parts[1] not in ("IMU_XYZ_V1", "IMU_XYZ_V2"):
+            if len(parts) != 3 or parts[1] not in ("IMU_XYZ_V1", "IMU_XYZ_V2", "IMU_XYZ_V3"):
                 raise ValueError("Board runs an older/different firmware; upload the current bench source")
             if parts[2] != source_sha:
                 raise ValueError("Board source differs from local main.cpp; upload current bench source")
         header.append(line)
-        if line in ("READY,IMU_XYZ_V1", "READY,IMU_XYZ_V2"):
+        if line in ("READY,IMU_XYZ_V1", "READY,IMU_XYZ_V2", "READY,IMU_XYZ_V3"):
             break
     else:
         raise ValueError("No IMU response; upload the current bench firmware first")
-    protocol = "IMU_XYZ_V2" if "READY,IMU_XYZ_V2" in header else "IMU_XYZ_V1"
+    protocol = next(value.split(",")[1] for value in header if value.startswith("READY,"))
     profile = acceleration.parse_profile(header, source_sha, fit, protocol=protocol)
-    scale_line = CORRECTED_GYRO_SCALE if protocol == "IMU_XYZ_V2" else GYRO_SCALE
+    scale_line = CORRECTED_GYRO_SCALE if protocol in ("IMU_XYZ_V2", "IMU_XYZ_V3") else GYRO_SCALE
     if scale_line not in header:
         raise ValueError("Unexpected gyro units/frame or correction mode")
     offsets = [None] * 3
@@ -59,8 +59,10 @@ def read_header(device, log, source_sha, fit):
     if any(value is None for value in offsets):
         raise ValueError("Missing gyro offset metadata")
     profile["gyro_offsets"] = offsets
-    if protocol == "IMU_XYZ_V2":
+    if protocol in ("IMU_XYZ_V2", "IMU_XYZ_V3"):
         profile.update(parse_gyro_correction(header, offsets))
+    if protocol == "IMU_XYZ_V3":
+        profile["tilt_observation"] = True
     return header, profile
 
 
@@ -101,7 +103,8 @@ def parse_gyro_correction(header, offsets):
 
 def parse_sample(line, profile):
     fields = line.split(",")
-    if len(fields) != 16 or fields[0] != "IMU":
+    expected_length = 18 if profile.get("tilt_observation") else 16
+    if len(fields) != expected_length or fields[0] != "IMU":
         raise ValueError("Malformed IMU packet")
     accel_line = ",".join(["ACCEL", fields[1], *fields[2:5], *fields[9:12]])
     sample = acceleration.validate_sample(accel_line, profile)
@@ -119,6 +122,20 @@ def parse_sample(line, profile):
         raise ValueError("Temperature conversion mismatch")
     sample.update({"gyro_counts_at_recorded_offsets": counts, "gyro_sensor_rad_s": rates,
                    "temperature_count": temperature_count, "temperature_C": temperature})
+    if profile.get("tilt_observation"):
+        body = sample["drone_m_s2"]
+        yz = math.hypot(body[1], body[2])
+        observed = [float(value) for value in fields[16:18]]
+        if all(math.isnan(value) for value in observed):
+            if yz > 0.001002:
+                raise ValueError("Unexpected unavailable tilt away from singularity")
+            sample["tilt_deg"] = None
+        else:
+            expected = [math.degrees(math.atan2(body[1],body[2])), math.degrees(math.atan2(-body[0],yz))]
+            # Printed body acceleration is rounded to 1e-6; guard ill-conditioned poses.
+            if any(not math.isfinite(value) or abs((value-ref+180)%360-180) > 0.001 + math.degrees(0.000002/max(yz,0.000001)) for value,ref in zip(observed,expected)):
+                raise ValueError("Tilt output does not match calibrated body acceleration")
+            sample["tilt_deg"] = observed
     return sample
 
 

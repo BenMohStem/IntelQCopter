@@ -29,3 +29,6 @@ __pycache__/
 
 # Original gyro bench captures remain private.
 /artifacts/gyro-recordings/
+
+# Original live angle bench logs stay private.
+/artifacts/angle-recordings/

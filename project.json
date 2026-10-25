@@ -159,7 +159,7 @@
       "runtime": "python",
       "path": "tools/calibration/record_gyro.py",
       "args": [],
-      "description": "Record IMU_XYZ_V2 corrected gyro residuals (V1 observation remains supported); verifies metadata/output, no upload or recorder trim writes"
+      "description": "Record current corrected gyro residuals; recognizes V1/V2/V3 source protocols without mixing sample layouts"
     },
     "check-gyro-observation": {
       "runtime": "python",
@@ -190,6 +190,18 @@
       "path": "tools/calibration/test_gyro_selection.py",
       "args": [],
       "description": "Offline selection boundary tests including a valid packet after timed recording; no board"
+    },
+    "record-angles": {
+      "runtime": "python",
+      "path": "tools/calibration/record_angles.py",
+      "args": [],
+      "description": "Show actual V3 MCU gravity-only roll/pitch and save original data automatically; gentle pose observation, no calibration or motor commands"
+    },
+    "check-tilt-observation": {
+      "runtime": "python",
+      "path": "tools/calibration/test_tilt_observation.py",
+      "args": [],
+      "description": "Nominal gravity geometry/signs and V3 protocol checks; no MCU execution"
     }
   }
 }

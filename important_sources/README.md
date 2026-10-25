@@ -1,18 +1,10 @@
 # Current important files
 
-1. [main.cpp - single active Arduino firmware](../firmware/main.cpp).
-2. [Current gyro bias application and verification](../docs/gyro-bias-application.md).
-3. [Complete accelerometer correction and math](../docs/full-accelerometer-calibration.md).
-4. [Current plan](../docs/PLAN.md).
+1. [main.cpp - one active Arduino firmware](../firmware/main.cpp).
+2. [Current gravity roll/pitch lesson](../docs/gravity-tilt-observation.md).
+3. [Current plan](../docs/PLAN.md).
+4. [Full accelerometer math](../docs/full-accelerometer-calibration.md).
+5. [Gyro bias and boot restoration](../docs/gyro-bias-application.md).
+6. [Actual gyro reset/power-cycle evidence](../measurements/mpu6050/2026-10-26-gyro-restart-validation/report.md).
 
-[Fitted model](../measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/report.md) · [Tilt review](../measurements/mpu6050/2026-10-25-tilt-validation/report.md) · [Reset/power-cycle evidence](../measurements/mpu6050/2026-10-25-restart-validation/report.md).
-
-PC recording and analysis tools live in tools/calibration. This index links the real sources rather than maintaining diverging copies. Gyro observation is prepared; it is not yet a physical validation. Original raw recordings remain private. Motor outputs remain disabled.
-
-[Latest code review and pending gyro-calibration steps](../measurements/mpu6050/2026-10-25-gyro-code-review/report.md).
-
-[Three actual gyro runs: verified data, candidate bias and graph](../measurements/mpu6050/2026-10-25-three-gyro-runs/report.md). Candidate is offline only; corrected firmware testing is next.
-
-V2 now implements the measured gyro bias. New corrected hardware capture and restart verification are pending; older reports describe their original observation/replay checkpoints.
-
-[Actual V2 corrected gyro validation: 60 s + 300 s, original logs verified and residual drift graphed](../measurements/mpu6050/2026-10-26-corrected-gyro-validation/report.md). Next: labeled reset/power-cycle checks; no calibration changes are needed for those tests.
+BMP280 deferred until available. The new angle lesson is prepared, not physically tested. Calibration constants are unchanged; no motor output. Tools live in tools/calibration; original logs remain private. These links point to canonical files instead of duplicate source copies.

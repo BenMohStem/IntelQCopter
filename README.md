@@ -1,24 +1,19 @@
-# IntelQCopter - small sensor lessons
+# IntelQCopter - small MPU6050 lessons
 
-**Current step: apply the measured gyro bias at boot, then record and verify corrected stationary rates.** Complete accelerometer calibration is preserved; motor outputs remain disabled. New correction is prepared, not yet physically validated.
+**Current step: observe gravity-based roll and pitch from the calibrated accelerometer.** BMP280 is unavailable and deferred. Accelerometer and gyro correction constants are unchanged. No PID, altitude control or motor output is enabled.
 
-[Current Arduino main.cpp](firmware/main.cpp) · [Current gyro correction lesson](docs/gyro-bias-application.md) · [Current plan](docs/PLAN.md) · [Important sources](important_sources/README.md).
+[Single Arduino main.cpp](firmware/main.cpp) · [Current angle lesson](docs/gravity-tilt-observation.md) · [Plan](docs/PLAN.md) · [Important sources](important_sources/README.md).
 
-Upload bench firmware yourself in PlatformIO, close Serial Monitor, then keep the drone motionless on a fixed support and run:
+Upload bench yourself, close Serial Monitor, then run:
 
 ```powershell
 cd C:\Users\Mohamed\Desktop\Work\QCopter-Stepwise
-.\qcopter.ps1 record-gyro --port COM3 --seconds 60
+.\qcopter.ps1 upload --upload-port COM3
+.\qcopter.ps1 record-angles --port COM3 --seconds 90
 ```
 
-Progress is visible and original logs save automatically. V2 firmware applies the frozen measured bias via MPU trim plus software rounding remainder. The PC checks that correction and reports residual mean, covariance, temperature and drift without applying another bias. Bench telemetry is near/below 100 Hz; it is not the future 500 Hz flight loop or final Kalman noise acquisition.
+Show level and four gentle side-raised poses, pausing at each. The terminal displays actual MCU angles and saves originals automatically. These gravity-only angles are meaningful when stationary; they are not yet a fused flight attitude.
 
-The accelerometer still uses all nine coefficients in `C(sensor-bias)` at arbitrary orientations, with MPU trim and software rounding remainder counted once. [Calibration explanation](docs/full-accelerometer-calibration.md) · [Fitted model](measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/report.md) · [Independent tilted-pose review](measurements/mpu6050/2026-10-25-tilt-validation/report.md).
+[Gyro reset/power-cycle evidence](measurements/mpu6050/2026-10-26-gyro-restart-validation/report.md) verified 5,003 samples and restored targets [-6,9,27] in the two operator-reported cases. Small residuals remain; no zero-drift claim.
 
-[First actual MCU XYZ recording](measurements/mpu6050/2026-10-25-first-live-xyz/report.md) and [reset/full-power-cycle checks](measurements/mpu6050/2026-10-25-restart-validation/report.md) verified implementation in those cases. Reference accuracy and flight acceptance remain separate. The V2 bias application still has build/offline evidence only until you perform a fresh corrected capture.
-
-[Raw-recorder checkpoint](archive/bench-checkpoints/raw-pose1000/README.md) · [Historical X-bias explanation](docs/bias-x-provenance.html) · [ROS2/Gazebo terminal commands](docs/start-ros-gazebo.md).
-
-[Three actual gyro runs: verified data, candidate bias and graph](measurements/mpu6050/2026-10-25-three-gyro-runs/report.md). Candidate has now been implemented in V2; fresh corrected firmware testing is next.
-
-[Actual V2 corrected gyro validation: 60 s + 300 s, original logs verified and residual drift graphed](measurements/mpu6050/2026-10-26-corrected-gyro-validation/report.md). Next: labeled reset/power-cycle checks; no calibration changes are needed for those tests.
+[Five-minute corrected gyro results](measurements/mpu6050/2026-10-26-corrected-gyro-validation/report.md) · [Measured gyro bias](measurements/mpu6050/2026-10-25-three-gyro-runs/report.md) · [Gyro trim explanation](docs/gyro-bias-application.md) · [Accelerometer math](docs/full-accelerometer-calibration.md) · [Tilt calibration review](measurements/mpu6050/2026-10-25-tilt-validation/report.md) · [Raw source checkpoint](archive/bench-checkpoints/raw-pose1000/README.md) · [ROS2/Gazebo terminal commands](docs/start-ros-gazebo.md).

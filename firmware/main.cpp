@@ -156,7 +156,7 @@ static void report(void)
         Serial.printf("ERROR,SENSOR_OR_OFFSET_CHECK_FAILED\n");
         return;
     }
-    Serial.printf("HELLO,IMU_XYZ_V2,%s\n", BENCH_SOURCE_SHA);
+    Serial.printf("HELLO,IMU_XYZ_V3,%s\n", BENCH_SOURCE_SHA);
     Serial.printf("CONFIG,accel_g=8,gyro_dps=500,dlpf=0,divider=7,i2c_hz=400000,user_cal=xyz_mpu_plus_matrix\n");
     Serial.printf("BOARD,%s,%012llX\n", ESP.getChipModel(), ESP.getEfuseMac());
     for (uint8_t axis = 0; axis < 3; axis++)
@@ -177,7 +177,7 @@ static void report(void)
             gyro_baseline[axis], gyro_applied_offset[axis], gyro_remaining_bias[axis]);
     }
     Serial.printf("GYRO_SCALE,65.5,counts_per_degree_per_second,frame=sensor,correction=mpu_plus_remainder\n");
-    Serial.printf("READY,IMU_XYZ_V2\n");
+    Serial.printf("READY,IMU_XYZ_V3\n");
 }
 
 void setup(void)
@@ -237,11 +237,15 @@ void loop(void)
             {
                 gyro[axis] = counts[axis + 4] * (PI / (180.0f * 65.5f)) - gyro_remaining_bias[axis];
             }
+            // Gravity-only tilt in drone axes; meaningful when motionless.
+            float yz = hypotf(drone[1], drone[2]);
+            float roll = yz > 0.001f ? atan2f(drone[1], drone[2]) * RAD_TO_DEG : NAN;
+            float pitch = yz > 0.001f ? atan2f(-drone[0], yz) * RAD_TO_DEG : NAN;
             float temperature = counts[3] / 340.0f + 36.53f;
-            Serial.printf("IMU,%lu,%d,%d,%d,%d,%d,%d,%d,%.6f,%.6f,%.6f,%.7f,%.7f,%.7f,%.3f\n",
+            Serial.printf("IMU,%lu,%d,%d,%d,%d,%d,%d,%d,%.6f,%.6f,%.6f,%.7f,%.7f,%.7f,%.3f,%.3f,%.3f\n",
                 (unsigned long)millis(), counts[0], counts[1], counts[2], counts[3],
                 counts[4], counts[5], counts[6], drone[0], drone[1], drone[2],
-                gyro[0], gyro[1], gyro[2], temperature);
+                gyro[0], gyro[1], gyro[2], temperature, roll, pitch);
         }
     }
     if (!sensor_ready)
