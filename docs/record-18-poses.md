@@ -17,7 +17,7 @@ Use the board's actual COM port if it changed. You do not need to edit the pose 
 
 The recorder asks you to place the drone in each position. Keep the MPU rigidly mounted. The label means **that DRONE axis points upward**, not necessarily the matching axis printed on the MPU. Use a stable support/reference rather than holding the drone in your hand. Propellers remain removed and motor outputs disabled.
 
-After pressing Enter there are five seconds for settling, followed by 20,000 samples: nominally twenty seconds at 1000 Hz. Five seconds is just a settling pause, not a guarantee of thermal stability; let the powered sensor temperature settle before starting the session. No automatic next pose begins until you press Enter again.
+After pressing Enter there are five seconds for settling, followed by 20,000 samples: nominally twenty seconds at 1000 Hz. Five seconds is just a settling pause, not a guarantee of thermal stability; let the powered sensor temperature settle before starting the session. The terminal shows progress every 1,000 samples (about once per second). No automatic next pose begins until you press Enter again.
 
 | Repetition | Pose order |
 |---|---|

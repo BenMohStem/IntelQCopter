@@ -146,7 +146,7 @@ def capture(device, attempt, expected_sha, reference_configuration=None):
                     started = True
                 elif line.startswith("S,") and started:
                     samples.add(line)
-                    if samples.count % 10000 == 0:
+                    if samples.count % 1000 == 0:
                         log.flush()
                         print(f"  {samples.count}/20000 samples saved")
                 elif line.startswith("MEAN_COUNTS,") and samples.count == 20000:
