@@ -2,12 +2,11 @@
   "target": "ESP32-S3-DevKitC-1 reference, actual board not identified yet",
   "bench_id": "UNMEASURED",
   "required_sensors": [
-    "MPU6050",
-    "BMP280"
+    "MPU6050"
   ],
   "i2c_sda_gpio": 9,
   "i2c_scl_gpio": 8,
-  "i2c_clock_hz": 100000,
+  "i2c_clock_hz": 400000,
   "motor_gpio_input_only": [
     12,
     1,
@@ -24,7 +23,7 @@
     "TOFSense F2 Mini",
     "ROS2 companion"
   ],
-  "currently_available_for_testing": false,
+  "currently_available_for_testing": true,
   "assumed_propellers_removed": true,
   "lidar_uart": {
     "rx_gpio": 6,
@@ -36,5 +35,10 @@
     "roll_pitch": "angle",
     "vertical": "altitude_hold_and_vertical_speed",
     "xy_braking": false
-  }
+  },
+  "fc_target_rate_hz": 1000,
+  "deferred_sensors": [
+    "BMP280"
+  ],
+  "availability_note": "MPU6050/ESP32-S3 real captures verified; BMP280 unavailable. Other assembly parts not reconfirmed."
 }

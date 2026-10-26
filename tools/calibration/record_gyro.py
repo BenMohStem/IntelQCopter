@@ -34,18 +34,18 @@ def read_header(device, log, source_sha, fit):
             raise ValueError(line)
         if line.startswith("HELLO,"):
             parts = line.split(",")
-            if len(parts) != 3 or parts[1] not in ("IMU_XYZ_V1", "IMU_XYZ_V2", "IMU_XYZ_V3"):
+            if len(parts) != 3 or parts[1] not in ("IMU_XYZ_V1", "IMU_XYZ_V2", "IMU_XYZ_V3", "FIFO1000_V1"):
                 raise ValueError("Board runs an older/different firmware; upload the current bench source")
             if parts[2] != source_sha:
                 raise ValueError("Board source differs from local main.cpp; upload current bench source")
         header.append(line)
-        if line in ("READY,IMU_XYZ_V1", "READY,IMU_XYZ_V2", "READY,IMU_XYZ_V3"):
+        if line in ("READY,IMU_XYZ_V1", "READY,IMU_XYZ_V2", "READY,IMU_XYZ_V3", "READY,FIFO1000_V1"):
             break
     else:
         raise ValueError("No IMU response; upload the current bench firmware first")
     protocol = next(value.split(",")[1] for value in header if value.startswith("READY,"))
     profile = acceleration.parse_profile(header, source_sha, fit, protocol=protocol)
-    scale_line = CORRECTED_GYRO_SCALE if protocol in ("IMU_XYZ_V2", "IMU_XYZ_V3") else GYRO_SCALE
+    scale_line = CORRECTED_GYRO_SCALE if protocol in ("IMU_XYZ_V2", "IMU_XYZ_V3", "FIFO1000_V1") else GYRO_SCALE
     if scale_line not in header:
         raise ValueError("Unexpected gyro units/frame or correction mode")
     offsets = [None] * 3
@@ -61,10 +61,14 @@ def read_header(device, log, source_sha, fit):
     if any(value is None for value in offsets):
         raise ValueError("Missing gyro offset metadata")
     profile["gyro_offsets"] = offsets
-    if protocol in ("IMU_XYZ_V2", "IMU_XYZ_V3"):
+    if protocol in ("IMU_XYZ_V2", "IMU_XYZ_V3", "FIFO1000_V1"):
         profile.update(parse_gyro_correction(header, offsets))
     if protocol == "IMU_XYZ_V3":
         profile["tilt_observation"] = True
+    if protocol == "FIFO1000_V1":
+        if "RATE,hz=1000,packet_bytes=14,clock=mpu_fifo,diagnostic_divider=100" not in header:
+            raise ValueError("Unexpected FIFO acquisition rate/packet layout")
+        profile["fifo_acquisition"] = True
     return header, profile
 
 
@@ -244,6 +248,8 @@ def main():
         with (folder/"serial.log").open("xb") as log:
             report["commands_sent"].append("?")
             header, profile = read_header(device, log, source_sha, fit)
+            if profile.get("fifo_acquisition"):
+                raise ValueError("Current FIFO firmware requires record-1khz, not record-gyro")
             report["header"] = header
             report["profile"] = profile
             print("Five seconds settling, then stationary measurement...")

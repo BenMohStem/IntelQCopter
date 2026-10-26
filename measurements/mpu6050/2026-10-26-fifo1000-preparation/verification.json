@@ -1,0 +1,116 @@
+{
+  "status": "PREPARED_NEW_HARDWARE_UPLOAD_AND_CAPTURE_PENDING",
+  "FC_target_hz": 1000,
+  "firmware_source_sha256": "352805b212878cdc7b9a8190ba35dc24c3a0a95b7824a428a869d32ef888113e",
+  "firmware_binary_sha256": "619574f22510feb5aac45aa4fc8936b996ec05b22c89b251dfec7dd3504ba3f9",
+  "build_engine": "PlatformIO espressif32@7.1.3 Arduino ESP32-S3 lesson build",
+  "build_exit_code": 0,
+  "source_fingerprint_embedded": true,
+  "offline_unique_tests": 41,
+  "native_source_cases": 14,
+  "native_engine": "Native x64 execution of actual firmware/main.cpp compiled with MSVC, fake Arduino/I2C/serial peripherals",
+  "native_is_ESP32_emulation": false,
+  "native_is_physical_timing": false,
+  "native_cases": [
+    {
+      "case": "normal",
+      "exit_code": 0,
+      "result": "PASS normal (HOST PERIPHERAL MODEL, NOT HARDWARE TIMING)"
+    },
+    {
+      "case": "wrap",
+      "exit_code": 0,
+      "result": "PASS wrap (HOST PERIPHERAL MODEL, NOT HARDWARE TIMING)"
+    },
+    {
+      "case": "retained",
+      "exit_code": 0,
+      "result": "PASS retained (HOST PERIPHERAL MODEL, NOT HARDWARE TIMING)"
+    },
+    {
+      "case": "invalid_boot",
+      "exit_code": 0,
+      "result": "PASS invalid boot rejected before trim writes"
+    },
+    {
+      "case": "invalid_gyro_boot",
+      "exit_code": 0,
+      "result": "PASS invalid_gyro_boot rejected during initialization"
+    },
+    {
+      "case": "trim_readback_failure",
+      "exit_code": 0,
+      "result": "PASS trim_readback_failure rejected during initialization"
+    },
+    {
+      "case": "fifo_enable_failure",
+      "exit_code": 0,
+      "result": "PASS FIFO enable failure stops acquisition"
+    },
+    {
+      "case": "overflow",
+      "exit_code": 0,
+      "result": "PASS overflow (HOST PERIPHERAL MODEL, NOT HARDWARE TIMING)"
+    },
+    {
+      "case": "i2c_failure",
+      "exit_code": 0,
+      "result": "PASS i2c_failure (HOST PERIPHERAL MODEL, NOT HARDWARE TIMING)"
+    },
+    {
+      "case": "fifo_packet_failure",
+      "exit_code": 0,
+      "result": "PASS fifo_packet_failure (HOST PERIPHERAL MODEL, NOT HARDWARE TIMING)"
+    },
+    {
+      "case": "offset_change",
+      "exit_code": 0,
+      "result": "PASS offset_change (HOST PERIPHERAL MODEL, NOT HARDWARE TIMING)"
+    },
+    {
+      "case": "slow_bus",
+      "exit_code": 0,
+      "result": "PASS slow_bus (HOST PERIPHERAL MODEL, NOT HARDWARE TIMING)"
+    },
+    {
+      "case": "timeout",
+      "exit_code": 0,
+      "result": "PASS timeout (HOST PERIPHERAL MODEL, NOT HARDWARE TIMING)"
+    },
+    {
+      "case": "abort",
+      "exit_code": 0,
+      "result": "PASS abort (HOST PERIPHERAL MODEL, NOT HARDWARE TIMING)"
+    }
+  ],
+  "original_build_evidence": "artifacts/build/20261025T235348910268Z/build.json",
+  "original_checks": "artifacts/bench-checks/20261025T235823976506Z/summary.json",
+  "original_native_evidence": "artifacts/native-fifo-tests/20261025T235825121782Z/summary.json",
+  "new_firmware_uploaded": false,
+  "new_1kHz_hardware_capture": false,
+  "motor_outputs_enabled": false,
+  "preserved_targets": {
+    "accel": [
+      -2348,
+      2993,
+      1212
+    ],
+    "gyro": [
+      -6,
+      9,
+      27
+    ]
+  },
+  "assumptions": [
+    "MPU6050 nominal 1 kHz schedule at DLPF0/divider7",
+    "400 kHz I2C and 921600 UART configured; sustained throughput not yet measured for new firmware",
+    "Source-specific measured calibration on unchanged mounting"
+  ],
+  "limitations": [
+    "FIFO throughput alone does not prove a strict 1 ms FC deadline",
+    "No PID, body-frame gyro integration, yaw/height estimator or actuator driver",
+    "Host clock/FIFO/UART costs are synthetic; not MCU performance",
+    "Actual new FIFO/order/bus/timing tests require upload authorization or user upload"
+  ],
+  "warning": "Do not present host-generated sample streams or simulated-clock timing as real hardware evidence."
+}

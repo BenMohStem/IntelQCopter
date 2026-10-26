@@ -32,3 +32,9 @@ __pycache__/
 
 # Original live angle bench logs stay private.
 /artifacts/angle-recordings/
+
+/artifacts/fifo1000-recordings/
+
+/artifacts/native-fifo-tests/
+
+/artifacts/bench-checks/

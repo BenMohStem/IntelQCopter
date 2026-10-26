@@ -1,23 +1,30 @@
-# IntelQCopter - small MPU6050 lessons
+# IntelQCopter - stepwise ESP32 flight controller
 
-**Current step: observe gravity-based roll and pitch from the calibrated accelerometer.** BMP280 is unavailable and deferred. Accelerometer and gyro correction constants are unchanged. No PID, altitude control or motor output is enabled.
+**Target: 1,000 Hz standalone FC.** Current step: calibrated MPU6050 FIFO acquisition/state processing. One Arduino main.cpp; no motor output. The new code builds and passes offline/source-execution tests; physical 1 kHz validation awaits upload.
 
-[Single Arduino main.cpp](firmware/main.cpp) · [Current angle lesson](docs/gravity-tilt-observation.md) · [Plan](docs/PLAN.md) · [Important sources](important_sources/README.md).
+[Current source](firmware/main.cpp) · [1 kHz stage and verification](docs/fifo1000-stage.md) · [Short plan](docs/PLAN.md) · [Important sources](important_sources/README.md).
 
-Upload bench yourself, close Serial Monitor, then run:
+## Checks
 
 ```powershell
-cd C:\Users\Mohamed\Desktop\Work\QCopter-Stepwise
-.\qcopter.ps1 upload --upload-port COM3
-.\qcopter.ps1 record-angles --port COM3 --seconds 90
+.\qcopter.ps1 check-all --native
+.\qcopter.ps1 build
 ```
 
-Show level and four gentle side-raised poses, pausing at each. The terminal displays actual MCU angles and saves originals automatically. These gravity-only angles are meaningful when stationary; they are not yet a fused flight attitude.
+These do not open the board or upload. Host tests execute actual firmware with fake peripherals; they are not ESP32 emulation or physical timing evidence.
 
-[Gyro reset/power-cycle evidence](measurements/mpu6050/2026-10-26-gyro-restart-validation/report.md) verified 5,003 samples and restored targets [-6,9,27] in the two operator-reported cases. Small residuals remain; no zero-drift claim.
+## Real acquisition
 
-[Five-minute corrected gyro results](measurements/mpu6050/2026-10-26-corrected-gyro-validation/report.md) · [Measured gyro bias](measurements/mpu6050/2026-10-25-three-gyro-runs/report.md) · [Gyro trim explanation](docs/gyro-bias-application.md) · [Accelerometer math](docs/full-accelerometer-calibration.md) · [Tilt calibration review](measurements/mpu6050/2026-10-25-tilt-validation/report.md) · [Raw source checkpoint](archive/bench-checkpoints/raw-pose1000/README.md) · [ROS2/Gazebo terminal commands](docs/start-ros-gazebo.md).
+After the new bench firmware has been uploaded, the assistant can record and verify 20,000 samples per run:
 
-[Assistant-run stationary test: measured results and covariance/tilt derivation](measurements/mpu6050/2026-10-26-assistant-stationary-test/report.md). Actual board remains V2; angles in this report are PC replay. No upload or calibration changes.
+```powershell
+.\qcopter.ps1 record-1khz --port COM3
+```
 
-[Sampling-rate limits and three assistant-run repeatability tests](measurements/mpu6050/2026-10-26-sampling-and-repeatability/report.md): 15,003 actual samples at 83.33 Hz. MPU6050 cannot provide 10 kHz fresh measurements. No high-rate firmware or calibration change was made.
+Original samples/logs, MCU computation checks, checksum, throughput, FIFO occupancy and timing are saved automatically. The program rejects corrupt/incomplete capture rather than inventing samples. The previously connected V2 firmware still runs at about 83 Hz until uploaded; no new upload has been performed by the assistant.
+
+## Preserved work
+
+[Accelerometer calibration](docs/full-accelerometer-calibration.md) · [Gyro bias restoration](docs/gyro-bias-application.md) · [Actual gyro restart results](measurements/mpu6050/2026-10-26-gyro-restart-validation/report.md) · [Actual repeatability results](measurements/mpu6050/2026-10-26-sampling-and-repeatability/report.md).
+
+BMP280/altitude are deferred. Gyro frame validation, attitude fusion, PID/mixer and simulated gains are later stages. Physical arming remains disabled. Pico firmware stays on the original main branch; this branch preserves the ESP32 software lessons.

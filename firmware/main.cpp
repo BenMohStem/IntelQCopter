@@ -19,6 +19,8 @@ static const float accel_matrix[3][3] = {
 static const int16_t expected_baseline[3] = {-2074, 2979, 1074};
 
 // Frozen from gyro runs 1-2; run 3 was held out. Units: sensor rad/s.
+static const float radians_to_degrees = 57.29577951308232f;
+static const float degrees_to_radians = 0.01745329251994329577f;
 static const float gyro_bias[3] = {0.003098404f, -0.004985037f, -0.014435425f};
 static const int16_t gyro_baseline[3] = {0, 0, 0};
 int16_t gyro_applied_offset[3] = { 0 };
@@ -78,14 +80,14 @@ static bool restore_gyro_bias(void)
     // Validate all axes first; write absolute targets to avoid accumulating trim.
     for (uint8_t axis = 0; axis < 3; axis++)
     {
-        int32_t decrement = lroundf(gyro_bias[axis] * (180.0f / PI) * 32.8f);
+        int32_t decrement = lroundf(gyro_bias[axis] * radians_to_degrees * 32.8f);
         int32_t target = (int32_t)gyro_baseline[axis] - decrement;
         if (target < -32768 || target > 32767)
         {
             return false;
         }
         gyro_applied_offset[axis] = (int16_t)target;
-        gyro_remaining_bias[axis] = gyro_bias[axis] - decrement * (PI / (180.0f * 32.8f));
+        gyro_remaining_bias[axis] = gyro_bias[axis] - decrement * (degrees_to_radians / 32.8f);
         Adafruit_BusIO_Register reg(&sensor, 0x13 + 2 * axis, 2, MSBFIRST);
         uint16_t observed;
         if (!reg.read(&observed))
@@ -148,6 +150,69 @@ static void correct_acceleration(const int16_t counts[3], float drone[3])
     }
 }
 
+static const uint32_t control_rate_hz = 1000;
+static const uint32_t capture_samples = control_rate_hz * 20;
+static const uint32_t diagnostic_divider = control_rate_hz / 10;
+bool recording = false;
+uint32_t sequence = 0;
+uint32_t capture_started_us = 0;
+uint32_t previous_service_us = 0;
+uint32_t maximum_service_gap_us = 0;
+uint32_t maximum_processing_us = 0;
+uint32_t payload_hash = 2166136261u;
+uint16_t maximum_fifo_bytes = 0;
+uint32_t maximum_handler_us = 0;
+// Observable latest state is updated for EVERY FIFO sample, not only diagnostics.
+volatile float latest_drone_accel[3] = { 0 };
+volatile float latest_sensor_gyro[3] = { 0 };
+volatile float latest_roll_deg = 0;
+volatile float latest_pitch_deg = 0;
+
+static bool write_register(uint8_t address, uint8_t value)
+{
+    Adafruit_BusIO_Register reg(&sensor, address);
+    return reg.write(value);
+}
+
+static bool read_registers(uint8_t address, uint8_t *bytes, uint8_t length)
+{
+    return sensor.write_then_read(&address, 1, bytes, length);
+}
+
+static void stop_acquisition(const char *reason)
+{
+    bool stopped = write_register(0x23, 0);
+    stopped = write_register(0x6A, 0) && stopped;
+    recording = false;
+    sensor_ready = false;
+    Serial.printf("ERROR,%s,stopped=%u\n", reason, (unsigned)stopped);
+}
+
+static bool reset_fifo(void)
+{
+    bool ok = write_register(0x23, 0);
+    ok = write_register(0x6A, 0) && ok;
+    ok = write_register(0x6A, 0x04) && ok;
+    delay(2);
+    uint8_t status;
+    ok = read_registers(0x3A, &status, 1) && ok;
+    ok = write_register(0x6A, 0x40) && ok;
+    return ok;
+}
+
+static bool enable_fifo(void)
+{
+    // Packet order: accel XYZ, temperature, gyro XYZ (14 bytes).
+    if (!write_register(0x23, 0xF8))
+    {
+        return false;
+    }
+    uint8_t sources;
+    uint8_t control;
+    return read_registers(0x23, &sources, 1) && read_registers(0x6A, &control, 1)
+        && sources == 0xF8 && (control & 0x40) != 0;
+}
+
 static void report(void)
 {
     if (!sensor_ready || !verify_offsets())
@@ -156,7 +221,7 @@ static void report(void)
         Serial.printf("ERROR,SENSOR_OR_OFFSET_CHECK_FAILED\n");
         return;
     }
-    Serial.printf("HELLO,IMU_XYZ_V3,%s\n", BENCH_SOURCE_SHA);
+    Serial.printf("HELLO,FIFO1000_V1,%s\n", BENCH_SOURCE_SHA);
     Serial.printf("CONFIG,accel_g=8,gyro_dps=500,dlpf=0,divider=7,i2c_hz=400000,user_cal=xyz_mpu_plus_matrix\n");
     Serial.printf("BOARD,%s,%012llX\n", ESP.getChipModel(), ESP.getEfuseMac());
     for (uint8_t axis = 0; axis < 3; axis++)
@@ -177,11 +242,13 @@ static void report(void)
             gyro_baseline[axis], gyro_applied_offset[axis], gyro_remaining_bias[axis]);
     }
     Serial.printf("GYRO_SCALE,65.5,counts_per_degree_per_second,frame=sensor,correction=mpu_plus_remainder\n");
-    Serial.printf("READY,IMU_XYZ_V3\n");
+    Serial.printf("RATE,hz=1000,packet_bytes=14,clock=mpu_fifo,diagnostic_divider=100\n");
+    Serial.printf("READY,FIFO1000_V1\n");
 }
 
 void setup(void)
 {
+    Serial.setTxBufferSize(4096);
     Serial.begin(921600);
     pinMode(12, INPUT_PULLDOWN);
     pinMode(1, INPUT_PULLDOWN);
@@ -207,50 +274,188 @@ void setup(void)
     }
     sensor_ready = sensor_ready && restore_accel_bias();
     sensor_ready = sensor_ready && restore_gyro_bias();
+    sensor_ready = sensor_ready && write_register(0x38, 0x10);
     report();
+    Serial.flush();
+    sensor_ready = sensor_ready && reset_fifo() && enable_fifo();
+    if (!sensor_ready)
+    {
+        stop_acquisition("INITIALIZATION_FAILED");
+    }
+}
+
+static void start_capture(void)
+{
+    if (!verify_offsets() || !reset_fifo())
+    {
+        stop_acquisition("CAPTURE_START_FAILED");
+        return;
+    }
+    sequence = 0;
+    previous_service_us = 0;
+    maximum_service_gap_us = 0;
+    maximum_processing_us = 0;
+    maximum_handler_us = 0;
+    maximum_fifo_bytes = 0;
+    payload_hash = 2166136261u;
+    Serial.printf("BEGIN,%lu\n", (unsigned long)capture_samples);
+    Serial.flush();
+    capture_started_us = micros();
+    recording = enable_fifo();
+    if (!recording)
+    {
+        stop_acquisition("FIFO_ENABLE_FAILED");
+    }
+}
+
+static bool verify_next_offset(void)
+{
+    static uint8_t index = 0;
+    uint8_t axis = index % 3;
+    uint8_t address = index < 3 ? 0x06 + 2 * axis : 0x13 + 2 * axis;
+    int16_t expected = index < 3 ? applied_offset[axis] : gyro_applied_offset[axis];
+    Adafruit_BusIO_Register reg(&sensor, address, 2, MSBFIRST);
+    uint16_t observed;
+    bool ok = reg.read(&observed) && (int16_t)observed == expected;
+    index = (index + 1) % 6;
+    return ok;
+}
+
+static void process_one_sample(void)
+{
+    uint32_t handler_started_us = micros();
+    uint8_t status;
+    uint8_t count_bytes[2];
+    if (!read_registers(0x3A, &status, 1) || !read_registers(0x72, count_bytes, 2))
+    {
+        stop_acquisition("FIFO_STATUS_READ_FAILED");
+        return;
+    }
+    uint16_t available = ((uint16_t)count_bytes[0] << 8) | count_bytes[1];
+    maximum_fifo_bytes = max(maximum_fifo_bytes, available);
+    if ((status & 0x10) || available >= 980)
+    {
+        stop_acquisition("FIFO_OVERFLOW_OR_BACKLOG");
+        return;
+    }
+    if (available < 14)
+    {
+        delayMicroseconds(30);
+        return;
+    }
+    uint8_t bytes[14];
+    if (!read_registers(0x74, bytes, sizeof(bytes)))
+    {
+        stop_acquisition("FIFO_PACKET_READ_FAILED");
+        return;
+    }
+    uint32_t service_us = micros();
+    if (previous_service_us != 0)
+    {
+        maximum_service_gap_us = max(maximum_service_gap_us, service_us - previous_service_us);
+    }
+    previous_service_us = service_us;
+    int16_t counts[7];
+    float drone[3];
+    float gyro[3];
+    for (uint8_t axis = 0; axis < 7; axis++)
+    {
+        counts[axis] = (int16_t)(((uint16_t)bytes[2 * axis] << 8) | bytes[2 * axis + 1]);
+    }
+    correct_acceleration(counts, drone);
+    for (uint8_t axis = 0; axis < 3; axis++)
+    {
+        gyro[axis] = counts[axis + 4] * (degrees_to_radians / 65.5f) - gyro_remaining_bias[axis];
+    }
+    float yz = hypotf(drone[1], drone[2]);
+    float roll = yz > 0.001f ? atan2f(drone[1], drone[2]) * radians_to_degrees : NAN;
+    float pitch = yz > 0.001f ? atan2f(-drone[0], yz) * radians_to_degrees : NAN;
+    for (uint8_t axis = 0; axis < 3; axis++)
+    {
+        latest_drone_accel[axis] = drone[axis];
+        latest_sensor_gyro[axis] = gyro[axis];
+    }
+    latest_roll_deg = roll;
+    latest_pitch_deg = pitch;
+    maximum_processing_us = max(maximum_processing_us, (uint32_t)(micros() - service_us));
+    if (recording)
+    {
+        for (uint8_t index = 0; index < sizeof(bytes); index++)
+        {
+            payload_hash = (payload_hash ^ bytes[index]) * 16777619u;
+        }
+        Serial.printf("S,%lu,%d,%d,%d,%d,%d,%d,%d\n", (unsigned long)sequence,
+            counts[0], counts[1], counts[2], counts[3], counts[4], counts[5], counts[6]);
+    }
+    // Slow diagnostics are separate from the per-sample calculations.
+    if (sequence % diagnostic_divider == 0)
+    {
+        Serial.printf("D,%lu,%.6f,%.6f,%.6f,%.7f,%.7f,%.7f,%.3f,%.3f\n",
+            (unsigned long)sequence, drone[0], drone[1], drone[2], gyro[0], gyro[1], gyro[2], roll, pitch);
+    }
+    sequence++;
+    if (sequence % diagnostic_divider == 0 && !verify_next_offset())
+    {
+        stop_acquisition("LIVE_OFFSETS_CHANGED");
+        return;
+    }
+    maximum_handler_us = max(maximum_handler_us, (uint32_t)(micros() - handler_started_us));
+    if (recording && sequence == capture_samples)
+    {
+        uint32_t elapsed_us = micros() - capture_started_us;
+        bool ok = write_register(0x23, 0);
+        ok = read_registers(0x3A, &status, 1) && ok;
+        ok = verify_offsets() && ok;
+        if (!ok || (status & 0x10))
+        {
+            stop_acquisition("FINAL_FIFO_OR_OFFSET_CHECK_FAILED");
+            return;
+        }
+        recording = false;
+        Serial.printf("END,%lu,%lu,%u,%lu,%lu,%lu,%08lX\n", (unsigned long)sequence,
+            (unsigned long)elapsed_us, (unsigned)maximum_fifo_bytes, (unsigned long)maximum_service_gap_us,
+            (unsigned long)maximum_processing_us, (unsigned long)maximum_handler_us, (unsigned long)payload_hash);
+        Serial.flush();
+        sensor_ready = reset_fifo() && enable_fifo();
+        if (!sensor_ready)
+        {
+            stop_acquisition("FIFO_RESTART_FAILED");
+        }
+    }
 }
 
 void loop(void)
 {
-    if (Serial.available() && Serial.read() == '?')
+    if (Serial.available())
     {
-        Serial.printf("QUERY_REPLY\n");
-        report();
+        char command = Serial.read();
+        if (command == 'x')
+        {
+            stop_acquisition("USER_ABORT");
+        }
+        if (command == '?' && !recording && sensor_ready)
+        {
+            sensor_ready = reset_fifo();
+            Serial.printf("QUERY_REPLY\n");
+            report();
+            Serial.flush();
+            sensor_ready = sensor_ready && reset_fifo() && enable_fifo();
+        }
+        if (command == 's' && !recording && sensor_ready)
+        {
+            start_capture();
+        }
+    }
+    if (recording && (uint32_t)(micros() - capture_started_us) > 25000000u)
+    {
+        stop_acquisition("CAPTURE_TIMEOUT");
     }
     if (sensor_ready)
     {
-        uint8_t address = 0x3B;
-        uint8_t bytes[14];
-        sensor_ready = verify_offsets() && sensor.write_then_read(&address, 1, bytes, sizeof(bytes));
-        if (sensor_ready)
-        {
-            int16_t counts[7];
-            float drone[3];
-            float gyro[3];
-            // Packet order: accel XYZ, temperature, gyro XYZ.
-            for (uint8_t axis = 0; axis < 7; axis++)
-            {
-                counts[axis] = (int16_t)(((uint16_t)bytes[2 * axis] << 8) | bytes[2 * axis + 1]);
-            }
-            correct_acceleration(counts, drone);
-            for (uint8_t axis = 0; axis < 3; axis++)
-            {
-                gyro[axis] = counts[axis + 4] * (PI / (180.0f * 65.5f)) - gyro_remaining_bias[axis];
-            }
-            // Gravity-only tilt in drone axes; meaningful when motionless.
-            float yz = hypotf(drone[1], drone[2]);
-            float roll = yz > 0.001f ? atan2f(drone[1], drone[2]) * RAD_TO_DEG : NAN;
-            float pitch = yz > 0.001f ? atan2f(-drone[0], yz) * RAD_TO_DEG : NAN;
-            float temperature = counts[3] / 340.0f + 36.53f;
-            Serial.printf("IMU,%lu,%d,%d,%d,%d,%d,%d,%d,%.6f,%.6f,%.6f,%.7f,%.7f,%.7f,%.3f,%.3f,%.3f\n",
-                (unsigned long)millis(), counts[0], counts[1], counts[2], counts[3],
-                counts[4], counts[5], counts[6], drone[0], drone[1], drone[2],
-                gyro[0], gyro[1], gyro[2], temperature, roll, pitch);
-        }
+        process_one_sample();
     }
-    if (!sensor_ready)
+    else
     {
-        Serial.printf("ERROR,SENSOR_OR_CALIBRATION_FAILED\n");
+        delay(1);
     }
-    delay(10);
 }

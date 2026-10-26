@@ -1,14 +1,11 @@
-# Current important files
+# Important sources
 
-1. [main.cpp - one active Arduino firmware](../firmware/main.cpp).
-2. [Current gravity roll/pitch lesson](../docs/gravity-tilt-observation.md).
-3. [Current plan](../docs/PLAN.md).
-4. [Full accelerometer math](../docs/full-accelerometer-calibration.md).
-5. [Gyro bias and boot restoration](../docs/gyro-bias-application.md).
-6. [Actual gyro reset/power-cycle evidence](../measurements/mpu6050/2026-10-26-gyro-restart-validation/report.md).
+1. [main.cpp - only active MCU runtime](../firmware/main.cpp).
+2. [Current 1 kHz acquisition stage](../docs/fifo1000-stage.md).
+3. [Short current plan](../docs/PLAN.md).
+4. [1 kHz capture/verifier](../tools/calibration/record_fifo1000.py).
+5. [One-command offline checks](../tools/validation/run_bench_checks.py).
+6. [Actual-source host fault tests](../tools/validation/native_fifo_test.cpp).
+7. [Accelerometer math](../docs/full-accelerometer-calibration.md) and [gyro correction](../docs/gyro-bias-application.md).
 
-BMP280 deferred until available. The new angle lesson is prepared, not physically tested. Calibration constants are unchanged; no motor output. Tools live in tools/calibration; original logs remain private. These links point to canonical files instead of duplicate source copies.
-
-[Assistant-run stationary test: measured results and covariance/tilt derivation](../measurements/mpu6050/2026-10-26-assistant-stationary-test/report.md). Actual board remains V2; angles in this report are PC replay. No upload or calibration changes.
-
-[Sampling-rate limits and three assistant-run repeatability tests](../measurements/mpu6050/2026-10-26-sampling-and-repeatability/report.md): 15,003 actual samples at 83.33 Hz. MPU6050 cannot provide 10 kHz fresh measurements. No high-rate firmware or calibration change was made.
+Canonical links, no duplicate runtime copies. New source has not been flashed; host results are not hardware timing. Original raw evidence stays private. Motor output remains disabled.

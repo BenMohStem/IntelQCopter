@@ -2,7 +2,7 @@
   "schema": 1,
   "name": "IntelQCopter small software lessons",
   "branch": "codex/stepwise-esp32",
-  "architecture": "ESP32-S3 / one small Arduino lesson at a time",
+  "architecture": "ESP32-S3 standalone FC target 1000 Hz; single Arduino main.cpp; staged hardware validation",
   "commands": {
     "status": {
       "runtime": "python",
@@ -159,7 +159,7 @@
       "runtime": "python",
       "path": "tools/calibration/record_gyro.py",
       "args": [],
-      "description": "Record current corrected gyro residuals; recognizes V1/V2/V3 source protocols without mixing sample layouts"
+      "description": "Historical V1/V2/V3 recorder and verified local historical-commit capture; current FIFO firmware uses record-1khz"
     },
     "check-gyro-observation": {
       "runtime": "python",
@@ -195,7 +195,7 @@
       "runtime": "python",
       "path": "tools/calibration/record_angles.py",
       "args": [],
-      "description": "Show actual V3 MCU gravity-only roll/pitch and save original data automatically; gentle pose observation, no calibration or motor commands"
+      "description": "Historical V3 angle viewer; current FIFO firmware emits low-rate D diagnostics and uses record-1khz"
     },
     "check-tilt-observation": {
       "runtime": "python",
@@ -214,6 +214,30 @@
       "path": "tools/calibration/analyze_imu_repeatability.py",
       "args": [],
       "description": "Verify three real 60-second recordings, quantify short-term repeatability and calculate sensor/bus/serial rate budgets; no firmware or calibration changes"
+    },
+    "record-1khz": {
+      "runtime": "python",
+      "path": "tools/calibration/record_fifo1000.py",
+      "args": [],
+      "description": "Capture 20,000 FIFO samples, verify sequence/checksum and MCU calculations, retain timing/backlog evidence; no upload"
+    },
+    "check-1khz": {
+      "runtime": "python",
+      "path": "tools/calibration/test_fifo1000.py",
+      "args": [],
+      "description": "Synthetic full-stream/fault protocol checks; not MCU timing or sensor execution"
+    },
+    "check-native-firmware": {
+      "runtime": "python",
+      "path": "tools/validation/run_native_fifo_tests.py",
+      "args": [],
+      "description": "Execute actual main.cpp with fake peripherals using MSVC; not ESP32 emulation or physical timing"
+    },
+    "check-all": {
+      "runtime": "python",
+      "path": "tools/validation/run_bench_checks.py",
+      "args": [],
+      "description": "Run every unique offline bench test; --native also runs actual-source host fault tests; never opens serial or uploads"
     }
   }
 }
