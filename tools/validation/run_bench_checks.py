@@ -29,7 +29,7 @@ def main():
     out.mkdir(parents=True)
     suite=unittest.TestSuite()
     identifiers=set()
-    for name in ['test_accel_xyz','test_gyro_observation','test_gyro_bias','test_gyro_selection','test_tilt_observation','test_fifo1000']:
+    for name in ['test_accel_xyz','test_gyro_observation','test_gyro_bias','test_gyro_selection','test_tilt_observation','test_fifo1000','test_fifo_buffer']:
         module=importlib.import_module(name)
         for test in flatten(unittest.defaultTestLoader.loadTestsFromModule(module)):
             if test.id() not in identifiers:

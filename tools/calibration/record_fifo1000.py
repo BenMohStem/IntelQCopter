@@ -129,12 +129,12 @@ def main():
                     stream.diagnostic(line)
                 elif line.startswith('PROFILE,'):
                     fields=line.split(',')
-                    if len(fields)!=5 or 'profile_timings' in report:
+                    if len(fields) not in (5,6) or 'profile_timings' in report:
                         raise ValueError('Invalid/duplicate profiling metadata')
                     values=[int(v) for v in fields[1:]]
                     if any(v<0 for v in values):
                         raise ValueError('Invalid profiling counters')
-                    report['profile_timings']=dict(zip(['maximum_i2c_us','maximum_logging_us','maximum_offset_us','handler_overruns'],values))
+                    report['profile_timings']=dict(zip(['maximum_i2c_us','maximum_logging_us','maximum_offset_us','handler_overruns','maximum_queue_depth'],values))
                 elif line.startswith('END,'):
                     report.update(stream.finish(line))
                     break

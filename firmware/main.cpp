@@ -4,6 +4,10 @@
 #include <Adafruit_I2CDevice.h>
 #include <Adafruit_BusIO_Register.h>
 #include <math.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/queue.h>
+#include <freertos/task.h>
+#include <freertos/semphr.h>
 
 #ifndef BENCH_SOURCE_SHA
 #define BENCH_SOURCE_SHA "unknown"
@@ -172,6 +176,68 @@ volatile float latest_sensor_gyro[3] = { 0 };
 volatile float latest_roll_deg = 0;
 volatile float latest_pitch_deg = 0;
 
+// Core 1 owns sensor state. Core 0 owns slow serial formatting/transmission.
+struct TelemetryPacket
+{
+    uint32_t sequence;
+    int16_t counts[7];
+    float acceleration[3];
+    float gyro[3];
+    float roll;
+    float pitch;
+    bool capture;
+    bool diagnostic;
+    bool barrier;
+};
+static QueueHandle_t telemetry_queue = nullptr;
+static SemaphoreHandle_t telemetry_drained = nullptr;
+static uint32_t maximum_queue_depth = 0;
+
+static void telemetry_worker(void *)
+{
+    TelemetryPacket packet;
+    for (;;)
+    {
+        if (xQueueReceive(telemetry_queue, &packet, portMAX_DELAY) != pdTRUE)
+        {
+            continue;
+        }
+        if (packet.barrier)
+        {
+            xSemaphoreGive(telemetry_drained);
+            continue;
+        }
+        if (packet.capture)
+        {
+            Serial.printf("S,%lu,%d,%d,%d,%d,%d,%d,%d\n", (unsigned long)packet.sequence,
+                packet.counts[0], packet.counts[1], packet.counts[2], packet.counts[3],
+                packet.counts[4], packet.counts[5], packet.counts[6]);
+        }
+        if (packet.diagnostic)
+        {
+            Serial.printf("D,%lu,%.6f,%.6f,%.6f,%.7f,%.7f,%.7f,%.3f,%.3f\n",
+                (unsigned long)packet.sequence, packet.acceleration[0], packet.acceleration[1],
+                packet.acceleration[2], packet.gyro[0], packet.gyro[1], packet.gyro[2], packet.roll, packet.pitch);
+        }
+    }
+}
+
+static bool start_telemetry(void)
+{
+    telemetry_queue = xQueueCreate(128, sizeof(TelemetryPacket));
+    telemetry_drained = xSemaphoreCreateBinary();
+    return telemetry_queue && telemetry_drained
+        && xTaskCreatePinnedToCore(telemetry_worker, "telemetry", 4096, nullptr, 1, nullptr, 0) == pdPASS;
+}
+
+static bool flush_telemetry(void)
+{
+    TelemetryPacket barrier = {};
+    barrier.barrier = true;
+    return xQueueSend(telemetry_queue, &barrier, pdMS_TO_TICKS(2000)) == pdTRUE
+        && xSemaphoreTake(telemetry_drained, pdMS_TO_TICKS(2000)) == pdTRUE;
+}
+
 static bool write_register(uint8_t address, uint8_t value)
 {
     Adafruit_BusIO_Register reg(&sensor, address);
@@ -246,6 +312,7 @@ static void report(void)
             gyro_baseline[axis], gyro_applied_offset[axis], gyro_remaining_bias[axis]);
     }
     Serial.printf("GYRO_SCALE,65.5,counts_per_degree_per_second,frame=sensor,correction=mpu_plus_remainder\n");
+    Serial.printf("LOG,acquisition_core=%d,serial_core=0,queue_capacity=128\n", xPortGetCoreID());
     Serial.printf("RATE,hz=1000,packet_bytes=14,clock=mpu_fifo,diagnostic_divider=100\n");
     Serial.printf("READY,FIFO1000_V1\n");
 }
@@ -278,6 +345,7 @@ void setup(void)
     }
     sensor_ready = sensor_ready && restore_accel_bias();
     sensor_ready = sensor_ready && restore_gyro_bias();
+    sensor_ready = sensor_ready && start_telemetry() && xPortGetCoreID() == 1;
     sensor_ready = sensor_ready && write_register(0x38, 0x10);
     report();
     Serial.flush();
@@ -290,7 +358,7 @@ void setup(void)
 
 static void start_capture(void)
 {
-    if (!verify_offsets() || !reset_fifo())
+    if (!verify_offsets() || !reset_fifo() || !flush_telemetry())
     {
         stop_acquisition("CAPTURE_START_FAILED");
         return;
@@ -300,6 +368,7 @@ static void start_capture(void)
     maximum_service_gap_us = 0;
     maximum_processing_us = 0;
     maximum_handler_us = 0;
+    maximum_queue_depth = 0;
     maximum_i2c_us = 0;
     maximum_logging_us = 0;
     maximum_offset_us = 0;
@@ -314,19 +383,6 @@ static void start_capture(void)
     {
         stop_acquisition("FIFO_ENABLE_FAILED");
     }
-}
-
-static bool verify_next_offset(void)
-{
-    static uint8_t index = 0;
-    uint8_t axis = index % 3;
-    uint8_t address = index < 3 ? 0x06 + 2 * axis : 0x13 + 2 * axis;
-    int16_t expected = index < 3 ? applied_offset[axis] : gyro_applied_offset[axis];
-    Adafruit_BusIO_Register reg(&sensor, address, 2, MSBFIRST);
-    uint16_t observed;
-    bool ok = reg.read(&observed) && (int16_t)observed == expected;
-    index = (index + 1) % 6;
-    return ok;
 }
 
 static void process_one_sample(void)
@@ -389,33 +445,40 @@ static void process_one_sample(void)
     latest_pitch_deg = pitch;
     maximum_processing_us = max(maximum_processing_us, (uint32_t)(micros() - service_us));
     uint32_t logging_started_us = micros();
+    bool diagnostic = sequence % diagnostic_divider == 0;
     if (recording)
     {
         for (uint8_t index = 0; index < sizeof(bytes); index++)
         {
             payload_hash = (payload_hash ^ bytes[index]) * 16777619u;
         }
-        Serial.printf("S,%lu,%d,%d,%d,%d,%d,%d,%d\n", (unsigned long)sequence,
-            counts[0], counts[1], counts[2], counts[3], counts[4], counts[5], counts[6]);
     }
-    // Slow diagnostics are separate from the per-sample calculations.
-    if (sequence % diagnostic_divider == 0)
+    if (recording || diagnostic)
     {
-        Serial.printf("D,%lu,%.6f,%.6f,%.6f,%.7f,%.7f,%.7f,%.3f,%.3f\n",
-            (unsigned long)sequence, drone[0], drone[1], drone[2], gyro[0], gyro[1], gyro[2], roll, pitch);
+        TelemetryPacket packet = {};
+        packet.sequence = sequence;
+        packet.capture = recording;
+        packet.diagnostic = diagnostic;
+        for (uint8_t axis = 0; axis < 7; axis++)
+        {
+            packet.counts[axis] = counts[axis];
+        }
+        for (uint8_t axis = 0; axis < 3; axis++)
+        {
+            packet.acceleration[axis] = drone[axis];
+            packet.gyro[axis] = gyro[axis];
+        }
+        packet.roll = roll;
+        packet.pitch = pitch;
+        if (xQueueSend(telemetry_queue, &packet, 0) != pdTRUE)
+        {
+            stop_acquisition("TELEMETRY_QUEUE_FULL");
+            return;
+        }
+        maximum_queue_depth = max(maximum_queue_depth, (uint32_t)uxQueueMessagesWaiting(telemetry_queue));
     }
     maximum_logging_us = max(maximum_logging_us, (uint32_t)(micros() - logging_started_us));
     sequence++;
-    if (sequence % diagnostic_divider == 0)
-    {
-        uint32_t offset_started_us = micros();
-        if (!verify_next_offset())
-        {
-            stop_acquisition("LIVE_OFFSETS_CHANGED");
-            return;
-        }
-        maximum_offset_us = max(maximum_offset_us, (uint32_t)(micros() - offset_started_us));
-    }
     uint32_t handler_us = micros() - handler_started_us;
     maximum_handler_us = max(maximum_handler_us, handler_us);
     if (handler_us > 1000)
@@ -434,8 +497,14 @@ static void process_one_sample(void)
             return;
         }
         recording = false;
-        Serial.printf("PROFILE,%lu,%lu,%lu,%lu\n", (unsigned long)maximum_i2c_us,
-            (unsigned long)maximum_logging_us, (unsigned long)maximum_offset_us, (unsigned long)handler_overruns);
+        if (!flush_telemetry())
+        {
+            stop_acquisition("TELEMETRY_DRAIN_FAILED");
+            return;
+        }
+        Serial.flush();
+        Serial.printf("PROFILE,%lu,%lu,%lu,%lu,%lu\n", (unsigned long)maximum_i2c_us,
+            (unsigned long)maximum_logging_us, (unsigned long)maximum_offset_us, (unsigned long)handler_overruns, (unsigned long)maximum_queue_depth);
         Serial.printf("END,%lu,%lu,%u,%lu,%lu,%lu,%08lX\n", (unsigned long)sequence,
             (unsigned long)elapsed_us, (unsigned)maximum_fifo_bytes, (unsigned long)maximum_service_gap_us,
             (unsigned long)maximum_processing_us, (unsigned long)maximum_handler_us, (unsigned long)payload_hash);
@@ -459,7 +528,7 @@ void loop(void)
         }
         if (command == '?' && !recording && sensor_ready)
         {
-            sensor_ready = reset_fifo();
+            sensor_ready = reset_fifo() && flush_telemetry();
             Serial.printf("QUERY_REPLY\n");
             report();
             Serial.flush();

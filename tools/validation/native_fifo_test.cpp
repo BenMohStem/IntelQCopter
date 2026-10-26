@@ -53,6 +53,8 @@ int main(int argc, char **argv)
     if (test == "i2c_failure") { fail_reads = true; }
     if (test == "fifo_packet_failure") { failed_read_address = 0x74; }
     if (test == "offset_change") { set_word(0x13, -4); }
+    if (test == "queue_full") { force_queue_full = true; }
+    if (test == "logger_drain_failure") { force_barrier_failure = true; }
     if (test == "slow_bus") { bus_cost_multiplier = 3; }
     if (test == "timeout") { advance_model(25000001); }
     if (test == "abort") { Serial.input.push_back('x'); }

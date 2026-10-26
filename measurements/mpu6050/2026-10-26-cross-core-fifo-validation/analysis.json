@@ -1,0 +1,66 @@
+{
+  "engine": "Actual ESP32-S3/MPU6050, core-1 acquisition and core-0 serial task",
+  "samples": 60000,
+  "trials": [
+    {
+      "session": "20261026T082139649708Z",
+      "source_sha256": "a9aaceebc45b378b50caffb23de33c2a8a9d6a1809ded106702f11000a37519a",
+      "samples": 20000,
+      "observed_capture_rate_hz": 1000.684818655647,
+      "maximum_fifo_bytes": 14,
+      "maximum_sample_service_gap_us": 1263,
+      "maximum_calculation_us": 41,
+      "maximum_sample_handler_us": 814,
+      "profile_timings": {
+        "maximum_i2c_us": 758,
+        "maximum_logging_us": 25,
+        "maximum_offset_us": 0,
+        "handler_overruns": 0,
+        "maximum_queue_depth": 1
+      },
+      "serial_sha256": "05dc4bca4382984d3afa07f07d93ab784a2fdf4aecb3084a0b0ce9ad1354ed54",
+      "fnv1a_raw_payload": "CDFD346B"
+    },
+    {
+      "session": "20261026T082236554647Z",
+      "source_sha256": "a9aaceebc45b378b50caffb23de33c2a8a9d6a1809ded106702f11000a37519a",
+      "samples": 20000,
+      "observed_capture_rate_hz": 1000.6843680393021,
+      "maximum_fifo_bytes": 14,
+      "maximum_sample_service_gap_us": 1261,
+      "maximum_calculation_us": 60,
+      "maximum_sample_handler_us": 819,
+      "profile_timings": {
+        "maximum_i2c_us": 764,
+        "maximum_logging_us": 27,
+        "maximum_offset_us": 0,
+        "handler_overruns": 0,
+        "maximum_queue_depth": 1
+      },
+      "serial_sha256": "e10d46bd9667dd55b10a3a4d85beb4bfe9592721fe53828d20f041c343ea7411",
+      "fnv1a_raw_payload": "07EA959B"
+    },
+    {
+      "session": "20261026T082256835439Z",
+      "source_sha256": "a9aaceebc45b378b50caffb23de33c2a8a9d6a1809ded106702f11000a37519a",
+      "samples": 20000,
+      "observed_capture_rate_hz": 1000.6782597244412,
+      "maximum_fifo_bytes": 14,
+      "maximum_sample_service_gap_us": 1278,
+      "maximum_calculation_us": 60,
+      "maximum_sample_handler_us": 812,
+      "profile_timings": {
+        "maximum_i2c_us": 756,
+        "maximum_logging_us": 26,
+        "maximum_offset_us": 0,
+        "handler_overruns": 0,
+        "maximum_queue_depth": 1
+      },
+      "serial_sha256": "1ffd4d4ddeb78fa751dba3230a2671467c963b39d01d2de72290a0a704b320b9",
+      "fnv1a_raw_payload": "EF0ED9A5"
+    }
+  ],
+  "result": "No sample/diagnostic/checksum loss; no observed sample handlers above 1000 us in these runs.",
+  "limitation": "Inter-service gaps up to 1278 us remain; this is not a strict periodic deadline or complete FC/PID certification.",
+  "next": "Prepare rotation-only gyro body-frame mapping; physical known-rotation validation remains separate."
+}

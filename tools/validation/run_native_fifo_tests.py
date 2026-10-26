@@ -42,7 +42,7 @@ def main():
         def readline(self):
             return self.data.readline()
     results=[]
-    for name in ['normal','wrap','retained','invalid_boot','invalid_gyro_boot','trim_readback_failure','fifo_enable_failure','overflow','i2c_failure','fifo_packet_failure','offset_change','slow_bus','timeout','abort']:
+    for name in ['normal','wrap','retained','invalid_boot','invalid_gyro_boot','trim_readback_failure','fifo_enable_failure','overflow','i2c_failure','fifo_packet_failure','offset_change','slow_bus','timeout','abort','queue_full','logger_drain_failure']:
         case=subprocess.run([str(exe),name],capture_output=True,timeout=30)
         (out/(name+'.serial.log')).write_bytes(case.stdout)
         (out/(name+'.stderr.log')).write_bytes(case.stderr)
@@ -72,7 +72,7 @@ def main():
         print(result['result'])
     report={'engine':'Native x64 execution of actual firmware/main.cpp compiled with MSVC, fake Arduino/I2C/serial peripherals',
             'ESP32_emulation':False,'physical_test':False,'source_sha256':sha,'cases':results,
-            'limitations':'Synthetic clock, FIFO source, UART and I2C costs; cannot validate actual MCU timing, electrical behavior, silicon FIFO ordering, serial throughput or motor readiness.',
+            'limitations':'Cooperative task scheduling, synthetic clock, FIFO source, UART and I2C costs; cannot validate actual MCU timing, electrical behavior, silicon FIFO ordering, serial throughput or motor readiness.',
             'firmware_uploaded':False,'original_evidence_directory':str(out.relative_to(ROOT))}
     (out/'summary.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
     print('Original host evidence:',out)
