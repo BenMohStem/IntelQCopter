@@ -33,3 +33,5 @@ The user will perform known rotations later. No stationary or synthetic test sub
 For later operator motion, record-1khz accepts `--condition operator_rotation --note "axis/direction/reference"`. Each capture lasts about 20 seconds and saves originals. Positive/negative rotations about each defined drone axis are needed; an independent angular reference is needed to assess scale rather than only sign. Motion records must not enter stationary bias fitting.
 
 Next: review the user's rotations, correct the mapping if needed, then add the small attitude filter to the verified acquisition path. BMP280 and altitude remain deferred. Calibration residuals are not zeroed or refitted from these validation runs.
+
+While physical rotations are deferred, [offline angle-filter preparation](attitude-preparation.md) reuses existing recordings and a four-case model experiment. It does not change this physical acceptance gate or firmware.

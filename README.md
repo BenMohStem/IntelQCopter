@@ -30,3 +30,5 @@ Original samples/logs, MCU computation checks, checksum, throughput, FIFO occupa
 BMP280/altitude are deferred. Gyro frame validation, attitude fusion, PID/mixer and simulated gains are later stages. Physical arming remains disabled. Pico firmware stays on the original main branch; this branch preserves the ESP32 software lessons.
 
 [Actual FIFO timing and preserved failures](measurements/mpu6050/2026-10-26-fifo-and-gyro-frame-results/report.md) · [Current gyro-frame step](docs/gyro-frame-stage.md).
+
+[Offline angle-filter preparation: equations and fewer-test design](docs/attitude-preparation.md) · [Results and graphs](measurements/mpu6050/2026-10-26-offline-attitude-preparation/report.md). Reuses 80k saved samples; four modeled combinations expose acceleration sensitivity. No MCU filter or acceptance change.

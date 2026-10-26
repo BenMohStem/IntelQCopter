@@ -1,0 +1,16 @@
+{
+  "offline_checks": {
+    "engine": "Python protocol/arithmetic tests; no MCU or sensor execution",
+    "source_sha256": "91947b5c8921a481ebb6a4e40cd0027a1c585abda5825118af862f3b39c496f0",
+    "unique_tests": 54,
+    "success": true,
+    "uploaded": false,
+    "serial_opened": false
+  },
+  "test_log_sha256": "dc1f77a339e6b04d2685edaf3030a752cfb44640fa5cba76f38b54a8b1186062",
+  "firmware_changed": false,
+  "calibration_changed": false,
+  "new_hardware_recordings": 0,
+  "review": "Independent read-only code/mathematics review: no must-fix issue for stated offline scope; physical gates retained",
+  "plots": "Both generated PNGs visually inspected for legibility and explicit offline/model labels"
+}
