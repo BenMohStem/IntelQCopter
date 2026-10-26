@@ -250,6 +250,18 @@
       "path": "tools/calibration/test_gyro_frame.py",
       "args": [],
       "description": "Provisional rotation algebra/metadata tests; not physical gyro sign/scale validation"
+    },
+    "prepare-attitude": {
+      "runtime": "python",
+      "path": "tools/estimation/prepare_attitude.py",
+      "args": [],
+      "description": "Offline noise/angle preparation from four saved FIFO runs plus a four-case model; requires fresh --output folder; no hardware"
+    },
+    "check-attitude": {
+      "runtime": "python",
+      "path": "tools/estimation/test_attitude.py",
+      "args": [],
+      "description": "Six analytic offline filter/design tests; no serial, MCU or physical acceptance"
     }
   }
 }
