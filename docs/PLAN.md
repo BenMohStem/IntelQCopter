@@ -44,3 +44,5 @@ After physical frame validation, port the small candidate update into main.cpp,
 measure its actual 1 kHz execution time, and evaluate motion before PID work.
 
 Offline preparation completed: 80k original samples reverified, 54 offline checks passed, and all four modeled disturbance combinations retained. The acceleration cases reach about 5.2–5.35 degrees of modeled angle error; the candidate is not accepted for flight. [Results](../measurements/mpu6050/2026-10-26-offline-attitude-preparation/report.md) and [equations](attitude-preparation.md). Main.cpp/calibration/firmware timing evidence are unchanged.
+
+User requested complete module connections and chose I2C when SPI adds no practical benefit. [Connected I2C reference](../hardware/connected-i2c/README.md) supplies shared sensor bus, interrupts, lidar/companion UART, ESC signals and separately selectable BEC links. PCB is unrouted. Firmware integration and physical timing/identity checks remain pending; current main.cpp is unchanged.

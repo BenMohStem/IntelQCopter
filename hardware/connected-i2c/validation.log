@@ -1,0 +1,4 @@
+PASS: 17 components / 98 pads agree between native schematic netlist and PCB.
+PASS: shared I2C, BMP mode/address straps, interrupts, UART directions, AUX isolation and 4 ESC GPIOs.
+PASS: BEC feeds on separate nets through four open links; 5V/3V3/GND distinct; no motor power path.
+LIMIT: connections are net assignments, not copper routing or physical/firmware acceptance; jumpers must not be fitted together.

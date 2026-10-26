@@ -280,6 +280,12 @@
       "path": "tools/hardware/verify_module_palette.py",
       "args": [],
       "description": "Check module symbols/pads and UUID links with native KiCad; optional --project path; no physical-fit claim"
+    },
+    "check-connected-pcb": {
+      "runtime": "python",
+      "path": "tools/hardware/verify_connected_project.py",
+      "args": [],
+      "description": "Validate connected I2C schematic and PCB pad nets, GPIO assignments and separate BEC links; no physical acceptance"
     }
   }
 }

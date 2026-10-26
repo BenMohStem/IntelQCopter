@@ -40,5 +40,12 @@
     "report": "hardware/module-library/module-dimensions.md",
     "claim": "Three source-linked body outlines, VCC orientation and 2 mm placement courtyards; pad/net/placement preservation",
     "limits": "Exact clone dimensions/header offsets unverified; primary open user PCB preserved; library update needs native UI action or use supplied preview copy"
+  },
+  {
+    "id": "E-CONNECTED-I2C",
+    "kind": "native_schematic_netlist_and_PCB_connectivity_checks",
+    "report": "hardware/connected-i2c/README.md",
+    "claim": "17 components / 98 pads logically connected; shared I2C and all useful sensor/UART/ESC signals; separate BEC feeds",
+    "limits": "Unrouted PCB, open power-selection links, passive symbols, module interfaces and slow-bus timing unverified; bench firmware MPU only"
   }
 ]

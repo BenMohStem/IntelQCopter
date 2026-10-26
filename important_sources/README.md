@@ -15,3 +15,5 @@ Canonical links, no duplicate runtime copies. Current source is flashed and test
 9. [Project knowledge, evidence and agent coordination](../knowledge/README.md).
 
 10. [KiCad component palette and pin guide](../hardware/module-library/QUICKSTART.md): placed module/header interfaces for user PCB design.
+
+11. [Connected I2C hardware project and wiring](../hardware/connected-i2c/README.md), [pin map](../config/sensor-wiring.json).

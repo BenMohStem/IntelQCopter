@@ -1,0 +1,14 @@
+{
+  "engine": "KiCad 10.0.6 native DRC on the unrouted connected reference",
+  "violations": [
+    {
+      "type": "invalid_outline",
+      "description": "Board has malformed outline (no edges found on Edge.Cuts layer)"
+    }
+  ],
+  "unconnected_items": 52,
+  "reported_copper_shorts": 0,
+  "reported_clearance_violations": 0,
+  "scope": "No routes/ground pour/board outline yet; not a completed fabrication or flight acceptance",
+  "original_report_sha256": "7f12652c69e966ef78e8d9eea3f77a966dc2041e4dcbb3803fd184015fff3655"
+}

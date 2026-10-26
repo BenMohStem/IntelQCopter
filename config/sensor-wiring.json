@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "status": "Prepared schematic/PCB net assignments; not hardware verified or integrated into bench firmware",
+  "bus_choice": "I2C",
+  "gpio": {
+    "i2c_sda": 9,
+    "i2c_scl": 8,
+    "mpu_interrupt": 16,
+    "mag_drdy": 17,
+    "lidar_rx": 6,
+    "lidar_tx": 7,
+    "companion_rx": 4,
+    "companion_tx": 5,
+    "esc1": 12,
+    "esc2": 1,
+    "esc3": 2,
+    "esc4": 14
+  },
+  "sensor_interface": {
+    "MPU6050": "I2C 0x68; INT GPIO16; AUX exposed separately",
+    "BMP280": "I2C 0x76; CSB 3V3, SDO GND",
+    "GY-271": "I2C; actual chip identity/address to be verified; DRDY GPIO17"
+  },
+  "power": "One verified regulated 5V ESC BEC selected through one of JP1-JP4; all links open initially; USB requires all BEC links open",
+  "source": "hardware/connected-i2c/connections.json"
+}

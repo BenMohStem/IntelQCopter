@@ -1,0 +1,41 @@
+{
+  "status": "Prepared connected schematic and unrouted reference PCB",
+  "engine": "KiCad 10.0.6 native symbol/netlist/PCB parsers; no simulator or hardware",
+  "expected_components": 17,
+  "expected_pads": 98,
+  "copper_routes": 0,
+  "main_firmware_sha256": "91947b5c8921a481ebb6a4e40cd0027a1c585abda5825118af862f3b39c496f0",
+  "firmware_changed": false,
+  "uploaded": false,
+  "physical_motor_outputs_enabled": false,
+  "logic": "All useful module pins assigned; all BEC input nets distinct; select at most one open link",
+  "unvalidated": [
+    "Physical module identities and fit",
+    "ESC BEC presence/voltage/capacity",
+    "Shared-bus timing with 1kHz acquisition",
+    "Lidar/companion/interrupt drivers",
+    "Routing/ground plane/DRC after routing"
+  ],
+  "source_sha256": {
+    "QCopter.kicad_sch": "619e69820b4ea09b5ccbc60705ef9032ef495747ae8e89516a53ababac18c4ac",
+    "QCopter.kicad_pcb": "4ddb59b8382f61d9da301881dcfc3d981b1c654a5602057343d0dc23915876b4",
+    "connections.json": "24be827d9facff4d029e6e84ba72be47d4a4fb313091d770af1cec161aca4a26"
+  },
+  "native_DRC_review": {
+    "engine": "KiCad 10.0.6 native DRC on the unrouted connected reference",
+    "violations": [
+      {
+        "type": "invalid_outline",
+        "description": "Board has malformed outline (no edges found on Edge.Cuts layer)"
+      }
+    ],
+    "unconnected_items": 52,
+    "reported_copper_shorts": 0,
+    "reported_clearance_violations": 0,
+    "scope": "No routes/ground pour/board outline yet; not a completed fabrication or flight acceptance",
+    "original_report_sha256": "7f12652c69e966ef78e8d9eea3f77a966dc2041e4dcbb3803fd184015fff3655"
+  },
+  "connectivity_checks": "PASS: native schematic and PCB connections; GPIO directions, power nets and DNP flags",
+  "generator_reproduction": "PASS: separate fresh generation checked with same independent native checker",
+  "visual_review": "Native KiCad A3 schematic PNG inspected; named nets legible and title block clear"
+}
