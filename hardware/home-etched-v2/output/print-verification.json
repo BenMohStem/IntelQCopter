@@ -1,0 +1,34 @@
+{
+  "engine": "Native KiCad B.Cu filled polygons / round pads / tracks; ReportLab vector PDF; pypdf checks",
+  "board_sha256": "b0902ea0732a1d5b5ef52d984a82f3a949cb1941de814e825a82d8981a37b9e3",
+  "pdf_sha256": "3a5181d0b5046d3f4c77f797ab1f2170cbd26277b34e3865104ce1ce131165e2",
+  "page_mm": [
+    210,
+    297
+  ],
+  "board_mm": [
+    90,
+    90
+  ],
+  "copies": 3,
+  "placements_bottom_left_mm": [
+    [
+      60,
+      202
+    ],
+    [
+      60,
+      103.5
+    ],
+    [
+      60,
+      5
+    ]
+  ],
+  "pdf_mm_transform_verified": true,
+  "text_characters": 0,
+  "hole_voids_per_copy": 156,
+  "polarity": "Black retained copper; white removed copper and drill voids",
+  "orientation": "Component-side coordinates, no additional X mirror: toner face-down against underside gives required reversal",
+  "physical_printer_scale_verified": false
+}

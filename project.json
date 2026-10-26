@@ -286,6 +286,12 @@
       "path": "tools/hardware/verify_connected_project.py",
       "args": [],
       "description": "Validate connected I2C schematic and PCB pad nets, GPIO assignments and separate BEC links; no physical acceptance"
+    },
+    "check-home-etched-pcb": {
+      "runtime": "python",
+      "path": "tools/hardware/verify_home_etched_pcb.py",
+      "args": [],
+      "description": "Native routed-board DRC and schematic/link connectivity; saves original evidence, never flashes"
     }
   }
 }

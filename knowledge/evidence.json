@@ -47,5 +47,12 @@
     "report": "hardware/connected-i2c/README.md",
     "claim": "17 components / 98 pads logically connected; shared I2C and all useful sensor/UART/ESC signals; separate BEC feeds",
     "limits": "Unrouted PCB, open power-selection links, passive symbols, module interfaces and slow-bus timing unverified; bench firmware MPU only"
+  },
+  {
+    "id": "E-ROUTED-PCB",
+    "kind": "native_KiCad_DRC_netlist_graph_and_vector_PDF_checks",
+    "report": "hardware/home-etched-v2/README.md",
+    "claim": "One B.Cu carrier; all 27 fitted insulated wire links; 0 native DRC violations/unconnected; three actual-size masks",
+    "limits": "Raised sockets required; clone fit, etched board, printer scale and power under load unverified; firmware unchanged"
   }
 ]

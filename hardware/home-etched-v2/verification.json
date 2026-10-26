@@ -1,0 +1,24 @@
+{
+  "engine": "KiCad 10.0.6 native DRC and native XML netlist; independent Python graph verification",
+  "board_sha256": "b0902ea0732a1d5b5ef52d984a82f3a949cb1941de814e825a82d8981a37b9e3",
+  "schematic_sha256": "7e8b4fdc4e141e54956c6c1f11136d218709d6ffd2402733c7e5f67641a855fc",
+  "schematic_components": 44,
+  "mounting_holes": 4,
+  "pcb_pads_total": 156,
+  "fitted_insulated_links": 27,
+  "bottom_tracks": 1037,
+  "electrical_logical_nets": 21,
+  "native_drc_violations": 0,
+  "native_unconnected_items": 0,
+  "no_top_copper_tracks_or_vias": true,
+  "voltage_rails_and_four_bec_feeds_separate": true,
+  "all_original_logical_connections_preserved_with_W_links": true,
+  "solid_ground_zone_connections": true,
+  "physical_fit_and_etched_continuity_verified": false,
+  "limitations": [
+    "Modules must use elevated sockets; low insulated wires pass beneath them",
+    "No verified actual-clone dimensions, BEC output or F450 mounting pattern",
+    "One copper face means solder every lead on underside; through holes are unplated",
+    "No actuator, flight, battery-current or hardware acceptance"
+  ]
+}

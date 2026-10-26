@@ -1,0 +1,1911 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export version="E">
+  <design>
+    <source>C:\Users\Mohamed\Desktop\Work\QCopter-Stepwise\hardware\home-etched-v2\QCopter.kicad_sch</source>
+    <date>2026-10-26T18:01:40</date>
+    <tool>Eeschema 10.0.6</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title/>
+        <company/>
+        <rev/>
+        <date/>
+        <source>QCopter.kicad_sch</source>
+        <comment number="1" value=""/>
+        <comment number="2" value=""/>
+        <comment number="3" value=""/>
+        <comment number="4" value=""/>
+        <comment number="5" value=""/>
+        <comment number="6" value=""/>
+        <comment number="7" value=""/>
+        <comment number="8" value=""/>
+        <comment number="9" value=""/>
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="J1">
+      <value>Lidar_Wires_1x04</value>
+      <footprint>QCopterModules:Lidar_Wires_1x04</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Lidar_Wires_1x04</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Lidar_Wires_1x04" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>029c906c-2c82-4b2d-a084-fa445425f804</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+            <pin num="4"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J2">
+      <value>ESC1_CONTROL</value>
+      <footprint>QCopterModules:ESC_Servo_1x03</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:ESC_Servo_1x03</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="ESC_Servo_1x03" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>25055f6f-d60e-449c-b2a2-437268aa1c59</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J3">
+      <value>ESC2_CONTROL</value>
+      <footprint>QCopterModules:ESC_Servo_1x03</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:ESC_Servo_1x03</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="ESC_Servo_1x03" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>a2fdbe6f-e05b-4a58-9546-97f89e4c6724</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J4">
+      <value>ESC3_CONTROL</value>
+      <footprint>QCopterModules:ESC_Servo_1x03</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:ESC_Servo_1x03</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="ESC_Servo_1x03" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>7bce57b9-3f17-4973-a660-3d9699b89880</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J5">
+      <value>ESC4_CONTROL</value>
+      <footprint>QCopterModules:ESC_Servo_1x03</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:ESC_Servo_1x03</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="ESC_Servo_1x03" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>049e34ea-2aa7-4381-ada3-7c5ee678623c</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J6">
+      <value>MPU_Auxiliary_1x04</value>
+      <footprint>QCopterModules:MPU_Auxiliary_1x04</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:MPU_Auxiliary_1x04</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="MPU_Auxiliary_1x04" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>14002c3f-c668-4b50-9f99-52ac7213d7ef</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+            <pin num="4"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J7">
+      <value>Companion_UART_1x03</value>
+      <footprint>QCopterModules:Companion_UART_1x03</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Companion_UART_1x03</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Companion_UART_1x03" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>6f6c7ff1-c348-4759-9c3c-2e4212a15df1</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="JP1">
+      <value>BEC_LINK_FIT_ONE_ONLY</value>
+      <footprint>QCopterModules:BEC_Link_1x02</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:BEC_Link_1x02</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="BEC_Link_1x02" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>f14d4e9a-ae2e-4293-832e-09766827249d</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="JP2">
+      <value>BEC_LINK_FIT_ONE_ONLY</value>
+      <footprint>QCopterModules:BEC_Link_1x02</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:BEC_Link_1x02</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="BEC_Link_1x02" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>47e6e5d5-c1e8-4754-9011-20603dfda70f</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="JP3">
+      <value>BEC_LINK_FIT_ONE_ONLY</value>
+      <footprint>QCopterModules:BEC_Link_1x02</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:BEC_Link_1x02</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="BEC_Link_1x02" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>29c3718b-a8c6-4401-a250-ea2427ffcc25</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="JP4">
+      <value>BEC_LINK_FIT_ONE_ONLY</value>
+      <footprint>QCopterModules:BEC_Link_1x02</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:BEC_Link_1x02</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="BEC_Link_1x02" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>d0775d46-9e99-4f1b-9e7b-efb8fd78c960</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R1">
+      <value>4k7_DNP</value>
+      <footprint>QCopterModules:Optional_Pullup_Axial_P10_16</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Optional_Pullup_Axial_P10_16</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Optional_Pullup_Axial_P10_16" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <property name="dnp"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>4ffb8dba-0d76-4f91-982b-495d5cee698a</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R2">
+      <value>4k7_DNP</value>
+      <footprint>QCopterModules:Optional_Pullup_Axial_P10_16</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Optional_Pullup_Axial_P10_16</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Optional_Pullup_Axial_P10_16" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <property name="dnp"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>e62594cc-2b70-4f86-80fa-19870039554a</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U1">
+      <value>ESP32_S3_DevKitC_1_44pin</value>
+      <footprint>QCopterModules:ESP32_S3_DevKitC_1_44pin</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:ESP32_S3_DevKitC_1_44pin</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="ESP32_S3_DevKitC_1_44pin" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>77e9dafb-8905-4419-a628-194b60b8eb06</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+            <pin num="4"/>
+            <pin num="5"/>
+            <pin num="6"/>
+            <pin num="7"/>
+            <pin num="8"/>
+            <pin num="9"/>
+            <pin num="10"/>
+            <pin num="11"/>
+            <pin num="12"/>
+            <pin num="13"/>
+            <pin num="14"/>
+            <pin num="15"/>
+            <pin num="16"/>
+            <pin num="17"/>
+            <pin num="18"/>
+            <pin num="19"/>
+            <pin num="20"/>
+            <pin num="21"/>
+            <pin num="22"/>
+            <pin num="44"/>
+            <pin num="43"/>
+            <pin num="42"/>
+            <pin num="41"/>
+            <pin num="40"/>
+            <pin num="39"/>
+            <pin num="38"/>
+            <pin num="37"/>
+            <pin num="36"/>
+            <pin num="35"/>
+            <pin num="34"/>
+            <pin num="33"/>
+            <pin num="32"/>
+            <pin num="31"/>
+            <pin num="30"/>
+            <pin num="29"/>
+            <pin num="28"/>
+            <pin num="27"/>
+            <pin num="26"/>
+            <pin num="25"/>
+            <pin num="24"/>
+            <pin num="23"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U2">
+      <value>MPU6050_GY521_1x08</value>
+      <footprint>QCopterModules:MPU6050_GY521_1x08</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:MPU6050_GY521_1x08</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="MPU6050_GY521_1x08" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>cfdc65c5-f789-4011-a3d7-12414fc6e10c</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+            <pin num="4"/>
+            <pin num="5"/>
+            <pin num="6"/>
+            <pin num="7"/>
+            <pin num="8"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U3">
+      <value>BMP280_GY_1x06</value>
+      <footprint>QCopterModules:BMP280_GY_1x06</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:BMP280_GY_1x06</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="BMP280_GY_1x06" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>298e8733-5616-46f6-bb21-2ddcfdb10e7a</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+            <pin num="4"/>
+            <pin num="5"/>
+            <pin num="6"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U4">
+      <value>Magnetometer_GY271_1x05</value>
+      <footprint>QCopterModules:Magnetometer_GY271_1x05</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Magnetometer_GY271_1x05</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Magnetometer_GY271_1x05" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>b4a67d84-1292-487a-b1cf-08396eb4989a</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+            <pin num="4"/>
+            <pin num="5"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W1">
+      <value>INSULATED_WIRE</value>
+      <footprint>QCopterModules:Insulated_Link_W1</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Insulated_Link_W1</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Insulated_Link_W1" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>a7b28b7a-906e-412b-905d-df62079f22ad</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W2">
+      <value>INSULATED_WIRE</value>
+      <footprint>QCopterModules:Insulated_Link_W2</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Insulated_Link_W2</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Insulated_Link_W2" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>c0711cfd-f93d-4568-ba4d-45b800a4a631</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W3">
+      <value>INSULATED_WIRE</value>
+      <footprint>QCopterModules:Insulated_Link_W3</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Insulated_Link_W3</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Insulated_Link_W3" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>f350c5c2-e506-4975-9454-02b987c088f2</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W4">
+      <value>INSULATED_WIRE</value>
+      <footprint>QCopterModules:Insulated_Link_W4</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Insulated_Link_W4</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Insulated_Link_W4" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>2bf0511c-1c9c-4cbe-92b1-0b765b9d8770</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W5">
+      <value>INSULATED_WIRE</value>
+      <footprint>QCopterModules:Insulated_Link_W5</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Insulated_Link_W5</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Insulated_Link_W5" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>c2f7c8ec-839e-4f95-9dc8-bf13c926e5c1</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W6">
+      <value>INSULATED_WIRE</value>
+      <footprint>QCopterModules:Insulated_Link_W6</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Insulated_Link_W6</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Insulated_Link_W6" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>d38ee4ac-ecdc-4564-a0c3-9fc33a8b0e25</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W7">
+      <value>INSULATED_WIRE</value>
+      <footprint>QCopterModules:Insulated_Link_W7</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Insulated_Link_W7</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Insulated_Link_W7" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>d88b73f9-4e70-46b1-b6b7-32f5877d40f2</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W8">
+      <value>INSULATED_WIRE</value>
+      <footprint>QCopterModules:Insulated_Link_W8</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Insulated_Link_W8</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Insulated_Link_W8" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>7c87b222-bd9e-4edd-a8ea-59be4cc5709b</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W9">
+      <value>INSULATED_WIRE</value>
+      <footprint>QCopterModules:Insulated_Link_W9</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Insulated_Link_W9</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Insulated_Link_W9" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ca1cbf02-7291-4509-a14e-fe6aee9d20cb</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W10">
+      <value>INSULATED_WIRE</value>
+      <footprint>QCopterModules:Insulated_Link_W10</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Insulated_Link_W10</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Insulated_Link_W10" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>5f20ce55-675d-4c30-aed3-23aef31d717a</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W11">
+      <value>INSULATED_WIRE</value>
+      <footprint>QCopterModules:Insulated_Link_W11</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Insulated_Link_W11</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Insulated_Link_W11" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>e16ccd96-9f5b-4d34-a45d-6a1f79c5792e</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W12">
+      <value>INSULATED_WIRE</value>
+      <footprint>QCopterModules:Insulated_Link_W12</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Insulated_Link_W12</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Insulated_Link_W12" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>58fb4754-1ddb-4543-a62f-09ed2b9aa516</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W13">
+      <value>INSULATED_WIRE</value>
+      <footprint>QCopterModules:Insulated_Link_W13</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Insulated_Link_W13</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Insulated_Link_W13" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>bf2faded-2bc0-4220-99c1-50f43ddf7947</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W14">
+      <value>INSULATED_WIRE</value>
+      <footprint>QCopterModules:Insulated_Link_W14</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Insulated_Link_W14</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Insulated_Link_W14" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>08b3b846-2bb1-48fc-a6e7-4332053699d5</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W15">
+      <value>INSULATED_WIRE</value>
+      <footprint>QCopterModules:Insulated_Link_W15</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Insulated_Link_W15</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Insulated_Link_W15" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>d5359602-8e39-4d3e-bccb-0b7f68e9e205</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W16">
+      <value>INSULATED_WIRE</value>
+      <footprint>QCopterModules:Insulated_Link_W16</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Insulated_Link_W16</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Insulated_Link_W16" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>2592451a-1614-430a-b7fb-3af11f676d26</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W17">
+      <value>INSULATED_WIRE</value>
+      <footprint>QCopterModules:Insulated_Link_W17</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Insulated_Link_W17</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Insulated_Link_W17" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>e25495a4-52a4-44dd-b58a-1fbceec250f8</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W18">
+      <value>INSULATED_WIRE</value>
+      <footprint>QCopterModules:Insulated_Link_W18</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Insulated_Link_W18</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Insulated_Link_W18" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>58fe86a7-005e-4609-9b70-bcb429704541</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W19">
+      <value>INSULATED_WIRE</value>
+      <footprint>QCopterModules:Insulated_Link_W19</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Insulated_Link_W19</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Insulated_Link_W19" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>0317b786-e1bc-4714-b540-97ecd30ca521</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W20">
+      <value>INSULATED_WIRE</value>
+      <footprint>QCopterModules:Insulated_Link_W20</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Insulated_Link_W20</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Insulated_Link_W20" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>038b9f44-a49c-4cd3-8d26-3688ce0df7ee</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W21">
+      <value>INSULATED_WIRE</value>
+      <footprint>QCopterModules:Insulated_Link_W21</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Insulated_Link_W21</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Insulated_Link_W21" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>f00bbc5b-7022-44ed-8f09-29a13cdf1677</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W22">
+      <value>INSULATED_WIRE</value>
+      <footprint>QCopterModules:Insulated_Link_W22</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Insulated_Link_W22</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Insulated_Link_W22" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>8ca98850-02cd-416a-9b99-25d1c73f5d08</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W23">
+      <value>INSULATED_WIRE</value>
+      <footprint>QCopterModules:Insulated_Link_W23</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Insulated_Link_W23</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Insulated_Link_W23" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>e54ec8a0-11bd-4f8b-911b-ab6706337654</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W24">
+      <value>INSULATED_WIRE</value>
+      <footprint>QCopterModules:Insulated_Link_W24</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Insulated_Link_W24</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Insulated_Link_W24" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>07e647db-802f-4234-a815-0f550762b169</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W25">
+      <value>INSULATED_WIRE</value>
+      <footprint>QCopterModules:Insulated_Link_W25</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Insulated_Link_W25</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Insulated_Link_W25" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>fdab4e7e-aee0-4a25-93fb-225972e212e5</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W26">
+      <value>INSULATED_WIRE</value>
+      <footprint>QCopterModules:Insulated_Link_W26</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Insulated_Link_W26</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Insulated_Link_W26" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>596c6da5-3c37-4088-9402-4c39ea8db900</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="W27">
+      <value>INSULATED_WIRE</value>
+      <footprint>QCopterModules:Insulated_Link_W27</footprint>
+      <fields>
+        <field name="Footprint">QCopterModules:Insulated_Link_W27</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="QCopterModules" part="Insulated_Link_W27" description=""/>
+      <property name="Sheetname" value="QCopter"/>
+      <property name="Sheetfile" value="QCopter.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>fef9e104-50f3-44e3-8175-49a8e2275bd7</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="QCopterModules" part="BEC_Link_1x02">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">BEC_Link_1x02</field>
+        <field name="Footprint">QCopterModules:BEC_Link_1x02</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="ESC_BEC_IN" type="passive"/>
+        <pin num="2" name="BOARD_5V_OUT" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="BMP280_GY_1x06">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">BMP280_GY_1x06</field>
+        <field name="Footprint">QCopterModules:BMP280_GY_1x06</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="VCC" type="passive"/>
+        <pin num="2" name="GND" type="passive"/>
+        <pin num="3" name="SCL" type="passive"/>
+        <pin num="4" name="SDA" type="passive"/>
+        <pin num="5" name="CSB" type="passive"/>
+        <pin num="6" name="SDO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Companion_UART_1x03">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Companion_UART_1x03</field>
+        <field name="Footprint">QCopterModules:Companion_UART_1x03</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="GND" type="passive"/>
+        <pin num="2" name="TX_FROM_FC" type="passive"/>
+        <pin num="3" name="RX_TO_FC" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="ESC_Servo_1x03">
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">ESC_Servo_1x03</field>
+        <field name="Footprint">QCopterModules:ESC_Servo_1x03</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="GND" type="passive"/>
+        <pin num="2" name="BEC_5V_OPTIONAL" type="passive"/>
+        <pin num="3" name="SIGNAL" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="ESP32_S3_DevKitC_1_44pin">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">ESP32_S3_DevKitC_1_44pin</field>
+        <field name="Footprint">QCopterModules:ESP32_S3_DevKitC_1_44pin</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="3V3" type="passive"/>
+        <pin num="2" name="3V3" type="passive"/>
+        <pin num="3" name="EN" type="passive"/>
+        <pin num="4" name="GPIO4" type="passive"/>
+        <pin num="5" name="GPIO5" type="passive"/>
+        <pin num="6" name="GPIO6" type="passive"/>
+        <pin num="7" name="GPIO7" type="passive"/>
+        <pin num="8" name="GPIO15" type="passive"/>
+        <pin num="9" name="GPIO16" type="passive"/>
+        <pin num="10" name="GPIO17" type="passive"/>
+        <pin num="11" name="GPIO18" type="passive"/>
+        <pin num="12" name="GPIO8" type="passive"/>
+        <pin num="13" name="GPIO3" type="passive"/>
+        <pin num="14" name="GPIO46" type="passive"/>
+        <pin num="15" name="GPIO9" type="passive"/>
+        <pin num="16" name="GPIO10" type="passive"/>
+        <pin num="17" name="GPIO11" type="passive"/>
+        <pin num="18" name="GPIO12" type="passive"/>
+        <pin num="19" name="GPIO13" type="passive"/>
+        <pin num="20" name="GPIO14" type="passive"/>
+        <pin num="21" name="5V" type="passive"/>
+        <pin num="22" name="GND" type="passive"/>
+        <pin num="23" name="GND" type="passive"/>
+        <pin num="24" name="GND" type="passive"/>
+        <pin num="25" name="GPIO19" type="passive"/>
+        <pin num="26" name="GPIO20" type="passive"/>
+        <pin num="27" name="GPIO21" type="passive"/>
+        <pin num="28" name="GPIO47" type="passive"/>
+        <pin num="29" name="GPIO48" type="passive"/>
+        <pin num="30" name="GPIO45" type="passive"/>
+        <pin num="31" name="GPIO0" type="passive"/>
+        <pin num="32" name="GPIO35" type="passive"/>
+        <pin num="33" name="GPIO36" type="passive"/>
+        <pin num="34" name="GPIO37" type="passive"/>
+        <pin num="35" name="GPIO38" type="passive"/>
+        <pin num="36" name="GPIO39" type="passive"/>
+        <pin num="37" name="GPIO40" type="passive"/>
+        <pin num="38" name="GPIO41" type="passive"/>
+        <pin num="39" name="GPIO42" type="passive"/>
+        <pin num="40" name="GPIO2" type="passive"/>
+        <pin num="41" name="GPIO1" type="passive"/>
+        <pin num="42" name="GPIO44_RX" type="passive"/>
+        <pin num="43" name="GPIO43_TX" type="passive"/>
+        <pin num="44" name="GND" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Insulated_Link_W1">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Insulated_Link_W1</field>
+        <field name="Footprint">QCopterModules:Insulated_Link_W1</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="FROM" type="passive"/>
+        <pin num="2" name="TO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Insulated_Link_W10">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Insulated_Link_W10</field>
+        <field name="Footprint">QCopterModules:Insulated_Link_W10</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="FROM" type="passive"/>
+        <pin num="2" name="TO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Insulated_Link_W11">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Insulated_Link_W11</field>
+        <field name="Footprint">QCopterModules:Insulated_Link_W11</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="FROM" type="passive"/>
+        <pin num="2" name="TO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Insulated_Link_W12">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Insulated_Link_W12</field>
+        <field name="Footprint">QCopterModules:Insulated_Link_W12</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="FROM" type="passive"/>
+        <pin num="2" name="TO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Insulated_Link_W13">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Insulated_Link_W13</field>
+        <field name="Footprint">QCopterModules:Insulated_Link_W13</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="FROM" type="passive"/>
+        <pin num="2" name="TO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Insulated_Link_W14">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Insulated_Link_W14</field>
+        <field name="Footprint">QCopterModules:Insulated_Link_W14</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="FROM" type="passive"/>
+        <pin num="2" name="TO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Insulated_Link_W15">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Insulated_Link_W15</field>
+        <field name="Footprint">QCopterModules:Insulated_Link_W15</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="FROM" type="passive"/>
+        <pin num="2" name="TO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Insulated_Link_W16">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Insulated_Link_W16</field>
+        <field name="Footprint">QCopterModules:Insulated_Link_W16</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="FROM" type="passive"/>
+        <pin num="2" name="TO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Insulated_Link_W17">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Insulated_Link_W17</field>
+        <field name="Footprint">QCopterModules:Insulated_Link_W17</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="FROM" type="passive"/>
+        <pin num="2" name="TO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Insulated_Link_W18">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Insulated_Link_W18</field>
+        <field name="Footprint">QCopterModules:Insulated_Link_W18</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="FROM" type="passive"/>
+        <pin num="2" name="TO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Insulated_Link_W19">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Insulated_Link_W19</field>
+        <field name="Footprint">QCopterModules:Insulated_Link_W19</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="FROM" type="passive"/>
+        <pin num="2" name="TO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Insulated_Link_W2">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Insulated_Link_W2</field>
+        <field name="Footprint">QCopterModules:Insulated_Link_W2</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="FROM" type="passive"/>
+        <pin num="2" name="TO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Insulated_Link_W20">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Insulated_Link_W20</field>
+        <field name="Footprint">QCopterModules:Insulated_Link_W20</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="FROM" type="passive"/>
+        <pin num="2" name="TO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Insulated_Link_W21">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Insulated_Link_W21</field>
+        <field name="Footprint">QCopterModules:Insulated_Link_W21</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="FROM" type="passive"/>
+        <pin num="2" name="TO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Insulated_Link_W22">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Insulated_Link_W22</field>
+        <field name="Footprint">QCopterModules:Insulated_Link_W22</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="FROM" type="passive"/>
+        <pin num="2" name="TO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Insulated_Link_W23">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Insulated_Link_W23</field>
+        <field name="Footprint">QCopterModules:Insulated_Link_W23</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="FROM" type="passive"/>
+        <pin num="2" name="TO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Insulated_Link_W24">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Insulated_Link_W24</field>
+        <field name="Footprint">QCopterModules:Insulated_Link_W24</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="FROM" type="passive"/>
+        <pin num="2" name="TO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Insulated_Link_W25">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Insulated_Link_W25</field>
+        <field name="Footprint">QCopterModules:Insulated_Link_W25</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="FROM" type="passive"/>
+        <pin num="2" name="TO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Insulated_Link_W26">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Insulated_Link_W26</field>
+        <field name="Footprint">QCopterModules:Insulated_Link_W26</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="FROM" type="passive"/>
+        <pin num="2" name="TO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Insulated_Link_W27">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Insulated_Link_W27</field>
+        <field name="Footprint">QCopterModules:Insulated_Link_W27</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="FROM" type="passive"/>
+        <pin num="2" name="TO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Insulated_Link_W3">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Insulated_Link_W3</field>
+        <field name="Footprint">QCopterModules:Insulated_Link_W3</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="FROM" type="passive"/>
+        <pin num="2" name="TO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Insulated_Link_W4">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Insulated_Link_W4</field>
+        <field name="Footprint">QCopterModules:Insulated_Link_W4</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="FROM" type="passive"/>
+        <pin num="2" name="TO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Insulated_Link_W5">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Insulated_Link_W5</field>
+        <field name="Footprint">QCopterModules:Insulated_Link_W5</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="FROM" type="passive"/>
+        <pin num="2" name="TO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Insulated_Link_W6">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Insulated_Link_W6</field>
+        <field name="Footprint">QCopterModules:Insulated_Link_W6</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="FROM" type="passive"/>
+        <pin num="2" name="TO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Insulated_Link_W7">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Insulated_Link_W7</field>
+        <field name="Footprint">QCopterModules:Insulated_Link_W7</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="FROM" type="passive"/>
+        <pin num="2" name="TO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Insulated_Link_W8">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Insulated_Link_W8</field>
+        <field name="Footprint">QCopterModules:Insulated_Link_W8</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="FROM" type="passive"/>
+        <pin num="2" name="TO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Insulated_Link_W9">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Insulated_Link_W9</field>
+        <field name="Footprint">QCopterModules:Insulated_Link_W9</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="FROM" type="passive"/>
+        <pin num="2" name="TO" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Lidar_Wires_1x04">
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Lidar_Wires_1x04</field>
+        <field name="Footprint">QCopterModules:Lidar_Wires_1x04</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="VCC_5V" type="passive"/>
+        <pin num="2" name="GND" type="passive"/>
+        <pin num="3" name="TX_FROM_LIDAR" type="passive"/>
+        <pin num="4" name="RX_TO_LIDAR" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="MPU6050_GY521_1x08">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">MPU6050_GY521_1x08</field>
+        <field name="Footprint">QCopterModules:MPU6050_GY521_1x08</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="VCC" type="passive"/>
+        <pin num="2" name="GND" type="passive"/>
+        <pin num="3" name="SCL" type="passive"/>
+        <pin num="4" name="SDA" type="passive"/>
+        <pin num="5" name="XDA" type="passive"/>
+        <pin num="6" name="XCL" type="passive"/>
+        <pin num="7" name="AD0" type="passive"/>
+        <pin num="8" name="INT" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="MPU_Auxiliary_1x04">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">MPU_Auxiliary_1x04</field>
+        <field name="Footprint">QCopterModules:MPU_Auxiliary_1x04</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="3V3" type="passive"/>
+        <pin num="2" name="GND" type="passive"/>
+        <pin num="3" name="AUX_SCL" type="passive"/>
+        <pin num="4" name="AUX_SDA" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Magnetometer_GY271_1x05">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Magnetometer_GY271_1x05</field>
+        <field name="Footprint">QCopterModules:Magnetometer_GY271_1x05</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="VCC" type="passive"/>
+        <pin num="2" name="GND" type="passive"/>
+        <pin num="3" name="SCL" type="passive"/>
+        <pin num="4" name="SDA" type="passive"/>
+        <pin num="5" name="DRDY" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="QCopterModules" part="Optional_Pullup_Axial_P10_16">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Optional_Pullup_Axial_P10_16</field>
+        <field name="Footprint">QCopterModules:Optional_Pullup_Axial_P10_16</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="3V3" type="passive"/>
+        <pin num="2" name="BUS_SIGNAL" type="passive"/>
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="QCopterModules">
+      <uri>${KIPRJMOD}/QCopterModules.kicad_sym</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="3V3" class="Default">
+      <node ref="U4" pin="1" pinfunction="VCC_1" pintype="passive"/>
+      <node ref="W3" pin="2" pinfunction="TO_2" pintype="passive"/>
+    </net>
+    <net code="2" name="3V3__LINK_1" class="Default">
+      <node ref="U1" pin="1" pinfunction="3V3_1" pintype="passive"/>
+      <node ref="U1" pin="2" pinfunction="3V3_2" pintype="passive"/>
+      <node ref="W5" pin="1" pinfunction="FROM_1" pintype="passive"/>
+    </net>
+    <net code="3" name="3V3__LINK_2" class="Default">
+      <node ref="R1" pin="1" pinfunction="3V3_1" pintype="passive"/>
+      <node ref="R2" pin="1" pinfunction="3V3_1" pintype="passive"/>
+      <node ref="W4" pin="1" pinfunction="FROM_1" pintype="passive"/>
+    </net>
+    <net code="4" name="3V3__LINK_3" class="Default">
+      <node ref="J6" pin="1" pinfunction="3V3_1" pintype="passive"/>
+      <node ref="U2" pin="1" pinfunction="VCC_1" pintype="passive"/>
+      <node ref="U3" pin="1" pinfunction="VCC_1" pintype="passive"/>
+      <node ref="U3" pin="5" pinfunction="CSB_5" pintype="passive"/>
+      <node ref="W3" pin="1" pinfunction="FROM_1" pintype="passive"/>
+      <node ref="W4" pin="2" pinfunction="TO_2" pintype="passive"/>
+      <node ref="W5" pin="2" pinfunction="TO_2" pintype="passive"/>
+    </net>
+    <net code="5" name="ESC1_BEC" class="Default">
+      <node ref="J2" pin="2" pinfunction="BEC_5V_OPTIONAL_2" pintype="passive"/>
+      <node ref="JP1" pin="1" pinfunction="ESC_BEC_IN_1" pintype="passive"/>
+    </net>
+    <net code="6" name="ESC1_SIGNAL" class="Default">
+      <node ref="J2" pin="3" pinfunction="SIGNAL_3" pintype="passive"/>
+      <node ref="W13" pin="2" pinfunction="TO_2" pintype="passive"/>
+    </net>
+    <net code="7" name="ESC1_SIGNAL__LINK_1" class="Default">
+      <node ref="U1" pin="18" pinfunction="GPIO12_18" pintype="passive"/>
+      <node ref="W13" pin="1" pinfunction="FROM_1" pintype="passive"/>
+    </net>
+    <net code="8" name="ESC2_BEC" class="Default">
+      <node ref="J3" pin="2" pinfunction="BEC_5V_OPTIONAL_2" pintype="passive"/>
+      <node ref="W14" pin="2" pinfunction="TO_2" pintype="passive"/>
+    </net>
+    <net code="9" name="ESC2_BEC__LINK_1" class="Default">
+      <node ref="JP2" pin="1" pinfunction="ESC_BEC_IN_1" pintype="passive"/>
+      <node ref="W14" pin="1" pinfunction="FROM_1" pintype="passive"/>
+    </net>
+    <net code="10" name="ESC2_SIGNAL" class="Default">
+      <node ref="U1" pin="41" pinfunction="GPIO1_41" pintype="passive"/>
+      <node ref="W15" pin="2" pinfunction="TO_2" pintype="passive"/>
+    </net>
+    <net code="11" name="ESC2_SIGNAL__LINK_1" class="Default">
+      <node ref="J3" pin="3" pinfunction="SIGNAL_3" pintype="passive"/>
+      <node ref="W15" pin="1" pinfunction="FROM_1" pintype="passive"/>
+    </net>
+    <net code="12" name="ESC3_BEC" class="Default">
+      <node ref="J4" pin="2" pinfunction="BEC_5V_OPTIONAL_2" pintype="passive"/>
+      <node ref="W16" pin="2" pinfunction="TO_2" pintype="passive"/>
+    </net>
+    <net code="13" name="ESC3_BEC__LINK_1" class="Default">
+      <node ref="JP3" pin="1" pinfunction="ESC_BEC_IN_1" pintype="passive"/>
+      <node ref="W16" pin="1" pinfunction="FROM_1" pintype="passive"/>
+    </net>
+    <net code="14" name="ESC3_SIGNAL" class="Default">
+      <node ref="U1" pin="40" pinfunction="GPIO2_40" pintype="passive"/>
+      <node ref="W17" pin="2" pinfunction="TO_2" pintype="passive"/>
+    </net>
+    <net code="15" name="ESC3_SIGNAL__LINK_1" class="Default">
+      <node ref="J4" pin="3" pinfunction="SIGNAL_3" pintype="passive"/>
+      <node ref="W17" pin="1" pinfunction="FROM_1" pintype="passive"/>
+    </net>
+    <net code="16" name="ESC4_BEC" class="Default">
+      <node ref="J5" pin="2" pinfunction="BEC_5V_OPTIONAL_2" pintype="passive"/>
+      <node ref="W18" pin="2" pinfunction="TO_2" pintype="passive"/>
+    </net>
+    <net code="17" name="ESC4_BEC__LINK_1" class="Default">
+      <node ref="JP4" pin="1" pinfunction="ESC_BEC_IN_1" pintype="passive"/>
+      <node ref="W18" pin="1" pinfunction="FROM_1" pintype="passive"/>
+    </net>
+    <net code="18" name="ESC4_SIGNAL" class="Default">
+      <node ref="J5" pin="3" pinfunction="SIGNAL_3" pintype="passive"/>
+      <node ref="W19" pin="2" pinfunction="TO_2" pintype="passive"/>
+    </net>
+    <net code="19" name="ESC4_SIGNAL__LINK_1" class="Default">
+      <node ref="U1" pin="20" pinfunction="GPIO14_20" pintype="passive"/>
+      <node ref="W19" pin="1" pinfunction="FROM_1" pintype="passive"/>
+    </net>
+    <net code="20" name="FC_5V" class="Default">
+      <node ref="JP1" pin="2" pinfunction="BOARD_5V_OUT_2" pintype="passive"/>
+      <node ref="JP2" pin="2" pinfunction="BOARD_5V_OUT_2" pintype="passive"/>
+      <node ref="JP3" pin="2" pinfunction="BOARD_5V_OUT_2" pintype="passive"/>
+      <node ref="JP4" pin="2" pinfunction="BOARD_5V_OUT_2" pintype="passive"/>
+      <node ref="U1" pin="21" pinfunction="5V_21" pintype="passive"/>
+      <node ref="W6" pin="2" pinfunction="TO_2" pintype="passive"/>
+    </net>
+    <net code="21" name="FC_5V__LINK_1" class="Default">
+      <node ref="J1" pin="1" pinfunction="VCC_5V_1" pintype="passive"/>
+      <node ref="W6" pin="1" pinfunction="FROM_1" pintype="passive"/>
+    </net>
+    <net code="22" name="FC_TX_TO_LIDAR" class="Default">
+      <node ref="U1" pin="7" pinfunction="GPIO7_7" pintype="passive"/>
+      <node ref="W20" pin="2" pinfunction="TO_2" pintype="passive"/>
+    </net>
+    <net code="23" name="FC_TX_TO_LIDAR__LINK_1" class="Default">
+      <node ref="J1" pin="4" pinfunction="RX_TO_LIDAR_4" pintype="passive"/>
+      <node ref="W20" pin="1" pinfunction="FROM_1" pintype="passive"/>
+    </net>
+    <net code="24" name="FC_UART_RX" class="Default">
+      <node ref="U1" pin="4" pinfunction="GPIO4_4" pintype="passive"/>
+      <node ref="W21" pin="2" pinfunction="TO_2" pintype="passive"/>
+    </net>
+    <net code="25" name="FC_UART_RX__LINK_1" class="Default">
+      <node ref="J7" pin="3" pinfunction="RX_TO_FC_3" pintype="passive"/>
+      <node ref="W21" pin="1" pinfunction="FROM_1" pintype="passive"/>
+    </net>
+    <net code="26" name="FC_UART_TX" class="Default">
+      <node ref="U1" pin="5" pinfunction="GPIO5_5" pintype="passive"/>
+      <node ref="W22" pin="2" pinfunction="TO_2" pintype="passive"/>
+    </net>
+    <net code="27" name="FC_UART_TX__LINK_1" class="Default">
+      <node ref="J7" pin="2" pinfunction="TX_FROM_FC_2" pintype="passive"/>
+      <node ref="W22" pin="1" pinfunction="FROM_1" pintype="passive"/>
+    </net>
+    <net code="28" name="GND" class="Default">
+      <node ref="J1" pin="2" pinfunction="GND_2" pintype="passive"/>
+      <node ref="J2" pin="1" pinfunction="GND_1" pintype="passive"/>
+      <node ref="J3" pin="1" pinfunction="GND_1" pintype="passive"/>
+      <node ref="J4" pin="1" pinfunction="GND_1" pintype="passive"/>
+      <node ref="J5" pin="1" pinfunction="GND_1" pintype="passive"/>
+      <node ref="J6" pin="2" pinfunction="GND_2" pintype="passive"/>
+      <node ref="J7" pin="1" pinfunction="GND_1" pintype="passive"/>
+      <node ref="U1" pin="22" pinfunction="GND_22" pintype="passive"/>
+      <node ref="U1" pin="23" pinfunction="GND_23" pintype="passive"/>
+      <node ref="U1" pin="24" pinfunction="GND_24" pintype="passive"/>
+      <node ref="U2" pin="7" pinfunction="AD0_7" pintype="passive"/>
+      <node ref="U3" pin="6" pinfunction="SDO_6" pintype="passive"/>
+      <node ref="U4" pin="2" pinfunction="GND_2" pintype="passive"/>
+      <node ref="W1" pin="2" pinfunction="TO_2" pintype="passive"/>
+      <node ref="W2" pin="2" pinfunction="TO_2" pintype="passive"/>
+    </net>
+    <net code="29" name="GND__LINK_1" class="Default">
+      <node ref="U1" pin="44" pinfunction="GND_44" pintype="passive"/>
+      <node ref="U2" pin="2" pinfunction="GND_2" pintype="passive"/>
+      <node ref="W1" pin="1" pinfunction="FROM_1" pintype="passive"/>
+    </net>
+    <net code="30" name="GND__LINK_2" class="Default">
+      <node ref="U3" pin="2" pinfunction="GND_2" pintype="passive"/>
+      <node ref="W2" pin="1" pinfunction="FROM_1" pintype="passive"/>
+    </net>
+    <net code="31" name="I2C_SCL" class="Default">
+      <node ref="R2" pin="2" pinfunction="BUS_SIGNAL_2" pintype="passive"/>
+      <node ref="U4" pin="3" pinfunction="SCL_3" pintype="passive"/>
+      <node ref="W7" pin="2" pinfunction="TO_2" pintype="passive"/>
+    </net>
+    <net code="32" name="I2C_SCL__LINK_1" class="Default">
+      <node ref="U1" pin="12" pinfunction="GPIO8_12" pintype="passive"/>
+      <node ref="W9" pin="1" pinfunction="FROM_1" pintype="passive"/>
+    </net>
+    <net code="33" name="I2C_SCL__LINK_2" class="Default">
+      <node ref="U3" pin="3" pinfunction="SCL_3" pintype="passive"/>
+      <node ref="W7" pin="1" pinfunction="FROM_1" pintype="passive"/>
+      <node ref="W8" pin="2" pinfunction="TO_2" pintype="passive"/>
+    </net>
+    <net code="34" name="I2C_SCL__LINK_3" class="Default">
+      <node ref="U2" pin="3" pinfunction="SCL_3" pintype="passive"/>
+      <node ref="W8" pin="1" pinfunction="FROM_1" pintype="passive"/>
+      <node ref="W9" pin="2" pinfunction="TO_2" pintype="passive"/>
+    </net>
+    <net code="35" name="I2C_SDA" class="Default">
+      <node ref="U3" pin="4" pinfunction="SDA_4" pintype="passive"/>
+      <node ref="U4" pin="4" pinfunction="SDA_4" pintype="passive"/>
+      <node ref="W10" pin="2" pinfunction="TO_2" pintype="passive"/>
+      <node ref="W11" pin="2" pinfunction="TO_2" pintype="passive"/>
+    </net>
+    <net code="36" name="I2C_SDA__LINK_1" class="Default">
+      <node ref="U1" pin="15" pinfunction="GPIO9_15" pintype="passive"/>
+      <node ref="W12" pin="1" pinfunction="FROM_1" pintype="passive"/>
+    </net>
+    <net code="37" name="I2C_SDA__LINK_2" class="Default">
+      <node ref="R1" pin="2" pinfunction="BUS_SIGNAL_2" pintype="passive"/>
+      <node ref="W10" pin="1" pinfunction="FROM_1" pintype="passive"/>
+      <node ref="W12" pin="2" pinfunction="TO_2" pintype="passive"/>
+    </net>
+    <net code="38" name="I2C_SDA__LINK_3" class="Default">
+      <node ref="U2" pin="4" pinfunction="SDA_4" pintype="passive"/>
+      <node ref="W11" pin="1" pinfunction="FROM_1" pintype="passive"/>
+    </net>
+    <net code="39" name="LIDAR_TO_FC_RX" class="Default">
+      <node ref="U1" pin="6" pinfunction="GPIO6_6" pintype="passive"/>
+      <node ref="W23" pin="2" pinfunction="TO_2" pintype="passive"/>
+    </net>
+    <net code="40" name="LIDAR_TO_FC_RX__LINK_1" class="Default">
+      <node ref="J1" pin="3" pinfunction="TX_FROM_LIDAR_3" pintype="passive"/>
+      <node ref="W23" pin="1" pinfunction="FROM_1" pintype="passive"/>
+    </net>
+    <net code="41" name="MAG_DRDY" class="Default">
+      <node ref="U4" pin="5" pinfunction="DRDY_5" pintype="passive"/>
+      <node ref="W24" pin="2" pinfunction="TO_2" pintype="passive"/>
+    </net>
+    <net code="42" name="MAG_DRDY__LINK_1" class="Default">
+      <node ref="U1" pin="10" pinfunction="GPIO17_10" pintype="passive"/>
+      <node ref="W24" pin="1" pinfunction="FROM_1" pintype="passive"/>
+    </net>
+    <net code="43" name="MPU_AUX_SCL" class="Default">
+      <node ref="J6" pin="3" pinfunction="AUX_SCL_3" pintype="passive"/>
+      <node ref="W25" pin="2" pinfunction="TO_2" pintype="passive"/>
+    </net>
+    <net code="44" name="MPU_AUX_SCL__LINK_1" class="Default">
+      <node ref="U2" pin="6" pinfunction="XCL_6" pintype="passive"/>
+      <node ref="W25" pin="1" pinfunction="FROM_1" pintype="passive"/>
+    </net>
+    <net code="45" name="MPU_AUX_SDA" class="Default">
+      <node ref="J6" pin="4" pinfunction="AUX_SDA_4" pintype="passive"/>
+      <node ref="W26" pin="2" pinfunction="TO_2" pintype="passive"/>
+    </net>
+    <net code="46" name="MPU_AUX_SDA__LINK_1" class="Default">
+      <node ref="U2" pin="5" pinfunction="XDA_5" pintype="passive"/>
+      <node ref="W26" pin="1" pinfunction="FROM_1" pintype="passive"/>
+    </net>
+    <net code="47" name="MPU_INT" class="Default">
+      <node ref="U1" pin="9" pinfunction="GPIO16_9" pintype="passive"/>
+      <node ref="W27" pin="2" pinfunction="TO_2" pintype="passive"/>
+    </net>
+    <net code="48" name="MPU_INT__LINK_1" class="Default">
+      <node ref="U2" pin="8" pinfunction="INT_8" pintype="passive"/>
+      <node ref="W27" pin="1" pinfunction="FROM_1" pintype="passive"/>
+    </net>
+    <net code="49" name="unconnected-(U1-EN-Pad3)" class="Default">
+      <node ref="U1" pin="3" pinfunction="EN_3" pintype="passive+no_connect"/>
+    </net>
+    <net code="50" name="unconnected-(U1-GPIO0-Pad31)" class="Default">
+      <node ref="U1" pin="31" pinfunction="GPIO0_31" pintype="passive+no_connect"/>
+    </net>
+    <net code="51" name="unconnected-(U1-GPIO3-Pad13)" class="Default">
+      <node ref="U1" pin="13" pinfunction="GPIO3_13" pintype="passive+no_connect"/>
+    </net>
+    <net code="52" name="unconnected-(U1-GPIO10-Pad16)" class="Default">
+      <node ref="U1" pin="16" pinfunction="GPIO10_16" pintype="passive+no_connect"/>
+    </net>
+    <net code="53" name="unconnected-(U1-GPIO11-Pad17)" class="Default">
+      <node ref="U1" pin="17" pinfunction="GPIO11_17" pintype="passive+no_connect"/>
+    </net>
+    <net code="54" name="unconnected-(U1-GPIO13-Pad19)" class="Default">
+      <node ref="U1" pin="19" pinfunction="GPIO13_19" pintype="passive+no_connect"/>
+    </net>
+    <net code="55" name="unconnected-(U1-GPIO15-Pad8)" class="Default">
+      <node ref="U1" pin="8" pinfunction="GPIO15_8" pintype="passive+no_connect"/>
+    </net>
+    <net code="56" name="unconnected-(U1-GPIO18-Pad11)" class="Default">
+      <node ref="U1" pin="11" pinfunction="GPIO18_11" pintype="passive+no_connect"/>
+    </net>
+    <net code="57" name="unconnected-(U1-GPIO19-Pad25)" class="Default">
+      <node ref="U1" pin="25" pinfunction="GPIO19_25" pintype="passive+no_connect"/>
+    </net>
+    <net code="58" name="unconnected-(U1-GPIO20-Pad26)" class="Default">
+      <node ref="U1" pin="26" pinfunction="GPIO20_26" pintype="passive+no_connect"/>
+    </net>
+    <net code="59" name="unconnected-(U1-GPIO21-Pad27)" class="Default">
+      <node ref="U1" pin="27" pinfunction="GPIO21_27" pintype="passive+no_connect"/>
+    </net>
+    <net code="60" name="unconnected-(U1-GPIO35-Pad32)" class="Default">
+      <node ref="U1" pin="32" pinfunction="GPIO35_32" pintype="passive+no_connect"/>
+    </net>
+    <net code="61" name="unconnected-(U1-GPIO36-Pad33)" class="Default">
+      <node ref="U1" pin="33" pinfunction="GPIO36_33" pintype="passive+no_connect"/>
+    </net>
+    <net code="62" name="unconnected-(U1-GPIO37-Pad34)" class="Default">
+      <node ref="U1" pin="34" pinfunction="GPIO37_34" pintype="passive+no_connect"/>
+    </net>
+    <net code="63" name="unconnected-(U1-GPIO38-Pad35)" class="Default">
+      <node ref="U1" pin="35" pinfunction="GPIO38_35" pintype="passive+no_connect"/>
+    </net>
+    <net code="64" name="unconnected-(U1-GPIO39-Pad36)" class="Default">
+      <node ref="U1" pin="36" pinfunction="GPIO39_36" pintype="passive+no_connect"/>
+    </net>
+    <net code="65" name="unconnected-(U1-GPIO40-Pad37)" class="Default">
+      <node ref="U1" pin="37" pinfunction="GPIO40_37" pintype="passive+no_connect"/>
+    </net>
+    <net code="66" name="unconnected-(U1-GPIO41-Pad38)" class="Default">
+      <node ref="U1" pin="38" pinfunction="GPIO41_38" pintype="passive+no_connect"/>
+    </net>
+    <net code="67" name="unconnected-(U1-GPIO42-Pad39)" class="Default">
+      <node ref="U1" pin="39" pinfunction="GPIO42_39" pintype="passive+no_connect"/>
+    </net>
+    <net code="68" name="unconnected-(U1-GPIO43_TX-Pad43)" class="Default">
+      <node ref="U1" pin="43" pinfunction="GPIO43_TX_43" pintype="passive+no_connect"/>
+    </net>
+    <net code="69" name="unconnected-(U1-GPIO44_RX-Pad42)" class="Default">
+      <node ref="U1" pin="42" pinfunction="GPIO44_RX_42" pintype="passive+no_connect"/>
+    </net>
+    <net code="70" name="unconnected-(U1-GPIO45-Pad30)" class="Default">
+      <node ref="U1" pin="30" pinfunction="GPIO45_30" pintype="passive+no_connect"/>
+    </net>
+    <net code="71" name="unconnected-(U1-GPIO46-Pad14)" class="Default">
+      <node ref="U1" pin="14" pinfunction="GPIO46_14" pintype="passive+no_connect"/>
+    </net>
+    <net code="72" name="unconnected-(U1-GPIO47-Pad28)" class="Default">
+      <node ref="U1" pin="28" pinfunction="GPIO47_28" pintype="passive+no_connect"/>
+    </net>
+    <net code="73" name="unconnected-(U1-GPIO48-Pad29)" class="Default">
+      <node ref="U1" pin="29" pinfunction="GPIO48_29" pintype="passive+no_connect"/>
+    </net>
+  </nets>
+</export>

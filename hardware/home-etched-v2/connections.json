@@ -1,0 +1,1380 @@
+{
+  "schema": 1,
+  "engine": "Native KiCad schematic/netlist and net-assigned PCB generation",
+  "status": "Native DRC and schematic/link graph verified; physical manufacture and module fit pending",
+  "bus_choice": "I2C for MPU6050/BMP280/GY-271; UART for lidar/companion",
+  "gpio": {
+    "i2c_sda": 9,
+    "i2c_scl": 8,
+    "mpu_interrupt": 16,
+    "mag_drdy": 17,
+    "lidar_rx": 6,
+    "lidar_tx": 7,
+    "companion_rx": 4,
+    "companion_tx": 5,
+    "esc1": 12,
+    "esc2": 1,
+    "esc3": 2,
+    "esc4": 14
+  },
+  "components": [
+    {
+      "reference": "U1",
+      "name": "ESP32_S3_DevKitC_1_44pin",
+      "symbol_xy": [
+        85,
+        92
+      ],
+      "board_xy": [
+        12.7,
+        10.16
+      ],
+      "pin_nets": {
+        "22": "GND",
+        "23": "GND",
+        "24": "GND",
+        "44": "GND__LINK_1",
+        "1": "3V3__LINK_1",
+        "2": "3V3__LINK_1",
+        "21": "FC_5V",
+        "12": "I2C_SCL__LINK_1",
+        "15": "I2C_SDA__LINK_1",
+        "10": "MAG_DRDY__LINK_1",
+        "9": "MPU_INT",
+        "4": "FC_UART_RX",
+        "5": "FC_UART_TX",
+        "6": "LIDAR_TO_FC_RX",
+        "7": "FC_TX_TO_LIDAR",
+        "18": "ESC1_SIGNAL__LINK_1",
+        "41": "ESC2_SIGNAL",
+        "40": "ESC3_SIGNAL",
+        "20": "ESC4_SIGNAL__LINK_1"
+      },
+      "value": "ESP32_S3_DevKitC_1_44pin",
+      "dnp": false,
+      "uuid": "77e9dafb-8905-4419-a628-194b60b8eb06",
+      "logical_pin_nets": {
+        "22": "GND",
+        "23": "GND",
+        "24": "GND",
+        "44": "GND",
+        "1": "3V3",
+        "2": "3V3",
+        "21": "FC_5V",
+        "12": "I2C_SCL",
+        "15": "I2C_SDA",
+        "10": "MAG_DRDY",
+        "9": "MPU_INT",
+        "4": "FC_UART_RX",
+        "5": "FC_UART_TX",
+        "6": "LIDAR_TO_FC_RX",
+        "7": "FC_TX_TO_LIDAR",
+        "18": "ESC1_SIGNAL",
+        "41": "ESC2_SIGNAL",
+        "40": "ESC3_SIGNAL",
+        "20": "ESC4_SIGNAL"
+      }
+    },
+    {
+      "reference": "U2",
+      "name": "MPU6050_GY521_1x08",
+      "symbol_xy": [
+        200,
+        55
+      ],
+      "board_xy": [
+        53.34,
+        12.7
+      ],
+      "pin_nets": {
+        "1": "3V3__LINK_3",
+        "2": "GND__LINK_1",
+        "3": "I2C_SCL__LINK_3",
+        "4": "I2C_SDA__LINK_3",
+        "5": "MPU_AUX_SDA__LINK_1",
+        "6": "MPU_AUX_SCL__LINK_1",
+        "7": "GND",
+        "8": "MPU_INT__LINK_1"
+      },
+      "value": "MPU6050_GY521_1x08",
+      "dnp": false,
+      "uuid": "cfdc65c5-f789-4011-a3d7-12414fc6e10c",
+      "logical_pin_nets": {
+        "1": "3V3",
+        "2": "GND",
+        "3": "I2C_SCL",
+        "4": "I2C_SDA",
+        "5": "MPU_AUX_SDA",
+        "6": "MPU_AUX_SCL",
+        "7": "GND",
+        "8": "MPU_INT"
+      }
+    },
+    {
+      "reference": "U3",
+      "name": "BMP280_GY_1x06",
+      "symbol_xy": [
+        310,
+        55
+      ],
+      "board_xy": [
+        74.93,
+        12.7
+      ],
+      "pin_nets": {
+        "1": "3V3__LINK_3",
+        "2": "GND__LINK_2",
+        "3": "I2C_SCL__LINK_2",
+        "4": "I2C_SDA",
+        "5": "3V3__LINK_3",
+        "6": "GND"
+      },
+      "value": "BMP280_GY_1x06",
+      "dnp": false,
+      "uuid": "298e8733-5616-46f6-bb21-2ddcfdb10e7a",
+      "logical_pin_nets": {
+        "1": "3V3",
+        "2": "GND",
+        "3": "I2C_SCL",
+        "4": "I2C_SDA",
+        "5": "3V3",
+        "6": "GND"
+      }
+    },
+    {
+      "reference": "U4",
+      "name": "Magnetometer_GY271_1x05",
+      "symbol_xy": [
+        200,
+        112
+      ],
+      "board_xy": [
+        71.12,
+        38.1
+      ],
+      "pin_nets": {
+        "1": "3V3",
+        "2": "GND",
+        "3": "I2C_SCL",
+        "4": "I2C_SDA",
+        "5": "MAG_DRDY"
+      },
+      "value": "Magnetometer_GY271_1x05",
+      "dnp": false,
+      "uuid": "b4a67d84-1292-487a-b1cf-08396eb4989a",
+      "logical_pin_nets": {
+        "1": "3V3",
+        "2": "GND",
+        "3": "I2C_SCL",
+        "4": "I2C_SDA",
+        "5": "MAG_DRDY"
+      }
+    },
+    {
+      "reference": "J1",
+      "name": "Lidar_Wires_1x04",
+      "symbol_xy": [
+        310,
+        112
+      ],
+      "board_xy": [
+        83.82,
+        53.34
+      ],
+      "pin_nets": {
+        "1": "FC_5V__LINK_1",
+        "2": "GND",
+        "3": "LIDAR_TO_FC_RX__LINK_1",
+        "4": "FC_TX_TO_LIDAR__LINK_1"
+      },
+      "value": "Lidar_Wires_1x04",
+      "dnp": false,
+      "uuid": "029c906c-2c82-4b2d-a084-fa445425f804",
+      "logical_pin_nets": {
+        "1": "FC_5V",
+        "2": "GND",
+        "3": "LIDAR_TO_FC_RX",
+        "4": "FC_TX_TO_LIDAR"
+      }
+    },
+    {
+      "reference": "J2",
+      "name": "ESC_Servo_1x03",
+      "symbol_xy": [
+        60,
+        175
+      ],
+      "board_xy": [
+        50.8,
+        73.66
+      ],
+      "pin_nets": {
+        "1": "GND",
+        "2": "ESC1_BEC",
+        "3": "ESC1_SIGNAL"
+      },
+      "value": "ESC1_CONTROL",
+      "dnp": false,
+      "uuid": "25055f6f-d60e-449c-b2a2-437268aa1c59",
+      "logical_pin_nets": {
+        "1": "GND",
+        "2": "ESC1_BEC",
+        "3": "ESC1_SIGNAL"
+      }
+    },
+    {
+      "reference": "JP1",
+      "name": "BEC_Link_1x02",
+      "symbol_xy": [
+        60,
+        222
+      ],
+      "board_xy": [
+        43.18,
+        83.82
+      ],
+      "pin_nets": {
+        "1": "ESC1_BEC",
+        "2": "FC_5V"
+      },
+      "value": "BEC_LINK_FIT_ONE_ONLY",
+      "dnp": false,
+      "uuid": "f14d4e9a-ae2e-4293-832e-09766827249d",
+      "logical_pin_nets": {
+        "1": "ESC1_BEC",
+        "2": "FC_5V"
+      }
+    },
+    {
+      "reference": "J3",
+      "name": "ESC_Servo_1x03",
+      "symbol_xy": [
+        150,
+        175
+      ],
+      "board_xy": [
+        60.96,
+        73.66
+      ],
+      "pin_nets": {
+        "1": "GND",
+        "2": "ESC2_BEC",
+        "3": "ESC2_SIGNAL__LINK_1"
+      },
+      "value": "ESC2_CONTROL",
+      "dnp": false,
+      "uuid": "a2fdbe6f-e05b-4a58-9546-97f89e4c6724",
+      "logical_pin_nets": {
+        "1": "GND",
+        "2": "ESC2_BEC",
+        "3": "ESC2_SIGNAL"
+      }
+    },
+    {
+      "reference": "JP2",
+      "name": "BEC_Link_1x02",
+      "symbol_xy": [
+        150,
+        222
+      ],
+      "board_xy": [
+        55.88,
+        83.82
+      ],
+      "pin_nets": {
+        "1": "ESC2_BEC__LINK_1",
+        "2": "FC_5V"
+      },
+      "value": "BEC_LINK_FIT_ONE_ONLY",
+      "dnp": false,
+      "uuid": "47e6e5d5-c1e8-4754-9011-20603dfda70f",
+      "logical_pin_nets": {
+        "1": "ESC2_BEC",
+        "2": "FC_5V"
+      }
+    },
+    {
+      "reference": "J4",
+      "name": "ESC_Servo_1x03",
+      "symbol_xy": [
+        240,
+        175
+      ],
+      "board_xy": [
+        71.12,
+        73.66
+      ],
+      "pin_nets": {
+        "1": "GND",
+        "2": "ESC3_BEC",
+        "3": "ESC3_SIGNAL__LINK_1"
+      },
+      "value": "ESC3_CONTROL",
+      "dnp": false,
+      "uuid": "7bce57b9-3f17-4973-a660-3d9699b89880",
+      "logical_pin_nets": {
+        "1": "GND",
+        "2": "ESC3_BEC",
+        "3": "ESC3_SIGNAL"
+      }
+    },
+    {
+      "reference": "JP3",
+      "name": "BEC_Link_1x02",
+      "symbol_xy": [
+        240,
+        222
+      ],
+      "board_xy": [
+        68.58,
+        83.82
+      ],
+      "pin_nets": {
+        "1": "ESC3_BEC__LINK_1",
+        "2": "FC_5V"
+      },
+      "value": "BEC_LINK_FIT_ONE_ONLY",
+      "dnp": false,
+      "uuid": "29c3718b-a8c6-4401-a250-ea2427ffcc25",
+      "logical_pin_nets": {
+        "1": "ESC3_BEC",
+        "2": "FC_5V"
+      }
+    },
+    {
+      "reference": "J5",
+      "name": "ESC_Servo_1x03",
+      "symbol_xy": [
+        330,
+        175
+      ],
+      "board_xy": [
+        81.28,
+        73.66
+      ],
+      "pin_nets": {
+        "1": "GND",
+        "2": "ESC4_BEC",
+        "3": "ESC4_SIGNAL"
+      },
+      "value": "ESC4_CONTROL",
+      "dnp": false,
+      "uuid": "049e34ea-2aa7-4381-ada3-7c5ee678623c",
+      "logical_pin_nets": {
+        "1": "GND",
+        "2": "ESC4_BEC",
+        "3": "ESC4_SIGNAL"
+      }
+    },
+    {
+      "reference": "JP4",
+      "name": "BEC_Link_1x02",
+      "symbol_xy": [
+        330,
+        222
+      ],
+      "board_xy": [
+        81.28,
+        83.82
+      ],
+      "pin_nets": {
+        "1": "ESC4_BEC__LINK_1",
+        "2": "FC_5V"
+      },
+      "value": "BEC_LINK_FIT_ONE_ONLY",
+      "dnp": false,
+      "uuid": "d0775d46-9e99-4f1b-9e7b-efb8fd78c960",
+      "logical_pin_nets": {
+        "1": "ESC4_BEC",
+        "2": "FC_5V"
+      }
+    },
+    {
+      "reference": "J6",
+      "name": "MPU_Auxiliary_1x04",
+      "symbol_xy": [
+        200,
+        265
+      ],
+      "board_xy": [
+        53.34,
+        40.64
+      ],
+      "pin_nets": {
+        "1": "3V3__LINK_3",
+        "2": "GND",
+        "3": "MPU_AUX_SCL",
+        "4": "MPU_AUX_SDA"
+      },
+      "value": "MPU_Auxiliary_1x04",
+      "dnp": false,
+      "uuid": "14002c3f-c668-4b50-9f99-52ac7213d7ef",
+      "logical_pin_nets": {
+        "1": "3V3",
+        "2": "GND",
+        "3": "MPU_AUX_SCL",
+        "4": "MPU_AUX_SDA"
+      }
+    },
+    {
+      "reference": "J7",
+      "name": "Companion_UART_1x03",
+      "symbol_xy": [
+        85,
+        265
+      ],
+      "board_xy": [
+        43.18,
+        63.5
+      ],
+      "pin_nets": {
+        "1": "GND",
+        "2": "FC_UART_TX__LINK_1",
+        "3": "FC_UART_RX__LINK_1"
+      },
+      "value": "Companion_UART_1x03",
+      "dnp": false,
+      "uuid": "6f6c7ff1-c348-4759-9c3c-2e4212a15df1",
+      "logical_pin_nets": {
+        "1": "GND",
+        "2": "FC_UART_TX",
+        "3": "FC_UART_RX"
+      }
+    },
+    {
+      "reference": "R1",
+      "name": "Optional_Pullup_Axial_P10_16",
+      "symbol_xy": [
+        310,
+        145
+      ],
+      "board_xy": [
+        48.26,
+        55.88
+      ],
+      "pin_nets": {
+        "1": "3V3__LINK_2",
+        "2": "I2C_SDA__LINK_2"
+      },
+      "value": "4k7_DNP",
+      "dnp": true,
+      "uuid": "4ffb8dba-0d76-4f91-982b-495d5cee698a",
+      "logical_pin_nets": {
+        "1": "3V3",
+        "2": "I2C_SDA"
+      }
+    },
+    {
+      "reference": "R2",
+      "name": "Optional_Pullup_Axial_P10_16",
+      "symbol_xy": [
+        370,
+        145
+      ],
+      "board_xy": [
+        48.26,
+        60.96
+      ],
+      "pin_nets": {
+        "1": "3V3__LINK_2",
+        "2": "I2C_SCL"
+      },
+      "value": "4k7_DNP",
+      "dnp": true,
+      "uuid": "e62594cc-2b70-4f86-80fa-19870039554a",
+      "logical_pin_nets": {
+        "1": "3V3",
+        "2": "I2C_SCL"
+      }
+    },
+    {
+      "reference": "W1",
+      "name": "Insulated_Link_W1",
+      "value": "INSULATED_WIRE",
+      "dnp": false,
+      "uuid": "a7b28b7a-906e-412b-905d-df62079f22ad",
+      "board_xy": [
+        47.244,
+        15.24
+      ],
+      "symbol_xy": [
+        440,
+        50
+      ],
+      "pin_nets": {
+        "1": "GND__LINK_1",
+        "2": "GND"
+      }
+    },
+    {
+      "reference": "W2",
+      "name": "Insulated_Link_W2",
+      "value": "INSULATED_WIRE",
+      "dnp": false,
+      "uuid": "c0711cfd-f93d-4568-ba4d-45b800a4a631",
+      "board_xy": [
+        69.85,
+        15.748
+      ],
+      "symbol_xy": [
+        440,
+        75
+      ],
+      "pin_nets": {
+        "1": "GND__LINK_2",
+        "2": "GND"
+      }
+    },
+    {
+      "reference": "W3",
+      "name": "Insulated_Link_W3",
+      "value": "INSULATED_WIRE",
+      "dnp": false,
+      "uuid": "f350c5c2-e506-4975-9454-02b987c088f2",
+      "board_xy": [
+        63.5,
+        33.274
+      ],
+      "symbol_xy": [
+        440,
+        100
+      ],
+      "pin_nets": {
+        "1": "3V3__LINK_3",
+        "2": "3V3"
+      }
+    },
+    {
+      "reference": "W4",
+      "name": "Insulated_Link_W4",
+      "value": "INSULATED_WIRE",
+      "dnp": false,
+      "uuid": "2bf0511c-1c9c-4cbe-92b1-0b765b9d8770",
+      "board_xy": [
+        46.736,
+        49.276
+      ],
+      "symbol_xy": [
+        440,
+        125
+      ],
+      "pin_nets": {
+        "1": "3V3__LINK_2",
+        "2": "3V3__LINK_3"
+      }
+    },
+    {
+      "reference": "W5",
+      "name": "Insulated_Link_W5",
+      "value": "INSULATED_WIRE",
+      "dnp": false,
+      "uuid": "c2f7c8ec-839e-4f95-9dc8-bf13c926e5c1",
+      "board_xy": [
+        32.766,
+        12.7
+      ],
+      "symbol_xy": [
+        440,
+        150
+      ],
+      "pin_nets": {
+        "1": "3V3__LINK_1",
+        "2": "3V3__LINK_3"
+      }
+    },
+    {
+      "reference": "W6",
+      "name": "Insulated_Link_W6",
+      "value": "INSULATED_WIRE",
+      "dnp": false,
+      "uuid": "d38ee4ac-ecdc-4564-a0c3-9fc33a8b0e25",
+      "board_xy": [
+        77.47,
+        56.896
+      ],
+      "symbol_xy": [
+        440,
+        175
+      ],
+      "pin_nets": {
+        "1": "FC_5V__LINK_1",
+        "2": "FC_5V"
+      }
+    },
+    {
+      "reference": "W7",
+      "name": "Insulated_Link_W7",
+      "value": "INSULATED_WIRE",
+      "dnp": false,
+      "uuid": "d88b73f9-4e70-46b1-b6b7-32f5877d40f2",
+      "board_xy": [
+        67.056,
+        19.05
+      ],
+      "symbol_xy": [
+        440,
+        200
+      ],
+      "pin_nets": {
+        "1": "I2C_SCL__LINK_2",
+        "2": "I2C_SCL"
+      }
+    },
+    {
+      "reference": "W8",
+      "name": "Insulated_Link_W8",
+      "value": "INSULATED_WIRE",
+      "dnp": false,
+      "uuid": "7c87b222-bd9e-4edd-a8ea-59be4cc5709b",
+      "board_xy": [
+        62.484,
+        18.034
+      ],
+      "symbol_xy": [
+        440,
+        225
+      ],
+      "pin_nets": {
+        "1": "I2C_SCL__LINK_3",
+        "2": "I2C_SCL__LINK_2"
+      }
+    },
+    {
+      "reference": "W9",
+      "name": "Insulated_Link_W9",
+      "value": "INSULATED_WIRE",
+      "dnp": false,
+      "uuid": "ca1cbf02-7291-4509-a14e-fe6aee9d20cb",
+      "board_xy": [
+        33.02,
+        26.416
+      ],
+      "symbol_xy": [
+        440,
+        250
+      ],
+      "pin_nets": {
+        "1": "I2C_SCL__LINK_1",
+        "2": "I2C_SCL__LINK_3"
+      }
+    },
+    {
+      "reference": "W10",
+      "name": "Insulated_Link_W10",
+      "value": "INSULATED_WIRE",
+      "dnp": false,
+      "uuid": "5f20ce55-675d-4c30-aed3-23aef31d717a",
+      "board_xy": [
+        62.484,
+        52.578
+      ],
+      "symbol_xy": [
+        440,
+        275
+      ],
+      "pin_nets": {
+        "1": "I2C_SDA__LINK_2",
+        "2": "I2C_SDA"
+      }
+    },
+    {
+      "reference": "W11",
+      "name": "Insulated_Link_W11",
+      "value": "INSULATED_WIRE",
+      "dnp": false,
+      "uuid": "e16ccd96-9f5b-4d34-a45d-6a1f79c5792e",
+      "board_xy": [
+        60.452,
+        20.32
+      ],
+      "symbol_xy": [
+        530,
+        50
+      ],
+      "pin_nets": {
+        "1": "I2C_SDA__LINK_3",
+        "2": "I2C_SDA"
+      }
+    },
+    {
+      "reference": "W12",
+      "name": "Insulated_Link_W12",
+      "value": "INSULATED_WIRE",
+      "dnp": false,
+      "uuid": "58fb4754-1ddb-4543-a62f-09ed2b9aa516",
+      "board_xy": [
+        33.02,
+        51.816
+      ],
+      "symbol_xy": [
+        530,
+        75
+      ],
+      "pin_nets": {
+        "1": "I2C_SDA__LINK_1",
+        "2": "I2C_SDA__LINK_2"
+      }
+    },
+    {
+      "reference": "W13",
+      "name": "Insulated_Link_W13",
+      "value": "INSULATED_WIRE",
+      "dnp": false,
+      "uuid": "bf2faded-2bc0-4220-99c1-50f43ddf7947",
+      "board_xy": [
+        32.766,
+        61.214
+      ],
+      "symbol_xy": [
+        530,
+        100
+      ],
+      "pin_nets": {
+        "1": "ESC1_SIGNAL__LINK_1",
+        "2": "ESC1_SIGNAL"
+      }
+    },
+    {
+      "reference": "W14",
+      "name": "Insulated_Link_W14",
+      "value": "INSULATED_WIRE",
+      "dnp": false,
+      "uuid": "08b3b846-2bb1-48fc-a6e7-4332053699d5",
+      "board_xy": [
+        56.896,
+        80.772
+      ],
+      "symbol_xy": [
+        530,
+        125
+      ],
+      "pin_nets": {
+        "1": "ESC2_BEC__LINK_1",
+        "2": "ESC2_BEC"
+      }
+    },
+    {
+      "reference": "W15",
+      "name": "Insulated_Link_W15",
+      "value": "INSULATED_WIRE",
+      "dnp": false,
+      "uuid": "d5359602-8e39-4d3e-bccb-0b7f68e9e205",
+      "board_xy": [
+        53.594,
+        76.454
+      ],
+      "symbol_xy": [
+        530,
+        150
+      ],
+      "pin_nets": {
+        "1": "ESC2_SIGNAL__LINK_1",
+        "2": "ESC2_SIGNAL"
+      }
+    },
+    {
+      "reference": "W16",
+      "name": "Insulated_Link_W16",
+      "value": "INSULATED_WIRE",
+      "dnp": false,
+      "uuid": "2592451a-1614-430a-b7fb-3af11f676d26",
+      "board_xy": [
+        67.056,
+        80.772
+      ],
+      "symbol_xy": [
+        530,
+        175
+      ],
+      "pin_nets": {
+        "1": "ESC3_BEC__LINK_1",
+        "2": "ESC3_BEC"
+      }
+    },
+    {
+      "reference": "W17",
+      "name": "Insulated_Link_W17",
+      "value": "INSULATED_WIRE",
+      "dnp": false,
+      "uuid": "e25495a4-52a4-44dd-b58a-1fbceec250f8",
+      "board_xy": [
+        63.754,
+        76.454
+      ],
+      "symbol_xy": [
+        530,
+        200
+      ],
+      "pin_nets": {
+        "1": "ESC3_SIGNAL__LINK_1",
+        "2": "ESC3_SIGNAL"
+      }
+    },
+    {
+      "reference": "W18",
+      "name": "Insulated_Link_W18",
+      "value": "INSULATED_WIRE",
+      "dnp": false,
+      "uuid": "58fe86a7-005e-4609-9b70-bcb429704541",
+      "board_xy": [
+        77.216,
+        80.772
+      ],
+      "symbol_xy": [
+        530,
+        225
+      ],
+      "pin_nets": {
+        "1": "ESC4_BEC__LINK_1",
+        "2": "ESC4_BEC"
+      }
+    },
+    {
+      "reference": "W19",
+      "name": "Insulated_Link_W19",
+      "value": "INSULATED_WIRE",
+      "dnp": false,
+      "uuid": "0317b786-e1bc-4714-b540-97ecd30ca521",
+      "board_xy": [
+        23.876,
+        61.214
+      ],
+      "symbol_xy": [
+        530,
+        250
+      ],
+      "pin_nets": {
+        "1": "ESC4_SIGNAL__LINK_1",
+        "2": "ESC4_SIGNAL"
+      }
+    },
+    {
+      "reference": "W20",
+      "name": "Insulated_Link_W20",
+      "value": "INSULATED_WIRE",
+      "dnp": false,
+      "uuid": "038b9f44-a49c-4cd3-8d26-3688ce0df7ee",
+      "board_xy": [
+        77.216,
+        66.548
+      ],
+      "symbol_xy": [
+        530,
+        275
+      ],
+      "pin_nets": {
+        "1": "FC_TX_TO_LIDAR__LINK_1",
+        "2": "FC_TX_TO_LIDAR"
+      }
+    },
+    {
+      "reference": "W21",
+      "name": "Insulated_Link_W21",
+      "value": "INSULATED_WIRE",
+      "dnp": false,
+      "uuid": "f00bbc5b-7022-44ed-8f09-29a13cdf1677",
+      "board_xy": [
+        21.844,
+        65.786
+      ],
+      "symbol_xy": [
+        620,
+        50
+      ],
+      "pin_nets": {
+        "1": "FC_UART_RX__LINK_1",
+        "2": "FC_UART_RX"
+      }
+    },
+    {
+      "reference": "W22",
+      "name": "Insulated_Link_W22",
+      "value": "INSULATED_WIRE",
+      "dnp": false,
+      "uuid": "8ca98850-02cd-416a-9b99-25d1c73f5d08",
+      "board_xy": [
+        38.862,
+        66.04
+      ],
+      "symbol_xy": [
+        620,
+        75
+      ],
+      "pin_nets": {
+        "1": "FC_UART_TX__LINK_1",
+        "2": "FC_UART_TX"
+      }
+    },
+    {
+      "reference": "W23",
+      "name": "Insulated_Link_W23",
+      "value": "INSULATED_WIRE",
+      "dnp": false,
+      "uuid": "e54ec8a0-11bd-4f8b-911b-ab6706337654",
+      "board_xy": [
+        77.216,
+        63.5
+      ],
+      "symbol_xy": [
+        620,
+        100
+      ],
+      "pin_nets": {
+        "1": "LIDAR_TO_FC_RX__LINK_1",
+        "2": "LIDAR_TO_FC_RX"
+      }
+    },
+    {
+      "reference": "W24",
+      "name": "Insulated_Link_W24",
+      "value": "INSULATED_WIRE",
+      "dnp": false,
+      "uuid": "07e647db-802f-4234-a815-0f550762b169",
+      "board_xy": [
+        9.906,
+        35.306
+      ],
+      "symbol_xy": [
+        620,
+        125
+      ],
+      "pin_nets": {
+        "1": "MAG_DRDY__LINK_1",
+        "2": "MAG_DRDY"
+      }
+    },
+    {
+      "reference": "W25",
+      "name": "Insulated_Link_W25",
+      "value": "INSULATED_WIRE",
+      "dnp": false,
+      "uuid": "fdab4e7e-aee0-4a25-93fb-225972e212e5",
+      "board_xy": [
+        48.26,
+        25.4
+      ],
+      "symbol_xy": [
+        620,
+        150
+      ],
+      "pin_nets": {
+        "1": "MPU_AUX_SCL__LINK_1",
+        "2": "MPU_AUX_SCL"
+      }
+    },
+    {
+      "reference": "W26",
+      "name": "Insulated_Link_W26",
+      "value": "INSULATED_WIRE",
+      "dnp": false,
+      "uuid": "596c6da5-3c37-4088-9402-4c39ea8db900",
+      "board_xy": [
+        49.784,
+        22.86
+      ],
+      "symbol_xy": [
+        620,
+        175
+      ],
+      "pin_nets": {
+        "1": "MPU_AUX_SDA__LINK_1",
+        "2": "MPU_AUX_SDA"
+      }
+    },
+    {
+      "reference": "W27",
+      "name": "Insulated_Link_W27",
+      "value": "INSULATED_WIRE",
+      "dnp": false,
+      "uuid": "fef9e104-50f3-44e3-8175-49a8e2275bd7",
+      "board_xy": [
+        48.006,
+        30.226
+      ],
+      "symbol_xy": [
+        620,
+        200
+      ],
+      "pin_nets": {
+        "1": "MPU_INT__LINK_1",
+        "2": "MPU_INT"
+      }
+    }
+  ],
+  "expected_components": 44,
+  "expected_pads": 152,
+  "all_bec_links_initially_open": true,
+  "physical_motor_outputs_enabled": false,
+  "wire_links": [
+    {
+      "reference": "W1",
+      "net": "GND",
+      "start": [
+        47.244,
+        15.24
+      ],
+      "end": [
+        45.72,
+        26.924
+      ]
+    },
+    {
+      "reference": "W2",
+      "net": "GND",
+      "start": [
+        69.85,
+        15.748
+      ],
+      "end": [
+        69.85,
+        25.146
+      ]
+    },
+    {
+      "reference": "W3",
+      "net": "3V3",
+      "start": [
+        63.5,
+        33.274
+      ],
+      "end": [
+        63.5,
+        37.846
+      ]
+    },
+    {
+      "reference": "W4",
+      "net": "3V3",
+      "start": [
+        46.736,
+        49.276
+      ],
+      "end": [
+        46.736,
+        40.894
+      ]
+    },
+    {
+      "reference": "W5",
+      "net": "3V3",
+      "start": [
+        32.766,
+        12.7
+      ],
+      "end": [
+        45.466,
+        12.7
+      ]
+    },
+    {
+      "reference": "W6",
+      "net": "FC_5V",
+      "start": [
+        77.47,
+        56.896
+      ],
+      "end": [
+        77.47,
+        86.106
+      ]
+    },
+    {
+      "reference": "W7",
+      "net": "I2C_SCL",
+      "start": [
+        67.056,
+        19.05
+      ],
+      "end": [
+        64.516,
+        43.18
+      ]
+    },
+    {
+      "reference": "W8",
+      "net": "I2C_SCL",
+      "start": [
+        62.484,
+        18.034
+      ],
+      "end": [
+        71.882,
+        18.034
+      ]
+    },
+    {
+      "reference": "W9",
+      "net": "I2C_SCL",
+      "start": [
+        33.02,
+        26.416
+      ],
+      "end": [
+        38.1,
+        26.416
+      ]
+    },
+    {
+      "reference": "W10",
+      "net": "I2C_SDA",
+      "start": [
+        62.484,
+        52.578
+      ],
+      "end": [
+        65.532,
+        45.974
+      ]
+    },
+    {
+      "reference": "W11",
+      "net": "I2C_SDA",
+      "start": [
+        60.452,
+        20.32
+      ],
+      "end": [
+        69.85,
+        20.32
+      ]
+    },
+    {
+      "reference": "W12",
+      "net": "I2C_SDA",
+      "start": [
+        33.02,
+        51.816
+      ],
+      "end": [
+        48.514,
+        51.816
+      ]
+    },
+    {
+      "reference": "W13",
+      "net": "ESC1_SIGNAL",
+      "start": [
+        32.766,
+        61.214
+      ],
+      "end": [
+        44.45,
+        78.486
+      ]
+    },
+    {
+      "reference": "W14",
+      "net": "ESC2_BEC",
+      "start": [
+        56.896,
+        80.772
+      ],
+      "end": [
+        56.896,
+        76.708
+      ]
+    },
+    {
+      "reference": "W15",
+      "net": "ESC2_SIGNAL",
+      "start": [
+        53.594,
+        76.454
+      ],
+      "end": [
+        42.164,
+        18.034
+      ]
+    },
+    {
+      "reference": "W16",
+      "net": "ESC3_BEC",
+      "start": [
+        67.056,
+        80.772
+      ],
+      "end": [
+        67.056,
+        76.708
+      ]
+    },
+    {
+      "reference": "W17",
+      "net": "ESC3_SIGNAL",
+      "start": [
+        63.754,
+        76.454
+      ],
+      "end": [
+        39.624,
+        20.574
+      ]
+    },
+    {
+      "reference": "W18",
+      "net": "ESC4_BEC",
+      "start": [
+        77.216,
+        80.772
+      ],
+      "end": [
+        77.216,
+        76.708
+      ]
+    },
+    {
+      "reference": "W19",
+      "net": "ESC4_SIGNAL",
+      "start": [
+        23.876,
+        61.214
+      ],
+      "end": [
+        73.914,
+        76.454
+      ]
+    },
+    {
+      "reference": "W20",
+      "net": "FC_TX_TO_LIDAR",
+      "start": [
+        77.216,
+        66.548
+      ],
+      "end": [
+        24.13,
+        36.068
+      ]
+    },
+    {
+      "reference": "W21",
+      "net": "FC_UART_RX",
+      "start": [
+        21.844,
+        65.786
+      ],
+      "end": [
+        21.844,
+        34.036
+      ]
+    },
+    {
+      "reference": "W22",
+      "net": "FC_UART_TX",
+      "start": [
+        38.862,
+        66.04
+      ],
+      "end": [
+        4.572,
+        66.04
+      ]
+    },
+    {
+      "reference": "W23",
+      "net": "LIDAR_TO_FC_RX",
+      "start": [
+        77.216,
+        63.5
+      ],
+      "end": [
+        9.906,
+        23.368
+      ]
+    },
+    {
+      "reference": "W24",
+      "net": "MAG_DRDY",
+      "start": [
+        9.906,
+        35.306
+      ],
+      "end": [
+        63.246,
+        48.006
+      ]
+    },
+    {
+      "reference": "W25",
+      "net": "MPU_AUX_SCL",
+      "start": [
+        48.26,
+        25.4
+      ],
+      "end": [
+        48.006,
+        45.72
+      ]
+    },
+    {
+      "reference": "W26",
+      "net": "MPU_AUX_SDA",
+      "start": [
+        49.784,
+        22.86
+      ],
+      "end": [
+        49.784,
+        48.26
+      ]
+    },
+    {
+      "reference": "W27",
+      "net": "MPU_INT",
+      "start": [
+        48.006,
+        30.226
+      ],
+      "end": [
+        9.906,
+        30.226
+      ]
+    }
+  ],
+  "board_mm": [
+    90,
+    90
+  ],
+  "mounting_holes_mm": [
+    [
+      4,
+      4
+    ],
+    [
+      86,
+      4
+    ],
+    [
+      4,
+      86
+    ],
+    [
+      86,
+      86
+    ]
+  ],
+  "mounting_pattern": "Chosen carrier holes; NOT verified F450 frame pattern",
+  "widths_mm": {
+    "3V3": 1.0,
+    "ESC1_BEC": 1.0,
+    "ESC1_SIGNAL": 0.6,
+    "ESC2_BEC": 1.0,
+    "ESC2_SIGNAL": 0.6,
+    "ESC3_BEC": 1.0,
+    "ESC3_SIGNAL": 0.6,
+    "ESC4_BEC": 1.0,
+    "ESC4_SIGNAL": 0.6,
+    "FC_5V": 1.0,
+    "FC_TX_TO_LIDAR": 0.6,
+    "FC_UART_RX": 0.6,
+    "FC_UART_TX": 0.6,
+    "GND": 1.0,
+    "I2C_SCL": 0.6,
+    "I2C_SDA": 0.6,
+    "LIDAR_TO_FC_RX": 0.6,
+    "MAG_DRDY": 0.6,
+    "MPU_AUX_SCL": 0.6,
+    "MPU_AUX_SDA": 0.6,
+    "MPU_INT": 0.6
+  }
+}

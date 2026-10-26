@@ -34,3 +34,5 @@ BMP280/altitude are deferred. Gyro frame validation, attitude fusion, PID/mixer 
 [Offline angle-filter preparation: equations and fewer-test design](docs/attitude-preparation.md) · [Results and graphs](measurements/mpu6050/2026-10-26-offline-attitude-preparation/report.md). Reuses 80k saved samples; four modeled combinations expose acceleration sensitivity. No MCU filter or acceptance change.
 
 [Multi-agent knowledge base: start here](knowledge/README.md).
+
+[New routed single-sided PCB, KiCad files, print masks and assembly guide](hardware/home-etched-v2/README.md).
