@@ -103,6 +103,11 @@ def main():
             pads={number:(0,(int(number)-1)*(5.08 if name=='Lidar_Wires_1x04' else 2.54)) for number in labels}
         positions[name]=pads
         (pretty/(name+'.kicad_mod')).write_text(footprint(name,labels,pads),encoding='utf-8')
+    bodies=Path(__file__).resolve().parents[2]/'hardware/module-library/module-body-dimensions.json'
+    if bodies.exists():
+        from enrich_module_bodies import enrich_library
+        enrich_library(args.output,bodies)
+        shutil.copyfile(bodies,args.output/'module-body-dimensions.json')
     reference=args.reference.read_text(encoding='utf-8')
     matched=re.findall(r'\(pad "(\d+)" thru_hole \w+ \(at ([\d.\-]+) ([\d.\-]+)',reference)
     assert len(matched)==44
@@ -164,7 +169,7 @@ def main():
         'esp_reference_url':'https://raw.githubusercontent.com/espressif/kicad-libraries/main/footprints/Espressif.pretty/ESP32-S3-DevKitC.kicad_mod',
         'esp_reference_sha256':hashlib.sha256(args.reference.read_bytes()).hexdigest(),
         'esp_pad_geometry_max_difference_mm':maximum_error,'footprints':9,'pads':79,'tracks':0,'zones':0,
-        'sensor_body_geometry':'Not inferred; only header interface courtyard',
+        'sensor_body_geometry':'Sourced nominal reference rectangles; exact clone and header offsets unverified' if bodies.exists() else 'Header interface only',
         'components':manifest},indent=2)+'\n',encoding='utf-8')
     print('Created and natively reloaded: 9 footprints / 79 pads; ESP44 pad positions within',maximum_error,'mm of manufacturer reference.')
 

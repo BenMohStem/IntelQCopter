@@ -19,6 +19,8 @@ commands=[
     [str(args.kicad_bin/'kicad-cli.exe'),'sch','export','netlist','--format','kicadxml','-o',str(out/'parts.xml'),str(args.project/'QCopter.kicad_sch')],
     [str(args.kicad_bin/'python.exe'),str(ROOT/'tools/hardware/check_module_palette.py'),str(args.project),'--netlist',str(out/'parts.xml')],
 ]
+if (args.project/'module-body-dimensions.json').exists():
+    commands.append([str(args.kicad_bin/'python.exe'),str(ROOT/'tools/hardware/verify_module_bodies.py'),str(args.project)])
 for index,command in enumerate(commands):
     result=subprocess.run(command,cwd=ROOT,capture_output=True,text=True)
     (out/f'{index}.log').write_text(result.stdout+result.stderr,encoding='utf-8')

@@ -8,7 +8,7 @@
   "pads": 79,
   "tracks": 0,
   "zones": 0,
-  "sensor_body_geometry": "Not inferred; only header interface courtyard",
+  "sensor_body_geometry": "Sourced nominal module outlines and 2 mm placement courtyards; exact clone and header offsets unverified",
   "components": [
     {
       "reference": "U1",
@@ -486,5 +486,6 @@
       },
       "schematic_uuid": "6ee1ea66-0ec7-44f9-9734-8400d668e0eb"
     }
-  ]
+  ],
+  "sensor_body_reference_file": "module-body-dimensions.json"
 }

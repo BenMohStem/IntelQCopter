@@ -1,0 +1,67 @@
+{
+  "engine": "Native KiCad 10.0.6 parse/reload and graphics checks; no physical fit measurement",
+  "view": "Component side, VCC top of row; module bodies to right",
+  "published_reference_bodies": {
+    "MPU6050_GY521_1x08": {
+      "reference": "U2",
+      "along_header_mm": 21.2,
+      "perpendicular_mm": 16.4,
+      "source": "https://99tech.com.au/product/sens-gy521/",
+      "source_type": "Supplier's GY-521 board dimensions, excluding pins",
+      "match": "8-pin board style and component-side orientation match supplied GY-521 image; exact supplier/unit not identified",
+      "other_published_variants": "Handson module lists 20 x 15 mm; smaller variants exist",
+      "header_pins": 8
+    },
+    "BMP280_GY_1x06": {
+      "reference": "U3",
+      "along_header_mm": 15.5,
+      "perpendicular_mm": 11.8,
+      "source": "https://www.joy-it.net/files/files/Produkte/SEN-KY052/SEN-KY052_Datasheet_2021-10-21.pdf",
+      "source_type": "Manufacturer dimension drawing, page 1; table rounds perpendicular dimension to 12 mm",
+      "match": "Compact six-pin, two-hole breakout style matches supplied purple GY-BMP280; exact unit not identified",
+      "other_published_variants": "Larger BMP280 breakouts are incompatible with this reference outline",
+      "header_pins": 6
+    },
+    "Magnetometer_GY271_1x05": {
+      "reference": "U4",
+      "along_header_mm": 13.5,
+      "perpendicular_mm": 14.8,
+      "source": "https://handsontec.com/dataspecs/sensor/GY-271%20HMC5883L.pdf",
+      "source_type": "Supplier mechanical dimension photograph, page 2",
+      "match": "Five-pin compact GY-271, no corner mounting holes, VCC/GND/SCL/SDA/DRDY; matches supplied photo style",
+      "other_published_variants": "GY-271 label also appears on differently sized and differently populated clones",
+      "header_pins": 5
+    }
+  },
+  "placement_margin_each_side_mm": 2,
+  "perpendicular_header_edge_offset_assumed_mm": 1.27,
+  "user_primary_board_untouched": true,
+  "preview_preservation_check": {
+    "updated_modules": [
+      "Magnetometer_GY271_1x05",
+      "MPU6050_GY521_1x08",
+      "BMP280_GY_1x06"
+    ],
+    "pads_nets_placement_preserved": true,
+    "source_board_sha256": "d5ecc0201a902fd724ef7c6a9a4989f30337fd578112f2ec22d760f31b1502f6",
+    "output_board_sha256": "02b482a682e78c0c525c3d0d6f470a556c53d71e13c6a642c802b309f0e089c2"
+  },
+  "repository_board_preservation_check": {
+    "updated_modules": [
+      "Magnetometer_GY271_1x05",
+      "MPU6050_GY521_1x08",
+      "BMP280_GY_1x06"
+    ],
+    "pads_nets_placement_preserved": true,
+    "source_board_sha256": "d5ecc0201a902fd724ef7c6a9a4989f30337fd578112f2ec22d760f31b1502f6",
+    "output_board_sha256": "64cdca5f5053465e8d4c4cc63283f58dfd637cfcf6f2584f79f001d85f7a4df0"
+  },
+  "physical_dimensions_verified_on_user_parts": false,
+  "ui_automation": "Unavailable: kernel asset initialization failed after reset/retry; use native Update Footprints from Library",
+  "source_pdf_sha256": {
+    "GY-271.pdf": "076623dea30149992c8d31cb8e06bf3ee4a222f33eb77762e55c262fa9fbe236",
+    "BMP280-JoyIT.pdf": "a4ac68713433b77b3417559bbe825ccf262db98483fc474a5e1c5853e4d9b47b"
+  },
+  "native_body_and_pad_checks": "Passed for installed library, canonical board and regenerated palette; repeat-application checks use temporary copies",
+  "visual_review": "Native KiCad body/courtyard preview and annotated component-side guide inspected"
+}

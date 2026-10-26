@@ -1183,9 +1183,9 @@
 		(layer "F.Cu")
 		(uuid "42de7147-51dc-40bb-9de4-84d586017353")
 		(at 175 65)
-		(descr "Module/header interface; 2.54 mm pitch. Header courtyard only; module body clearance is user-defined.")
+		(descr "Sourced nominal body; components up, body RIGHT of VCC-first header; assumed edge offset; 2 mm placement margin; verify actual module")
 		(property "Reference" "U4"
-			(at 0 -3.5 0)
+			(at 6.13 -5.17 0)
 			(layer "F.SilkS")
 			(uuid "81a45d06-f53d-4f00-85ce-85bf54da94d1")
 			(effects
@@ -1196,7 +1196,7 @@
 			)
 		)
 		(property "Value" "Magnetometer_GY271_1x05"
-			(at 0 13.66 0)
+			(at 6.13 15.33 0)
 			(layer "F.Fab")
 			(uuid "4943d865-da0e-4197-881c-9eb3ac24f9db")
 			(effects
@@ -1231,28 +1231,6 @@
 		(path "/79d4e30e-6ecb-49fe-b17f-a6b2bf642adc/ceb89de1-ae46-46b8-9285-6ca2e3b4f5ed")
 		(attr through_hole)
 		(duplicate_pad_numbers_are_jumpers no)
-		(fp_rect
-			(start -1.5 -1.5)
-			(end 1.5 11.66)
-			(stroke
-				(width 0.12)
-				(type default)
-			)
-			(fill no)
-			(layer "F.SilkS")
-			(uuid "5cd317da-b0b6-4c9a-bc12-811a887edd0f")
-		)
-		(fp_rect
-			(start -1.5 -1.5)
-			(end 1.5 11.66)
-			(stroke
-				(width 0.05)
-				(type default)
-			)
-			(fill no)
-			(layer "F.CrtYd")
-			(uuid "b54324c6-e362-4306-9ba9-567af2eb892d")
-		)
 		(fp_text user "1:VCC"
 			(at 2.2 0 0)
 			(layer "F.Fab")
@@ -1354,7 +1332,16 @@
 			(uuid "deffc68b-031b-4fd5-b0f3-cb864c64e47d")
 		)
 		(embedded_fonts no)
-	)
+(fp_rect (start -1.27 -1.67) (end 13.53 11.83) (stroke (width 0.1) (type default)) (fill none) (layer "F.Fab"))
+(fp_rect (start -1.27 -1.67) (end 13.53 11.83) (stroke (width 0.12) (type default)) (fill none) (layer "F.SilkS"))
+(fp_rect (start -3.27 -3.67) (end 15.53 13.83) (stroke (width 0.05) (type default)) (fill none) (layer "F.CrtYd"))
+(fp_line (start -3.4 -0.6) (end -2.1 0) (stroke (width 0.15) (type default)) (layer "F.SilkS"))
+(fp_line (start -2.1 0) (end -3.4 0.6) (stroke (width 0.15) (type default)) (layer "F.SilkS"))
+(fp_line (start -3.4 0.6) (end -3.4 -0.6) (stroke (width 0.15) (type default)) (layer "F.SilkS"))
+(fp_text user "1 VCC" (at 0 -2.67 0) (layer "F.SilkS") (effects (font (size 0.8 0.8) (thickness 0.12))))
+(fp_text user "BODY REF 13.5 x 14.8 mm" (at 6.13 12.73 0) (layer "F.Fab") (effects (font (size 0.7 0.7) (thickness 0.12))))
+(fp_text user "COMPONENTS UP" (at 12.13 5.08 90) (layer "F.Fab") (effects (font (size 0.65 0.65) (thickness 0.12))))
+)
 	(footprint "QCopterModules:Lidar_Wires_1x04"
 		(layer "F.Cu")
 		(uuid "54f2dcc8-5ea8-465d-9e78-b7ff89043949")
@@ -1515,9 +1502,9 @@
 		(layer "F.Cu")
 		(uuid "55227b91-2eb0-4d46-a139-e51c7da93c1b")
 		(at 115 65)
-		(descr "Module/header interface; 2.54 mm pitch. Header courtyard only; module body clearance is user-defined.")
+		(descr "Sourced nominal body; components up, body RIGHT of VCC-first header; assumed edge offset; 2 mm placement margin; verify actual module")
 		(property "Reference" "U2"
-			(at 0 -3.5 0)
+			(at 6.93 -5.21 0)
 			(layer "F.SilkS")
 			(uuid "ce3443e7-eeb3-4d4f-b477-1bb977731a5a")
 			(effects
@@ -1528,7 +1515,7 @@
 			)
 		)
 		(property "Value" "MPU6050_GY521_1x08"
-			(at 0 21.28 0)
+			(at 6.93 22.99 0)
 			(layer "F.Fab")
 			(uuid "bb56804f-bac8-4d50-a8e4-17535e7bda93")
 			(effects
@@ -1563,28 +1550,6 @@
 		(path "/79d4e30e-6ecb-49fe-b17f-a6b2bf642adc/cdb4b7f4-cdc0-49b4-ae35-be9d76a3cc39")
 		(attr through_hole)
 		(duplicate_pad_numbers_are_jumpers no)
-		(fp_rect
-			(start -1.5 -1.5)
-			(end 1.5 19.28)
-			(stroke
-				(width 0.12)
-				(type default)
-			)
-			(fill no)
-			(layer "F.SilkS")
-			(uuid "64ebbb20-902a-45fe-b8e8-d63e392aac87")
-		)
-		(fp_rect
-			(start -1.5 -1.5)
-			(end 1.5 19.28)
-			(stroke
-				(width 0.05)
-				(type default)
-			)
-			(fill no)
-			(layer "F.CrtYd")
-			(uuid "3a7d62bb-237f-441d-b231-7f6a4af5dd41")
-		)
 		(fp_text user "1:VCC"
 			(at 2.2 0 0)
 			(layer "F.Fab")
@@ -1746,14 +1711,23 @@
 			(uuid "93c7e1f6-37fa-44f6-a163-8fdd9765f4e9")
 		)
 		(embedded_fonts no)
-	)
+(fp_rect (start -1.27 -1.71) (end 15.13 19.49) (stroke (width 0.1) (type default)) (fill none) (layer "F.Fab"))
+(fp_rect (start -1.27 -1.71) (end 15.13 19.49) (stroke (width 0.12) (type default)) (fill none) (layer "F.SilkS"))
+(fp_rect (start -3.27 -3.71) (end 17.13 21.49) (stroke (width 0.05) (type default)) (fill none) (layer "F.CrtYd"))
+(fp_line (start -3.4 -0.6) (end -2.1 0) (stroke (width 0.15) (type default)) (layer "F.SilkS"))
+(fp_line (start -2.1 0) (end -3.4 0.6) (stroke (width 0.15) (type default)) (layer "F.SilkS"))
+(fp_line (start -3.4 0.6) (end -3.4 -0.6) (stroke (width 0.15) (type default)) (layer "F.SilkS"))
+(fp_text user "1 VCC" (at 0 -2.71 0) (layer "F.SilkS") (effects (font (size 0.8 0.8) (thickness 0.12))))
+(fp_text user "BODY REF 21.2 x 16.4 mm" (at 6.93 20.39 0) (layer "F.Fab") (effects (font (size 0.7 0.7) (thickness 0.12))))
+(fp_text user "COMPONENTS UP" (at 13.73 8.89 90) (layer "F.Fab") (effects (font (size 0.65 0.65) (thickness 0.12))))
+)
 	(footprint "QCopterModules:BMP280_GY_1x06"
 		(layer "F.Cu")
 		(uuid "7f5d4d53-e484-45d4-9e8e-cbe6fce9e592")
 		(at 145 65)
-		(descr "Module/header interface; 2.54 mm pitch. Header courtyard only; module body clearance is user-defined.")
+		(descr "Sourced nominal body; components up, body RIGHT of VCC-first header; assumed edge offset; 2 mm placement margin; verify actual module")
 		(property "Reference" "U3"
-			(at 0 -3.5 0)
+			(at 4.63 -4.9 0)
 			(layer "F.SilkS")
 			(uuid "6ce26fd2-c244-4998-82b7-6e0f86fdc139")
 			(effects
@@ -1764,7 +1738,7 @@
 			)
 		)
 		(property "Value" "BMP280_GY_1x06"
-			(at 0 16.2 0)
+			(at 4.63 17.6 0)
 			(layer "F.Fab")
 			(uuid "8ad480a1-504e-49a2-a26f-b2cd68c0da57")
 			(effects
@@ -1799,28 +1773,6 @@
 		(path "/79d4e30e-6ecb-49fe-b17f-a6b2bf642adc/82bc98cf-3bbe-4280-a44a-0ff6141229b2")
 		(attr through_hole)
 		(duplicate_pad_numbers_are_jumpers no)
-		(fp_rect
-			(start -1.5 -1.5)
-			(end 1.5 14.2)
-			(stroke
-				(width 0.12)
-				(type default)
-			)
-			(fill no)
-			(layer "F.SilkS")
-			(uuid "e7eab0b7-f436-491f-a7a8-88e885e79c18")
-		)
-		(fp_rect
-			(start -1.5 -1.5)
-			(end 1.5 14.2)
-			(stroke
-				(width 0.05)
-				(type default)
-			)
-			(fill no)
-			(layer "F.CrtYd")
-			(uuid "2c7afef6-4ae9-44b0-bab7-298fee94a178")
-		)
 		(fp_text user "1:VCC"
 			(at 2.2 0 0)
 			(layer "F.Fab")
@@ -1942,7 +1894,16 @@
 			(uuid "6305653b-2f94-49a0-a39f-922dde302d57")
 		)
 		(embedded_fonts no)
-	)
+(fp_rect (start -1.27 -1.4) (end 10.53 14.1) (stroke (width 0.1) (type default)) (fill none) (layer "F.Fab"))
+(fp_rect (start -1.27 -1.4) (end 10.53 14.1) (stroke (width 0.12) (type default)) (fill none) (layer "F.SilkS"))
+(fp_rect (start -3.27 -3.4) (end 12.53 16.1) (stroke (width 0.05) (type default)) (fill none) (layer "F.CrtYd"))
+(fp_line (start -3.4 -0.6) (end -2.1 0) (stroke (width 0.15) (type default)) (layer "F.SilkS"))
+(fp_line (start -2.1 0) (end -3.4 0.6) (stroke (width 0.15) (type default)) (layer "F.SilkS"))
+(fp_line (start -3.4 0.6) (end -3.4 -0.6) (stroke (width 0.15) (type default)) (layer "F.SilkS"))
+(fp_text user "1 VCC" (at 0 -2.4 0) (layer "F.SilkS") (effects (font (size 0.8 0.8) (thickness 0.12))))
+(fp_text user "BODY REF 15.5 x 11.8 mm" (at 4.63 15 0) (layer "F.Fab") (effects (font (size 0.7 0.7) (thickness 0.12))))
+(fp_text user "COMPONENTS UP" (at 9.13 6.35 90) (layer "F.Fab") (effects (font (size 0.65 0.65) (thickness 0.12))))
+)
 	(footprint "QCopterModules:ESC_Servo_1x03"
 		(layer "F.Cu")
 		(uuid "8ec96d1d-eaa4-406e-aee5-9affd0ffc166")

@@ -14,9 +14,9 @@ travel with the project; no global KiCad library installation is needed.
 
 Header/module pads have 2.0 mm copper diameters and 1.1 mm drills. Pad 1 is
 square to identify orientation. Other pads are round; drill holes are empty.
-Sensor module body outlines and mounting holes have NOT been guessed: the drawn
-rectangle is the header interface courtyard, not the full sensor board perimeter.
-Allow room for each actual module's overhang when placing parts.
+The three sensor footprints now include sourced nominal body rectangles and
+2 mm placement margins. Exact clone fit/header offsets remain unverified. See
+[module dimensions and orientation](module-dimensions.md). No guessed mounting holes were added.
 
 ## Open and use
 
@@ -86,3 +86,5 @@ The second command checks your project. After you add wires/traces, the palette'
 zero-routing assertions no longer apply; use your completed-design ERC/DRC instead.
 
 The library uses passive electrical pin types as an interface palette. Refine electrical pin types for full ERC once you choose the power architecture; matching pad numbers alone does not validate electrical wiring.
+
+For the current body outlines and how to update your open board, read [module-dimensions.md](module-dimensions.md).

@@ -33,5 +33,12 @@
     "report": "hardware/module-library/QUICKSTART.md",
     "claim": "Nine module/header components, 79 matched pads, native schematic/board links",
     "limits": "Unwired/unrouted; exact physical fit and electrical design not accepted"
+  },
+  {
+    "id": "E-PCB-BODIES",
+    "kind": "sourced_nominal_dimensions_and_native_CAD_verification",
+    "report": "hardware/module-library/module-dimensions.md",
+    "claim": "Three source-linked body outlines, VCC orientation and 2 mm placement courtyards; pad/net/placement preservation",
+    "limits": "Exact clone dimensions/header offsets unverified; primary open user PCB preserved; library update needs native UI action or use supplied preview copy"
   }
 ]
