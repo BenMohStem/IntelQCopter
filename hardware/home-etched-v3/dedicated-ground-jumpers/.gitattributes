@@ -1,0 +1,4 @@
+# Keep native evidence/model fingerprints stable across Git checkout line endings.
+QCopter.kicad_pcb -text
+QCopter.kicad_sch -text
+models3d/*.wrl -text

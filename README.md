@@ -35,6 +35,6 @@ BMP280/altitude are deferred. Gyro frame validation, attitude fusion, PID/mixer 
 
 [Multi-agent knowledge base: start here](knowledge/README.md).
 
-Current PCB: [lidar gap, two GND wires and pin audit](hardware/home-etched-v3/lidar-gap-two-ground-wires/README.md). Native DRC, connectivity and schematic parity pass; fit G1/G2 and perform physical checks before use.
+Current PCB: [three dedicated drilled GND jumpers](hardware/home-etched-v3/dedicated-ground-jumpers/README.md). Fit G1/G2/G3 in six large new wire holes. Native DRC, connectivity and schematic parity pass; physical checks remain required.
 
 [Historical CAD](hardware/home-etched-v3/README.md) is retained for traceability; use the current revision's matching masks.

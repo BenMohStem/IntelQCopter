@@ -1,0 +1,60 @@
+{
+  "engine": "Original illustrative VRML meshes; native KiCad 10.0.6 rendering",
+  "model_unit_mm": 2.54,
+  "model_references": [
+    "BMP280_GY_visual.wrl",
+    "ESC_3pin_header_visual.wrl",
+    "ESP32_S3_DevKitC1_visual.wrl",
+    "GY271_visual.wrl",
+    "Ground_Jumper_G1.wrl",
+    "Ground_Jumper_G2.wrl",
+    "Ground_Jumper_G3.wrl",
+    "Lidar_solder_wire_stubs_visual.wrl",
+    "MPU6050_GY521_visual.wrl"
+  ],
+  "models": [
+    {
+      "file": "BMP280_GY_visual.wrl",
+      "sha256": "b10d2b963b87ea709106c8fab2cea18783c8511560eed846f4daec91576e8c5b"
+    },
+    {
+      "file": "ESC_3pin_header_visual.wrl",
+      "sha256": "c20635d5034c5596dca107d43a2761ad993fb1b9e2e4a99cd38809cd105cb71b"
+    },
+    {
+      "file": "ESP32_S3_DevKitC1_visual.wrl",
+      "sha256": "d6c05b776a3f55d3f87ad5f7ef429d03d8dda5a44eb85b102d9ccc6207e54fd4"
+    },
+    {
+      "file": "GY271_visual.wrl",
+      "sha256": "0c1bce405f9c4b9e446b084ea619b688a0659dd1535b42ec94e02c64d819aac0"
+    },
+    {
+      "file": "Ground_Jumper_G1.wrl",
+      "sha256": "342e272875a1102dd634970bb3e2d973c66eea0c56437ea7139f62a0772544af"
+    },
+    {
+      "file": "Ground_Jumper_G2.wrl",
+      "sha256": "b3d697e09f6fbe9a82a11ca308b4bc12f807cb270a733b3c2d29718b5a954b7c"
+    },
+    {
+      "file": "Ground_Jumper_G3.wrl",
+      "sha256": "397ac199b919b987049052cadff76c04608f3a0425baf03e1e5072aa77d88e4b"
+    },
+    {
+      "file": "Lidar_solder_wire_stubs_visual.wrl",
+      "sha256": "e65613bfd8fd58fdf3f1bedca1d899dedcd91a9fade8ef20a4de89c50d53e210"
+    },
+    {
+      "file": "MPU6050_GY521_visual.wrl",
+      "sha256": "30fafbdf98337acda620939017827ec172ad3bd0cb83bc4616ac3c66970e8974"
+    }
+  ],
+  "assumptions": [
+    "Nominal reference module bodies; exact purchased clone fit unverified",
+    "Assumed 8.5mm sockets, module PCB bottom 9mm above carrier",
+    "Three insulated wire models fitted above carrier, approximately 4mm high; fit G1 before the raised BMP module",
+    "Chip details, USB shells, antenna artwork and wire shape illustrative"
+  ],
+  "physical_mechanical_fit_certified": false
+}

@@ -295,14 +295,17 @@
     },
     "check-current-pcb": {
       "runtime": "python",
-      "path": "tools/hardware/verify_lidar_gap_pcb.py",
+      "path": "tools/hardware/verify_drilled_jumpers.py",
       "args": [],
-      "description": "Native DRC/parity + 14 common GND points through the two physical wires; no upload or PWM"
+      "description": "Native DRC/parity and common-GND graph through three dedicated two-hole wire jumpers; no flashing"
     },
     "render-pcb-3d": {
       "runtime": "python",
       "path": "tools/hardware/render_pcb_3d.py",
-      "args": [],
+      "args": [
+        "--project",
+        "hardware/home-etched-v3/dedicated-ground-jumpers"
+      ],
       "description": "Native KiCad 3D renders with portable illustrative modules; original renderer logs; no electrical edits"
     }
   }

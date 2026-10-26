@@ -1,0 +1,1026 @@
+{
+    "$schema": "https://schemas.kicad.org/drc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-10-26T21:35:58",
+    "ignored_checks": [
+        {
+            "description": "Footprint has no courtyard defined",
+            "key": "missing_courtyard"
+        },
+        {
+            "description": "Track endpoint not centered on via",
+            "key": "track_not_centered_on_via"
+        },
+        {
+            "description": "Tuning profile track geometries",
+            "key": "tuning_profile_track_geometries"
+        },
+        {
+            "description": "Footprint doesn't match symbol's footprint filters",
+            "key": "footprint_filters_mismatch"
+        },
+        {
+            "description": "Footprint component type doesn't match footprint pads",
+            "key": "footprint_type_mismatch"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning"
+    ],
+    "kicad_version": "10.0.6",
+    "schematic_parity": [],
+    "source": "QCopter.kicad_pcb",
+    "unconnected_items": [],
+    "violations": [
+        {
+            "description": "Items shorting two nets (nets GND and ESC2_SIGNAL)",
+            "items": [
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                },
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.4000 mm",
+                    "pos": {
+                        "x": 108.0,
+                        "y": 57.6
+                    },
+                    "uuid": "c333ef4a-8d4a-45b4-8355-ef688f6edbea"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Items shorting two nets (nets GND and ESC2_SIGNAL)",
+            "items": [
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                },
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2828 mm",
+                    "pos": {
+                        "x": 110.4,
+                        "y": 56.4
+                    },
+                    "uuid": "b8a15b8c-4bbe-473e-91d4-e4b0d67aa68c"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Clearance violation (netclass 'Default' clearance 0.5000 mm; actual 0.4785 mm)",
+            "items": [
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                },
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2828 mm",
+                    "pos": {
+                        "x": 112.6,
+                        "y": 55.4
+                    },
+                    "uuid": "e1bfdb87-b0c9-4bde-a104-1b89dec40390"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "Items shorting two nets (nets GND and ESC2_SIGNAL)",
+            "items": [
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                },
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2828 mm",
+                    "pos": {
+                        "x": 109.4,
+                        "y": 56.8
+                    },
+                    "uuid": "ada4a317-9e9b-4d5c-a701-6172dbe8a78a"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Items shorting two nets (nets GND and ESC2_SIGNAL)",
+            "items": [
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                },
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2000 mm",
+                    "pos": {
+                        "x": 108.8,
+                        "y": 57.2
+                    },
+                    "uuid": "f2940638-93cc-444c-8ada-d49bcedf4ec9"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Items shorting two nets (nets GND and ESC2_SIGNAL)",
+            "items": [
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                },
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2000 mm",
+                    "pos": {
+                        "x": 108.4,
+                        "y": 57.4
+                    },
+                    "uuid": "a8a7318a-4b9e-42b7-85cd-f039e59d3cff"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Items shorting two nets (nets ESC2_SIGNAL and GND)",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.4000 mm",
+                    "pos": {
+                        "x": 111.6,
+                        "y": 56.0
+                    },
+                    "uuid": "9806b389-3c68-48ff-8128-a4f8550a8f66"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Items shorting two nets (nets ESC2_SIGNAL and GND)",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2000 mm",
+                    "pos": {
+                        "x": 110.6,
+                        "y": 56.4
+                    },
+                    "uuid": "8a16279d-5f4f-4679-baed-4d8908673b79"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Items shorting two nets (nets ESC2_SIGNAL and GND)",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2000 mm",
+                    "pos": {
+                        "x": 110.2,
+                        "y": 56.6
+                    },
+                    "uuid": "8f798841-30fc-42c5-92b3-0576c956f959"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Items shorting two nets (nets ESC2_SIGNAL and GND)",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2828 mm",
+                    "pos": {
+                        "x": 111.2,
+                        "y": 56.0
+                    },
+                    "uuid": "85b299d2-6fa5-442f-b6ca-a38879c85862"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Clearance violation (netclass 'Default' clearance 0.5000 mm; actual 0.3077 mm)",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2000 mm",
+                    "pos": {
+                        "x": 112.4,
+                        "y": 55.6
+                    },
+                    "uuid": "80411d38-ffed-4307-b319-8343a7fef53f"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "Items shorting two nets (nets ESC2_SIGNAL and GND)",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2000 mm",
+                    "pos": {
+                        "x": 109.2,
+                        "y": 57.0
+                    },
+                    "uuid": "702e23a2-5464-4eae-9393-c9e226d561d7"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Items shorting two nets (nets ESC2_SIGNAL and GND)",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2828 mm",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 56.6
+                    },
+                    "uuid": "5a131470-9d69-4818-aa42-41f345cb7b69"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Clearance violation (netclass 'Default' clearance 0.5000 mm; actual 0.1739 mm)",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2828 mm",
+                    "pos": {
+                        "x": 107.6,
+                        "y": 57.6
+                    },
+                    "uuid": "6b4195a4-4156-4235-8600-db1937d59de5"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "Items shorting two nets (nets GND and ESC2_SIGNAL)",
+            "items": [
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                },
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2828 mm",
+                    "pos": {
+                        "x": 109.0,
+                        "y": 57.0
+                    },
+                    "uuid": "f75a7b1b-36e7-4e58-a32d-bb1d60732344"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Clearance violation (netclass 'Default' clearance 0.5000 mm; actual 0.4203 mm)",
+            "items": [
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                },
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2000 mm",
+                    "pos": {
+                        "x": 107.4,
+                        "y": 57.8
+                    },
+                    "uuid": "b469a5f7-daa9-4d9f-baa7-4455df163216"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "Items shorting two nets (nets ESC2_SIGNAL and GND)",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2828 mm",
+                    "pos": {
+                        "x": 108.2,
+                        "y": 57.4
+                    },
+                    "uuid": "41838d46-3948-49ae-9b7d-b57bec8ebb9c"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Clearance violation (netclass 'Default' clearance 0.5000 mm; actual 0.0324 mm)",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2828 mm",
+                    "pos": {
+                        "x": 112.2,
+                        "y": 55.6
+                    },
+                    "uuid": "4d8e4648-0a5e-48e6-9127-567b27aa44b9"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "Items shorting two nets (nets ESC2_SIGNAL and GND)",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.4000 mm",
+                    "pos": {
+                        "x": 109.8,
+                        "y": 56.8
+                    },
+                    "uuid": "2f2e2a60-13e8-4098-83d9-ec1fd08bebb9"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Items shorting two nets (nets ESC2_SIGNAL and GND)",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2828 mm",
+                    "pos": {
+                        "x": 111.8,
+                        "y": 55.8
+                    },
+                    "uuid": "243f243f-38cb-4f32-9729-5dc8d32d0003"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Items shorting two nets (nets ESC2_SIGNAL and GND)",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2828 mm",
+                    "pos": {
+                        "x": 108.6,
+                        "y": 57.2
+                    },
+                    "uuid": "23db2d1a-d696-4952-b478-97cfe957dbbe"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Items shorting two nets (nets ESC2_SIGNAL and GND)",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2828 mm",
+                    "pos": {
+                        "x": 110.8,
+                        "y": 56.2
+                    },
+                    "uuid": "0e8f0f65-1c3e-4321-8c81-14233218fb08"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Items shorting two nets (nets ESC2_SIGNAL and GND)",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2000 mm",
+                    "pos": {
+                        "x": 112.0,
+                        "y": 55.8
+                    },
+                    "uuid": "0f675584-9de9-41e5-ac0d-75464bccf1dd"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Items shorting two nets (nets GND and ESC2_SIGNAL)",
+            "items": [
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                },
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2000 mm",
+                    "pos": {
+                        "x": 111.0,
+                        "y": 56.2
+                    },
+                    "uuid": "af573573-6b7f-410b-a2f3-4a97f663e53e"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Rear solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2828 mm",
+                    "pos": {
+                        "x": 111.8,
+                        "y": 55.8
+                    },
+                    "uuid": "243f243f-38cb-4f32-9729-5dc8d32d0003"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Rear solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.4000 mm",
+                    "pos": {
+                        "x": 109.8,
+                        "y": 56.8
+                    },
+                    "uuid": "2f2e2a60-13e8-4098-83d9-ec1fd08bebb9"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Rear solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2000 mm",
+                    "pos": {
+                        "x": 111.0,
+                        "y": 56.2
+                    },
+                    "uuid": "af573573-6b7f-410b-a2f3-4a97f663e53e"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Rear solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2828 mm",
+                    "pos": {
+                        "x": 108.2,
+                        "y": 57.4
+                    },
+                    "uuid": "41838d46-3948-49ae-9b7d-b57bec8ebb9c"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Rear solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2828 mm",
+                    "pos": {
+                        "x": 110.8,
+                        "y": 56.2
+                    },
+                    "uuid": "0e8f0f65-1c3e-4321-8c81-14233218fb08"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Rear solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2828 mm",
+                    "pos": {
+                        "x": 110.4,
+                        "y": 56.4
+                    },
+                    "uuid": "b8a15b8c-4bbe-473e-91d4-e4b0d67aa68c"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Rear solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2828 mm",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 56.6
+                    },
+                    "uuid": "5a131470-9d69-4818-aa42-41f345cb7b69"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Rear solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2000 mm",
+                    "pos": {
+                        "x": 112.0,
+                        "y": 55.8
+                    },
+                    "uuid": "0f675584-9de9-41e5-ac0d-75464bccf1dd"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Rear solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.4000 mm",
+                    "pos": {
+                        "x": 108.0,
+                        "y": 57.6
+                    },
+                    "uuid": "c333ef4a-8d4a-45b4-8355-ef688f6edbea"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Rear solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2000 mm",
+                    "pos": {
+                        "x": 109.2,
+                        "y": 57.0
+                    },
+                    "uuid": "702e23a2-5464-4eae-9393-c9e226d561d7"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Rear solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2828 mm",
+                    "pos": {
+                        "x": 108.6,
+                        "y": 57.2
+                    },
+                    "uuid": "23db2d1a-d696-4952-b478-97cfe957dbbe"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Rear solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2000 mm",
+                    "pos": {
+                        "x": 108.8,
+                        "y": 57.2
+                    },
+                    "uuid": "f2940638-93cc-444c-8ada-d49bcedf4ec9"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Rear solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2828 mm",
+                    "pos": {
+                        "x": 111.2,
+                        "y": 56.0
+                    },
+                    "uuid": "85b299d2-6fa5-442f-b6ca-a38879c85862"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Rear solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2828 mm",
+                    "pos": {
+                        "x": 109.0,
+                        "y": 57.0
+                    },
+                    "uuid": "f75a7b1b-36e7-4e58-a32d-bb1d60732344"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Rear solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2000 mm",
+                    "pos": {
+                        "x": 110.6,
+                        "y": 56.4
+                    },
+                    "uuid": "8a16279d-5f4f-4679-baed-4d8908673b79"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Rear solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2000 mm",
+                    "pos": {
+                        "x": 110.2,
+                        "y": 56.6
+                    },
+                    "uuid": "8f798841-30fc-42c5-92b3-0576c956f959"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Rear solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.4000 mm",
+                    "pos": {
+                        "x": 111.6,
+                        "y": 56.0
+                    },
+                    "uuid": "9806b389-3c68-48ff-8128-a4f8550a8f66"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Rear solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2000 mm",
+                    "pos": {
+                        "x": 108.4,
+                        "y": 57.4
+                    },
+                    "uuid": "a8a7318a-4b9e-42b7-85cd-f039e59d3cff"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Rear solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "Track [ESC2_SIGNAL] on B.Cu, length 0.2828 mm",
+                    "pos": {
+                        "x": 109.4,
+                        "y": 56.8
+                    },
+                    "uuid": "ada4a317-9e9b-4d5c-a701-6172dbe8a78a"
+                },
+                {
+                    "description": "PTH pad 2 [GND] of G1",
+                    "pos": {
+                        "x": 110.0,
+                        "y": 57.0
+                    },
+                    "uuid": "a173cc7e-011a-4754-b42a-691eea9459f2"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        }
+    ]
+}

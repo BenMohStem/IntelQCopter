@@ -75,5 +75,12 @@
     "report": "hardware/home-etched-v3/lidar-gap-two-ground-wires/models3d/README.md",
     "claim": "All four modules, four ESC headers, remote lidar wire stubs and two GND wires visible in native KiCad; model-only changes; repeated DRC/parity/ground checks pass",
     "limits": "Illustrative original meshes; exact purchased module heights/details/fit unverified; no hardware or flight test"
+  },
+  {
+    "id": "E-PCB-DRILLED-JUMPERS",
+    "kind": "native_KiCad_DRC_parity_netlist_graph_3D_and_vector_mask_checks",
+    "report": "hardware/home-etched-v3/dedicated-ground-jumpers/README.md",
+    "claim": "Three dedicated two-hole GND wires, six new 1.2mm holes, 3.2mm lands and short 1.2mm copper branches; all 14 GND endpoints common after wires fitted; zero native DRC/unconnected/parity; new 1:1 mask and native 3D views",
+    "limits": "Three physical wires mandatory; sensor wire under raised module; real clone/etch/printer/power/interface tests and firmware mapping still pending; three rejected trials preserved"
   }
 ]
