@@ -36,3 +36,5 @@ BMP280/altitude are deferred. Gyro frame validation, attitude fusion, PID/mixer 
 [Multi-agent knowledge base: start here](knowledge/README.md).
 
 [New routed single-sided PCB, KiCad files, print masks and assembly guide](hardware/home-etched-v2/README.md).
+
+Current PCB target: [v3 draft checkpoint and remaining GND failures](hardware/home-etched-v3/README.md). The earlier 27-link v2 is not the requested final layout.

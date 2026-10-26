@@ -13,7 +13,7 @@
     "Physical rotations deferred by user; never infer validation from static/model tests",
     "BMP280 unavailable; no altitude acceptance",
     "Preserve calibration and failed evidence; no refit of validation records",
-    "Latest PCB instruction: agent makes routed single-sided carrier (D-0004); physical module fit/etched tests pending",
+    "Latest PCB constraints D-0005: user sketch, one face, 1.4mm preferred/1.2mm minimum tracks, <=2 jumpers, ALL GND common; current mask is draft and fails GND acceptance",
     "Commit and push project changes; no history rewrite; exclude private logs/environments"
   ],
   "observations": {

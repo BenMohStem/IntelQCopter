@@ -21,7 +21,7 @@ for z in b.Zones():
     fill=z.GetFilledPolysList(p.B_Cu)
     for i in range(fill.OutlineCount()):zones.append(dict(outline=points(fill.COutline(i)),holes=[points(fill.CHole(i,h)) for h in range(fill.HoleCount(i))]))
 out=O/'output';out.mkdir(exist_ok=True)
-data=dict(source='QCopter.kicad_pcb',source_sha256=hashlib.sha256((O/'QCopter.kicad_pcb').read_bytes()).hexdigest(),units='mm',board_size=[90,90],tracks=tracks,pads=pads,holes=holes,zones=zones)
+data=dict(source='QCopter.kicad_pcb',source_sha256=hashlib.sha256((O/'QCopter.kicad_pcb').read_bytes()).hexdigest(),units='mm',board_size=json.loads((O/'connections.json').read_text()).get('board_mm',[90,90]),tracks=tracks,pads=pads,holes=holes,zones=zones)
 (out/'native-copper-geometry.json').write_text(json.dumps(data,indent=2)+'\n')
 with (out/'drill-map.csv').open('w',newline='') as stream:
     writer=csv.writer(stream);writer.writerow(['Reference','Pin','X_mm','Y_mm','Drill_mm','Net'])

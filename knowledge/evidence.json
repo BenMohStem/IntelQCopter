@@ -54,5 +54,12 @@
     "report": "hardware/home-etched-v2/README.md",
     "claim": "One B.Cu carrier; all 27 fitted insulated wire links; 0 native DRC violations/unconnected; three actual-size masks",
     "limits": "Raised sockets required; clone fit, etched board, printer scale and power under load unverified; firmware unchanged"
+  },
+  {
+    "id": "E-PCB-V3-DRAFT",
+    "kind": "native_KiCad_failed_connectivity_and_vector_PDF_checks",
+    "report": "hardware/home-etched-v3/README.md",
+    "claim": "Antenna track below; W1 preserved; three exact-size checkpoint masks exported before rejected W1-removal attempt",
+    "limits": "FOUR unconnected GND items; not ready to etch; no accepted GPIO remap, firmware or hardware validation"
   }
 ]

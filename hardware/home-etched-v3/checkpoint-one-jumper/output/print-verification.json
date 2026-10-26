@@ -1,0 +1,27 @@
+{
+  "status": "DRAFT - NOT READY TO ETCH: four unconnected ground items",
+  "engine": "Native KiCad copper geometry / ReportLab / pypdf",
+  "board_sha256": "7d65e534ef4ae94915a3162f29e67603495093dcd3f539bb6e9e0ec578d80197",
+  "pdf_sha256": "d0d29492f5ace5b3dbd2eeab955302fd6aea1a915b41d8a8f88ed6a698609fb9",
+  "board_mm": [
+    92,
+    82
+  ],
+  "page_mm": [
+    210,
+    297
+  ],
+  "copies": 3,
+  "text_characters": 0,
+  "exact_mm_transform_verified": true,
+  "W1_present": true,
+  "all_track_widths_mm": [
+    1.2,
+    1.4
+  ],
+  "polarity": "Black retained copper, white holes",
+  "orientation": "No additional mirroring; toner face-down on underside makes the transfer reflection",
+  "physical_scale_verified": false,
+  "native_clearance_violations": 0,
+  "native_unconnected_ground_items": 4
+}

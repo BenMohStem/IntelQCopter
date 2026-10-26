@@ -1,0 +1,383 @@
+{
+    "$schema": "https://schemas.kicad.org/drc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-10-26T20:06:04",
+    "ignored_checks": [
+        {
+            "description": "Footprint has no courtyard defined",
+            "key": "missing_courtyard"
+        },
+        {
+            "description": "Track endpoint not centered on via",
+            "key": "track_not_centered_on_via"
+        },
+        {
+            "description": "Tuning profile track geometries",
+            "key": "tuning_profile_track_geometries"
+        },
+        {
+            "description": "Footprint doesn't match symbol's footprint filters",
+            "key": "footprint_filters_mismatch"
+        },
+        {
+            "description": "Footprint component type doesn't match footprint pads",
+            "key": "footprint_type_mismatch"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning"
+    ],
+    "kicad_version": "10.0.6",
+    "schematic_parity": [],
+    "source": "QCopter.kicad_pcb",
+    "unconnected_items": [
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Zone [GND] on B.Cu, priority 0",
+                    "pos": {
+                        "x": 43.0,
+                        "y": 39.0
+                    },
+                    "uuid": "2ecef16e-f827-4ac0-bb70-b11bb20fc83f"
+                },
+                {
+                    "description": "Zone [GND] on B.Cu, priority 0",
+                    "pos": {
+                        "x": 43.0,
+                        "y": 39.0
+                    },
+                    "uuid": "2ecef16e-f827-4ac0-bb70-b11bb20fc83f"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Zone [GND] on B.Cu, priority 0",
+                    "pos": {
+                        "x": 43.0,
+                        "y": 39.0
+                    },
+                    "uuid": "2ecef16e-f827-4ac0-bb70-b11bb20fc83f"
+                },
+                {
+                    "description": "Zone [GND] on B.Cu, priority 0",
+                    "pos": {
+                        "x": 43.0,
+                        "y": 39.0
+                    },
+                    "uuid": "2ecef16e-f827-4ac0-bb70-b11bb20fc83f"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Zone [GND] on B.Cu, priority 0",
+                    "pos": {
+                        "x": 43.0,
+                        "y": 39.0
+                    },
+                    "uuid": "2ecef16e-f827-4ac0-bb70-b11bb20fc83f"
+                },
+                {
+                    "description": "Zone [GND] on B.Cu, priority 0",
+                    "pos": {
+                        "x": 43.0,
+                        "y": 39.0
+                    },
+                    "uuid": "2ecef16e-f827-4ac0-bb70-b11bb20fc83f"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Zone [GND] on B.Cu, priority 0",
+                    "pos": {
+                        "x": 43.0,
+                        "y": 39.0
+                    },
+                    "uuid": "2ecef16e-f827-4ac0-bb70-b11bb20fc83f"
+                },
+                {
+                    "description": "Zone [GND] on B.Cu, priority 0",
+                    "pos": {
+                        "x": 43.0,
+                        "y": 39.0
+                    },
+                    "uuid": "2ecef16e-f827-4ac0-bb70-b11bb20fc83f"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Zone [GND] on B.Cu, priority 0",
+                    "pos": {
+                        "x": 43.0,
+                        "y": 39.0
+                    },
+                    "uuid": "2ecef16e-f827-4ac0-bb70-b11bb20fc83f"
+                },
+                {
+                    "description": "Zone [GND] on B.Cu, priority 0",
+                    "pos": {
+                        "x": 43.0,
+                        "y": 39.0
+                    },
+                    "uuid": "2ecef16e-f827-4ac0-bb70-b11bb20fc83f"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        }
+    ],
+    "violations": [
+        {
+            "description": "Items shorting two nets (nets FC_5V and MPU_INT)",
+            "items": [
+                {
+                    "description": "Track [FC_5V] on B.Cu, length 18.0000 mm",
+                    "pos": {
+                        "x": 45.0,
+                        "y": 95.5
+                    },
+                    "uuid": "4461ec8e-b11d-48fe-81a5-ba6add9ec952"
+                },
+                {
+                    "description": "Track [MPU_INT] on B.Cu, length 0.2000 mm",
+                    "pos": {
+                        "x": 46.0,
+                        "y": 96.6
+                    },
+                    "uuid": "96e49e27-7d9c-4e35-8419-a4b75ae53fca"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Items shorting two nets (nets FC_5V and MPU_INT)",
+            "items": [
+                {
+                    "description": "Track [FC_5V] on B.Cu, length 18.0000 mm",
+                    "pos": {
+                        "x": 45.0,
+                        "y": 95.5
+                    },
+                    "uuid": "4461ec8e-b11d-48fe-81a5-ba6add9ec952"
+                },
+                {
+                    "description": "Track [MPU_INT] on B.Cu, length 0.2828 mm",
+                    "pos": {
+                        "x": 46.0,
+                        "y": 96.8
+                    },
+                    "uuid": "9515fe25-f5ae-4e2b-ba63-5e8a2f31a469"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Items shorting two nets (nets FC_5V and MPU_INT)",
+            "items": [
+                {
+                    "description": "Track [FC_5V] on B.Cu, length 18.0000 mm",
+                    "pos": {
+                        "x": 45.0,
+                        "y": 95.5
+                    },
+                    "uuid": "4461ec8e-b11d-48fe-81a5-ba6add9ec952"
+                },
+                {
+                    "description": "Track [MPU_INT] on B.Cu, length 1.8000 mm",
+                    "pos": {
+                        "x": 45.8,
+                        "y": 94.6
+                    },
+                    "uuid": "8d5099a2-561f-4e70-87d0-95c1f0adef38"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Items shorting two nets (nets FC_5V and MPU_INT)",
+            "items": [
+                {
+                    "description": "Track [FC_5V] on B.Cu, length 18.0000 mm",
+                    "pos": {
+                        "x": 45.0,
+                        "y": 95.5
+                    },
+                    "uuid": "4461ec8e-b11d-48fe-81a5-ba6add9ec952"
+                },
+                {
+                    "description": "Track [MPU_INT] on B.Cu, length 0.2000 mm",
+                    "pos": {
+                        "x": 46.2,
+                        "y": 97.0
+                    },
+                    "uuid": "c5cb7d3f-ba4b-412f-bf56-27f4d7c97c04"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Items shorting two nets (nets FC_5V and MPU_INT)",
+            "items": [
+                {
+                    "description": "Track [FC_5V] on B.Cu, length 18.0000 mm",
+                    "pos": {
+                        "x": 45.0,
+                        "y": 95.5
+                    },
+                    "uuid": "4461ec8e-b11d-48fe-81a5-ba6add9ec952"
+                },
+                {
+                    "description": "Track [MPU_INT] on B.Cu, length 0.2828 mm",
+                    "pos": {
+                        "x": 46.0,
+                        "y": 94.4
+                    },
+                    "uuid": "654bb733-2946-40e2-ac43-3ab287cc0151"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Items shorting two nets (nets MPU_INT and FC_5V)",
+            "items": [
+                {
+                    "description": "Track [MPU_INT] on B.Cu, length 0.2828 mm",
+                    "pos": {
+                        "x": 46.2,
+                        "y": 94.0
+                    },
+                    "uuid": "33f2e453-8088-42cb-a84e-8d9d75370622"
+                },
+                {
+                    "description": "Track [FC_5V] on B.Cu, length 3.8400 mm",
+                    "pos": {
+                        "x": 48.84,
+                        "y": 95.5
+                    },
+                    "uuid": "bf2ecdfb-3e06-4c2c-9949-0ac5436d272a"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Items shorting two nets (nets MPU_INT and FC_5V)",
+            "items": [
+                {
+                    "description": "Track [MPU_INT] on B.Cu, length 0.8485 mm",
+                    "pos": {
+                        "x": 46.2,
+                        "y": 97.2
+                    },
+                    "uuid": "17f87f79-5625-4491-9231-b874a90054c5"
+                },
+                {
+                    "description": "Track [FC_5V] on B.Cu, length 18.0000 mm",
+                    "pos": {
+                        "x": 45.0,
+                        "y": 95.5
+                    },
+                    "uuid": "4461ec8e-b11d-48fe-81a5-ba6add9ec952"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Items shorting two nets (nets MPU_INT and FC_5V)",
+            "items": [
+                {
+                    "description": "Track [MPU_INT] on B.Cu, length 0.2828 mm",
+                    "pos": {
+                        "x": 45.8,
+                        "y": 96.4
+                    },
+                    "uuid": "28c28347-f3e3-4f6a-96fe-1d616238826e"
+                },
+                {
+                    "description": "Track [FC_5V] on B.Cu, length 18.0000 mm",
+                    "pos": {
+                        "x": 45.0,
+                        "y": 95.5
+                    },
+                    "uuid": "4461ec8e-b11d-48fe-81a5-ba6add9ec952"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Clearance violation ( clearance 0.2000 mm; actual 0.0866 mm)",
+            "items": [
+                {
+                    "description": "Track [FC_5V] on B.Cu, length 18.0000 mm",
+                    "pos": {
+                        "x": 45.0,
+                        "y": 95.5
+                    },
+                    "uuid": "4461ec8e-b11d-48fe-81a5-ba6add9ec952"
+                },
+                {
+                    "description": "Track [MPU_INT] on B.Cu, length 0.2000 mm",
+                    "pos": {
+                        "x": 46.0,
+                        "y": 94.2
+                    },
+                    "uuid": "a8b3c7b0-abc7-4793-ac6a-cb6e2a12d108"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "Clearance violation ( clearance 0.2000 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Track [FC_5V] on B.Cu, length 3.8400 mm",
+                    "pos": {
+                        "x": 48.84,
+                        "y": 95.5
+                    },
+                    "uuid": "bf2ecdfb-3e06-4c2c-9949-0ac5436d272a"
+                },
+                {
+                    "description": "Track [MPU_INT] on B.Cu, length 0.2000 mm",
+                    "pos": {
+                        "x": 46.2,
+                        "y": 93.8
+                    },
+                    "uuid": "e16c5639-b173-4f34-ba26-4da466fb4e64"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        }
+    ]
+}

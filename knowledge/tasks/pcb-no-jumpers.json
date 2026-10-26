@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "id": "pcb-no-jumpers",
+  "status": "ready",
+  "title": "Redesign single copper layer with zero jumpers target and at most two",
+  "depends_on": [
+    "route-home-etched-pcb"
+  ],
+  "scopes": [
+    "tools/hardware",
+    "hardware/home-etched-v3",
+    "config/sensor-wiring.json",
+    "external:Documents/Projects/PCB/QCopter/home-etched-v3"
+  ],
+  "evidence": [
+    "E-PCB-V3-DRAFT"
+  ],
+  "acceptance": [
+    "No more than two fitted wire links",
+    "Native DRC and native schematic/PCB/functional graph checks pass",
+    "Preserve interfaces, safe BEC selection, disabled physical motor outputs",
+    "Updated 1:1 print masks and assembly guide"
+  ],
+  "owner": "Local transactional claims",
+  "remaining": "Connect every GND; review pin map; achieve <=2 wires with 0 native violations/unconnected before release"
+}

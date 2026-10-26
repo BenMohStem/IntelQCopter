@@ -1,0 +1,10 @@
+{
+  "accepted_for_etching": false,
+  "native_clearance_violations": 0,
+  "unconnected_ground_items": 4,
+  "native_schematic_pin_assignments_match_manifest": true,
+  "jumper_count": 1,
+  "minimum_routed_track_mm": 1.2,
+  "antenna_replacement_track_mm": 1.4,
+  "firmware_or_physical_validation": false
+}

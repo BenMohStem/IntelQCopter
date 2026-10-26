@@ -1,0 +1,65 @@
+{
+  "engine": "Native KiCad 10",
+  "source": "../trial5/QCopter.kicad_pcb",
+  "removed_track_uuids": [
+    "2d0ac6e0-ccf9-45ab-bf31-134a13e408ff",
+    "35e52de1-fe7e-4de1-9d34-7992e1ae6024",
+    "38846204-b774-4c32-8c6b-8a686da1351e",
+    "3b40b69d-d8f2-4bb6-9511-b674e043e4bf",
+    "3cdd63ce-d99d-4538-b3b0-3eecf14e3046",
+    "48c05988-2dbb-4a69-ba04-07210c4e58bf",
+    "4facd313-5ac2-4075-a2cc-4aa1e85e82ef",
+    "5df628b5-66dc-4cc1-987d-a9dc4c90398d",
+    "696bb4d0-3524-4cf7-a582-d737296a6253",
+    "7758bf4f-d348-4bf4-b431-32f21995a693",
+    "852319c1-6741-46f0-bd81-356f9bc66ccf",
+    "8870eb6c-3b02-4c9f-8848-3a12fa5382dc",
+    "b4678560-a0b6-4d14-a54d-e5a9aa85a0e5",
+    "cc43ccff-f8ba-4857-8863-8553acd50cdb",
+    "cdc44a50-80e5-4f3b-b078-6c21e3f626aa",
+    "cdedf122-599b-488b-9525-c24430430010",
+    "f606ef40-f3f6-4dec-aa68-7b5d50a21bf4",
+    "fb6466c8-36dd-4b0a-abc1-9551ca31eaf6"
+  ],
+  "new_path_mm": [
+    [
+      75.5,
+      55.54
+    ],
+    [
+      80,
+      55.54
+    ],
+    [
+      80,
+      110.5
+    ],
+    [
+      84,
+      114.5
+    ],
+    [
+      126.4,
+      114.5
+    ],
+    [
+      130.4,
+      110.5
+    ],
+    [
+      130.4,
+      68.2
+    ],
+    [
+      126.4,
+      64.2
+    ],
+    [
+      118.4,
+      64.2
+    ]
+  ],
+  "width_mm": 1.4,
+  "jumper_W1_unchanged": true,
+  "validation": "Native DRC: 0 violations, 4 unconnected GND items; NOT accepted"
+}
