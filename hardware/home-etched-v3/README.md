@@ -1,28 +1,10 @@
-# Current PCB work - DRAFT, NOT READY TO ETCH
+# Current PCB: lidar gap with two ground wires
 
-The user's current sketch is the starting point; the earlier 27-link v2 layout
-is superseded as the target. Required: one copper face, 1.4 mm preferred / 1.2 mm
-minimum routed tracks, zero jumpers preferred / at most two, all GND common.
+**Use [this current CAD revision](lidar-gap-two-ground-wires/README.md)** and its
+matching mask and assembly guide. Native DRC, unconnected items and schematic
+parity are all zero. The two mandatory insulated GND wires reuse existing pins;
+G2 has a middle tap. All 14 GND points are common with the wires fitted. There are
+79 drilled holes and no lidar power jumper. Physical checks remain pending.
 
-## Requested checkpoint before removing W1
-
-- [KiCad PCB](checkpoint-one-jumper/QCopter.kicad_pcb)
-- [Project](checkpoint-one-jumper/QCopter.kicad_pro)
-- [Three 1:1 masks, one A4 sheet, no copper text](checkpoint-one-jumper/output/DRAFT-one-jumper-3-masks-A4-1to1.pdf)
-- [Original native DRC](checkpoint-one-jumper/native-drc.json)
-
-The 3V3 track that ran above the antenna now passes through the ESP interior and
-around the lower/right perimeter at 1.4 mm. The antenna copper cutout remains.
-This is the user's opened one-jumper trial5 with its existing exploratory GPIO
-map, NOT the unrelated later routing searches. No firmware changes or flashing.
-
-**Native result: zero clearance/short violations, FOUR unconnected GND items.**
-Not accepted for fabrication or power. A poured area is not proof of common GND.
-Every GND must pass native connectivity checks before producing a release mask.
-The supplied PDF is an explicit draft/paper inspection checkpoint requested by
-the user before the W1 removal attempt. Use Actual Size / 100%, no extra mirror,
-toner face down on underside copper. Verify the print physically with the parts.
-
-The later zero-jumper perimeter attempt shorted MPU_INT and was rejected; see
-rejected-attempts. W1 remains fitted in the checkpoint. Neither revision is flight
-hardware acceptance. The user's open Documents original project is preserved.
+The previous checkpoint-one-jumper/ and rejected-attempts/ are preserved historical
+drafts. Their old masks are obsolete for the current geometry.

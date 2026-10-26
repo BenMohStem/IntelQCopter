@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "id": "pcb-no-jumpers",
-  "status": "ready",
+  "status": "done",
   "title": "Redesign single copper layer with zero jumpers target and at most two",
   "depends_on": [
     "route-home-etched-pcb"
@@ -13,7 +13,8 @@
     "external:Documents/Projects/PCB/QCopter/home-etched-v3"
   ],
   "evidence": [
-    "E-PCB-V3-DRAFT"
+    "E-PCB-V3-DRAFT",
+    "E-PCB-LIDAR-GAP"
   ],
   "acceptance": [
     "No more than two fitted wire links",
@@ -22,5 +23,5 @@
     "Updated 1:1 print masks and assembly guide"
   ],
   "owner": "Local transactional claims",
-  "remaining": "Connect every GND; review pin map; achieve <=2 wires with 0 native violations/unconnected before release"
+  "remaining": "CAD redesign achieved; physical paper-fit/etch/continuity/power/interface tests and future firmware mapping remain separate hardware/integration gates"
 }

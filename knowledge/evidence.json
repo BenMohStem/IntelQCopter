@@ -58,8 +58,15 @@
   {
     "id": "E-PCB-V3-DRAFT",
     "kind": "native_KiCad_failed_connectivity_and_vector_PDF_checks",
-    "report": "hardware/home-etched-v3/README.md",
+    "report": "hardware/home-etched-v3/checkpoint-one-jumper/README.md",
     "claim": "Antenna track below; W1 preserved; three exact-size checkpoint masks exported before rejected W1-removal attempt",
     "limits": "FOUR unconnected GND items; not ready to etch; no accepted GPIO remap, firmware or hardware validation"
+  },
+  {
+    "id": "E-PCB-LIDAR-GAP",
+    "kind": "native_KiCad_DRC_parity_netlist_and_wire_graph_primary_pin_documentation",
+    "report": "hardware/home-etched-v3/lidar-gap-two-ground-wires/README.md",
+    "claim": "0 native violations/unconnected/parity; all 14 GND nodes common through two real wire components; 79 holes; I2C/UART/PWM GPIO eligibility checked",
+    "limits": "G2 has middle tap; both wires mandatory; actual clone/printer/power/interfaces and future firmware map remain untested"
   }
 ]

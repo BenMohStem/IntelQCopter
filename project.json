@@ -292,6 +292,12 @@
       "path": "tools/hardware/verify_home_etched_pcb.py",
       "args": [],
       "description": "Native routed-board DRC and schematic/link connectivity; saves original evidence, never flashes"
+    },
+    "check-current-pcb": {
+      "runtime": "python",
+      "path": "tools/hardware/verify_lidar_gap_pcb.py",
+      "args": [],
+      "description": "Native DRC/parity + 14 common GND points through the two physical wires; no upload or PWM"
     }
   }
 }

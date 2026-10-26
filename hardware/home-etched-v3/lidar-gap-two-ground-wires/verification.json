@@ -1,0 +1,61 @@
+{
+  "engine": "KiCad 10 native DRC+schematic parity, native XML netlist, independent pad/wire graph checks",
+  "board_sha256": "486c6b26b82354ec227f6940727d400eaad10e8a43e0a77eb47f447b4991c9ea",
+  "schematic_sha256": "3c62e2d9e704c232a698d036c9de810d2e77d21a2e54bda651ca92b62849596c",
+  "cad_checks_pass": true,
+  "violations": 0,
+  "unconnected_items": 0,
+  "schematic_parity_issues": 0,
+  "copper_layers_routed": [
+    "B.Cu"
+  ],
+  "minimum_track_mm": 1.2,
+  "explicit_minimum_clearance_mm": 0.5,
+  "physical_drill_holes": 79,
+  "electrical_pad_records": 84,
+  "power_jumpers": 0,
+  "continuous_ground_wires": 2,
+  "ground_wire_solder_taps": [
+    2,
+    3
+  ],
+  "all_ground_nodes_common_with_ground_wires_fitted": [
+    "J5.1",
+    "U1.22",
+    "U1.23",
+    "U1.24",
+    "U1.44",
+    "J2.1",
+    "J4.1",
+    "U2.2",
+    "U2.7",
+    "J3.1",
+    "U4.2",
+    "J1.2",
+    "U3.2",
+    "U3.6"
+  ],
+  "voltage_rails_and_unselected_becs_separate": true,
+  "gpio_map": {
+    "MPU_SDA": 9,
+    "MPU_SCL": 8,
+    "SLOW_SDA": 41,
+    "SLOW_SCL": 40,
+    "MPU_INT": 13,
+    "MAG_DRDY": 47,
+    "LIDAR_TO_FC_RX": 10,
+    "FC_TX_TO_LIDAR": 11,
+    "ESC1_SIGNAL": 4,
+    "ESC2_SIGNAL": 1,
+    "ESC3_SIGNAL": 14,
+    "ESC4_SIGNAL": 21
+  },
+  "capability_check": "Selected GPIOs support GPIO-matrix I2C/UART/LEDC PWM. GPIO40/41 must not also be used for external JTAG.",
+  "physical_fit_printer_scale_power_and_interfaces_tested": false,
+  "flashed_or_armed": false,
+  "limits": [
+    "Two GND wires are mandatory; G2 is one continuous wire with a middle tap",
+    "Verify actual clone dimensions, cable order, BEC 5V/current and 3.3V signal levels",
+    "Bench firmware MPU bus matches; future peripheral/PWM map differs and has not been flashed"
+  ]
+}

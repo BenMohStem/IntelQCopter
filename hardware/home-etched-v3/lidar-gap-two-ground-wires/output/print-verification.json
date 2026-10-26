@@ -1,0 +1,25 @@
+{
+  "engine": "Native KiCad B.Cu copper / ReportLab vector PDF / pypdf",
+  "board_sha256": "486c6b26b82354ec227f6940727d400eaad10e8a43e0a77eb47f447b4991c9ea",
+  "pdf_sha256": "58a78ddefc7e333409a90ed01a71feab1c0a4df39fba32b5dc3de64527d91e5a",
+  "board_mm": [
+    92,
+    82
+  ],
+  "page_mm": [
+    210,
+    297
+  ],
+  "copies": 3,
+  "exact_mm_transforms_verified": true,
+  "text_characters": 0,
+  "drill_voids_per_copy": 79,
+  "polarity": "Black retained copper, white drill holes",
+  "orientation": "Component coordinates: print unchanged, toner face down on underside; no extra mirror",
+  "ground_wires_required": 2,
+  "ground_wire_taps": [
+    2,
+    3
+  ],
+  "physical_printer_scale_verified": false
+}

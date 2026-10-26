@@ -10,7 +10,7 @@ for f in b.GetFootprints():
     for a in f.Pads():
         assert a.GetShape()==p.PAD_SHAPE_CIRCLE and a.GetSize().x==a.GetSize().y
         row=dict(ref=f.GetReference(),pin=a.GetNumber(),net=a.GetNetname(),xy=xy(a.GetPosition()),diameter=p.ToMM(a.GetSize().x),drill=p.ToMM(a.GetDrillSize().x))
-        holes.append(row)
+        if row['drill']>0:holes.append(row)
         if a.GetAttribute()!=p.PAD_ATTRIB_NPTH:pads.append(row)
 for t in b.GetTracks():
     assert t.GetLayer()==p.B_Cu and type(t)==p.PCB_TRACK

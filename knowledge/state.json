@@ -13,7 +13,7 @@
     "Physical rotations deferred by user; never infer validation from static/model tests",
     "BMP280 unavailable; no altitude acceptance",
     "Preserve calibration and failed evidence; no refit of validation records",
-    "Latest PCB constraints D-0005: user sketch, one face, 1.4mm preferred/1.2mm minimum tracks, <=2 jumpers, ALL GND common; current mask is draft and fails GND acceptance",
+    "Current PCB D-0006: free-position lidar holes, no power jumper, two mandatory continuous GND wires (G2 middle tap); native DRC/parity/connectivity pass; physical checks and firmware map adaptation pending",
     "Commit and push project changes; no history rewrite; exclude private logs/environments"
   ],
   "observations": {
@@ -47,6 +47,14 @@
     {
       "path": "tools/estimation/prepare_attitude.py",
       "sha256": "365ffdd1b43583106fc07b3ad73a1162038025160f4eea3b4c2a454aed66752c"
+    },
+    {
+      "path": "hardware/home-etched-v3/lidar-gap-two-ground-wires/QCopter.kicad_pcb",
+      "sha256": "486c6b26b82354ec227f6940727d400eaad10e8a43e0a77eb47f447b4991c9ea"
+    },
+    {
+      "path": "hardware/home-etched-v3/lidar-gap-two-ground-wires/QCopter.kicad_sch",
+      "sha256": "3c62e2d9e704c232a698d036c9de810d2e77d21a2e54bda651ca92b62849596c"
     }
   ],
   "authoritative_paths": [
