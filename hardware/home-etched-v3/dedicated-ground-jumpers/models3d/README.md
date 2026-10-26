@@ -17,3 +17,5 @@ do not run the old overlay-model generator on this new project.
 
 [Top](../output/3d-top.png) · [Bottom](../output/3d-bottom.png) ·
 [Native renderer log](../output/3d-native-render.log)
+
+RF update: the carrier antenna-side copper is removed; FR4 remains. G2 now has three dedicated solder points, not a pair. Actual Bluetooth improvement is unmeasured.

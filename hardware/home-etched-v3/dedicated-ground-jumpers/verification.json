@@ -1,7 +1,7 @@
 {
   "engine": "KiCad 10 native DRC+schematic parity, native XML netlist, independent pad/wire graph checks",
-  "board_sha256": "c95ff8fcfdd0213c81b64f0ba048cb2de366bcfcf10acf20b58eec79c3c64a03",
-  "schematic_sha256": "6298a58f8996cbb62404bec19801e5b98c01a2cd40b4aa083a9b9d0bd5499004",
+  "board_sha256": "a634f36ab93d0c227e777f7b9e6775db8f00d629dc02f3888caa7b3805ca5126",
+  "schematic_sha256": "458f4d15322bce6468904eb412f783253e2470a9f899e8afa3f850c00b15ff5c",
   "cad_checks_pass": true,
   "violations": 0,
   "unconnected_items": 0,
@@ -11,16 +11,16 @@
   ],
   "minimum_track_mm": 1.2,
   "explicit_minimum_clearance_mm": 0.5,
-  "physical_drill_holes": 85,
-  "electrical_pad_records": 85,
+  "physical_drill_holes": 86,
+  "electrical_pad_records": 86,
   "power_jumpers": 0,
   "continuous_ground_wires": 3,
   "ground_wire_solder_taps": [
     2,
-    2,
+    3,
     2
   ],
-  "dedicated_jumper_holes": 6,
+  "dedicated_jumper_holes": 7,
   "all_ground_nodes_common_with_ground_wires_fitted": [
     "J5.1",
     "U1.22",
@@ -56,7 +56,7 @@
   "physical_fit_printer_scale_power_and_interfaces_tested": false,
   "flashed_or_armed": false,
   "limits": [
-    "Three separate GND wires are mandatory, each in its own pair of drilled holes; no shared header pin or middle tap",
+    "Three separate GND wires are mandatory, G1/G3 use pairs; G2 uses three dedicated holes with a middle tap; no shared module/header holes",
     "Verify actual clone dimensions, cable order, BEC 5V/current and 3.3V signal levels",
     "Bench firmware MPU bus matches; future peripheral/PWM map differs and has not been flashed"
   ]

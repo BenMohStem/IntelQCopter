@@ -1,10 +1,16 @@
 {
-  "engine": "Native KiCad pad/net/size/drill coordinate comparison",
-  "previous_board_sha256": "df4d9c6695d27cae74ce5dbc59ec4f984f26b99ceb83da66532de5a0ffbca6bc",
-  "current_board_sha256": "c95ff8fcfdd0213c81b64f0ba048cb2de366bcfcf10acf20b58eec79c3c64a03",
-  "all_79_original_module_header_holes_and_pad_nets_unchanged": true,
-  "old_5_overlay_lands_removed": true,
-  "new_jumper_holes": 6,
-  "total_drilled_holes": 85,
+  "engine": "Native DRC/parity and independent pad map",
+  "prior_board_sha256": "c95ff8fcfdd0213c81b64f0ba048cb2de366bcfcf10acf20b58eec79c3c64a03",
+  "board_sha256": "a634f36ab93d0c227e777f7b9e6775db8f00d629dc02f3888caa7b3805ca5126",
+  "original_79_module_header_hole_positions_and_logical_interfaces_preserved": true,
+  "physical_ground_net_aliases_changed": true,
+  "jumpers": 3,
+  "jumper_taps": [
+    2,
+    3,
+    2
+  ],
+  "dedicated_wire_holes": 7,
+  "total_drill_holes": 86,
   "firmware_changed": false
 }

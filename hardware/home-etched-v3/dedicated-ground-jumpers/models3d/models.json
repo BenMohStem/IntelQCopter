@@ -8,6 +8,7 @@
     "GY271_visual.wrl",
     "Ground_Jumper_G1.wrl",
     "Ground_Jumper_G2.wrl",
+    "Ground_Jumper_G2_RF.wrl",
     "Ground_Jumper_G3.wrl",
     "Lidar_solder_wire_stubs_visual.wrl",
     "MPU6050_GY521_visual.wrl"
@@ -38,6 +39,10 @@
       "sha256": "b3d697e09f6fbe9a82a11ca308b4bc12f807cb270a733b3c2d29718b5a954b7c"
     },
     {
+      "file": "Ground_Jumper_G2_RF.wrl",
+      "sha256": "ea564ca079e4deccf45193e51ac76fe3a87e4d81e75f4a9a50c2a3d2609c008f"
+    },
+    {
       "file": "Ground_Jumper_G3.wrl",
       "sha256": "397ac199b919b987049052cadff76c04608f3a0425baf03e1e5072aa77d88e4b"
     },
@@ -54,7 +59,8 @@
     "Nominal reference module bodies; exact purchased clone fit unverified",
     "Assumed 8.5mm sockets, module PCB bottom 9mm above carrier",
     "Three insulated wire models fitted above carrier, approximately 4mm high; fit G1 before the raised BMP module",
-    "Chip details, USB shells, antenna artwork and wire shape illustrative"
+    "Chip details, USB shells, antenna artwork and wire shape illustrative",
+    "G2 is one continuous wire with three solder taps, including a dedicated RF return hole; wire length/shape illustrative"
   ],
   "physical_mechanical_fit_certified": false
 }

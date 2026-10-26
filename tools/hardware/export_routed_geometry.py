@@ -17,6 +17,7 @@ for t in b.GetTracks():
     tracks.append(dict(start=xy(t.GetStart()),end=xy(t.GetEnd()),width=p.ToMM(t.GetWidth())))
 def points(chain):return [xy(chain.CPoint(i)) for i in range(chain.PointCount())]
 for z in b.Zones():
+    if z.GetIsRuleArea():continue
     assert z.GetLayer()==p.B_Cu and z.HasFilledPolysForLayer(p.B_Cu)
     fill=z.GetFilledPolysList(p.B_Cu)
     for i in range(fill.OutlineCount()):zones.append(dict(outline=points(fill.COutline(i)),holes=[points(fill.CHole(i,h)) for h in range(fill.HoleCount(i))]))

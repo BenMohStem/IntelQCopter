@@ -14,7 +14,7 @@ Canonical links, no duplicate runtime copies. Current source is flashed and test
 
 9. [Project knowledge, evidence and agent coordination](../knowledge/README.md).
 
-10. [Current PCB, native KiCad files and print masks](../hardware/home-etched-v3/dedicated-ground-jumpers/README.md), [G1/G2/G3 drilled-jumper guide](../hardware/home-etched-v3/dedicated-ground-jumpers/output/assembly-guide.html). The three GND wires are mandatory; current CAD checks pass.
+10. [Current PCB, native KiCad files and print masks](../hardware/home-etched-v3/dedicated-ground-jumpers/README.md), [G1/G2/G3 + RF-clearance guide](../hardware/home-etched-v3/dedicated-ground-jumpers/output/assembly-guide.html). Three wires are mandatory; G2 now has a third dedicated RF-return tap. Current CAD checks pass.
 
 11. [Pin capability audit and firmware integration limits](../hardware/home-etched-v3/dedicated-ground-jumpers/pin-audit.md), [prepared pin map](../config/sensor-wiring.json).
 

@@ -1,6 +1,6 @@
 {
   "engine": "Native KiCad pcb render, basic ray tracing",
-  "board_sha256": "c95ff8fcfdd0213c81b64f0ba048cb2de366bcfcf10acf20b58eec79c3c64a03",
+  "board_sha256": "a634f36ab93d0c227e777f7b9e6775db8f00d629dc02f3888caa7b3805ca5126",
   "models_are_illustrative": true,
   "renders": [
     {
@@ -10,7 +10,7 @@
       "width": 1600,
       "height": 1100,
       "zoom": 0.9,
-      "sha256": "ed780e58495a6b5b84f5198f8aef7a4ae74a7e6bb21a498ebfce4e768265deb0"
+      "sha256": "698012beb59dc44e81d8e4909e4f5e77ad7d29796d8e357b91189af1412ef5b4"
     },
     {
       "file": "3d-bottom.png",
@@ -19,7 +19,7 @@
       "width": 1600,
       "height": 1100,
       "zoom": 0.9,
-      "sha256": "4cccbb973e3204e4f39c1cf02c34463d6bd45371037a6e6cd8372133e84c866a"
+      "sha256": "7692f5047d01605f20d1afde6fa539e38d25bedf3402f1ebf523b668ca932a29"
     }
   ],
   "kicad_version": "10.0.6"

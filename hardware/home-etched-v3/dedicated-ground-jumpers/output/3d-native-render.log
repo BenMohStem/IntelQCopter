@@ -71,9 +71,9 @@ Build BVH for holes and vias
 Load Raytracing: board
 Load Raytracing: layers
 Loading 3D models...
-Reload time 0.261 s
+Reload time 0.214 s
 Rendering: 100 
-Rendering time 0.248 s
+Rendering time 0.289 s
 Successfully created 3D render image
 
 $ kicad-cli pcb render: bottom
@@ -150,6 +150,6 @@ Load Raytracing: layers
 Loading 3D models...
 Reload time 0.197 s
 Rendering: 100 
-Rendering time 0.332 s
+Rendering time 0.390 s
 Successfully created 3D render image
 

@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "id": "pcb-zero-layout-b",
+  "status": "ready",
+  "title": "Fresh zero-jumper PCB candidate B",
+  "depends_on": [
+    "pcb-drilled-jumpers"
+  ],
+  "scopes": [
+    "hardware/zero-jumper-study/layout-b",
+    "tools/pcb_zero_jumper/b"
+  ],
+  "evidence": [],
+  "acceptance": [
+    "Single B.Cu, no vias/top tracks/jumpers, >=1.2mm tracks and >=0.5mm clearance",
+    "All ground points common in bare carrier copper and native DRC/parity pass",
+    "Document pin-map/antenna/physical-fit limits; failed search is not proof of impossibility"
+  ],
+  "owner": "Local transactional claims"
+}

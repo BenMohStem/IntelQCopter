@@ -82,5 +82,12 @@
     "report": "hardware/home-etched-v3/dedicated-ground-jumpers/README.md",
     "claim": "Three dedicated two-hole GND wires, six new 1.2mm holes, 3.2mm lands and short 1.2mm copper branches; all 14 GND endpoints common after wires fitted; zero native DRC/unconnected/parity; new 1:1 mask and native 3D views",
     "limits": "Three physical wires mandatory; sensor wire under raised module; real clone/etch/printer/power/interface tests and firmware mapping still pending; three rejected trials preserved"
+  },
+  {
+    "id": "E-PCB-RF",
+    "kind": "native_KiCad_keepout_DRC_parity_ground_graph_and_vector_mask",
+    "report": "hardware/home-etched-v3/dedicated-ground-jumpers/README.md",
+    "claim": "11mm edge copper clearance and antenna rule area, native DRC/parity 0 and 14-ground graph pass via three wires including three-tap G2; updated 86-hole masks and native 3D",
+    "limits": "RF range unmeasured; no full 15mm clearance certification; physical clone/etch/print/power and firmware map pending"
   }
 ]

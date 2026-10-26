@@ -1,0 +1,83 @@
+{
+    "$schema": "https://schemas.kicad.org/drc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-10-27T00:21:53",
+    "ignored_checks": [
+        {
+            "description": "Footprint has no courtyard defined",
+            "key": "missing_courtyard"
+        },
+        {
+            "description": "Track endpoint not centered on via",
+            "key": "track_not_centered_on_via"
+        },
+        {
+            "description": "Tuning profile track geometries",
+            "key": "tuning_profile_track_geometries"
+        },
+        {
+            "description": "Footprint doesn't match symbol's footprint filters",
+            "key": "footprint_filters_mismatch"
+        },
+        {
+            "description": "Footprint component type doesn't match footprint pads",
+            "key": "footprint_type_mismatch"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning"
+    ],
+    "kicad_version": "10.0.6",
+    "schematic_parity": [],
+    "source": "QCopter.kicad_pcb",
+    "unconnected_items": [],
+    "violations": [
+        {
+            "description": "Tracks crossing",
+            "items": [
+                {
+                    "description": "Track [SLOW_SDA] on B.Cu, length 40.8000 mm",
+                    "pos": {
+                        "x": 96.0,
+                        "y": 110.6
+                    },
+                    "uuid": "c239783f-5f43-4149-81f8-84c26d2a8414"
+                },
+                {
+                    "description": "Track [GND_ESC_RETURN] on B.Cu, length 2.8600 mm",
+                    "pos": {
+                        "x": 98.36,
+                        "y": 103.8
+                    },
+                    "uuid": "ed7b53a6-46f1-404f-8b9f-60279c9cac49"
+                }
+            ],
+            "severity": "error",
+            "type": "tracks_crossing"
+        },
+        {
+            "description": "Items shorting two nets (nets GND_ESC_RETURN and SLOW_SDA)",
+            "items": [
+                {
+                    "description": "Track [GND_ESC_RETURN] on B.Cu, length 50.5000 mm",
+                    "pos": {
+                        "x": 95.5,
+                        "y": 103.8
+                    },
+                    "uuid": "858d1a76-e688-4bc4-bd49-c5571bfae641"
+                },
+                {
+                    "description": "Track [SLOW_SDA] on B.Cu, length 1.9799 mm",
+                    "pos": {
+                        "x": 96.0,
+                        "y": 69.8
+                    },
+                    "uuid": "8ec926b1-7984-492b-a43a-544baf554d33"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        }
+    ]
+}

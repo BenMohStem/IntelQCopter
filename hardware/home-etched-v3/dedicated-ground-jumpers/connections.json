@@ -81,7 +81,7 @@
         "37": "SLOW_SCL",
         "38": "SLOW_SDA",
         "41": "ESC2_SIGNAL",
-        "44": "GND"
+        "44": "GND_RF_RETURN"
       }
     },
     {
@@ -105,7 +105,7 @@
         "3": "ESC2_SIGNAL"
       },
       "pin_nets": {
-        "1": "GND",
+        "1": "GND_RF_RETURN",
         "2": "ESC2_BEC_ISOLATED",
         "3": "ESC2_SIGNAL"
       }
@@ -281,7 +281,7 @@
         "3": "SLOW_SCL",
         "4": "SLOW_SDA",
         "5": "3V3",
-        "6": "GND"
+        "6": "GND_RF_RETURN"
       }
     },
     {
@@ -301,7 +301,7 @@
       "angle": 0,
       "pin_nets": {
         "1": "GND_SENSOR_RETURN",
-        "2": "GND"
+        "2": "GND_RF_RETURN"
       },
       "dedicated_drilled_jumper": true,
       "drill_mm": 1.2,
@@ -324,11 +324,13 @@
       "angle": 0,
       "pin_nets": {
         "1": "GND_ESC_RETURN",
-        "2": "GND"
+        "2": "GND",
+        "3": "GND_RF_RETURN"
       },
       "dedicated_drilled_jumper": true,
       "drill_mm": 1.2,
-      "pad_diameter_mm": 3.2
+      "pad_diameter_mm": 3.2,
+      "solder_taps": 3
     },
     {
       "reference": "G3",
@@ -377,7 +379,17 @@
           79
         ]
       ],
-      "purpose": "BMP280 + magnetometer ground return"
+      "purpose": "BMP280 + magnetometer ground return",
+      "taps": [
+        [
+          112,
+          79
+        ],
+        [
+          118.5,
+          60.5
+        ]
+      ]
     },
     {
       "reference": "G2",
@@ -401,7 +413,21 @@
           108.6
         ]
       ],
-      "purpose": "ESP right GND + ESC4 ground return"
+      "purpose": "RF ground + right ESC return to common GND; one continuous wire, middle tap at G2.1",
+      "taps": [
+        [
+          124,
+          60.5
+        ],
+        [
+          103,
+          108.6
+        ],
+        [
+          103,
+          117.4
+        ]
+      ]
     },
     {
       "reference": "G3",
@@ -429,12 +455,22 @@
           108
         ]
       ],
-      "purpose": "ESC3 isolated ground return"
+      "purpose": "ESC3 isolated ground return",
+      "taps": [
+        [
+          55,
+          108
+        ],
+        [
+          55,
+          117.4
+        ]
+      ]
     }
   ],
   "source_sha256": "3402dc65134174fdee606af396e74f7247849aff4c90be7285c9b8e0a2548ef5",
   "expected_components": 12,
-  "expected_pads": 85,
+  "expected_pads": 86,
   "board_mm": [
     92,
     82
@@ -444,5 +480,6 @@
     38
   ],
   "status": "CAD verified: three mandatory two-hole GND jumpers; 85 drill holes; native DRC/parity/connectivity pass; physical checks pending",
-  "drilled_holes": 85
+  "drilled_holes": 86,
+  "rf_ground_return": "Three wires retained. G2 joins three dedicated holes, including RF return; do not omit its middle tap."
 }

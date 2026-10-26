@@ -14,7 +14,7 @@
     "BMP280 unavailable; no altitude acceptance",
     "Preserve calibration and failed evidence; no refit of validation records",
     "Commit and push project changes; no history rewrite; exclude private logs/environments",
-    "Current PCB D-0007: three ordinary two-hole GND jumpers with short 1.2mm copper branches; 6 new 1.2mm drill holes / 3.2mm lands; native DRC/parity/connectivity 0 and assembled GND graph pass; physical fit/etch/power and firmware mapping pending"
+    "Current PCB RF update: 11mm antenna-side copper-free band and protected antenna projection. Three physical wires retained; G2 has three dedicated taps, seven jumper holes / 86 total. Native DRC/parity/14-GND graph pass; no measured RF/physical fit acceptance."
   ],
   "observations": {
     "sample_rate_hz_latest": 1000.69,
@@ -58,11 +58,11 @@
     },
     {
       "path": "hardware/home-etched-v3/dedicated-ground-jumpers/QCopter.kicad_pcb",
-      "sha256": "c95ff8fcfdd0213c81b64f0ba048cb2de366bcfcf10acf20b58eec79c3c64a03"
+      "sha256": "a634f36ab93d0c227e777f7b9e6775db8f00d629dc02f3888caa7b3805ca5126"
     },
     {
       "path": "hardware/home-etched-v3/dedicated-ground-jumpers/QCopter.kicad_sch",
-      "sha256": "6298a58f8996cbb62404bec19801e5b98c01a2cd40b4aa083a9b9d0bd5499004"
+      "sha256": "458f4d15322bce6468904eb412f783253e2470a9f899e8afa3f850c00b15ff5c"
     }
   ],
   "authoritative_paths": [
