@@ -71,7 +71,7 @@ def main():
             'temperature_range_C':[float(temp.min()),float(temp.max())],
             'mean_acceleration_norm_m_s2':float(np.linalg.norm(accel,axis=1).mean()),
             'mean_acceleration_vector_norm_m_s2':float(np.linalg.norm(mean)),
-            'limits':['Actual pose tilt is not an absolute calibration error without a level reference','Sample noise/std is not bias uncertainty or certified accuracy','No independence/Gaussian assumption; no sigma/sqrt(N) precision claim','Gravity-only angle unreliable under translation','~83 Hz wide-band telemetry is not final 500 Hz Kalman noise','Not a test of V3 MCU angle output']}
+            'limits':['Actual pose tilt is not an absolute calibration error without a level reference','Sample noise/std is not bias uncertainty or certified accuracy','No independence/Gaussian assumption; no sigma/sqrt(N) precision claim','Gravity-only angle unreliable under translation','~83 Hz wide-band telemetry is not final 1000 Hz Kalman noise','Not a test of V3 MCU angle output']}
     args.output.mkdir(parents=True)
     fig,axes=plt.subplots(4,1,figsize=(11,9),constrained_layout=True)
     for i,label in enumerate(['Roll','Pitch']):
@@ -134,7 +134,7 @@ def main():
             '$$\\operatorname{Cov}(\\bar{\\mathbf a})=\\frac1{N^2}\\sum_{i=1}^{N}\\sum_{j=1}^{N}\\operatorname{Cov}(\\mathbf a_i,\\mathbf a_j).$$','',
             'Only if the cross-time covariance terms vanish does this reduce to Sa/N (as an estimated covariance). Filtered sensor outputs, temperature and slow motion can create time dependence. Therefore no standard error or confidence interval is obtained merely by dividing the sample standard deviation by sqrt(N). One-second block means are shown and their spread saved as diagnostics; their independence is not assumed either.','',
             '## What these results establish','',
-            'A real stationary-intended data stream was acquired and its calibration arithmetic verified. Noise, gyro residuals, temperature and gravity-vector direction are quantified. No bias was refitted. These results do not independently prove the pose was level/still, validate V3 angle execution, establish all-temperature accuracy, or supply final 500 Hz Kalman noise. Full numerical covariance/Jacobian values and original evidence hashes are in [analysis.json](analysis.json). Original raw logs remain private and unchanged.']
+            'A real stationary-intended data stream was acquired and its calibration arithmetic verified. Noise, gyro residuals, temperature and gravity-vector direction are quantified. No bias was refitted. These results do not independently prove the pose was level/still, validate V3 angle execution, establish all-temperature accuracy, or supply final 1000 Hz Kalman noise. Full numerical covariance/Jacobian values and original evidence hashes are in [analysis.json](analysis.json). Original raw logs remain private and unchanged.']
     (args.output/'report.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
     print(json.dumps(result,indent=2))
 

@@ -1,0 +1,126 @@
+{
+  "engine": "Real ESP32-S3/MPU6050 serial capture performed by assistant, verified and analyzed offline; no simulator",
+  "source_sha256": "c145046a129396ee1b49efe1c580bdc842048667eaa1ff66936473ab7a2cc9c0",
+  "firmware_commit": "3799249",
+  "session": "20261025T234524150626Z",
+  "serial_sha256": "883b46de025e4134303ebbc5e841f2bea854f6b9bd01c01c5378efb0c1991d2a",
+  "samples": 25001,
+  "duration_s": 300.0,
+  "report_rate_hz": 83.33333333333333,
+  "stationarity": "Assumed from explicit delegation; support not independently observed",
+  "independently_level": false,
+  "calibration_changed": false,
+  "uploaded": false,
+  "angle_computation": "PC replay from actual calibrated MCU acceleration; V2 has no emitted angle columns",
+  "mean_acceleration_body_m_s2": [
+    -0.32778546806127673,
+    0.005882908363665467,
+    9.857063939802405
+  ],
+  "acceleration_std_m_s2": [
+    0.03686399357372726,
+    0.03046858013281566,
+    0.044380462499549675
+  ],
+  "acceleration_covariance_m2_s4": [
+    [
+      0.0013589540222037884,
+      8.744740403110678e-05,
+      -0.00021893117309153718
+    ],
+    [
+      8.744740403110678e-05,
+      0.0009283343753098029,
+      2.1463531656483596e-05
+    ],
+    [
+      -0.00021893117309153718,
+      2.1463531656483596e-05,
+      0.001969625451673937
+    ]
+  ],
+  "mean_angle_deg": [
+    0.034183100975481134,
+    1.904478119000801
+  ],
+  "sample_angle_std_deg": [
+    0.1771049124250063,
+    0.21309150282224595
+  ],
+  "angle_of_mean_acceleration_deg": [
+    0.034195352950760365,
+    1.904603903534414
+  ],
+  "angle_covariance_deg2": [
+    [
+      0.03136615000506915,
+      -0.0029832193901164097
+    ],
+    [
+      -0.0029832193901164097,
+      0.04540798857504326
+    ]
+  ],
+  "jacobian_rad_per_m_s2": [
+    [
+      0.0,
+      0.10145005144647445,
+      -6.054757885244279e-05
+    ],
+    [
+      -0.101338008009051,
+      -2.0112165792074443e-06,
+      -0.0033698791809305476
+    ]
+  ],
+  "jacobian_finite_difference_max_error": 4.8405723873656825e-14,
+  "first_order_predicted_angle_std_deg": [
+    0.17710111335961642,
+    0.21306409163702988
+  ],
+  "one_second_block_angle_mean_std_deg": [
+    0.019628037097366196,
+    0.02114761020628073
+  ],
+  "gyro_mean_sensor_deg_s": [
+    -0.0008739557791933544,
+    -0.004470924590111828,
+    0.008122374236899607
+  ],
+  "gyro_sample_std_deg_s": [
+    0.09314169780530332,
+    0.09065637742921334,
+    0.09047686658422716
+  ],
+  "gyro_covariance_rad2_s2": [
+    [
+      2.6426706132157005e-06,
+      1.7919353677599865e-08,
+      -1.1755344141837026e-08
+    ],
+    [
+      1.7919353677599865e-08,
+      2.5035222588007306e-06,
+      -1.5730546427913823e-08
+    ],
+    [
+      -1.1755344141837026e-08,
+      -1.5730546427913823e-08,
+      2.493617507127899e-06
+    ]
+  ],
+  "temperature_range_C": [
+    27.259,
+    28.483
+  ],
+  "mean_acceleration_norm_m_s2": 9.862629514003133,
+  "mean_acceleration_vector_norm_m_s2": 9.86251425525134,
+  "limits": [
+    "Actual pose tilt is not an absolute calibration error without a level reference",
+    "Sample noise/std is not bias uncertainty or certified accuracy",
+    "No independence/Gaussian assumption; no sigma/sqrt(N) precision claim",
+    "Gravity-only angle unreliable under translation",
+    "~83 Hz wide-band telemetry is not final 1000 Hz Kalman noise",
+    "Not a test of V3 MCU angle output"
+  ]
+}
