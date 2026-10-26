@@ -238,6 +238,18 @@
       "path": "tools/validation/run_bench_checks.py",
       "args": [],
       "description": "Run every unique offline bench test; --native also runs actual-source host fault tests; never opens serial or uploads"
+    },
+    "analyze-fifo": {
+      "runtime": "python",
+      "path": "tools/calibration/analyze_fifo_runs.py",
+      "args": [],
+      "description": "Replay complete and failed original FIFO trials and report actual integrity/timing"
+    },
+    "check-gyro-frame": {
+      "runtime": "python",
+      "path": "tools/calibration/test_gyro_frame.py",
+      "args": [],
+      "description": "Provisional rotation algebra/metadata tests; not physical gyro sign/scale validation"
     }
   }
 }

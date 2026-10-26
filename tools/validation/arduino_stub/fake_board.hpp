@@ -24,6 +24,7 @@ static bool reject_fifo_enable = false;
 static unsigned failed_read_address = 255;
 static unsigned bus_cost_multiplier = 1;
 static unsigned pin_calls = 0;
+static int16_t model_gyro_counts[3] = {1,-2,3};
 
 static void set_word(unsigned address, int16_t value)
 {
@@ -50,7 +51,7 @@ static void advance_model(uint64_t amount)
     }
     while (next_packet_us <= model_time_us)
     {
-        const int16_t packet[7] = {1000, -100, 4000, 30, 1, -2, 3};
+        const int16_t packet[7] = {1000, -100, 4000, 30, model_gyro_counts[0], model_gyro_counts[1], model_gyro_counts[2]};
         if (fifo_model.size() + 14 > 1024)
         {
             overflow_model = true;

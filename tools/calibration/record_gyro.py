@@ -34,18 +34,18 @@ def read_header(device, log, source_sha, fit):
             raise ValueError(line)
         if line.startswith("HELLO,"):
             parts = line.split(",")
-            if len(parts) != 3 or parts[1] not in ("IMU_XYZ_V1", "IMU_XYZ_V2", "IMU_XYZ_V3", "FIFO1000_V1"):
+            if len(parts) != 3 or parts[1] not in ("IMU_XYZ_V1", "IMU_XYZ_V2", "IMU_XYZ_V3", "FIFO1000_V1", "FIFO1000_V2"):
                 raise ValueError("Board runs an older/different firmware; upload the current bench source")
             if parts[2] != source_sha:
                 raise ValueError("Board source differs from local main.cpp; upload current bench source")
         header.append(line)
-        if line in ("READY,IMU_XYZ_V1", "READY,IMU_XYZ_V2", "READY,IMU_XYZ_V3", "READY,FIFO1000_V1"):
+        if line in ("READY,IMU_XYZ_V1", "READY,IMU_XYZ_V2", "READY,IMU_XYZ_V3", "READY,FIFO1000_V1", "READY,FIFO1000_V2"):
             break
     else:
         raise ValueError("No IMU response; upload the current bench firmware first")
     protocol = next(value.split(",")[1] for value in header if value.startswith("READY,"))
     profile = acceleration.parse_profile(header, source_sha, fit, protocol=protocol)
-    scale_line = CORRECTED_GYRO_SCALE if protocol in ("IMU_XYZ_V2", "IMU_XYZ_V3", "FIFO1000_V1") else GYRO_SCALE
+    scale_line = CORRECTED_GYRO_SCALE if protocol in ("IMU_XYZ_V2", "IMU_XYZ_V3", "FIFO1000_V1", "FIFO1000_V2") else GYRO_SCALE
     if scale_line not in header:
         raise ValueError("Unexpected gyro units/frame or correction mode")
     offsets = [None] * 3
@@ -61,15 +61,41 @@ def read_header(device, log, source_sha, fit):
     if any(value is None for value in offsets):
         raise ValueError("Missing gyro offset metadata")
     profile["gyro_offsets"] = offsets
-    if protocol in ("IMU_XYZ_V2", "IMU_XYZ_V3", "FIFO1000_V1"):
+    if protocol in ("IMU_XYZ_V2", "IMU_XYZ_V3", "FIFO1000_V1", "FIFO1000_V2"):
         profile.update(parse_gyro_correction(header, offsets))
     if protocol == "IMU_XYZ_V3":
         profile["tilt_observation"] = True
-    if protocol == "FIFO1000_V1":
+    if protocol in ("FIFO1000_V1", "FIFO1000_V2"):
         if "RATE,hz=1000,packet_bytes=14,clock=mpu_fifo,diagnostic_divider=100" not in header:
             raise ValueError("Unexpected FIFO acquisition rate/packet layout")
         profile["fifo_acquisition"] = True
+    if protocol == "FIFO1000_V2":
+        profile["gyro_to_drone"] = parse_gyro_rotation(header)
     return header, profile
+
+
+def parse_gyro_rotation(header):
+    expected=json.loads((ROOT/"config/gyro-frame.json").read_text(encoding="utf-8"))["rotation_sensor_to_drone"]
+    rotation=[None]*3
+    for line in header:
+        if line.startswith("GYRO_ROT,"):
+            fields=line.split(",")
+            if len(fields)!=5:
+                raise ValueError("Malformed gyro rotation")
+            row=int(fields[1])
+            if not 0<=row<3 or rotation[row] is not None:
+                raise ValueError("Invalid/duplicate gyro rotation row")
+            rotation[row]=[float(value) for value in fields[2:]]
+    if any(row is None for row in rotation):
+        raise ValueError("Missing gyro rotation")
+    for i in range(3):
+        for j in range(3):
+            if not math.isfinite(rotation[i][j]) or abs(rotation[i][j]-expected[i][j])>1e-7:
+                raise ValueError("Unexpected gyro mounting rotation")
+            dot=sum(rotation[i][k]*rotation[j][k] for k in range(3))
+            if abs(dot-(1 if i==j else 0))>5e-7:
+                raise ValueError("Gyro mapping must be rotation-only")
+    return rotation
 
 
 def parse_gyro_correction(header, offsets):

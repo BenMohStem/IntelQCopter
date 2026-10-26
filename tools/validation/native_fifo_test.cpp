@@ -11,6 +11,12 @@ int main(int argc, char **argv)
     invalid_boot = test == "invalid_boot";
     invalid_gyro_boot = test == "invalid_gyro_boot";
     corrupt_trim_writes = test == "trim_readback_failure";
+    if (test == "basis_x" || test == "basis_y" || test == "basis_z")
+    {
+        model_gyro_counts[0] = test == "basis_x" ? 131 : 0;
+        model_gyro_counts[1] = test == "basis_y" ? 131 : 0;
+        model_gyro_counts[2] = test == "basis_z" ? 131 : 0;
+    }
     setup();
     assert(pin_calls == 4);
     if (invalid_boot)
@@ -62,7 +68,7 @@ int main(int argc, char **argv)
     while (recording && iterations++ < 200000) { loop(); }
     assert(!recording);
     assert(iterations < 200000);
-    const bool success = test == "normal" || test == "wrap" || test == "retained";
+    const bool success = test == "normal" || test == "wrap" || test == "retained" || test == "basis_x" || test == "basis_y" || test == "basis_z";
     if (success)
     {
         assert(sensor_ready && sequence == 20000);

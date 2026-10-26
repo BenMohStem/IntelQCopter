@@ -36,7 +36,8 @@ class Samples:
 
     def diagnostic(self,line):
         fields=line.split(',')
-        if len(fields)!=10 or fields[0]!='D':
+        expected_fields=13 if 'gyro_to_drone' in self.profile else 10
+        if len(fields)!=expected_fields or fields[0]!='D':
             raise ValueError('Malformed MCU diagnostic')
         sequence=int(fields[1])
         if sequence!=len(self.rows)-1 or sequence%100 or sequence<=self.last_diagnostic:
@@ -47,12 +48,14 @@ class Samples:
         rates=[c[i+4]*math.pi/(180*65.5)-self.profile['gyro_remaining_bias'][i] for i in range(3)]
         yz=math.hypot(body[1],body[2])
         expected=body+rates+[math.degrees(math.atan2(body[1],body[2])),math.degrees(math.atan2(-body[0],yz))]
+        if 'gyro_to_drone' in self.profile:
+            expected += [sum(row[i]*rates[i] for i in range(3)) for row in self.profile['gyro_to_drone']]
         actual=[float(v) for v in fields[2:]]
         for i,(value,reference) in enumerate(zip(actual,expected)):
-            if i>=6 and yz<=.001002:
+            if 6<=i<8 and yz<=.001002:
                 if not math.isnan(value):
                     raise ValueError('Expected unavailable angle near singularity')
-            elif not math.isfinite(value) or abs((value-reference+180)%360-180 if i>=6 else value-reference)>(.001+math.degrees(.000002/max(yz,.000001)) if i>=6 else .00005):
+            elif not math.isfinite(value) or abs((value-reference+180)%360-180 if 6<=i<8 else value-reference)>(.001+math.degrees(.000002/max(yz,.000001)) if 6<=i<8 else .00005):
                 raise ValueError('MCU calibrated calculation differs from raw packet')
         self.last_diagnostic=sequence
         self.diagnostics+=1
@@ -80,13 +83,15 @@ class Samples:
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--port',required=True)
+    parser.add_argument('--condition', choices=['stationary_assumed','operator_rotation','unknown'], default='stationary_assumed')
+    parser.add_argument('--note', default='')
     args=parser.parse_args()
     source=hashlib.sha256((ROOT/'firmware/main.cpp').read_bytes()).hexdigest()
     fit=json.loads((ROOT/'measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/analysis.json').read_text(encoding='utf-8'))
     folder=ROOT/'artifacts/fifo1000-recordings'/transport.stamp()
     folder.mkdir(parents=True)
     report={'status':'FAILED','engine':'Real MPU6050 FIFO via ESP32-S3; no simulator','source_sha256':source,
-            'uploaded':False,'calibration_changed':False,'stationary_condition':'Assumed from delegated bench testing','commands_sent':[]}
+            'uploaded':False,'calibration_changed':False,'operator_condition':args.condition,'operator_note':args.note,'commands_sent':[]}
     device=serial.Serial(port=None,baudrate=921600,timeout=.5,write_timeout=2)
     device.port=args.port
     device.dtr=False

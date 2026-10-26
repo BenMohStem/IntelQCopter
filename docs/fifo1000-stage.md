@@ -1,5 +1,7 @@
 # 1,000 Hz acquisition and processing stage
 
+**Updated:** real hardware acquisition and observed handler-budget checks now pass after cross-core logging repair. See [actual results](../measurements/mpu6050/2026-10-26-fifo-and-gyro-frame-results/report.md) and [current frame step](gyro-frame-stage.md). Preparation-only statements below preserve the pre-upload checkpoint.
+
 The FC target is now **1,000 Hz**. One new MPU6050 FIFO packet drives one calibrated state update. This prepares the timing/acquisition foundation; attitude fusion, PID and motor outputs are not implemented in this step. Real hardware rate/deadline acceptance is pending a new upload.
 
 ## What changed
@@ -8,7 +10,7 @@ The FC target is now **1,000 Hz**. One new MPU6050 FIFO packet drives one calibr
 - FIFO packet: acceleration XYZ, temperature, gyro XYZ; 14 bytes. DLPF mode 0/divider 7 retain the nominal 1,000 Hz sensor schedule and existing ranges.
 - Apply the same accelerometer matrix and gyro rounding remainder. Latest calibrated state is stored every sample, not only when printing.
 - Fast calculations use single-precision constants; slow float diagnostics run at 10 Hz.
-- Check one offset word per diagnostic interval; check all words at capture boundaries. This avoids six I2C register reads inside one fast service slot.
+- Check all offset words at capture boundaries, not in the hot handler. Unexpected changes are detected at the boundary, not guaranteed immediately.
 - Check FIFO sources/control readback, overflow/backlog, I2C failures and a 25-second capture timeout. Unknown/calibration-mismatched state stops acquisition. Motor pins remain input pulldowns; no PWM/ESC driver.
 - The default runtime continuously services the FIFO. `?` is a bench identity/configuration query and restarts acquisition; `s` starts an isolated 20,000-sample capture; `x` stops acquisition until reset. Queries/resetting FIFO are maintenance interruptions, not flight operations.
 

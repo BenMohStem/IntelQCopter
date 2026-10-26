@@ -42,14 +42,14 @@ def main():
         def readline(self):
             return self.data.readline()
     results=[]
-    for name in ['normal','wrap','retained','invalid_boot','invalid_gyro_boot','trim_readback_failure','fifo_enable_failure','overflow','i2c_failure','fifo_packet_failure','offset_change','slow_bus','timeout','abort','queue_full','logger_drain_failure']:
+    for name in ['normal','wrap','retained','invalid_boot','invalid_gyro_boot','trim_readback_failure','fifo_enable_failure','overflow','i2c_failure','fifo_packet_failure','offset_change','slow_bus','timeout','abort','queue_full','logger_drain_failure','basis_x','basis_y','basis_z']:
         case=subprocess.run([str(exe),name],capture_output=True,timeout=30)
         (out/(name+'.serial.log')).write_bytes(case.stdout)
         (out/(name+'.stderr.log')).write_bytes(case.stderr)
         if case.returncode:
             raise RuntimeError(f'Host case {name} failed, exit {case.returncode}; evidence {out}')
         result={'case':name,'exit_code':case.returncode,'result':case.stderr.decode(errors='replace').strip()}
-        if name in ('normal','wrap','retained'):
+        if name in ('normal','wrap','retained','basis_x','basis_y','basis_z'):
             device=SavedDevice(case.stdout)
             _,profile=gyro.read_header(device,io.BytesIO(),sha,fit)
             stream=recording.Samples(profile)

@@ -26,6 +26,12 @@ static const int16_t expected_baseline[3] = {-2074, 2979, 1074};
 static const float radians_to_degrees = 57.29577951308232f;
 static const float degrees_to_radians = 0.01745329251994329577f;
 static const float gyro_bias[3] = {0.003098404f, -0.004985037f, -0.014435425f};
+// Provisional mounting rotation only; physical gyro-axis validation is pending.
+static const float gyro_to_drone[3][3] = {
+    {0.953336617f, -0.085320686f, -0.289602617f},
+    {0.089416989f, 0.995993856f, 0.000917157f},
+    {0.288364175f, -0.026769754f, 0.957146532f},
+};
 static const int16_t gyro_baseline[3] = {0, 0, 0};
 int16_t gyro_applied_offset[3] = { 0 };
 int16_t gyro_boot_offset[3] = { 0 };
@@ -173,6 +179,7 @@ uint32_t handler_overruns = 0;
 // Observable latest state is updated for EVERY FIFO sample, not only diagnostics.
 volatile float latest_drone_accel[3] = { 0 };
 volatile float latest_sensor_gyro[3] = { 0 };
+volatile float latest_drone_gyro[3] = { 0 };
 volatile float latest_roll_deg = 0;
 volatile float latest_pitch_deg = 0;
 
@@ -183,6 +190,7 @@ struct TelemetryPacket
     int16_t counts[7];
     float acceleration[3];
     float gyro[3];
+    float body_gyro[3];
     float roll;
     float pitch;
     bool capture;
@@ -215,9 +223,10 @@ static void telemetry_worker(void *)
         }
         if (packet.diagnostic)
         {
-            Serial.printf("D,%lu,%.6f,%.6f,%.6f,%.7f,%.7f,%.7f,%.3f,%.3f\n",
+            Serial.printf("D,%lu,%.6f,%.6f,%.6f,%.7f,%.7f,%.7f,%.3f,%.3f,%.7f,%.7f,%.7f\n",
                 (unsigned long)packet.sequence, packet.acceleration[0], packet.acceleration[1],
-                packet.acceleration[2], packet.gyro[0], packet.gyro[1], packet.gyro[2], packet.roll, packet.pitch);
+                packet.acceleration[2], packet.gyro[0], packet.gyro[1], packet.gyro[2], packet.roll, packet.pitch,
+                packet.body_gyro[0], packet.body_gyro[1], packet.body_gyro[2]);
         }
     }
 }
@@ -291,7 +300,7 @@ static void report(void)
         Serial.printf("ERROR,SENSOR_OR_OFFSET_CHECK_FAILED\n");
         return;
     }
-    Serial.printf("HELLO,FIFO1000_V1,%s\n", BENCH_SOURCE_SHA);
+    Serial.printf("HELLO,FIFO1000_V2,%s\n", BENCH_SOURCE_SHA);
     Serial.printf("CONFIG,accel_g=8,gyro_dps=500,dlpf=0,divider=7,i2c_hz=400000,user_cal=xyz_mpu_plus_matrix\n");
     Serial.printf("BOARD,%s,%012llX\n", ESP.getChipModel(), ESP.getEfuseMac());
     for (uint8_t axis = 0; axis < 3; axis++)
@@ -311,10 +320,15 @@ static void report(void)
         Serial.printf("GYRO_TRIM,%u,%d,%d,%.9f\n", axis,
             gyro_baseline[axis], gyro_applied_offset[axis], gyro_remaining_bias[axis]);
     }
+    for (uint8_t row = 0; row < 3; row++)
+    {
+        Serial.printf("GYRO_ROT,%u,%.9f,%.9f,%.9f\n", (unsigned)row,
+            gyro_to_drone[row][0], gyro_to_drone[row][1], gyro_to_drone[row][2]);
+    }
     Serial.printf("GYRO_SCALE,65.5,counts_per_degree_per_second,frame=sensor,correction=mpu_plus_remainder\n");
     Serial.printf("LOG,acquisition_core=%d,serial_core=0,queue_capacity=128\n", xPortGetCoreID());
     Serial.printf("RATE,hz=1000,packet_bytes=14,clock=mpu_fifo,diagnostic_divider=100\n");
-    Serial.printf("READY,FIFO1000_V1\n");
+    Serial.printf("READY,FIFO1000_V2\n");
 }
 
 void setup(void)
@@ -433,6 +447,15 @@ static void process_one_sample(void)
     {
         gyro[axis] = counts[axis + 4] * (degrees_to_radians / 65.5f) - gyro_remaining_bias[axis];
     }
+    float body_gyro[3] = { 0 };
+    for (uint8_t row = 0; row < 3; row++)
+    {
+        for (uint8_t axis = 0; axis < 3; axis++)
+        {
+            body_gyro[row] += gyro_to_drone[row][axis] * gyro[axis];
+        }
+        latest_drone_gyro[row] = body_gyro[row];
+    }
     float yz = hypotf(drone[1], drone[2]);
     float roll = yz > 0.001f ? atan2f(drone[1], drone[2]) * radians_to_degrees : NAN;
     float pitch = yz > 0.001f ? atan2f(-drone[0], yz) * radians_to_degrees : NAN;
@@ -467,6 +490,7 @@ static void process_one_sample(void)
         {
             packet.acceleration[axis] = drone[axis];
             packet.gyro[axis] = gyro[axis];
+            packet.body_gyro[axis] = body_gyro[axis];
         }
         packet.roll = roll;
         packet.pitch = pitch;

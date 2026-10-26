@@ -4,9 +4,9 @@ Three actual 20000-sample COM3 captures pass source/configuration/readback, sequ
 
 | Run | Rate (Hz) | Maximum handler (us) | Over-1000-us handlers | Maximum FIFO bytes |
 |---|---:|---:|---:|---:|
-| 1 | 1000.6848 | 814 | 0 | 14 |
-| 2 | 1000.6848 | 819 | 0 | 14 |
-| 3 | 1000.6848 | 812 | 0 | 14 |
+| 1 | 1000.68 | 814 | 0 | 14 |
+| 2 | 1000.68 | 819 | 0 | 14 |
+| 3 | 1000.68 | 812 | 0 | 14 |
 
 The initial synchronous-logging implementation failed the handler budget (1381 us; refined synchronous trial 1249 us/214 overruns). Those originals and the malformed-serial trial remain preserved. Moving UART formatting/transmission to a bounded FreeRTOS queue on core 0 reduced acquisition-core logging work to tens of microseconds. FIFO reads and calibrated state updates run on core 1. Queue-full or drain failure aborts capture rather than dropping data. Windows receives serial in chunks while retaining strict record/sequence/checksum checks.
 

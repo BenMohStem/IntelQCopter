@@ -1,0 +1,22 @@
+{
+  "engine": "Actual ESP32-S3/MPU6050 FIFO data plus separate Python checks and native-source peripheral models",
+  "latest_firmware_source_sha256": "91947b5c8921a481ebb6a4e40cd0027a1c585abda5825118af862f3b39c496f0",
+  "latest_binary_sha256": "19e13faec52676f3d68b7fdba56e8f3f1f37a6728ce43118abf2daa53a9435ce",
+  "source_build_and_actual_header_match": true,
+  "firmware_uploaded_with_user_authorization": true,
+  "actual_latest_samples": 20000,
+  "actual_latest_rate_hz": 1000.687522362239,
+  "actual_latest_max_handler_us": 822,
+  "actual_latest_handler_overruns": 0,
+  "actual_latest_max_service_gap_us": 1274,
+  "offline_unique_tests": 48,
+  "native_source_cases": 19,
+  "native_not_ESP32_emulation_or_timing_proof": true,
+  "original_build_evidence": "artifacts/build/20261026T082944497695Z/build.json",
+  "original_check_evidence": "artifacts/bench-checks/20261026T084246203397Z/summary.json",
+  "original_native_evidence": "artifacts/native-fifo-tests/20261026T084247354091Z/summary.json",
+  "physical_gyro_rotation_validation": "User explicitly deferred; pending",
+  "motor_outputs_enabled": false,
+  "calibration_biases_changed": false,
+  "limitations": "No strict periodic hard deadline, gyro physical direction/scale, attitude filter, PID or flight readiness acceptance."
+}
