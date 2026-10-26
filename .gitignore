@@ -38,3 +38,5 @@ __pycache__/
 /artifacts/native-fifo-tests/
 
 /artifacts/bench-checks/
+
+/artifacts/uploads/

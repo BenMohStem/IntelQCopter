@@ -8,6 +8,7 @@ import time
 
 import serial
 import record_gyro as gyro
+from fifo_serial_buffer import BufferedSerial
 import record_poses as transport
 
 ROOT=gyro.ROOT
@@ -93,6 +94,9 @@ def main():
     stream=None
     try:
         device.open()
+        if hasattr(device, 'set_buffer_size'):
+            device.set_buffer_size(rx_size=65536, tx_size=4096)
+        device=BufferedSerial(device)
         with (folder/'serial.log').open('xb') as log:
             report['commands_sent'].append('?')
             header,profile=gyro.read_header(device,log,source,fit)
@@ -123,11 +127,19 @@ def main():
                         log.flush()
                 elif line.startswith('D,'):
                     stream.diagnostic(line)
+                elif line.startswith('PROFILE,'):
+                    fields=line.split(',')
+                    if len(fields)!=5 or 'profile_timings' in report:
+                        raise ValueError('Invalid/duplicate profiling metadata')
+                    values=[int(v) for v in fields[1:]]
+                    if any(v<0 for v in values):
+                        raise ValueError('Invalid profiling counters')
+                    report['profile_timings']=dict(zip(['maximum_i2c_us','maximum_logging_us','maximum_offset_us','handler_overruns'],values))
                 elif line.startswith('END,'):
                     report.update(stream.finish(line))
                     break
                 else:
-                    raise ValueError('Unexpected capture output')
+                    raise ValueError('Unexpected capture output: '+repr(line[:100]))
             else:
                 raise ValueError('Capture timeout; original partial data preserved')
             report['commands_sent'].append('?')
@@ -148,6 +160,8 @@ def main():
                 pass
         raise
     finally:
+        if isinstance(device, BufferedSerial):
+            report['serial_chunk_reads']=device.read_calls
         device.close()
         if stream is not None:
             transport.save_json(folder/'samples.json',{'raw_post_trim_words':stream.rows})

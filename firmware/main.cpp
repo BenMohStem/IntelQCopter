@@ -162,6 +162,10 @@ uint32_t maximum_processing_us = 0;
 uint32_t payload_hash = 2166136261u;
 uint16_t maximum_fifo_bytes = 0;
 uint32_t maximum_handler_us = 0;
+uint32_t maximum_i2c_us = 0;
+uint32_t maximum_logging_us = 0;
+uint32_t maximum_offset_us = 0;
+uint32_t handler_overruns = 0;
 // Observable latest state is updated for EVERY FIFO sample, not only diagnostics.
 volatile float latest_drone_accel[3] = { 0 };
 volatile float latest_sensor_gyro[3] = { 0 };
@@ -296,6 +300,10 @@ static void start_capture(void)
     maximum_service_gap_us = 0;
     maximum_processing_us = 0;
     maximum_handler_us = 0;
+    maximum_i2c_us = 0;
+    maximum_logging_us = 0;
+    maximum_offset_us = 0;
+    handler_overruns = 0;
     maximum_fifo_bytes = 0;
     payload_hash = 2166136261u;
     Serial.printf("BEGIN,%lu\n", (unsigned long)capture_samples);
@@ -326,14 +334,15 @@ static void process_one_sample(void)
     uint32_t handler_started_us = micros();
     uint8_t status;
     uint8_t count_bytes[2];
-    if (!read_registers(0x3A, &status, 1) || !read_registers(0x72, count_bytes, 2))
+    if (!read_registers(0x72, count_bytes, 2))
     {
         stop_acquisition("FIFO_STATUS_READ_FAILED");
         return;
     }
     uint16_t available = ((uint16_t)count_bytes[0] << 8) | count_bytes[1];
     maximum_fifo_bytes = max(maximum_fifo_bytes, available);
-    if ((status & 0x10) || available >= 980)
+    // Occupancy guard stops well before 1024-byte overflow. Check status at boundaries.
+    if (available >= 980)
     {
         stop_acquisition("FIFO_OVERFLOW_OR_BACKLOG");
         return;
@@ -350,6 +359,7 @@ static void process_one_sample(void)
         return;
     }
     uint32_t service_us = micros();
+    maximum_i2c_us = max(maximum_i2c_us, service_us - handler_started_us);
     if (previous_service_us != 0)
     {
         maximum_service_gap_us = max(maximum_service_gap_us, service_us - previous_service_us);
@@ -378,6 +388,7 @@ static void process_one_sample(void)
     latest_roll_deg = roll;
     latest_pitch_deg = pitch;
     maximum_processing_us = max(maximum_processing_us, (uint32_t)(micros() - service_us));
+    uint32_t logging_started_us = micros();
     if (recording)
     {
         for (uint8_t index = 0; index < sizeof(bytes); index++)
@@ -393,13 +404,24 @@ static void process_one_sample(void)
         Serial.printf("D,%lu,%.6f,%.6f,%.6f,%.7f,%.7f,%.7f,%.3f,%.3f\n",
             (unsigned long)sequence, drone[0], drone[1], drone[2], gyro[0], gyro[1], gyro[2], roll, pitch);
     }
+    maximum_logging_us = max(maximum_logging_us, (uint32_t)(micros() - logging_started_us));
     sequence++;
-    if (sequence % diagnostic_divider == 0 && !verify_next_offset())
+    if (sequence % diagnostic_divider == 0)
     {
-        stop_acquisition("LIVE_OFFSETS_CHANGED");
-        return;
+        uint32_t offset_started_us = micros();
+        if (!verify_next_offset())
+        {
+            stop_acquisition("LIVE_OFFSETS_CHANGED");
+            return;
+        }
+        maximum_offset_us = max(maximum_offset_us, (uint32_t)(micros() - offset_started_us));
     }
-    maximum_handler_us = max(maximum_handler_us, (uint32_t)(micros() - handler_started_us));
+    uint32_t handler_us = micros() - handler_started_us;
+    maximum_handler_us = max(maximum_handler_us, handler_us);
+    if (handler_us > 1000)
+    {
+        handler_overruns++;
+    }
     if (recording && sequence == capture_samples)
     {
         uint32_t elapsed_us = micros() - capture_started_us;
@@ -412,6 +434,8 @@ static void process_one_sample(void)
             return;
         }
         recording = false;
+        Serial.printf("PROFILE,%lu,%lu,%lu,%lu\n", (unsigned long)maximum_i2c_us,
+            (unsigned long)maximum_logging_us, (unsigned long)maximum_offset_us, (unsigned long)handler_overruns);
         Serial.printf("END,%lu,%lu,%u,%lu,%lu,%lu,%08lX\n", (unsigned long)sequence,
             (unsigned long)elapsed_us, (unsigned)maximum_fifo_bytes, (unsigned long)maximum_service_gap_us,
             (unsigned long)maximum_processing_us, (unsigned long)maximum_handler_us, (unsigned long)payload_hash);

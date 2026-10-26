@@ -1,0 +1,44 @@
+{
+  "engine": "Actual ESP32-S3/MPU6050 on COM3, flashed by assistant with explicit user authorization",
+  "trials": [
+    {
+      "session": "20261026T080609329727Z",
+      "status": "CAPTURE_COMPLETE_REVIEW_REQUIRED",
+      "source_sha256": "352805b212878cdc7b9a8190ba35dc24c3a0a95b7824a428a869d32ef888113e",
+      "samples": 20000,
+      "observed_capture_rate_hz": 1000.6667943183941,
+      "maximum_fifo_bytes": 14,
+      "maximum_sample_service_gap_us": 1481,
+      "maximum_calculation_us": 49,
+      "maximum_sample_handler_us": 1381,
+      "serial_sha256": "b2d314c61335e48425e43355e77e9eced37979a4f85eeadbd89227f262ba0daa"
+    },
+    {
+      "session": "20261026T080942584090Z",
+      "status": "FAILED",
+      "source_sha256": "8ef0272511c34932d0b747f0975becef7f96bfc3fa3f08a628dbf9e8a2275397",
+      "serial_sha256": "4f739ad4f4cfb1cf3ec876a6640c58184665fb58161fdc96e18324b65d5cfa8a",
+      "error": "Unexpected capture output"
+    },
+    {
+      "session": "20261026T081351199657Z",
+      "status": "CAPTURE_COMPLETE_REVIEW_REQUIRED",
+      "source_sha256": "8ef0272511c34932d0b747f0975becef7f96bfc3fa3f08a628dbf9e8a2275397",
+      "samples": 20000,
+      "observed_capture_rate_hz": 1000.6897754622261,
+      "maximum_fifo_bytes": 14,
+      "maximum_sample_service_gap_us": 1364,
+      "maximum_calculation_us": 48,
+      "maximum_sample_handler_us": 1249,
+      "profile_timings": {
+        "maximum_i2c_us": 722,
+        "maximum_logging_us": 578,
+        "maximum_offset_us": 232,
+        "handler_overruns": 214
+      },
+      "serial_sha256": "c6588930add7e9763d9bde0bbfd2fabd1123909d7280f4f3105c002749911e28"
+    }
+  ],
+  "result": "Integrity/throughput observed; 1 ms handler timing gate fails. Failed/intermediate trials retained.",
+  "next": "Bounded cross-core telemetry queue; preserve calibration; test again."
+}
