@@ -24,6 +24,12 @@ static bool reject_fifo_enable = false;
 static unsigned failed_read_address = 255;
 static unsigned bus_cost_multiplier = 1;
 static unsigned pin_calls = 0;
+struct PinModeCall
+{
+    int pin;
+    int mode;
+};
+static std::vector<PinModeCall> pin_mode_calls;
 static int16_t model_gyro_counts[3] = {1,-2,3};
 
 static void set_word(unsigned address, int16_t value)
@@ -79,7 +85,8 @@ static const int MSBFIRST = 1;
 static void pinMode(int pin, int mode)
 {
     assert(mode == INPUT_PULLDOWN);
-    assert(pin == 12 || pin == 1 || pin == 2 || pin == 14);
+    assert(pin == 12 || pin == 1 || pin == 2 || pin == 14 || pin == 4 || pin == 21);
+    pin_mode_calls.push_back({pin, mode});
     pin_calls++;
 }
 #define PI 3.14159265358979323846

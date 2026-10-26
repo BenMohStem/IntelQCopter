@@ -335,10 +335,13 @@ void setup(void)
 {
     Serial.setTxBufferSize(4096);
     Serial.begin(921600);
+    // Keep legacy and current carrier ESC pins inactive; no motor driver.
     pinMode(12, INPUT_PULLDOWN);
     pinMode(1, INPUT_PULLDOWN);
     pinMode(2, INPUT_PULLDOWN);
     pinMode(14, INPUT_PULLDOWN);
+    pinMode(4, INPUT_PULLDOWN);
+    pinMode(21, INPUT_PULLDOWN);
 
     sensor_ready = Wire.begin(9, 8, 400000) && mpu.begin(0x68, &Wire) && sensor.begin();
     if (sensor_ready)

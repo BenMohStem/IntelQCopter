@@ -18,7 +18,22 @@ int main(int argc, char **argv)
         model_gyro_counts[2] = test == "basis_z" ? 131 : 0;
     }
     setup();
-    assert(pin_calls == 4);
+    const int required_input_pins[] = {1, 2, 4, 12, 14, 21};
+    assert(pin_calls == 6);
+    assert(pin_mode_calls.size() == 6);
+    for (int pin : required_input_pins)
+    {
+        unsigned matches = 0;
+        for (const PinModeCall &call : pin_mode_calls)
+        {
+            assert(call.mode == INPUT_PULLDOWN);
+            if (call.pin == pin)
+            {
+                matches++;
+            }
+        }
+        assert(matches == 1);
+    }
     if (invalid_boot)
     {
         assert(!sensor_ready);

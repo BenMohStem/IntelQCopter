@@ -8,7 +8,7 @@
 6. [Actual-source host fault tests](../tools/validation/native_fifo_test.cpp).
 7. [Accelerometer math](../docs/full-accelerometer-calibration.md) and [gyro correction](../docs/gyro-bias-application.md).
 
-Canonical links, no duplicate runtime copies. Current source is flashed and tested on hardware; host/model results are separate. Known physical rotations are deferred by the user. Original raw evidence stays private. Motor output remains disabled.
+Canonical links, no duplicate runtime copies. The prior FIFO source was flashed/tested; the latest startup guard is build/host-tested only, pending hardware upload. Host/model results remain separate. Known physical rotations are deferred by the user. Original raw evidence stays private. Motor output remains disabled.
 
 8. [Offline angle filter and DOE guide](../docs/attitude-preparation.md), [small PC candidate](../tools/estimation/prepare_attitude.py), and [results/graphs](../measurements/mpu6050/2026-10-26-offline-attitude-preparation/report.md). Firmware is unchanged; physical reference rotations remain pending.
 
@@ -21,3 +21,5 @@ Canonical links, no duplicate runtime copies. Current source is flashed and test
 12. Historical references: [module palette](../hardware/module-library/QUICKSTART.md), [unrouted 17-part reference](../hardware/connected-i2c/README.md), [old 27-link revision](../hardware/home-etched-v2/README.md), [failed one-jumper checkpoint](../hardware/home-etched-v3/checkpoint-one-jumper/README.md). Their masks are not the current design.
 
 13. [View the current PCB in 3D](../hardware/home-etched-v3/dedicated-ground-jumpers/models3d/README.md), [native top render](../hardware/home-etched-v3/dedicated-ground-jumpers/output/3d-top.png). Open the PCB and press Alt+3. Models are illustrative; six dedicated jumper holes added; original module/header interfaces unchanged.
+
+14. [Latest minimal input guard and test evidence](../measurements/software/2026-10-27-input-guard/README.md). No motor output; no new hardware test.

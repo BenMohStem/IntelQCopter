@@ -1,6 +1,6 @@
 # Current software plan
 
-**FC target: 1,000 Hz.** Runtime stays in one Arduino-style main.cpp, mostly C-style functions, Allman braces and Serial.printf. Motor outputs/physical arming remain disabled. BMP280 is unavailable and deferred. ROS2, Xbox, PCB and simulation work are outside this small sensor/timing stage.
+**FC target: 1,000 Hz.** Runtime stays in one Arduino-style main.cpp, mostly C-style functions, Allman braces and Serial.printf. Motor outputs/physical arming remain disabled. BMP280 is unavailable and deferred. ROS2, Xbox and simulation remain later software stages. PCB exploration is a separate user-authorized workstream; small sensor/software gates stay in force.
 
 | Stage | Current evidence | Next action |
 |---|---|---|
@@ -46,3 +46,18 @@ measure its actual 1 kHz execution time, and evaluate motion before PID work.
 Offline preparation completed: 80k original samples reverified, 54 offline checks passed, and all four modeled disturbance combinations retained. The acceleration cases reach about 5.2–5.35 degrees of modeled angle error; the candidate is not accepted for flight. [Results](../measurements/mpu6050/2026-10-26-offline-attitude-preparation/report.md) and [equations](attitude-preparation.md). Main.cpp/calibration/firmware timing evidence are unchanged.
 
 User requested complete module connections and chose I2C when SPI adds no practical benefit. [Connected I2C reference](../hardware/connected-i2c/README.md) supplies shared sensor bus, interrupts, lidar/companion UART, ESC signals and separately selectable BEC links. PCB is unrouted. Firmware integration and physical timing/identity checks remain pending; current main.cpp is unchanged.
+
+## Latest autonomous checkpoint: 27 October 2026
+
+The startup guard now covers current carrier GPIO4/1/14/21 and legacy12/2,
+all input-pulldown with no motor output.54 offline tests,19 actual-source host
+cases and the ESP32 build pass. This revision has NOT been uploaded: no serial
+device was detected. [Results](../measurements/software/2026-10-27-input-guard/README.md).
+Historical real timing is preserved under its original source SHA.
+
+Next hardware step when the board is connected: upload this small input-only
+revision and run one1kHz integrity/timing regression, then the deferred known
+rotations with the user. Do not refit calibration or claim dynamic attitude/PID
+acceptance from stationary or fake-peripheral tests. Fresh zero-jumper PCB
+candidates must pass independent bare-copper connectivity and native DRC/parity
+before being chosen; candidate pin/address changes do not silently enter firmware.

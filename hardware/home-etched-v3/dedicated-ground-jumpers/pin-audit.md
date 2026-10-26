@@ -43,9 +43,10 @@ identity/address/driver is not established by that label alone.
 
 The active firmware is a sensor bench, not a flight runtime. Its
 `Wire.begin(9, 8, 400000)` matches this MPU bus, and it generates no motor PWM.
-The existing motor INPUT_PULLDOWN list is 12,1,2,14; this PCB's future ESC map
-is **4,1,14,21**. That safety-pin list and future output mapping must be updated
-before connecting/enabling ESC signals. Do not load older flight firmware assuming
+The bench now sets **12,1,2,14,4,21** to INPUT_PULLDOWN, covering legacy and
+current **4,1,14,21** carrier ESC signals. The new guard is build/host-tested,
+not hardware-tested. No ESC output driver is enabled; future output mapping and
+real interface checks are still required before enabling ESC signals. Do not load older flight firmware assuming
 it matches this PCB. Calibration and the current bench source were not changed.
 
 Future Arduino initialization uses `Wire.begin(9,8,400000)` and

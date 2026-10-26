@@ -89,5 +89,12 @@
     "report": "hardware/home-etched-v3/dedicated-ground-jumpers/README.md",
     "claim": "11mm edge copper clearance and antenna rule area, native DRC/parity 0 and 14-ground graph pass via three wires including three-tap G2; updated 86-hole masks and native 3D",
     "limits": "RF range unmeasured; no full 15mm clearance certification; physical clone/etch/print/power and firmware map pending"
+  },
+  {
+    "id": "E-INPUT-GUARD",
+    "kind": "actual_source_host_fault_tests_and_ESP32_build",
+    "report": "measurements/software/2026-10-27-input-guard/README.md",
+    "claim": "Six exact input-pulldown pin guards cover legacy/current carriers;54offline+19hostcases and matching PlatformIO build pass",
+    "limits": "No serial device, upload or new hardware evidence; old real timing remains bound to priorSHA; calibration frozen; arming disabled"
   }
 ]

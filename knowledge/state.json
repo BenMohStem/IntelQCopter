@@ -5,7 +5,7 @@
   "active_branch": "codex/stepwise-esp32",
   "active_checkout": "QCopter-Stepwise",
   "purpose": "Verified facts, concise decision rationale and coordination; not a transcript or private reasoning dump",
-  "current_stage": "1 kHz calibrated FIFO hardware observation; provisional body gyro mapping; PC-only angle filter study",
+  "current_stage": "1kHz calibrated FIFO bench; startup input guard build/host-tested, unflashed; physical gyro rotations pending",
   "rules": [
     "One Arduino main.cpp, C-like code, Allman braces, Serial.printf",
     "Motor arming and outputs disabled; no actuator tests",
@@ -23,7 +23,10 @@
     "limitation": "Finite observation, not a hard 1 ms control deadline or flight readiness",
     "offline_checks": 54,
     "native_cases_previous": 19,
-    "filter": "PC only; model 0.1 g disturbance gives about 5.2-5.35 deg peak error"
+    "filter": "PC only; model 0.1 g disturbance gives about 5.2-5.35 deg peak error",
+    "latest_hardware_timing_source_sha256": "91947b5c8921a481ebb6a4e40cd0027a1c585abda5825118af862f3b39c496f0",
+    "latest_source_hardware_tested": false,
+    "latest_software_validation": "54 Python +19 actual-source host cases +PlatformIO build; no serial device"
   },
   "pending": [
     "Physical gyro axis direction and scale",
@@ -34,7 +37,7 @@
   "fingerprints": [
     {
       "path": "firmware/main.cpp",
-      "sha256": "91947b5c8921a481ebb6a4e40cd0027a1c585abda5825118af862f3b39c496f0"
+      "sha256": "f26d314eb637b9ccac15ee0a62376f722900d8affbbf0f8c66d20df1b2235422"
     },
     {
       "path": "config/gyro-frame.json",
@@ -42,7 +45,7 @@
     },
     {
       "path": "config/hardware.json",
-      "sha256": "4c284bc55d683d339f5e186d5297a4662dd4f1dcec3b54f8a937e1d0bc9bf7b8"
+      "sha256": "108de97c95cd71029d3a4ab6396ee0b80ff4cb37234eaf4a1e0b5f82f83a696d"
     },
     {
       "path": "tools/estimation/prepare_attitude.py",

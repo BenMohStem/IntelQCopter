@@ -38,3 +38,5 @@ BMP280/altitude are deferred. Gyro frame validation, attitude fusion, PID/mixer 
 Current PCB: [three dedicated drilled GND jumpers](hardware/home-etched-v3/dedicated-ground-jumpers/README.md). RF edge copper is cleared. Fit G1/G2/G3 in seven dedicated holes; G2 has a middle tap. Native DRC, connectivity and schematic parity pass; physical checks remain required.
 
 [Historical CAD](hardware/home-etched-v3/README.md) is retained for traceability; use the current revision's matching masks.
+
+[Latest startup input-guard repair](measurements/software/2026-10-27-input-guard/README.md):54offline tests,19 actual-source host cases and ESP32 build pass. New revision is not uploaded; historical MCU timing remains bound to its earlier source.
