@@ -13,3 +13,5 @@ Canonical links, no duplicate runtime copies. Current source is flashed and test
 8. [Offline angle filter and DOE guide](../docs/attitude-preparation.md), [small PC candidate](../tools/estimation/prepare_attitude.py), and [results/graphs](../measurements/mpu6050/2026-10-26-offline-attitude-preparation/report.md). Firmware is unchanged; physical reference rotations remain pending.
 
 9. [Project knowledge, evidence and agent coordination](../knowledge/README.md).
+
+10. [KiCad component palette and pin guide](../hardware/module-library/QUICKSTART.md): placed module/header interfaces for user PCB design.

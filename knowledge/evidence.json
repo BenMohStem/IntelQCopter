@@ -26,5 +26,12 @@
     "report": "measurements/mpu6050/2026-10-26-offline-attitude-preparation/report.md",
     "claim": "80k reused samples, 54 offline checks, four modeled disturbances",
     "limits": "No new hardware, MCU estimator or flight acceptance"
+  },
+  {
+    "id": "E-PCB-PALETTE",
+    "kind": "native_CAD_parser_and_visual_review",
+    "report": "hardware/module-library/QUICKSTART.md",
+    "claim": "Nine module/header components, 79 matched pads, native schematic/board links",
+    "limits": "Unwired/unrouted; exact physical fit and electrical design not accepted"
   }
 ]

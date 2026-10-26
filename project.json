@@ -274,6 +274,12 @@
       "path": "tools/knowledge/test_knowledge.py",
       "args": [],
       "description": "Check reservation conflicts/concurrency in a temporary database; no hardware"
+    },
+    "check-pcb-palette": {
+      "runtime": "python",
+      "path": "tools/hardware/verify_module_palette.py",
+      "args": [],
+      "description": "Check module symbols/pads and UUID links with native KiCad; optional --project path; no physical-fit claim"
     }
   }
 }

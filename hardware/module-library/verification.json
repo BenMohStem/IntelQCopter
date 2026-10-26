@@ -1,0 +1,23 @@
+{
+  "engine": "KiCad 10.0.6 native schematic/netlist/board parser; Qt5 SVG raster preview",
+  "footprints": 9,
+  "pads": 79,
+  "pin_and_uuid_crosscheck": "PASS",
+  "esp44_reference_max_coordinate_error_mm": 0.00368,
+  "tracks": 0,
+  "zones": 0,
+  "wiring_and_routing": "User completes design",
+  "physical_fit": "Reference header geometry; exact DevKit clone/module body fit unverified",
+  "visual_review": "Native schematic and PCB previews inspected",
+  "original_project_backed_up": true,
+  "installed_asset_sha256": {
+    "QCopter.kicad_pcb": "d5ecc0201a902fd724ef7c6a9a4989f30337fd578112f2ec22d760f31b1502f6",
+    "QCopter.kicad_sch": "7e20f07c714cff112ab4b24f4e3f9bbdedaa0b44da194bb4842a3f935660314b",
+    "QCopter.kicad_pro": "e3566b3a06430868d71e9287dfd6c6c520a3da027aabea01951d407ee131dc2f",
+    "QCopterModules.kicad_sym": "0157e989a1dc5c4c1d2f9930f1b32ff10d726b3d9a2535c5a7822d73c6fdd577",
+    "fp-lib-table": "efcb49ae783f51756fd740bd43dcb1576a039bf71f1addf00c35cd15df009f93",
+    "sym-lib-table": "9207f2217d7296188a770ecc744a325406871da3a1995a9b65865718244f03a3",
+    "parts.json": "3b11649c141600b6464500f7ef8b2d2c42d3f3014a39c152127bf18a0d07ad85",
+    "QUICKSTART.md": "2c71a104df7c9973066d950d075fc18b095410f575fea80bec1e033e28d15fff"
+  }
+}

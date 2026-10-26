@@ -13,7 +13,7 @@
     "Physical rotations deferred by user; never infer validation from static/model tests",
     "BMP280 unavailable; no altitude acceptance",
     "Preserve calibration and failed evidence; no refit of validation records",
-    "Current focus software; user handles PCB and simulation building",
+    "Current FC focus software; user handles PCB/simulation design; user requested KiCad module palette assistance (D-0002)",
     "Commit and push project changes; no history rewrite; exclude private logs/environments"
   ],
   "observations": {
