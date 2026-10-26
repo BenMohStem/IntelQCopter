@@ -14,7 +14,8 @@
     "BMP280 unavailable; no altitude acceptance",
     "Preserve calibration and failed evidence; no refit of validation records",
     "Current PCB D-0006: free-position lidar holes, no power jumper, two mandatory continuous GND wires (G2 middle tap); native DRC/parity/connectivity pass; physical checks and firmware map adaptation pending",
-    "Commit and push project changes; no history rewrite; exclude private logs/environments"
+    "Commit and push project changes; no history rewrite; exclude private logs/environments",
+    "Current PCB includes portable illustrative module 3D meshes; electrical geometry and print-mask bytes unchanged, native DRC/parity and GND graph rechecked; clone heights/details unverified"
   ],
   "observations": {
     "sample_rate_hz_latest": 1000.69,
@@ -50,7 +51,7 @@
     },
     {
       "path": "hardware/home-etched-v3/lidar-gap-two-ground-wires/QCopter.kicad_pcb",
-      "sha256": "486c6b26b82354ec227f6940727d400eaad10e8a43e0a77eb47f447b4991c9ea"
+      "sha256": "df4d9c6695d27cae74ce5dbc59ec4f984f26b99ceb83da66532de5a0ffbca6bc"
     },
     {
       "path": "hardware/home-etched-v3/lidar-gap-two-ground-wires/QCopter.kicad_sch",

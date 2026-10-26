@@ -1,6 +1,6 @@
 {
   "engine": "Native KiCad B.Cu copper / ReportLab vector PDF / pypdf",
-  "board_sha256": "486c6b26b82354ec227f6940727d400eaad10e8a43e0a77eb47f447b4991c9ea",
+  "board_sha256": "df4d9c6695d27cae74ce5dbc59ec4f984f26b99ceb83da66532de5a0ffbca6bc",
   "pdf_sha256": "58a78ddefc7e333409a90ed01a71feab1c0a4df39fba32b5dc3de64527d91e5a",
   "board_mm": [
     92,
@@ -21,5 +21,6 @@
     2,
     3
   ],
-  "physical_printer_scale_verified": false
+  "physical_printer_scale_verified": false,
+  "geometry_preservation_proof": "3d-only-change-proof.json"
 }

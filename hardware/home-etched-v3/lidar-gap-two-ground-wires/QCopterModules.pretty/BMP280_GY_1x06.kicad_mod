@@ -26,4 +26,6 @@
 (fp_text user "1 VCC" (at 0 -2.4 0) (layer "F.Fab") (effects (font (size 0.8 0.8) (thickness 0.12))))
 (fp_text user "BODY REF 15.5 x 11.8 mm" (at 4.63 15 0) (layer "F.Fab") (effects (font (size 0.7 0.7) (thickness 0.12))))
 (fp_text user "COMPONENTS UP" (at 9.13 6.35 90) (layer "F.Fab") (effects (font (size 0.65 0.65) (thickness 0.12))))
+
+(model "${KIPRJMOD}/models3d/BMP280_GY_visual.wrl" (offset (xyz 0 0 0)) (scale (xyz 1 1 1)) (rotate (xyz 0 0 0)))
 )

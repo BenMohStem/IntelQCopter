@@ -298,6 +298,12 @@
       "path": "tools/hardware/verify_lidar_gap_pcb.py",
       "args": [],
       "description": "Native DRC/parity + 14 common GND points through the two physical wires; no upload or PWM"
+    },
+    "render-pcb-3d": {
+      "runtime": "python",
+      "path": "tools/hardware/render_pcb_3d.py",
+      "args": [],
+      "description": "Native KiCad 3D renders with portable illustrative modules; original renderer logs; no electrical edits"
     }
   }
 }

@@ -100,3 +100,21 @@ Original logs are saved in `.local/lidar-gap-checks/`. Historical failed reports
 are retained in validation/. The earlier checkpoint masks are obsolete for this
 revision; use only the PDF paired with this PCB. Firmware is unchanged; see the
 pin audit for the prepared map and the remaining driver/integration work.
+
+## View the assembled PCB in 3D
+
+Open this project's PCB in KiCad and press **Alt+3**. Reload the board first if
+it was already open. The included `models3d/` folder supplies all models through
+portable project-relative paths: no additional model library installation needed.
+
+![Native KiCad 3D render](output/3d-top.png)
+
+[Underside and both GND wires](output/3d-bottom.png) ·
+[Model assumptions and reproduction](models3d/README.md) ·
+[3D-only change proof](output/3d-only-change-proof.json) ·
+[Repeated native DRC/parity and ground checks](validation/3d-models/original.log)
+
+Module bodies and details are approximate visual references, not certified clone
+mechanical models. Copper, pads, nets, holes, schematic, design rules and the
+three-mask PDF are unchanged. Native electrical checks still pass with both
+documented GND wires fitted. No firmware or motor outputs were changed.

@@ -92,4 +92,6 @@
 (pad "24" thru_hole circle (at 22.86 50.8) (size 2.0 2.0) (drill 1.1) (layers "*.Cu" "*.Mask"))
 (fp_text user "24:GND" (at 20.86 50.8) (layer "F.Fab") (effects (font (size 0.8 0.8) (thickness 0.12)) (justify right)))
 (pad "23" thru_hole circle (at 22.86 53.34) (size 2.0 2.0) (drill 1.1) (layers "*.Cu" "*.Mask"))
-(fp_text user "23:GND" (at 20.86 53.34) (layer "F.Fab") (effects (font (size 0.8 0.8) (thickness 0.12)) (justify right))))
+(fp_text user "23:GND" (at 20.86 53.34) (layer "F.Fab") (effects (font (size 0.8 0.8) (thickness 0.12)) (justify right)))
+(model "${KIPRJMOD}/models3d/ESP32_S3_DevKitC1_visual.wrl" (offset (xyz 0 0 0)) (scale (xyz 1 1 1)) (rotate (xyz 0 0 0)))
+)

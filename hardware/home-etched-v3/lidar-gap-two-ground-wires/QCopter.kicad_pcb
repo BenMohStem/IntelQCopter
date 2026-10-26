@@ -404,7 +404,9 @@
 			(uuid "641cdd59-6396-4c0c-b7fb-3870229f297c")
 		)
 		(embedded_fonts no)
-	)
+
+(model "${KIPRJMOD}/models3d/MPU6050_GY521_visual.wrl" (offset (xyz 0 0 0)) (scale (xyz 1 1 1)) (rotate (xyz 0 0 0)))
+)
 	(footprint "QCopterModules:ESP32_S3_DevKitC_1_44pin"
 		(layer "F.Cu")
 		(uuid "060ded60-b18f-42e3-86e1-d1df5aedfa4b")
@@ -1404,7 +1406,9 @@
 			(uuid "d06bf31c-5dd7-4342-8d2a-b129506ab4f1")
 		)
 		(embedded_fonts no)
-	)
+
+(model "${KIPRJMOD}/models3d/ESP32_S3_DevKitC1_visual.wrl" (offset (xyz 0 0 0)) (scale (xyz 1 1 1)) (rotate (xyz 0 0 0)))
+)
 	(footprint "QCopterModules:Magnetometer_GY271_1x05"
 		(layer "F.Cu")
 		(uuid "122e99bb-2813-46b6-9412-8818b2103c8f")
@@ -1659,7 +1663,9 @@
 			(uuid "702f71c3-fad8-4851-b030-b809096bf415")
 		)
 		(embedded_fonts no)
-	)
+
+(model "${KIPRJMOD}/models3d/GY271_visual.wrl" (offset (xyz 0 0 0)) (scale (xyz 1 1 1)) (rotate (xyz 0 0 0)))
+)
 	(footprint "QCopterModules:BMP280_GY_1x06"
 		(layer "F.Cu")
 		(uuid "21186a37-d630-499c-b1ba-a2607cc1a54e")
@@ -1935,7 +1941,9 @@
 			(uuid "a144440c-b5e7-421c-a803-8df227306bc4")
 		)
 		(embedded_fonts no)
-	)
+
+(model "${KIPRJMOD}/models3d/BMP280_GY_visual.wrl" (offset (xyz 0 0 0)) (scale (xyz 1 1 1)) (rotate (xyz 0 0 0)))
+)
 	(footprint "QCopterModules:ESC_Servo_1x03"
 		(layer "F.Cu")
 		(uuid "7511eecc-7475-40ea-8c5d-92925c434fc3")
@@ -2074,7 +2082,9 @@
 			(uuid "ac249500-440d-4c88-8251-22d2a08f856e")
 		)
 		(embedded_fonts no)
-	)
+
+(model "${KIPRJMOD}/models3d/ESC_3pin_header_visual.wrl" (offset (xyz 0 0 0)) (scale (xyz 1 1 1)) (rotate (xyz 0 0 0)))
+)
 	(footprint "QCopterModules:ESC_Servo_1x03"
 		(layer "F.Cu")
 		(uuid "ad54fd4d-f484-4257-8cf8-5ccde11d9a01")
@@ -2213,7 +2223,9 @@
 			(uuid "e44c6f27-55fb-4dd9-8aac-8cec65ff9a15")
 		)
 		(embedded_fonts no)
-	)
+
+(model "${KIPRJMOD}/models3d/ESC_3pin_header_visual.wrl" (offset (xyz 0 0 0)) (scale (xyz 1 1 1)) (rotate (xyz 0 0 0)))
+)
 	(footprint "QCopterModules:Lidar_Free_Solder_Lands"
 		(layer "F.Cu")
 		(uuid "b8736954-ca75-498e-96ea-d1bc7088be42")
@@ -2355,7 +2367,10 @@
 			(uuid "c90b6bbe-a9a5-4dc5-be5e-d4e6c7af7e9a")
 		)
 		(embedded_fonts no)
-	)
+
+(model "${KIPRJMOD}/models3d/Lidar_solder_wire_stubs_visual.wrl" (offset (xyz 0 0 0)) (scale (xyz 1 1 1)) (rotate (xyz 0 0 0)))
+(model "${KIPRJMOD}/models3d/Ground_wires_assembly_visual.wrl" (offset (xyz 0 0 0)) (scale (xyz 1 1 1)) (rotate (xyz 0 0 0)))
+)
 	(footprint "QCopterModules:ESC_Servo_1x03"
 		(layer "F.Cu")
 		(uuid "d2e821ee-158b-4274-b5ef-65cb11266eeb")
@@ -2494,7 +2509,9 @@
 			(uuid "ed0bf1ad-f865-4552-802d-35e8a3dacc36")
 		)
 		(embedded_fonts no)
-	)
+
+(model "${KIPRJMOD}/models3d/ESC_3pin_header_visual.wrl" (offset (xyz 0 0 0)) (scale (xyz 1 1 1)) (rotate (xyz 0 0 0)))
+)
 	(footprint "QCopterModules:ESC_Servo_1x03"
 		(layer "F.Cu")
 		(uuid "f266d8d1-e713-47f1-bdf1-de962d8f7ba8")
@@ -2633,7 +2650,9 @@
 			(uuid "9e64cfc9-46a6-438f-bb1f-30c7152bd7cc")
 		)
 		(embedded_fonts no)
-	)
+
+(model "${KIPRJMOD}/models3d/ESC_3pin_header_visual.wrl" (offset (xyz 0 0 0)) (scale (xyz 1 1 1)) (rotate (xyz 0 0 0)))
+)
 	(footprint "QCopterModules:Ground_Bridge_ESC"
 		(layer "B.Cu")
 		(uuid "0615dacb-2d7b-4abf-8cad-82b2b734b0e8")

@@ -19,3 +19,5 @@ Canonical links, no duplicate runtime copies. Current source is flashed and test
 11. [Pin capability audit and firmware integration limits](../hardware/home-etched-v3/lidar-gap-two-ground-wires/pin-audit.md), [prepared pin map](../config/sensor-wiring.json).
 
 12. Historical references: [module palette](../hardware/module-library/QUICKSTART.md), [unrouted 17-part reference](../hardware/connected-i2c/README.md), [old 27-link revision](../hardware/home-etched-v2/README.md), [failed one-jumper checkpoint](../hardware/home-etched-v3/checkpoint-one-jumper/README.md). Their masks are not the current design.
+
+13. [View the current PCB in 3D](../hardware/home-etched-v3/lidar-gap-two-ground-wires/models3d/README.md), [native top render](../hardware/home-etched-v3/lidar-gap-two-ground-wires/output/3d-top.png). Open the PCB and press Alt+3. Models are illustrative; electrical design unchanged.

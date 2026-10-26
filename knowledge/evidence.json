@@ -68,5 +68,12 @@
     "report": "hardware/home-etched-v3/lidar-gap-two-ground-wires/README.md",
     "claim": "0 native violations/unconnected/parity; all 14 GND nodes common through two real wire components; 79 holes; I2C/UART/PWM GPIO eligibility checked",
     "limits": "G2 has middle tap; both wires mandatory; actual clone/printer/power/interfaces and future firmware map remain untested"
+  },
+  {
+    "id": "E-PCB-3D",
+    "kind": "native_KiCad_3D_renders_and_exact_electrical_preservation_checks",
+    "report": "hardware/home-etched-v3/lidar-gap-two-ground-wires/models3d/README.md",
+    "claim": "All four modules, four ESC headers, remote lidar wire stubs and two GND wires visible in native KiCad; model-only changes; repeated DRC/parity/ground checks pass",
+    "limits": "Illustrative original meshes; exact purchased module heights/details/fit unverified; no hardware or flight test"
   }
 ]

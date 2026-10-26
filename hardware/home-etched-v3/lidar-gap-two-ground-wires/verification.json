@@ -1,6 +1,6 @@
 {
   "engine": "KiCad 10 native DRC+schematic parity, native XML netlist, independent pad/wire graph checks",
-  "board_sha256": "486c6b26b82354ec227f6940727d400eaad10e8a43e0a77eb47f447b4991c9ea",
+  "board_sha256": "df4d9c6695d27cae74ce5dbc59ec4f984f26b99ceb83da66532de5a0ffbca6bc",
   "schematic_sha256": "3c62e2d9e704c232a698d036c9de810d2e77d21a2e54bda651ca92b62849596c",
   "cad_checks_pass": true,
   "violations": 0,
