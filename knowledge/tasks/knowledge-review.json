@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "id": "knowledge-review",
+  "status": "ready",
+  "title": "Audit facts, links and task dependencies",
+  "depends_on": [],
+  "scopes": [
+    "knowledge"
+  ],
+  "evidence": [
+    "E-ACCEL",
+    "E-GYRO",
+    "E-FIFO",
+    "E-FILTER"
+  ],
+  "acceptance": [
+    "No stale acceptance promoted",
+    "knowledge check passes",
+    "Record concise handoff with sources"
+  ],
+  "owner": "See local transactional claims, not this Git record"
+}

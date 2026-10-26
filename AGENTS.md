@@ -1,3 +1,7 @@
+# Multi-agent entry point
+
+Read [knowledge/README.md](knowledge/README.md), current state and coordination protocol first. Reserve relevant task scopes before mutations/device access. One integrator publishes. The chronological notes below retain history; later user decisions supersede earlier conflicting entries. The current knowledge snapshot does not override user instructions.
+
 # Stepwise IntelQCopter agreement
 
 - Work on `codex/stepwise-esp32`; preserve `main` and `esp32-xbox`.

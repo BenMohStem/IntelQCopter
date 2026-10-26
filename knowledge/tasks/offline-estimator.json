@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "id": "offline-estimator",
+  "status": "ready",
+  "title": "Improve dynamic acceleration/bias treatment offline",
+  "depends_on": [],
+  "scopes": [
+    "tools/estimation",
+    "docs/attitude-preparation.md",
+    "measurements/mpu6050/next-estimator"
+  ],
+  "evidence": [
+    "E-FILTER"
+  ],
+  "acceptance": [
+    "Known-truth model, explicit assumptions and all adverse outcomes",
+    "No MCU activation or calibration change",
+    "Compare accuracy and response, not just stationary smoothness"
+  ],
+  "owner": "See local transactional claims, not this Git record"
+}

@@ -262,6 +262,18 @@
       "path": "tools/estimation/test_attitude.py",
       "args": [],
       "description": "Six analytic offline filter/design tests; no serial, MCU or physical acceptance"
+    },
+    "knowledge": {
+      "runtime": "python",
+      "path": "tools/knowledge/knowledge.py",
+      "args": [],
+      "description": "Project facts, evidence freshness, search and transactional local task reservations"
+    },
+    "check-knowledge": {
+      "runtime": "python",
+      "path": "tools/knowledge/test_knowledge.py",
+      "args": [],
+      "description": "Check reservation conflicts/concurrency in a temporary database; no hardware"
     }
   }
 }

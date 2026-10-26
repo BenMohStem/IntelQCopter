@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "updated": "2026-10-26",
+  "evidence_baseline_commit": "a961a8a87cb612adebf31a1814d2a2ad61252fd6",
+  "active_branch": "codex/stepwise-esp32",
+  "active_checkout": "QCopter-Stepwise",
+  "purpose": "Verified facts, concise decision rationale and coordination; not a transcript or private reasoning dump",
+  "current_stage": "1 kHz calibrated FIFO hardware observation; provisional body gyro mapping; PC-only angle filter study",
+  "rules": [
+    "One Arduino main.cpp, C-like code, Allman braces, Serial.printf",
+    "Motor arming and outputs disabled; no actuator tests",
+    "Bench flashing and stationary recording authorized; perform only useful scoped tests",
+    "Physical rotations deferred by user; never infer validation from static/model tests",
+    "BMP280 unavailable; no altitude acceptance",
+    "Preserve calibration and failed evidence; no refit of validation records",
+    "Current focus software; user handles PCB and simulation building",
+    "Commit and push project changes; no history rewrite; exclude private logs/environments"
+  ],
+  "observations": {
+    "sample_rate_hz_latest": 1000.69,
+    "max_handler_us_latest": 822,
+    "max_inter_service_gap_us_latest": 1274,
+    "limitation": "Finite observation, not a hard 1 ms control deadline or flight readiness",
+    "offline_checks": 54,
+    "native_cases_previous": 19,
+    "filter": "PC only; model 0.1 g disturbance gives about 5.2-5.35 deg peak error"
+  },
+  "pending": [
+    "Physical gyro axis direction and scale",
+    "Dynamic estimator acceptance",
+    "PID/mixer implementation on this branch",
+    "Altitude sensor availability"
+  ],
+  "fingerprints": [
+    {
+      "path": "firmware/main.cpp",
+      "sha256": "91947b5c8921a481ebb6a4e40cd0027a1c585abda5825118af862f3b39c496f0"
+    },
+    {
+      "path": "config/gyro-frame.json",
+      "sha256": "946c2ad8d95d6cca22b9cbc4e52758ff4f08ba4374455534d909b2ec0c6f626d"
+    },
+    {
+      "path": "config/hardware.json",
+      "sha256": "4c284bc55d683d339f5e186d5297a4662dd4f1dcec3b54f8a937e1d0bc9bf7b8"
+    },
+    {
+      "path": "tools/estimation/prepare_attitude.py",
+      "sha256": "365ffdd1b43583106fc07b3ad73a1162038025160f4eea3b4c2a454aed66752c"
+    }
+  ],
+  "authoritative_paths": [
+    "project.json",
+    "qcopter.ps1",
+    "docs/PLAN.md",
+    "important_sources/README.md"
+  ]
+}

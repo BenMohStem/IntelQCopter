@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "id": "integration",
+  "status": "ready",
+  "title": "Review and publish scoped work",
+  "depends_on": [],
+  "scopes": [
+    "git:integrator",
+    "project.json",
+    "AGENTS.md",
+    "README.md",
+    "important_sources/README.md"
+  ],
+  "evidence": [],
+  "acceptance": [
+    "Review diffs and relevant tests",
+    "No secrets, private raw logs or environments",
+    "Commit/push without rewriting history; record commit IDs"
+  ],
+  "owner": "See local transactional claims, not this Git record"
+}

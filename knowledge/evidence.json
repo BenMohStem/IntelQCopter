@@ -1,0 +1,30 @@
+[
+  {
+    "id": "E-ACCEL",
+    "kind": "real_measurements",
+    "report": "measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/report.md",
+    "claim": "Six-pose fit and reserved repetitions",
+    "limits": "Reference uncertainty; not arbitrary dynamic accuracy"
+  },
+  {
+    "id": "E-GYRO",
+    "kind": "real_measurements",
+    "report": "measurements/mpu6050/2026-10-26-gyro-restart-validation/report.md",
+    "claim": "Gyro trim restoration and residual checks",
+    "limits": "Power removal operator-reported; residual drift remains"
+  },
+  {
+    "id": "E-FIFO",
+    "kind": "real_measurements_and_explicit_host_models",
+    "report": "measurements/mpu6050/2026-10-26-fifo-and-gyro-frame-results/report.md",
+    "claim": "Original FIFO integrity and finite observed timing, failures preserved",
+    "limits": "Physical gyro frame unverified; host tests are not MCU emulation"
+  },
+  {
+    "id": "E-FILTER",
+    "kind": "real_log_replay_and_synthetic_model",
+    "report": "measurements/mpu6050/2026-10-26-offline-attitude-preparation/report.md",
+    "claim": "80k reused samples, 54 offline checks, four modeled disturbances",
+    "limits": "No new hardware, MCU estimator or flight acceptance"
+  }
+]

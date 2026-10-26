@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "id": "mcu-filter",
+  "status": "blocked",
+  "title": "Port accepted estimator into the single MCU runtime",
+  "depends_on": [
+    "rotation-check",
+    "offline-estimator"
+  ],
+  "scopes": [
+    "firmware/main.cpp",
+    "device:COM3",
+    "tools/validation/arduino_stub"
+  ],
+  "evidence": [
+    "E-FIFO",
+    "E-FILTER"
+  ],
+  "acceptance": [
+    "Physical frame gate resolved",
+    "Relevant host checks and real timing regression",
+    "Motor outputs remain disabled"
+  ],
+  "owner": "See local transactional claims, not this Git record"
+}

@@ -9,7 +9,7 @@
 | Stationary repeatability | Assistant-run originals and covariance reports saved; support condition assumed | No more repeated low-rate sampling unless it resolves a specific issue |
 | 1 kHz FIFO/state processing | Real 1 kHz captures: 60k samples after cross-core repair, max handlers 814/819/812 us with no reported overruns | Continue timing regression as work is added |
 | Gyro body-axis mapping | Rotation-only candidate implemented and computation/timing checked | User deferred known physical rotations until later |
-| Attitude filter | Offline candidate preparation; no MCU integration | Reuse saved 1 kHz data, then four modeled disturbance combinations; physical frame gate remains pending |
+| Attitude filter | Offline candidate prepared and checked; no MCU integration | Address modeled acceleration sensitivity; physical frame gate remains pending |
 | Rate/angle PIDs and mixer | Not implemented in this branch | Add one controlled stage at a time, then simulation/gain validation |
 | Altitude/vertical control | BMP280 unavailable | Defer; do not claim hover capability |
 
