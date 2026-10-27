@@ -307,6 +307,18 @@
         "hardware/home-etched-v3/dedicated-ground-jumpers"
       ],
       "description": "Native KiCad 3D renders with portable illustrative modules; original renderer logs; no electrical edits"
+    },
+    "analyze-gyro-motion": {
+      "runtime": "python",
+      "path": "tools/calibration/analyze_gyro_motion.py",
+      "args": [],
+      "description": "Review a verified operator-rotation FIFO capture; save three-axis rate graph; no hardware or calibration writes"
+    },
+    "check-gyro-motion": {
+      "runtime": "python",
+      "path": "tools/calibration/test_gyro_motion.py",
+      "args": [],
+      "description": "Five synthetic rotation/integrity controls; no physical acceptance"
     }
   }
 }

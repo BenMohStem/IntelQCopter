@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "id": "gyro-motion-review",
+  "status": "done",
+  "title": "Prepare an honest PC-only analysis for deferred gyro rotations",
+  "depends_on": [
+    "software-input-guard"
+  ],
+  "scopes": [
+    "tools/calibration/analyze_gyro_motion.py",
+    "tools/calibration/test_gyro_motion.py",
+    "docs/gyro-frame-stage.md",
+    "measurements/software/2026-10-27-gyro-motion-tool"
+  ],
+  "evidence": [
+    "E-GYRO-MOTION-TOOL"
+  ],
+  "acceptance": [
+    "Read only completed operator-rotation captures with intact raw sequence hash",
+    "Integrate corrected body gyro using documented FIFO average interval and report sign, cross-axis response and limitations",
+    "Synthetic tests and rejection controls; never claim physical direction, gyro scale or flight acceptance without reference data"
+  ],
+  "owner": "Local transactional claims"
+}

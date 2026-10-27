@@ -35,3 +35,6 @@ For later operator motion, record-1khz accepts `--condition operator_rotation --
 Next: review the user's rotations, correct the mapping if needed, then add the small attitude filter to the verified acquisition path. BMP280 and altitude remain deferred. Calibration residuals are not zeroed or refitted from these validation runs.
 
 While physical rotations are deferred, [offline angle-filter preparation](attitude-preparation.md) reuses existing recordings and a four-case model experiment. It does not change this physical acceptance gate or firmware.
+
+
+A small [gyro-motion analysis guide](../measurements/software/2026-10-27-gyro-motion-tool/README.md) now explains the equations, future capture commands and rate graph. It is PC-only; the physical gyro-axis gate is still pending.

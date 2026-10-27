@@ -66,6 +66,10 @@
     {
       "path": "hardware/home-etched-v3/dedicated-ground-jumpers/QCopter.kicad_sch",
       "sha256": "458f4d15322bce6468904eb412f783253e2470a9f899e8afa3f850c00b15ff5c"
+    },
+    {
+      "path": "tools/calibration/analyze_gyro_motion.py",
+      "sha256": "3c3ab47f21d2d0e4a9b69f4d7e809dd698369b10237294e47d45098b8ce8ec90"
     }
   ],
   "authoritative_paths": [

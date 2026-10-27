@@ -96,5 +96,12 @@
     "report": "measurements/software/2026-10-27-input-guard/README.md",
     "claim": "Six exact input-pulldown pin guards cover legacy/current carriers;54offline+19hostcases and matching PlatformIO build pass",
     "limits": "No serial device, upload or new hardware evidence; old real timing remains bound to priorSHA; calibration frozen; arming disabled"
+  },
+  {
+    "id": "E-GYRO-MOTION-TOOL",
+    "kind": "synthetic_PC_tests_and_readonly_real_stationary_log_integrity",
+    "report": "measurements/software/2026-10-27-gyro-motion-tool/README.md",
+    "claim": "Five synthetic controls pass; existing 20000-sample stationary log matches serial and is rejected as operator rotation; PC tool produces integrated rates and 100Hz graph",
+    "limits": "No physical rotations, scale validation, timestamp ground truth or flight acceptance; firmware/calibration untouched"
   }
 ]

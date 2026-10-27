@@ -1,0 +1,10 @@
+test_bad_serial_and_invalid_rate_are_rejected (__main__.GyroMotionTests.test_bad_serial_and_invalid_rate_are_rejected) ... ok
+test_changed_gyro_frame_is_rejected (__main__.GyroMotionTests.test_changed_gyro_frame_is_rejected) ... ok
+test_constant_single_axis_angle_and_reference (__main__.GyroMotionTests.test_constant_single_axis_angle_and_reference) ... ok
+test_negative_rotation_and_cross_axis (__main__.GyroMotionTests.test_negative_rotation_and_cross_axis) ... ok
+test_stationary_and_changed_raw_samples_are_rejected (__main__.GyroMotionTests.test_stationary_and_changed_raw_samples_are_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 2.940s
+
+OK
