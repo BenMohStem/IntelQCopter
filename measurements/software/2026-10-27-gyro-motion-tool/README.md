@@ -11,21 +11,21 @@ For each raw post-trim gyro word $r_{k,j}$ and stored software remainder $b_j$,
 the sensor-axis angular rate in radians/second is
 
 $$
-\omega_{s,k,j}=r_{k,j}rac{\pi}{180\cdot65.5}-b_j.
+\omega_{s,k,j}=r_{k,j}\frac{\pi}{180\cdot65.5}-b_j.
 $$
 
 The provisional rigid mounting matrix $R$ maps sensor axes to drone axes:
 
 $$
-oldsymbol\omega_{b,k}=Roldsymbol\omega_{s,k}.
+\boldsymbol\omega_{b,k}=R\boldsymbol\omega_{s,k}.
 $$
 
 The FIFO log has **no individual sample timestamps**. If its complete trailer
 reports elapsed time $T$ for $N=20000$ samples, the tool approximates
 
 $$
-\Delta tpproxrac{T}{N},\qquad
-I_j=rac{180}{\pi}\sum_{k=1}^{N}\omega_{b,k,j}\Delta t.
+\Delta t\approx\frac{T}{N},\qquad
+I_j=\frac{180}{\pi}\sum_{k=1}^{N}\omega_{b,k,j}\Delta t.
 $$
 
 Each $I_j$ is an **integral of a body-rate component**, in degrees. For a
@@ -39,8 +39,8 @@ time, averaged in groups of ten samples for readability (~100 Hz); all
 For an operator-specified axis and sign, the tool also reports the signed
 component and $\sqrt{I_\perp^2+I_{\perp 2}^2}$. This cross-axis number is a
 diagnostic, not a proof of cross-axis calibration error: off-axis hand motion
-can produce it. If the user supplies an independent angle magnitude $	heta_r$,
-the displayed difference is $I_{expected}-	heta_r$. The tool deliberately
+can produce it. If the user supplies an independent angle magnitude $\theta_r$,
+the displayed difference is $I_{expected}-\theta_r$. The tool deliberately
 does **not** provide a confidence interval: sensor bias drift, temperature,
 correlation, timing and reference uncertainty have not been established here.
 
