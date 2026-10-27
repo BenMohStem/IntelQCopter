@@ -53,6 +53,26 @@ def verify_serial_capture(serial_bytes, rows, summary):
         raise ValueError(f'Original serial evidence does not match the saved capture: {error}') from error
 
 
+def calculate_rates(rows, matrix, bias, rate):
+    """Return component integrals, peak rates and ten-sample means."""
+    dt = 1.0 / rate
+    sums = [0.0, 0.0, 0.0]
+    peaks = [0.0, 0.0, 0.0]
+    bucket = [0.0, 0.0, 0.0]
+    plot = []
+    for sequence, row in enumerate(rows):
+        sensor = [row[i + 4] * SCALE_RAD_PER_COUNT - bias[i] for i in range(3)]
+        body = [sum(matrix[i][j] * sensor[j] for j in range(3)) for i in range(3)]
+        for i in range(3):
+            sums[i] += body[i] * dt
+            peaks[i] = max(peaks[i], abs(body[i]))
+            bucket[i] += math.degrees(body[i])
+        if (sequence + 1) % 10 == 0:
+            plot.append([(sequence + 1) * dt] + [value / 10 for value in bucket])
+            bucket = [0.0, 0.0, 0.0]
+    return sums, peaks, plot
+
+
 def analyze(recording, axis, direction, reference_deg=None):
     recording = Path(recording)
     summary = json.loads((recording / 'summary.json').read_text(encoding='utf-8'))
@@ -90,20 +110,7 @@ def analyze(recording, axis, direction, reference_deg=None):
     # MPU samples have no individual timestamps. Use the observed capture-average
     # interval; this cannot reconstruct per-sample timing or rotation ground truth.
     dt = 1.0 / rate
-    sums = [0.0, 0.0, 0.0]
-    peaks = [0.0, 0.0, 0.0]
-    bucket = [0.0, 0.0, 0.0]
-    plot = []
-    for sequence, row in enumerate(rows):
-        sensor = [row[i + 4] * SCALE_RAD_PER_COUNT - bias[i] for i in range(3)]
-        body = [sum(matrix[i][j] * sensor[j] for j in range(3)) for i in range(3)]
-        for i in range(3):
-            sums[i] += body[i] * dt
-            peaks[i] = max(peaks[i], abs(body[i]))
-            bucket[i] += math.degrees(body[i])
-        if (sequence + 1) % 10 == 0:
-            plot.append([(sequence + 1) * dt] + [value / 10 for value in bucket])
-            bucket = [0.0, 0.0, 0.0]
+    sums, peaks, plot = calculate_rates(rows, matrix, bias, rate)
 
     angles = [math.degrees(value) for value in sums]
     expected_index = 'xyz'.index(axis)
@@ -113,7 +120,8 @@ def analyze(recording, axis, direction, reference_deg=None):
     dominant_index = max(range(3), key=lambda i: abs(angles[i]))
     result = {
         'status': 'REVIEW_REQUIRED_NOT_PHYSICAL_ACCEPTANCE',
-        'engine': 'PC replay of previously recorded MPU6050 FIFO samples',
+        'engine': 'PC replay of recorded FIFO-format samples',
+        'capture_engine': summary.get('engine', 'unspecified'),
         'source_sha256': summary.get('source_sha256'),
         'serial_sha256': summary['serial_sha256'],
         'samples_sha256': hashlib.sha256(rows_file.read_bytes()).hexdigest(),
@@ -145,15 +153,15 @@ def analyze(recording, axis, direction, reference_deg=None):
     return result
 
 
-def make_plot(points):
+def make_plot(points, title='Gyro rate in drone axes — 10-sample averages'):
     width, height = 1000, 430
     left, top, plot_width, plot_height = 80, 55, 870, 300
     duration = points[-1][0]
-    maximum = max(1.0, max(abs(value) for point in points for value in point[1:]))
+    maximum = max(0.1, max(abs(value) for point in points for value in point[1:]))
     maximum *= 1.1
     parts = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
              '<rect width="100%" height="100%" fill="white"/>',
-             '<text x="80" y="26" font-family="sans-serif" font-size="18">Gyro rate in drone axes — 10-sample averages</text>']
+             f'<text x="80" y="26" font-family="sans-serif" font-size="18">{title}</text>']
     for i in range(5):
         y = top + i * plot_height / 4
         value = maximum * (1 - i / 2)

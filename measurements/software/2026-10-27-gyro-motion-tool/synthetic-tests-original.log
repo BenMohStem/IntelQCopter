@@ -5,6 +5,6 @@ test_negative_rotation_and_cross_axis (__main__.GyroMotionTests.test_negative_ro
 test_stationary_and_changed_raw_samples_are_rejected (__main__.GyroMotionTests.test_stationary_and_changed_raw_samples_are_rejected) ... ok
 
 ----------------------------------------------------------------------
-Ran 5 tests in 2.940s
+Ran 5 tests in 3.441s
 
 OK

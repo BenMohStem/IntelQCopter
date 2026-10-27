@@ -80,3 +80,13 @@ for rotation analysis. [Machine-readable validation](validation.json).
 No new physical motion was performed. Physical gyro direction and scale remain
 pending, as do dynamic attitude, PID and flight acceptance. No MCU source,
 calibration constants or hardware test was changed by this tool.
+
+## Graph from a real earlier stationary capture
+
+[Open the real stationary gyro graph](real-stationary-rates.svg) ·
+[PNG preview](real-stationary-rates.png). It uses the actual 20,000 raw samples
+from the previously collected recording `20261026T083102215018Z`, after the
+stored gyro bias remainder and provisional body-frame rotation. Each displayed
+point averages ten samples. The device was assumed stationary on its support;
+this is not a new capture or a physical rotation test. The original serial and
+sample files remain in the private `artifacts/fifo1000-recordings` folder.
