@@ -69,7 +69,7 @@
     },
     {
       "path": "tools/calibration/analyze_gyro_motion.py",
-      "sha256": "cb9bf4ffb1f79ae9fdd2441fc4f619e35706ec0f14ed7c3651bc7f6a357553bc"
+      "sha256": "d0331bbe8941167f24602c4b95bb259bc107f47490774ba1c03d715d32a92ada"
     },
     {
       "path": "tools/pcb_zero_jumper/method/validate_zero.py",

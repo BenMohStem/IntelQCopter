@@ -3,9 +3,14 @@ from pathlib import Path
 import argparse
 import datetime
 import hashlib
+import io
 import json
 import math
 import struct
+
+import record_fifo1000 as fifo
+import record_gyro as gyro
+import record_poses as transport
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -21,34 +26,69 @@ def fnv1a_rows(rows):
 
 
 def verify_serial_capture(serial_bytes, rows, summary):
+    class SavedDevice:
+        def __init__(self, data):
+            self.data = io.BytesIO(data)
+
+        def write(self, query):
+            if query != b'?':
+                raise ValueError('Unexpected replay query')
+
+        def readline(self):
+            line = self.data.readline()
+            if not line:
+                raise ValueError('Unexpected end of original serial log')
+            return line
+
     try:
-        lines = serial_bytes.decode('ascii').splitlines()
-        start = lines.index('BEGIN,20000')
-        end = next(i for i in range(start + 1, len(lines)) if lines[i].startswith('END,'))
-        trailer = lines[end].split(',')
-        samples = [line.split(',') for line in lines[start + 1:end] if line.startswith('S,')]
-        if len(samples) != len(rows) or len(trailer) != 8:
-            raise ValueError('Wrong sample or trailer count')
-        for i, fields in enumerate(samples):
-            if len(fields) != 9 or int(fields[1]) != i or [int(x) for x in fields[2:]] != rows[i]:
-                raise ValueError('Saved samples differ from original serial records')
-        if int(trailer[1]) != len(rows) or int(trailer[2]) != summary['elapsed_us']:
-            raise ValueError('Capture duration differs from original serial trailer')
-        if trailer[7].upper() != summary['fnv1a_raw_payload'].upper():
-            raise ValueError('Checksum differs from original serial trailer')
-        if not math.isclose(summary['observed_capture_rate_hz'], len(rows) * 1e6 / int(trailer[2]), rel_tol=1e-10):
+        if any(line.startswith(b'ERROR,') for line in serial_bytes.splitlines()):
+            raise ValueError('Original serial log contains an acquisition error')
+        fit = json.loads((ROOT / 'measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/analysis.json').read_text(encoding='utf-8'))
+        device = SavedDevice(serial_bytes)
+        log = io.BytesIO()
+        header, profile = gyro.read_header(device, log, summary['source_sha256'], fit)
+        if not profile.get('fifo_acquisition') or 'gyro_to_drone' not in profile:
+            raise ValueError('Expected the validated FIFO1000_V2 profile')
+        if header != summary['header'] or profile != summary['profile']:
+            raise ValueError('Saved header or gyro frame differs from original serial header')
+        stream = fifo.Samples(profile)
+        started = False
+        trailer = None
+        profile_seen = False
+        while device.data.tell() < len(serial_bytes):
+            line = transport.receive(device, log)
+            if not line:
+                continue
+            if line.startswith('ERROR,'):
+                raise ValueError(line)
+            if not started:
+                if line == 'BEGIN,20000':
+                    started = True
+                elif not line.startswith('D,'):
+                    raise ValueError('Unexpected pre-capture data')
+            elif line.startswith('S,'):
+                stream.add(line)
+            elif line.startswith('D,'):
+                stream.diagnostic(line)
+            elif line.startswith('PROFILE,'):
+                fields = line.split(',')
+                if profile_seen or len(fields) not in (5, 6) or any(int(v) < 0 for v in fields[1:]):
+                    raise ValueError('Invalid/duplicate profile metadata')
+                profile_seen = True
+            elif line.startswith('END,'):
+                trailer = stream.finish(line)
+                break
+            else:
+                raise ValueError('Unexpected capture record')
+        if trailer is None or stream.rows != rows:
+            raise ValueError('Incomplete capture or saved samples differ from serial records')
+        if trailer['elapsed_us'] != summary['elapsed_us'] or trailer['fnv1a_raw_payload'] != summary['fnv1a_raw_payload'].upper():
+            raise ValueError('Capture trailer differs from saved summary')
+        if not math.isclose(trailer['observed_capture_rate_hz'], summary['observed_capture_rate_hz'], rel_tol=1e-10):
             raise ValueError('Rate differs from original serial trailer')
-        if f"HELLO,FIFO1000_V2,{summary['source_sha256']}" not in lines:
-            raise ValueError('Source hash differs from original serial header')
-        for axis in range(3):
-            rotation = [line.split(',') for line in lines[:start] if line.startswith(f'GYRO_ROT,{axis},')]
-            trim = [line.split(',') for line in lines[:start] if line.startswith(f'GYRO_TRIM,{axis},')]
-            if not rotation or not trim:
-                raise ValueError('Missing original gyro frame or trim')
-            if any(abs(float(rotation[-1][j + 2]) - summary['profile']['gyro_to_drone'][axis][j]) > 1e-9 for j in range(3)):
-                raise ValueError('Gyro frame differs from original serial header')
-            if abs(float(trim[-1][4]) - summary['profile']['gyro_remaining_bias'][axis]) > 1e-9:
-                raise ValueError('Gyro trim differs from original serial header')
+        final_header, final_profile = gyro.read_header(device, log, summary['source_sha256'], fit)
+        if final_header != header or final_profile != profile:
+            raise ValueError('Final calibration/configuration header changed')
     except (UnicodeDecodeError, StopIteration, KeyError, IndexError, TypeError, ValueError) as error:
         raise ValueError(f'Original serial evidence does not match the saved capture: {error}') from error
 
@@ -87,7 +127,7 @@ def analyze(recording, axis, direction, reference_deg=None):
     serial_bytes = serial_file.read_bytes()
     if hashlib.sha256(serial_bytes).hexdigest() != summary.get('serial_sha256'):
         raise ValueError('Original serial log hash does not match its capture summary.')
-    if len(rows) != 20000 or any(len(row) != 7 or any(not isinstance(x, int) or not -32768 <= x <= 32767 for x in row) for row in rows):
+    if len(rows) != 20000 or any(len(row) != 7 or any(not isinstance(x, int) or not -32768 < x < 32767 for x in row) for row in rows):
         raise ValueError('Expected 20,000 complete signed 16-bit seven-word FIFO samples.')
     if fnv1a_rows(rows) != summary.get('fnv1a_raw_payload', '').upper():
         raise ValueError('Raw sample checksum does not match the capture trailer.')

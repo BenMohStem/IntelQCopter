@@ -1,6 +1,6 @@
 {
-  "engine": "Five synthetic PC unit tests and read-only recheck of one existing real stationary FIFO log",
-  "synthetic_tests_pass": 5,
+  "engine": "Eight synthetic PC unit tests and read-only recheck of one existing real stationary FIFO log",
+  "synthetic_tests_pass": 8,
   "real_stationary_sample_records_reverified": 20000,
   "real_stationary_source_sha256": "91947b5c8921a481ebb6a4e40cd0027a1c585abda5825118af862f3b39c496f0",
   "real_stationary_rate_plot": "real-stationary-rates.svg",
@@ -13,5 +13,5 @@
     "No new serial recording or hardware access",
     "Reference angle, bias drift and sample-time uncertainty remain unquantified"
   ],
-  "analysis_tool_sha256": "cb9bf4ffb1f79ae9fdd2441fc4f619e35706ec0f14ed7c3651bc7f6a357553bc"
+  "analysis_tool_sha256": "d0331bbe8941167f24602c4b95bb259bc107f47490774ba1c03d715d32a92ada"
 }

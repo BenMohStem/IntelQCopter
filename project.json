@@ -318,7 +318,7 @@
       "runtime": "python",
       "path": "tools/calibration/test_gyro_motion.py",
       "args": [],
-      "description": "Five synthetic rotation/integrity controls; no physical acceptance"
+      "description": "Eight synthetic rotation and malformed-protocol controls; no physical acceptance"
     }
   }
 }

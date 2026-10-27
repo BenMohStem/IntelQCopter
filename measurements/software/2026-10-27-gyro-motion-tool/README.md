@@ -70,9 +70,10 @@ recording as a rotation; retain the original evidence.
 
 ## What was tested now
 
-[Original synthetic unit-test log](synthetic-tests-original.log) contains five
-passing controls: known positive and negative single-axis signals, cross-axis
-response, corrupted samples/serial, invalid rate, and changed frame metadata.
+[Original synthetic unit-test log](synthetic-tests-original.log) contains eight
+passing tests covering known positive and negative signals, cross-axis response,
+corrupted samples/serial, invalid rate, changed frame metadata, an acquisition
+error, changed final trim, saturation, wrong gyro range and missing diagnostics.
 The tool also rechecked all 20,000 records from a previously collected real
 stationary log against its serial stream and correctly rejected that recording
 for rotation analysis. [Machine-readable validation](validation.json).
@@ -90,3 +91,8 @@ stored gyro bias remainder and provisional body-frame rotation. Each displayed
 point averages ten samples. The device was assumed stationary on its support;
 this is not a new capture or a physical rotation test. The original serial and
 sample files remain in the private `artifacts/fifo1000-recordings` folder.
+
+The replay reuses the recorder's header parser and FIFO sample/diagnostic checks.
+It verifies the 500-degree/s configuration, all 200 diagnostics and the final
+header, and rejects a log containing an acquisition error. A reviewer identified
+the earlier weaker checks; the malformed cases are now preserved in the tests.
