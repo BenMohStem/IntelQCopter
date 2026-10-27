@@ -90,3 +90,38 @@ hardware acceptance have not been changed or validated for this wiring.
   Physical motor outputs remain disabled. No gain/calibration changes in this step.
 
 Reference: [TDK register map, INT_PIN_CFG and USER_CTRL](https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Register-Map1.pdf).
+
+## Planned lidar interface: TOFSense-F/F2 I2C (27 October 2026)
+
+User supplied TOFSense-F_Datasheet_V2.0_en.pdf and selected I2C instead of
+UART. Datasheet table1 includes F2 Mini: 4.3-5.2V supply, 3.3V TTL signals;
+sections3.2/3.3 specify I2C <=400kHz, default7-bit address0x08 (0x08+ID).
+This supersedes earlier UART lidar wiring for the next user-designed PCB.
+Existing firmware and PCB files have not been changed for this plan.
+
+- Planned direct slow bus: lidar SDA to GPIO41, SCL to GPIO40, common GND,
+  regulated5V VCC. Pull-ups must go to3.3V, never5V. Do not use GPIO10/11
+  as UART for this connection. Check total pull-up strength/cable capacitance.
+- Manufacturer maps UART RX to I2C SDA, UART TX to I2C SCL. With connector
+  latch groove upward, right-to-left order is VCC,GND,SDA,SCL in I2C mode.
+  Identify actual connector orientation; do not infer wire colors.
+- First configure UART-to-I2C using NAssistant and a3.3V-logic USB-TTL adapter
+  with regulated5V power; write/save parameters. Default UART921600baud.
+  Confirm saved I2C mode/address after a cold power cycle. Never connect
+  UART adapter outputs while those pins are connected to the ESP I2C bus.
+- Arduino Wire uses7-bit0x08 directly, not shifted0x10/0x11. Start100kHz;
+  increase only after physical checks. Decode distance/status/signal using
+  official NLink_TOFSense_IIC_Frame0 protocol; invalid/timeouts are not zero
+  distance. Schedule reads at sensor update rate, not every1kHz FC cycle.
+- Auxiliary XDA/XCL routing remains an option for another downstream sensor;
+  avoid adding lidar traffic to the MPU bus by default. Final PCB routing and
+  manifest must identify actual chosen buses, with no bridge between them.
+- Pending acceptance: exact model, saved mode/address, known-distance tests,
+  status/timeouts/unplug recovery and1kHz acquisition timing under bus traffic.
+  No physical validation, firmware implementation or upload claimed here.
+
+Sources:
+- https://ftp.nooploop.com/downloads/tofsense/TOFSense-F_Datasheet_V2.0_en.pdf
+- https://support.nooploop.com/tofsense/hardware/
+- https://support.nooploop.com/tofsense/protocol/
+- https://support.nooploop.com/tofsense/FAQ-for-tOfsense/
