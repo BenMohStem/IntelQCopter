@@ -61,3 +61,32 @@ rotations with the user. Do not refit calibration or claim dynamic attitude/PID
 acceptance from stationary or fake-peripheral tests. Fresh zero-jumper PCB
 candidates must pass independent bare-copper connectivity and native DRC/parity
 before being chosen; candidate pin/address changes do not silently enter firmware.
+
+## Planned wiring change: MPU6050 auxiliary-bus bypass (27 October 2026)
+
+User decision: use XDA/XCL to simplify the user-designed PCB and avoid wire
+jumpers where useful. This supersedes the earlier requirement to leave these
+pins disconnected. This is a PLAN ONLY: existing firmware, PCB exports and
+hardware acceptance have not been changed or validated for this wiring.
+
+- Wire downstream sensor SDA to MPU XDA, and SCL to MPU XCL; use 3.3V
+  logic/pull-ups and common GND. Do not also connect these lines to GPIO40/41.
+  The downstream sensor shares the MPU host bus (currently GPIO9 SDA/GPIO8 SCL).
+  Which sensors use this route must be reflected in the final wiring manifest.
+- After Adafruit MPU initialization/reset, preserve unrelated register bits:
+  clear USER_CTRL (0x6A) bit5 I2C_MST_EN; set INT_PIN_CFG (0x37) bit1
+  I2C_BYPASS_EN. Do not overwrite FIFO configuration when changing these bits.
+- Read back both bits, then initialize/check downstream sensor identities and
+  addresses on that same TwoWire object. Adafruit setI2CBypass(true), if used,
+  must be checked against the installed library; explicitly verify master-off.
+- Configure once after each MPU power-up/full device reset, and repeat after
+  recovery that resets/reinitializes the MPU or changes these settings. Normal
+  sampling does not require rewriting bypass every cycle. The setting is volatile,
+  not permanent storage. An ESP reboot runs initialization again.
+- Acceptance: readback and sensor identity, cold boot, MCU reboot, MPU reset/recovery,
+  and 1kHz FIFO timing/integrity regression with downstream reads. Pending real tests.
+  Added bus traffic must not silently invalidate the existing acquisition budget.
+- Bypass is not a long-cable buffer. Keep wiring short and verify combined pull-ups.
+  Physical motor outputs remain disabled. No gain/calibration changes in this step.
+
+Reference: [TDK register map, INT_PIN_CFG and USER_CTRL](https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Register-Map1.pdf).
