@@ -1,0 +1,22 @@
+{
+  "engine": "Native KiCad synthetic connected/disconnected 3V3 copper geometry; native DRC intentionally not run",
+  "cases": [
+    {
+      "case": "used-pad-1-powered",
+      "power_graph_pass": true,
+      "full_pcb_accepted": false
+    },
+    {
+      "case": "used-pad-2-powered",
+      "power_graph_pass": true,
+      "full_pcb_accepted": false
+    },
+    {
+      "case": "sensor-vcc-disconnected",
+      "power_graph_pass": false,
+      "full_pcb_accepted": false
+    }
+  ],
+  "all_controls_pass": true,
+  "limits": "Synthetic tracks may intersect unrelated nets; only the targeted graph is tested; never manufacture these fixtures."
+}

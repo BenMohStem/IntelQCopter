@@ -103,5 +103,12 @@
     "report": "measurements/software/2026-10-27-gyro-motion-tool/README.md",
     "claim": "Five synthetic controls pass; existing 20000-sample stationary log matches serial and is rejected as operator rotation; PC tool produces integrated rates and 100Hz graph",
     "limits": "No physical rotations, scale validation, timestamp ground truth or flight acceptance; firmware/calibration untouched"
+  },
+  {
+    "id": "E-PCB-ZERO-METHOD",
+    "kind": "independent_native_KiCad_and_synthetic_feasibility_controls",
+    "report": "hardware/zero-jumper-study/method/README.md",
+    "claim": "Validator verifies actual bare-carrier ground/power geometry, pin maps, RF keepout coverage and native DRC/parity; 38 focused controls pass; current three-wire board correctly rejected as zero-wire",
+    "limits": "Synthetic fixtures not manufactured; no accepted zero-wire board implied; bounded routing failure is not proof of global impossibility"
   }
 ]

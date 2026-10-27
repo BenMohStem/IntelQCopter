@@ -1,0 +1,8 @@
+$ C:\Users\Mohamed\AppData\Local\Programs\KiCad\10.0\bin\kicad-cli.exe pcb drc --schematic-parity --format json --output C:\Users\Mohamed\Desktop\Work\QCopter-Stepwise\hardware\zero-jumper-study\method\runs\current-rf-jumper-negative-final\drc.json C:\Users\Mohamed\Desktop\Work\QCopter-Stepwise\hardware\home-etched-v3\dedicated-ground-jumpers\QCopter.kicad_pcb
+Found 0 violations
+Found 0 unconnected items
+Found 0 schematic parity issues
+Saved DRC Report to C:/Users/Mohamed/Desktop/Work/QCopter-Stepwise/hardware/zero-jumper-study/method/runs/current-rf-jumper-negative-final/drc.json
+
+$ C:\Users\Mohamed\AppData\Local\Programs\KiCad\10.0\bin\kicad-cli.exe sch export netlist --format kicadxml --output C:\Users\Mohamed\Desktop\Work\QCopter-Stepwise\hardware\zero-jumper-study\method\runs\current-rf-jumper-negative-final\netlist.xml C:\Users\Mohamed\Desktop\Work\QCopter-Stepwise\hardware\home-etched-v3\dedicated-ground-jumpers\QCopter.kicad_sch
+

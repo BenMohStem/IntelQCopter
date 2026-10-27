@@ -23,3 +23,5 @@ Canonical links, no duplicate runtime copies. The prior FIFO source was flashed/
 13. [View the current PCB in 3D](../hardware/home-etched-v3/dedicated-ground-jumpers/models3d/README.md), [native top render](../hardware/home-etched-v3/dedicated-ground-jumpers/output/3d-top.png). Open the PCB and press Alt+3. Models are illustrative; six dedicated jumper holes added; original module/header interfaces unchanged.
 
 14. [Latest minimal input guard and test evidence](../measurements/software/2026-10-27-input-guard/README.md). No motor output; no new hardware test.
+
+15. [Zero-jumper feasibility method and independent CAD gate](../hardware/zero-jumper-study/method/README.md). Tests and negative controls are evidence about the checker; no candidate is accepted merely because it was generated.

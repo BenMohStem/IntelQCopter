@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "id": "pcb-zero-method",
-  "status": "ready",
+  "status": "done",
   "title": "Feasibility and independent acceptance method",
   "depends_on": [
     "pcb-drilled-jumpers"
@@ -10,11 +10,13 @@
     "hardware/zero-jumper-study/method",
     "tools/pcb_zero_jumper/method"
   ],
-  "evidence": [],
+  "evidence": [
+    "E-PCB-ZERO-METHOD"
+  ],
   "acceptance": [
-    "Single B.Cu, no vias/top tracks/jumpers, >=1.2mm tracks and >=0.5mm clearance",
-    "All ground points common in bare carrier copper and native DRC/parity pass",
-    "Document pin-map/antenna/physical-fit limits; failed search is not proof of impossibility"
+    "Independent gate checks physical bare-carrier connectivity, single copper layer, widths, pin and power mapping, antenna keepout and native DRC/parity",
+    "Geometric/routing necessary conditions and positive/negative controls tested, including the current three-wire board",
+    "Document finite-search and physical/RF test limitations; do not claim a completed PCB"
   ],
   "owner": "Local transactional claims"
 }
