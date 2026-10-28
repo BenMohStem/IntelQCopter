@@ -1,6 +1,7 @@
 $ErrorActionPreference='Stop'
 $repoRoot=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
-$compiler=Join-Path $repoRoot '.venv-tests\Scripts\python-zig.exe'
+$zigCommand = Get-Command zig -ErrorAction SilentlyContinue
+$compiler = if ($zigCommand) { $zigCommand.Source } else { 'C:/WinLibs/zig/zig.exe' }
 $out=Join-Path $repoRoot 'build\sitl'
 New-Item -ItemType Directory -Force $out | Out-Null
 $env:ZIG_GLOBAL_CACHE_DIR=Join-Path $repoRoot 'build\zig-cache'

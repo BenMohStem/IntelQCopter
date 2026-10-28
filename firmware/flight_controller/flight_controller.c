@@ -884,6 +884,10 @@ static pid_t altitude_pid = {
 };
 static float altitude_hold_reference_m;
 static float hover_collective = FC_HOVER_THROTTLE_PLACEHOLDER;
+/* User policy, 2026-10-28: normalized ESC command fractions, not measured RPM. */
+#define FC_ARMED_IDLE_FRACTION 0.10f
+#define FC_NORMAL_MOTOR_CEILING 0.45f
+#define FC_BOOST_MOTOR_CEILING 0.65f
 static float boost_state;
 static bool altitude_reference_initialized;
 
@@ -1100,7 +1104,8 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
         altitude_estimator.height_m,pilot_vertical_speed,altitude_estimator.velocity_mps,dt);
     const float tilt_factor=fmaxf(0.5f,cosf(roll_estimator.angle_deg*FC_DEG_TO_RAD)
                                      *cosf(pitch_estimator.angle_deg*FC_DEG_TO_RAD));
-    const float collective=clampf((hover_collective+collective_correction)/tilt_factor,0.0f,.65f+.15f*boost);
+    const float ceiling=FC_NORMAL_MOTOR_CEILING+(FC_BOOST_MOTOR_CEILING-FC_NORMAL_MOTOR_CEILING)*boost;
+    const float collective=clampf((hover_collective+collective_correction)/tilt_factor,FC_ARMED_IDLE_FRACTION,ceiling);
 
     /* Provisional X-frame math in logical order FL, FR, RR, RL. The result is
        for simulation only until motor order, spin directions, and frame axes
@@ -1110,9 +1115,10 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
     for(unsigned i=1;i<4;i++){low=fminf(low,correction[i]);high=fmaxf(high,correction[i]);}
     // Uniformly scale only infeasible torque combinations, then shift collective
     // into the feasible interval. Independent clipping would distort torques.
-    const float scale=high-low>1 ? 1/(high-low) : 1;
-    const float allocated=clampf(collective,-low*scale,1-high*scale);
-    for(unsigned i=0;i<4;i++)out.motor[i]=clampf(allocated+scale*correction[i],0,1);
+    const float span=ceiling-FC_ARMED_IDLE_FRACTION;
+    const float scale=high-low>span ? span/(high-low) : 1;
+    const float allocated=clampf(collective,FC_ARMED_IDLE_FRACTION-low*scale,ceiling-high*scale);
+    for(unsigned i=0;i<4;i++)out.motor[i]=clampf(allocated+scale*correction[i],FC_ARMED_IDLE_FRACTION,ceiling);
 
     /* There is deliberately no hardware arming/output path in this scaffold. */
     out.armed = false;
