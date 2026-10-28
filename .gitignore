@@ -1,42 +1,5 @@
-.pio/
-.venv*/
-/build/
-.cache/
-.local/
 __pycache__/
 *.pyc
-*.tmp
-.env
-.env.*
-!*.example
-*.pem
-*.key
-
-# Keep the reviewed session raw console capture private; derived results are published.
-/artifacts/hardware/20261024T234658557289Z/
-
-# Original automatic pose recordings stay local; publish only reviewed derived evidence.
-/artifacts/pose-recordings/
-
-# Independent tilt validation: original sensor recordings stay local.
-/artifacts/tilt-recordings/
-
-# Original X-bias bench evidence stays local.
-/artifacts/bias-x-recordings/
-
-# Original full-XYZ bench streams stay local.
-/artifacts/accel-recordings/
-
-# Original gyro bench captures remain private.
-/artifacts/gyro-recordings/
-
-# Original live angle bench logs stay private.
-/artifacts/angle-recordings/
-
-/artifacts/fifo1000-recordings/
-
-/artifacts/native-fifo-tests/
-
-/artifacts/bench-checks/
-
-/artifacts/uploads/
+.venv/
+build/
+.preview/

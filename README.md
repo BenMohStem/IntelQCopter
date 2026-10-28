@@ -1,42 +1,42 @@
-# IntelQCopter - stepwise ESP32 flight controller
+# IntelQCopter — Autonomous Quadcopter
 
-**Target: 1,000 Hz standalone FC.** Current step: calibrated MPU6050 FIFO acquisition/state processing. One Arduino main.cpp; no motor output. Actual 1 kHz throughput and observed handler-budget tests pass after cross-core logging repair. FIFO1000_V2 also computes provisional body-frame gyro rates; known physical rotations remain pending.
+**USTHB · FGE · Département Automatique · RSI**
+Fourth-year engineering · Personal and Professional Project (RSI7.8)
+Report edition: **27 October 2026**
 
-[Current source](firmware/main.cpp) · [1 kHz stage and verification](docs/fifo1000-stage.md) · [Short plan](docs/PLAN.md) · [Important sources](important_sources/README.md).
+## Read the report
 
-## Checks
+**[Open the 20-page PDF](IntelQCopter.pdf)** · [Browser edition](report/index.html) · [Editable report](report/report.md)
+
+1. **Flight controller:** physics, PID, sensors, calibration and estimation.
+2. **ROS 2 and YOLO:** companion computer, perception and navigation.
+3. **Gazebo and RViz:** model, environment and software validation.
+4. **Resources:** hardware, software and professional method.
+5. **Handheld and links:** RP2040, LoRa, CC1101 and companion communication.
+
+The intended aircraft uses an RP2350 flight controller. A Raspberry Pi or Jetson companion is being sought. Figures distinguish measured evidence, analytic examples and proposed designs. Physical motor outputs remain disabled; flight acceptance is pending.
+
+<p align="center"><img src="report/assets/f450-red-white-concept.png" width="600" alt="Red and white F450 concept illustration"></p>
+
+*AI concept illustration; measured evidence and proposed tests are labelled in the report.*
+
+## Supporting evidence
+
+- [Materials inventory](report/bill-of-materials.csv)
+- [Requirements](report/requirements-register.json)
+- [Evidence provenance](report/evidence-manifest.json)
+- [Inspected source identity](report/source-inventory.json)
+- [PDF verification](report/validation.json)
+- `evidence/`: selected published recordings-derived reports/data, including failures; not a replacement for private raw recordings.
+
+## Rebuild
+
+Python 3, ReportLab, Matplotlib, NumPy, Pillow and Windows Arial fonts are required.
 
 ```powershell
-.\qcopter.ps1 check-all --native
-.\qcopter.ps1 build
+python -m pip install -r requirements.txt
+python tools/build_report.py .
+python tools/check_report.py
 ```
 
-These do not open the board or upload. Host tests execute actual firmware with fake peripherals; they are not ESP32 emulation or physical timing evidence.
-
-## Real acquisition
-
-After the new bench firmware has been uploaded, the assistant can record and verify 20,000 samples per run:
-
-```powershell
-.\qcopter.ps1 record-1khz --port COM3
-```
-
-Original samples/logs, MCU computation checks, checksum, throughput, FIFO occupancy and timing are saved automatically. The program rejects corrupt/incomplete capture rather than inventing samples. The assistant uploaded and tested current source with explicit permission. Captures run near 1000.69 Hz; inter-service jitter remains, so no strict periodic or full-FC readiness claim.
-
-## Preserved work
-
-[Accelerometer calibration](docs/full-accelerometer-calibration.md) · [Gyro bias restoration](docs/gyro-bias-application.md) · [Actual gyro restart results](measurements/mpu6050/2026-10-26-gyro-restart-validation/report.md) · [Actual repeatability results](measurements/mpu6050/2026-10-26-sampling-and-repeatability/report.md).
-
-BMP280/altitude are deferred. Gyro frame validation, attitude fusion, PID/mixer and simulated gains are later stages. Physical arming remains disabled. Pico firmware stays on the original main branch; this branch preserves the ESP32 software lessons.
-
-[Actual FIFO timing and preserved failures](measurements/mpu6050/2026-10-26-fifo-and-gyro-frame-results/report.md) · [Current gyro-frame step](docs/gyro-frame-stage.md).
-
-[Offline angle-filter preparation: equations and fewer-test design](docs/attitude-preparation.md) · [Results and graphs](measurements/mpu6050/2026-10-26-offline-attitude-preparation/report.md). Reuses 80k saved samples; four modeled combinations expose acceleration sensitivity. No MCU filter or acceptance change.
-
-[Multi-agent knowledge base: start here](knowledge/README.md).
-
-Current PCB: [three dedicated drilled GND jumpers](hardware/home-etched-v3/dedicated-ground-jumpers/README.md). RF edge copper is cleared. Fit G1/G2/G3 in seven dedicated holes; G2 has a middle tap. Native DRC, connectivity and schematic parity pass; physical checks remain required.
-
-[Historical CAD](hardware/home-etched-v3/README.md) is retained for traceability; use the current revision's matching masks.
-
-[Latest startup input-guard repair](measurements/software/2026-10-27-input-guard/README.md):54offline tests,19 actual-source host cases and ESP32 build pass. New revision is not uploaded; historical MCU timing remains bound to its earlier source.
+Student and supervisor names remain to complete. The programme identity is confirmed by the [official FGE listing](https://fge.usthb.dz/pages/Orientation-2026-2027). The [official RSI curriculum](https://fge.usthb.dz/storage/disk/Robotique-et-systemes-intelligents-MAJ-2025.pdf), PDF p. 11, lists **Projet Personnel Professionnel**, RSI7.8, semester 7, 2 credits and coefficient 1. The teacher's marking rubric remains to obtain.

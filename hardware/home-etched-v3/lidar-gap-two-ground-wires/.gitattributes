@@ -1,6 +1,0 @@
-* text=auto eol=lf
-*.pdf binary
-*.png binary
-*.zip binary
-*.svg -text -diff -whitespace
-*.log -text -diff -whitespace

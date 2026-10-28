@@ -1,8 +1,0 @@
-{
-  "engine": "Python protocol/arithmetic tests; no MCU or sensor execution",
-  "source_sha256": "f26d314eb637b9ccac15ee0a62376f722900d8affbbf0f8c66d20df1b2235422",
-  "unique_tests": 54,
-  "success": true,
-  "uploaded": false,
-  "serial_opened": false
-}

@@ -1,0 +1,21 @@
+{
+  "checked_on": "2026-10-28",
+  "university": "Université des Sciences et de la Technologie Houari Boumediene (USTHB)",
+  "faculty": "Faculté de Génie Électrique (FGE)",
+  "department": "Département Automatique",
+  "speciality": "Robotique et Systèmes Intelligents (RSI)",
+  "student_year": "Fourth-year engineering, supplied by student",
+  "academic_year": "2026-2027",
+  "module_official_title": "Projet Personnel Professionnel",
+  "module_english_translation": "Personal and Professional Project",
+  "code": "RSI7.8",
+  "semester": 7,
+  "credits": 2,
+  "coefficient": 1,
+  "programme_source": "https://fge.usthb.dz/formation/ingéniorat",
+  "curriculum_pdf": "https://fge.usthb.dz/storage/disk/Robotique-et-systemes-intelligents-MAJ-2025.pdf",
+  "curriculum_pdf_page": 11,
+  "curriculum_revision": "2025 update",
+  "source_sha256": "d44eb406137246eb1a8ac60dabc25d71dc76d6722f535efd77850b0beae4b6a3",
+  "not_verified": "Teacher marking rubric and named supervisor; credits/coefficient from published curriculum, not a report marking scheme"
+}

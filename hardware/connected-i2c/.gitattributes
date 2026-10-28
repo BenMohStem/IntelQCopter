@@ -1,4 +1,0 @@
-*.kicad_pcb text eol=lf
-*.kicad_mod text eol=lf
-*.kicad_sym text eol=lf
-*.svg -text -diff -whitespace

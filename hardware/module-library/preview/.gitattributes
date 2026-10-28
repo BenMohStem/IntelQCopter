@@ -1,2 +1,0 @@
-# Preserve native generated KiCad SVG bytes, including exporter whitespace.
-*.svg -text -diff -whitespace

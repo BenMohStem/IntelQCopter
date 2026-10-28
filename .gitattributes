@@ -1,11 +1,12 @@
-* text=auto
-*.py text eol=lf
-*.cpp text eol=lf
-*.json text eol=lf
+*.pdf binary
+*.png binary
+*.csv -text
 *.md text eol=lf
-*.csv text eol=lf
-*.log -text
-
-# Preserve exact raw-source fingerprint for the measurement checkpoint.
-archive/bench-checkpoints/raw-pose1000/main.cpp.txt -text
-firmware/main.cpp text eol=lf
+*.py text eol=lf
+*.json text eol=lf
+*.html text eol=lf
+*.svg text eol=lf
+*.txt text eol=lf
+evidence/** -text
+.gitignore text eol=lf
+.gitattributes text eol=lf

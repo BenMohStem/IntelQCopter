@@ -1,0 +1,114 @@
+{
+  "damping-poles": {
+    "kind": "ILLUSTRATIVE LTI MODEL",
+    "source": "wn=4 rad/s; zeta=0.35,0.7,1.2",
+    "caption": "Educational second-order responses, not tuned drone gains or simulated aircraft trials.",
+    "file": "assets/visual/damping-poles.png",
+    "sha256": "c33f1034914447e9a418f3427f0797362c58882e80a5a9b467b3e8fcb3c1ff2c"
+  },
+  "fusion-versus-average": {
+    "kind": "ANALYTIC INDEPENDENT-SENSOR EXAMPLE",
+    "source": "Unbiased observations of the same scalar; known variances",
+    "caption": "Inverse-variance fusion improves the model variance. Correlation, bias, different units or wrong dynamics invalidate the simple comparison.",
+    "file": "assets/visual/fusion-versus-average.png",
+    "sha256": "f501fec4c2aef5a0c7767c0efc1d1d507c15dd4a4b92d5f972d745df4d1098d1"
+  },
+  "yolo-architecture": {
+    "kind": "PROPOSED ARCHITECTURE",
+    "source": "Design + Ultralytics detector output contract",
+    "caption": "Proposed perception-to-control pipeline. Detection is not depth, localization or a collision-free corridor.",
+    "file": "assets/visual/yolo-architecture.png",
+    "sha256": "2477e8c0d3745338b1ff8bd34506c8a69a3eb5d46425723a70c00ba539439d06"
+  },
+  "navigation-implementation": {
+    "kind": "PROPOSED ARCHITECTURE",
+    "source": "Report design",
+    "caption": "A bounded C++ A* prototype exists; generalized n-node ROS integration, real localization and physical bridge acceptance remain pending.",
+    "file": "assets/visual/navigation-implementation.png",
+    "sha256": "0ccc09861051dfb3993d44550d7281c6ee44392271e5baaf24d078674ed0c49a"
+  },
+  "mission-nodes": {
+    "kind": "PLANNED TEST SCHEMATIC",
+    "source": "Mission definition, no planner execution",
+    "caption": "The dashed node sequence is input geometry; it does not claim obstacle avoidance or a collision-free path.",
+    "file": "assets/visual/mission-nodes.png",
+    "sha256": "839e69f430bf4cb29c33464cca21b29d10f46f08e53eec6f79f8090b640faa14"
+  },
+  "simulation-proof": {
+    "kind": "PROPOSED ARCHITECTURE",
+    "source": "Report design",
+    "caption": "A test harness may stimulate inputs and record outputs; it may not secretly move the aircraft to pass.",
+    "file": "assets/visual/simulation-proof.png",
+    "sha256": "05a6210dbfafc2ecff640993fa286315b1a8092d450e8448d2e7313bdc29d4c7"
+  },
+  "battery-model": {
+    "kind": "ANALYTIC EXAMPLE",
+    "source": "4200 mAh; ideal constant 10 A; divider ratio 5.7",
+    "caption": "This is not measured endurance. Whole-pack monitoring cannot protect each cell; a motor cut in flight causes a fall.",
+    "file": "assets/visual/battery-model.png",
+    "sha256": "83349fa18be57be1a341865afecdde903b91d4d41fa71e00f277ad4b5d4faa31"
+  },
+  "project-brief": {
+    "kind": "PROPOSED ARCHITECTURE",
+    "source": "Project architecture",
+    "caption": "Three complementary tasks: the FC stabilizes, the companion navigates, the simulator evaluates.",
+    "file": "assets/visual/project-brief.png",
+    "sha256": "fc1faf86fc4ddc3b1f6a9602b5beb61c0c1376c5cc20b66f069204d628eb2840"
+  },
+  "frames-geometry": {
+    "kind": "ANALYTIC GEOMETRY",
+    "source": "Nominal F450 diagonal; ENU/FLU convention",
+    "caption": "L is centre-to-motor distance; a is its horizontal projection. R redirects the body thrust axis into world coordinates.",
+    "file": "assets/visual/frames-geometry.png",
+    "sha256": "e31b3a60aa7112c13f52429f9efc07c516c860555d85c0fd2897616097cd55ee"
+  },
+  "pid-feedback": {
+    "kind": "PROPOSED CASCADED FEEDBACK",
+    "source": "PID design; educational signal diagram",
+    "caption": "Roll/pitch each use an outer angle and inner rate loop. Yaw uses rate feedback; height supplies the vertical-speed loop.",
+    "file": "assets/visual/pid-feedback.png",
+    "sha256": "0f072f144c88031cd18d1958c84f04cfeaf26e60b8e90cf88dc98651d265a144"
+  },
+  "calibration-fit": {
+    "kind": "CALIBRATION METHOD",
+    "source": "Report design",
+    "caption": "Known reference poses and measured XYZ means identify a bias vector and response matrix. Hold out a repeat to evaluate residuals.",
+    "file": "assets/visual/calibration-fit.png",
+    "sha256": "306de2d07f23617a18b2a973e9fc140171f69cdb970fb95c47d7d93b22ee635f"
+  },
+  "estimator-control": {
+    "kind": "PROPOSED ARCHITECTURE",
+    "source": "Report design",
+    "caption": "Estimation supplies feedback; PID supplies control. The estimated height and vertical speed feed PID loops.",
+    "file": "assets/visual/estimator-control.png",
+    "sha256": "ca65a26149d8bec279ebb2c6d8511bdeeb8c4f7d466e9f18166ebcc1fa8f8d2b"
+  },
+  "ros-pipeline": {
+    "kind": "PROPOSED ARCHITECTURE",
+    "source": "Report design",
+    "caption": "The companion requests motion; the RP2350 owns stabilization and motor commands. Real localization remains an integration gate.",
+    "file": "assets/visual/ros-pipeline.png",
+    "sha256": "7695c3a23cbbc0dd2a07b90d99c0da7d2dea99b19a1ecf8e37a43dff3b7c27cd"
+  },
+  "garden-model": {
+    "kind": "ILLUSTRATIVE 3D TEST DESIGN",
+    "source": "Synthetic garden geometry; nominal F450",
+    "caption": "A proposed scene, not a Gazebo screenshot or successful navigation. Obstacles vary between scenarios and are not given to the planner.",
+    "file": "assets/visual/garden-model.png",
+    "sha256": "3dd3ab141a3733a3053c9e11c4feb7a64ffc28bfa8069b883ac900356da67727"
+  },
+  "handheld-interface": {
+    "kind": "PROPOSED USER INTERFACE",
+    "source": "Custom RP2040 handheld, not a product photograph",
+    "caption": "Two centred sticks, triggers/buttons and status display. Exact mechanical design and gesture mapping remain to select.",
+    "file": "assets/visual/handheld-interface.png",
+    "sha256": "28d61f75783d751e8b3f08b3faec339b41993f1cd3093761205fbf24585d3298"
+  },
+  "communication-contract": {
+    "kind": "PROPOSED ARCHITECTURE",
+    "source": "Report design",
+    "caption": "Two separate authorities: pilot references and selected-mode companion references. CC1101 secondary links remain reserved.",
+    "file": "assets/visual/communication-contract.png",
+    "sha256": "b529df08e816c3595d2198b939b33820531afd307a99e4348c9347adcae87987"
+  }
+}

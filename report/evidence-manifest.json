@@ -1,0 +1,44 @@
+[
+  {
+    "reference": "P1",
+    "path": "evidence/mpu6050/2026-10-25-secured-mount-analysis-v2/report.md",
+    "sha256": "d1d8201c461cd23c76d4501b34b440c9f953e8100fa43efdb64430cbc7583400",
+    "url": "https://github.com/BenMohStem/IntelQCopter/blob/85c48cd/measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/report.md"
+  },
+  {
+    "reference": "P2",
+    "path": "evidence/mpu6050/2026-10-26-gyro-restart-validation/report.md",
+    "sha256": "bea0fef983fe5f883912e281ad81e5f1f38363e490907a2e35cea0831b3e51f6",
+    "url": "https://github.com/BenMohStem/IntelQCopter/blob/85c48cd/measurements/mpu6050/2026-10-26-gyro-restart-validation/report.md"
+  },
+  {
+    "reference": "P3",
+    "path": "evidence/mpu6050/2026-10-26-fifo-and-gyro-frame-results/report.md",
+    "sha256": "7b486e7f0fcc2ec3907df7c027ea51e050e68707e1b4fa57225ee25484484a5c",
+    "url": "https://github.com/BenMohStem/IntelQCopter/blob/85c48cd/measurements/mpu6050/2026-10-26-fifo-and-gyro-frame-results/report.md"
+  },
+  {
+    "reference": "P4",
+    "path": "evidence/mpu6050/2026-10-26-offline-attitude-preparation/report.md",
+    "sha256": "d572a4e73a2537287af378fbb0ee4d38ca136cab5cde8b1aa9ded9e0bc8112be",
+    "url": "https://github.com/BenMohStem/IntelQCopter/blob/85c48cd/measurements/mpu6050/2026-10-26-offline-attitude-preparation/report.md"
+  },
+  {
+    "reference": "P5",
+    "path": "evidence/software/2026-10-27-input-guard/summary.json",
+    "sha256": "1dfc13b3dc4e8b6a68a5f972e6c0d4ce1a4660b36610faa05954b8a87dc9b444",
+    "url": "https://github.com/BenMohStem/IntelQCopter/blob/85c48cd/measurements/software/2026-10-27-input-guard/summary.json"
+  },
+  {
+    "reference": "P1-data",
+    "path": "evidence/mpu6050/2026-10-25-secured-mount-analysis-v2/analysis.json",
+    "sha256": "a7222d590d032c4a2de277ea4d1e75d29355a82fc6c667de6f3d56bc8b017fc9",
+    "url": "https://github.com/BenMohStem/IntelQCopter/blob/85c48cd/measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/analysis.json"
+  },
+  {
+    "reference": "P4-data",
+    "path": "evidence/mpu6050/2026-10-26-offline-attitude-preparation/analysis.json",
+    "sha256": "8a571c969faa1f3bbde0d53d275b7c91799f526065cbb443a38062f2c5503ee9",
+    "url": "https://github.com/BenMohStem/IntelQCopter/blob/85c48cd/measurements/mpu6050/2026-10-26-offline-attitude-preparation/analysis.json"
+  }
+]
