@@ -18,13 +18,17 @@ $localConfig = Join-Path $projectRoot '.local/config.json'
 $local = if (Test-Path -LiteralPath $localConfig) { Get-Content -LiteralPath $localConfig -Raw | ConvertFrom-Json } else { $null }
 $python = if ($env:QCOPTER_PYTHON) { $env:QCOPTER_PYTHON } elseif ($local -and $local.python) { $local.python } else { $null }
 if (-not $python) {
-    foreach ($candidate in @('.venv/Scripts/python.exe', '.venv-isaacsim/Scripts/python.exe')) {
-        $path = Join-Path $projectRoot $candidate
-        if (Test-Path -LiteralPath $path) { $python = $path; break }
+    $systemPython = Get-Command python, python3 -CommandType Application -ErrorAction SilentlyContinue |
+        Where-Object { $_.Source -notlike '*WindowsApps*' } | Select-Object -First 1
+    if ($systemPython) { $python = $systemPython.Source }
+}
+if (-not $python -and $env:LOCALAPPDATA) {
+    foreach ($version in @('Python315', 'Python314', 'Python310')) {
+        $candidate = Join-Path $env:LOCALAPPDATA "Programs/Python/$version/python.exe"
+        if (Test-Path -LiteralPath $candidate) { $python = $candidate; break }
     }
 }
-if (-not $python) { $python = Join-Path $env:USERPROFILE '.platformio/penv/Scripts/python.exe' }
-if (-not (Test-Path -LiteralPath $python)) { $python = 'python' }
+if (-not $python) { throw 'System Python not found. Install it or set QCOPTER_PYTHON / .local/config.json explicitly.' }
 $script = if ($spec.path) { Join-Path $projectRoot $spec.path } else { $null }
 if ($script -and -not (Test-Path -LiteralPath $script)) { throw "Command target is missing: $script" }
 $prefix = @($spec.args)

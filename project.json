@@ -82,6 +82,18 @@
       "path": "tools/validation/check_layout.py",
       "description": "Validate active paths and script syntax",
       "args": []
+    },
+    "host-inspect": {
+      "runtime": "python",
+      "path": "tools/setup/inspect_linux_host.py",
+      "description": "Read-only Linux host inventory; Windows explains native Debian boot requirements",
+      "args": []
     }
+  },
+  "plans": {
+    "general": "docs/general-plan.md",
+    "onboard_host_and_pid": "docs/onboard-host-and-pid-research.md",
+    "native_debian": "docs/native-debian-setup.md",
+    "debian_preparation": "tools/setup/debian_host.sh"
   }
 }

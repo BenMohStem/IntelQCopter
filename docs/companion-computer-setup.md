@@ -86,3 +86,7 @@ below the freshness deadlines; test dropout and companion restart before flight.
 The known-size blue-panel demo is not general arbitrary-obstacle avoidance. A
 single forward lidar ray cannot certify the complete rotor corridor; a downward
 mount primarily helps altitude. The mounting choice remains open for real hardware.
+
+## User revision 2026-10-28: stripped N150 Plus candidate
+
+The user now proposes a battery/display-free Samsung N150 Plus onboard, retaining its camera and wireless SSH/ROS connection, powered by a separately verified flight-pack converter. This is a candidate that supersedes the earlier purely deferred hardware-selection scope, not a tested deployment. See [general plan](general-plan.md), [host and PID research](onboard-host-and-pid-research.md) and [native Debian workflow](native-debian-setup.md). No old source measurements, assumed vehicle mass, camera extrinsics or physical acceptance were replaced.

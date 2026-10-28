@@ -21,3 +21,7 @@
 ## Repository organization
 
 [Architecture, cache lifecycle and migration map](architecture.md). Run `qcopter.ps1 help` from the root.
+
+- [General plan: onboard N150, native Debian and PID tuning](general-plan.md) — dated candidate/dependency plan and no physical acceptance.
+- [Onboard host and auto-PID research](onboard-host-and-pid-research.md) — headless power/camera feasibility, server architecture and primary research sources.
+- [Native Debian preparation](native-debian-setup.md) — existing dual-boot workflow and read-only/system-tool helper.
