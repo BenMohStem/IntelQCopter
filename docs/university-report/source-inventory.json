@@ -1,0 +1,89 @@
+{
+  "method": "Read-only source inspection; no build/upload/flight",
+  "sources": [
+    {
+      "path": "project.json",
+      "commit": "bce665ad97adbfcb282f02970a1db599e67e6479",
+      "sha256_committed_bytes": "5b847527cc269ebd044a5466fca384147a1e455d8f64dfbca211de52c433bf51",
+      "working_matches_after_LF_normalization": true,
+      "url": "https://github.com/BenMohStem/IntelQCopter/blob/bce665ad97adbfcb282f02970a1db599e67e6479/project.json"
+    },
+    {
+      "path": "firmware/flight_controller/flight_controller.c",
+      "commit": "bce665ad97adbfcb282f02970a1db599e67e6479",
+      "sha256_committed_bytes": "3858b16b51da4439ec0ddfcc7fe7ccf67ee528b7b5c3baa3dffddf151c5d079d",
+      "working_matches_after_LF_normalization": true,
+      "url": "https://github.com/BenMohStem/IntelQCopter/blob/bce665ad97adbfcb282f02970a1db599e67e6479/firmware/flight_controller/flight_controller.c"
+    },
+    {
+      "path": "firmware/handler_controller/handler_controller.c",
+      "commit": "bce665ad97adbfcb282f02970a1db599e67e6479",
+      "sha256_committed_bytes": "24b361407e8906b826e8e322a1a327aa37624c5585cf4b05a2748b47b988af4b",
+      "working_matches_after_LF_normalization": true,
+      "url": "https://github.com/BenMohStem/IntelQCopter/blob/bce665ad97adbfcb282f02970a1db599e67e6479/firmware/handler_controller/handler_controller.c"
+    },
+    {
+      "path": "companion/README.md",
+      "commit": "bce665ad97adbfcb282f02970a1db599e67e6479",
+      "sha256_committed_bytes": "834770192dd274005a60fe2dc38402476b6071152e27d49999bca0464c74dcbe",
+      "working_matches_after_LF_normalization": true,
+      "url": "https://github.com/BenMohStem/IntelQCopter/blob/bce665ad97adbfcb282f02970a1db599e67e6479/companion/README.md"
+    },
+    {
+      "path": "companion/ros2_ws/src/qcopter_autonomy/src/mission_node.cpp",
+      "commit": "bce665ad97adbfcb282f02970a1db599e67e6479",
+      "sha256_committed_bytes": "a5562ef97934df09f4fc734da53c06d59525d2e3a232e0c1ca68e8362b4e481a",
+      "working_matches_after_LF_normalization": true,
+      "url": "https://github.com/BenMohStem/IntelQCopter/blob/bce665ad97adbfcb282f02970a1db599e67e6479/companion/ros2_ws/src/qcopter_autonomy/src/mission_node.cpp"
+    },
+    {
+      "path": "companion/ros2_ws/src/qcopter_autonomy/src/navigator_node.cpp",
+      "commit": "bce665ad97adbfcb282f02970a1db599e67e6479",
+      "sha256_committed_bytes": "144276bdf99ccd00e8662b556a3d4d7d16c70a9f4d2cbcd810afb53e6ae104c5",
+      "working_matches_after_LF_normalization": true,
+      "url": "https://github.com/BenMohStem/IntelQCopter/blob/bce665ad97adbfcb282f02970a1db599e67e6479/companion/ros2_ws/src/qcopter_autonomy/src/navigator_node.cpp"
+    },
+    {
+      "path": "companion/ros2_ws/src/qcopter_autonomy/src/navigation.cpp",
+      "commit": "bce665ad97adbfcb282f02970a1db599e67e6479",
+      "sha256_committed_bytes": "818c9dfbb1efadd772429fa089a5234b9f032407d2ff4b1a17c5eb47d7542d31",
+      "working_matches_after_LF_normalization": true,
+      "url": "https://github.com/BenMohStem/IntelQCopter/blob/bce665ad97adbfcb282f02970a1db599e67e6479/companion/ros2_ws/src/qcopter_autonomy/src/navigation.cpp"
+    },
+    {
+      "path": "companion/ros2_ws/src/qcopter_autonomy/src/yolo_node.cpp",
+      "commit": "bce665ad97adbfcb282f02970a1db599e67e6479",
+      "sha256_committed_bytes": "e05410fbfb8e60e37654dc6b584a47706e5ef2b50ad577f4a80fa1a51283348e",
+      "working_matches_after_LF_normalization": true,
+      "url": "https://github.com/BenMohStem/IntelQCopter/blob/bce665ad97adbfcb282f02970a1db599e67e6479/companion/ros2_ws/src/qcopter_autonomy/src/yolo_node.cpp"
+    },
+    {
+      "path": "companion/ros2_ws/src/qcopter_autonomy/src/panel_pose_node.cpp",
+      "commit": "bce665ad97adbfcb282f02970a1db599e67e6479",
+      "sha256_committed_bytes": "0e30c754a2784e60430b88d7d3fd02a33d34384b6cccc92cdc9144b73c8b4745",
+      "working_matches_after_LF_normalization": true,
+      "url": "https://github.com/BenMohStem/IntelQCopter/blob/bce665ad97adbfcb282f02970a1db599e67e6479/companion/ros2_ws/src/qcopter_autonomy/src/panel_pose_node.cpp"
+    },
+    {
+      "path": "companion/ros2_ws/src/qcopter_autonomy/srv/RequestMission.srv",
+      "commit": "bce665ad97adbfcb282f02970a1db599e67e6479",
+      "sha256_committed_bytes": "0ed5def5c13d7bae414926a2e1b0281c919cae77b7fb3a9feaa3fbb11ba62f69",
+      "working_matches_after_LF_normalization": true,
+      "url": "https://github.com/BenMohStem/IntelQCopter/blob/bce665ad97adbfcb282f02970a1db599e67e6479/companion/ros2_ws/src/qcopter_autonomy/srv/RequestMission.srv"
+    },
+    {
+      "path": "companion/ros2_ws/src/qcopter_autonomy/msg/AutonomySetpoint.msg",
+      "commit": "bce665ad97adbfcb282f02970a1db599e67e6479",
+      "sha256_committed_bytes": "122da3df907984e11815da78eefaea0e4437574f7d8373bc3ed525f5de5e08d9",
+      "working_matches_after_LF_normalization": true,
+      "url": "https://github.com/BenMohStem/IntelQCopter/blob/bce665ad97adbfcb282f02970a1db599e67e6479/companion/ros2_ws/src/qcopter_autonomy/msg/AutonomySetpoint.msg"
+    },
+    {
+      "path": "companion/ros2_ws/src/qcopter_description/urdf/f450.urdf",
+      "commit": "bce665ad97adbfcb282f02970a1db599e67e6479",
+      "sha256_committed_bytes": "411faf5bd4c4bf3f3d796425932a10f7e4a387460fd7bd6f5f1c197863d54ba4",
+      "working_matches_after_LF_normalization": true,
+      "url": "https://github.com/BenMohStem/IntelQCopter/blob/bce665ad97adbfcb282f02970a1db599e67e6479/companion/ros2_ws/src/qcopter_description/urdf/f450.urdf"
+    }
+  ]
+}

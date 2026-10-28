@@ -140,3 +140,8 @@ Sources:
 ## Visual mathematical university report - 28 October 2026
 
 English edition3.0 replaces long prose/pinout explanation in the main narrative with32technical visuals and34equation panels.30pages,45requirements,12verification cases and31BOMentries remain; complete v2.1text is preserved separately. The red/white F450 cover is labelled generated concept artwork. No firmware,calibration,simulation,hardware or flight acceptance changes.
+
+
+## University report target architecture - 28 October 2026
+
+Edition4.0 focuses on the intended RP2350/RP2040 Pico SDK system,LoRa primary and two reserved CC1101 links per side. Pi or Jetson ROS2 companion is still sought. Added GitHub URL/QR,branch/version map,PID learning rationale,fusion-vs-average proof and ROS2/navigation source inventory. ESP32 remains the preliminary bench platform; its measurements are not Pico timing. This documentation-only change does not switch worktree branches or modify runtime code. After-report discussion:Intel N-series computer plus camera budget idea remains pending.

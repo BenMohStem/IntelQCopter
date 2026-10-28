@@ -3,11 +3,11 @@
 
 **Professional and Personal Project**
 
-**IQC-PPP-002 | Visual mathematical edition 3.0 | 28 October 2026**
+**IQC-PPP-002 | Pico system edition 4.0 | 28 October 2026**
 
 Student, institution, supervisor and academic year: complete before submission.
 
-The cover is an AI-generated conceptual F450 illustration: two red and two white arms. It is not a photograph, dimensional model or test result. Target: 1 kHz FC; current hardware: ESP32-S3; ROS 2 companion: optional. Flight acceptance remains pending; physical motor outputs remain disabled.
+Target system: RP2350 flight controller, RP2040 handheld, LoRa main command link and two reserved CC1101 links per side. An onboard Raspberry Pi or NVIDIA Jetson running ROS 2 is being sought; neither has been selected. The red/white F450 cover is AI concept artwork, not a test photograph. Flight acceptance remains pending; motor outputs remain disabled.
 
 ---
 ## Contents and evidence legend
@@ -32,7 +32,55 @@ The cover is an AI-generated conceptual F450 illustration: two red and two white
 
 **D** = user decision; **P** = proposed target; **TBD** = unresolved. Historical hardware evidence, offline replay, synthetic models and planned architectures are labelled separately. No new hardware or flight experiment was run for this edition.
 
+**Target versus prototype:** RP2350/RP2040 is the intended project architecture. The ESP32-S3/Xbox work is an experimental branch that supplied preliminary sensor and software evidence; those measurements are not RP2350 timing or flight acceptance. The companion is optional for stable manual flight and required for the intended onboard navigation mode.
+
 **Reading map:** physics -> calibration -> estimation -> control -> perception/navigation -> verification. Complete requirements and materials follow the visual chapters. Pin wiring and low-level syntax are outside the main academic narrative; the preserved engineering baseline remains available as a reference.
+
+---
+## Repository versions and engineering history
+
+[[REPO]]
+
+[[VIS:version-map]]
+
+| Branch or workstream | Purpose | Interpretation |
+|---|---|---|
+| main | RP2350 flight_controller.c and RP2040 handler_controller.c; Pico SDK; ROS 2 packages | Intended architecture; prototype source is not hardware/flight acceptance |
+| esp32-xbox | ESP32-S3 / Xbox experimental implementation | Alternative prototype; do not transfer its platform-specific assumptions silently |
+| codex/stepwise-esp32 | Incremental sensor/calibration experiments and current report | ESP32 evidence retains board, source and configuration identity |
+| ROS 2 / Gazebo | Companion, perception, mission and simulation packages | Shared research workstream; each test must name its actual engine and command path |
+
+**Regular version control:** each meaningful completed change receives a descriptive local commit and a GitHub push after relevant checks. Preserve failed logs and earlier versions. If a step fails, repair it in a new commit and revalidate its dependants; do not rewrite history or silently reuse old acceptance. Conversations alone do not need empty commits.
+
+**Report lineage:** v2.1 detailed engineering baseline -> v3 visual mathematical edition -> v4 Pico-target system edition. Earlier documents remain in reference files and Git history. The repository is public; credentials, environments and unrelated personal material are excluded. Source/code baselines and hashes are listed separately from measured results.
+
+---
+## RP2350 flight controller and RP2040 handheld
+
+[[VIS:pico-responsibilities]]
+
+[[VIS:handheld-chain]]
+
+**Aircraft:** RP2350 Cortex-M33 target, Pico SDK, one flight_controller.c. Core 0 is proposed for the bounded 1 kHz estimation/control path; core 1 handles radio and slower work through timestamped queues. Each bus has one owner; slow requests sharing the IMU bus must be scheduled without blocking the critical path. RP2350 provides hardware single-precision floating point [R10].
+
+**Handheld:** RP2040, Pico SDK, one handler_controller.c; two centred joysticks, LB/RB, LT/RT, additional direction/mode buttons and a display. Neutral calibration, dead zone, filtering, debounce, sequence and link-health handling precede transmission. Six analogue inputs require an acquisition solution: the existing prototype uses a 74HC4051 multiplexer; settling and channel calibration need physical checks. Display, power source and final gesture mapping remain to select.
+
+**Actual source status [P6]:** the Pico FC scaffold still declares a 500 Hz loop and stub radio/sensor/output interfaces; the report's 1 kHz target therefore requires implementation and fresh RP2350 profiling. Neither the existing scaffold nor ESP32 measurements prove this target. Physical outputs remain disabled.
+
+Preliminary calibration informs the design but is not transferred blindly: changing mounting, range, scale or acquisition settings requires affected checks to be repeated.
+
+---
+## LoRa command link and reserved CC1101 channels
+
+[[VIS:radio-budget]]
+
+[[EQ:T_{sym}=\frac{2^{SF}}{BW},\qquad T_{link}=T_{air}+T_{queue}+T_{decode},\qquad T_{age}<T_{valid}]]
+
+One LoRa module on each side carries the principal pilot-command link. Two CC1101 modules on each side are reserved for secondary data links; their roles are not implemented or assumed safety redundancy. SPI/UART details depend on the chosen LoRa module; CC1101 is an SPI-controlled sub-GHz transceiver [R11].
+
+**Interface contract:** version, sequence, normalized sticks/triggers, buttons, CRC and validity age. The legacy Pico command frame is 22 bytes; future mode/mission changes require an explicit versioned extension. The LoRa cadence is selected from measured packet airtime, interference and required command age, not from the 1 kHz inner-loop rate. The FC holds bounded references between fresh packets.
+
+**Acceptance:** exact modules, antennas, band, power supply, command rate, loss bursts, delay, reconnect and radio coexistence. Multiple radios sharing power, spectrum or antennas are not automatically independent. Stale commands must be rejected; the flight-phase loss response remains to approve. Local RF operating constraints must be checked before transmission.
 
 ---
 ## Flight behaviour and control architecture
@@ -49,6 +97,8 @@ The cover is an AI-generated conceptual F450 illustration: two red and two white
 | RT / LT | Bounded increase / decrease | Gentle profile; reserve correction authority |
 
 **Six PID blocks:** two angle, two rate, one yaw rate and one vertical-speed PID. An outer proportional height-to-speed law is an option, not a frozen implementation. Mode transitions, boost interaction and vertical saturation still require design review.
+
+**Personal design rationale:** I chose PID control to apply the feedback-control concepts I learned: error feedback, proportional response, integral rejection of persistent error, derivative damping, stability and sampling. Its interpretable gains let me connect mathematics to measurements. This is an educational and engineering choice, not a claim that PID is optimal for every flight condition. Cascades, filtering and saturation must still be justified experimentally.
 
 ---
 ## F450 geometry and force balance
@@ -171,6 +221,23 @@ For independent samples, the last expression reduces to Sigma/N. With correlatio
 MPU user offsets are volatile. Restore against the documented reset baseline, read back, then apply only the remaining software bias. Do not subtract the full bias twice or use the accelerometer scale matrix as a gyro rotation. Physical gyro direction/scale checks remain pending.
 
 ---
+## Multisensor fusion versus a simple average
+
+[[VIS:fusion-versus-average]]
+
+For two unbiased independent measurements of the same scalar x, let y1 = x + e1 and y2 = x + e2, with variances R1 and R2. Choose an unbiased linear estimate xhat = (1-w)y1 + w y2; its variance is minimized by inverse-variance weighting.
+
+[[EQ:P(w)=(1-w)^2R_1+w^2R_2,\quad\frac{dP}{dw}=0\ \Longrightarrow\ w^*=\frac{R_1}{R_1+R_2}]]
+
+[[EQ:P^*=\frac{R_1R_2}{R_1+R_2}\le\min(R_1,R_2),\qquad P_{average}=\frac{R_1+R_2}{4}]]
+
+[[EQ:\mathbf w^*=\frac{R^{-1}\mathbf{1}}{\mathbf{1}^TR^{-1}\mathbf{1}},\qquad P^*=(\mathbf{1}^TR^{-1}\mathbf{1})^{-1}\quad\mathrm{(full\ covariance)}]]
+
+**Example:** sigma1 = 1 and sigma2 = 3 in the same units. A 50/50 average gives sigma = 1.581, worse than sensor 1 alone. Optimal weighting gives sigma = 0.949. The noisier sensor contributes only 10 percent. No Gaussian assumption is required for this minimum-variance linear weighting under the stated covariance model.
+
+**Kalman connection:** a prediction is fused with an observation using uncertainty and dynamics. Gyro rate and acceleration cannot be averaged directly: their units and models differ. Integrate the gyro and derive a valid gravity-angle observation first. With equal independent static-sensor variance, the ordinary mean is already optimal among unbiased linear combinations. Known correlation requires the full positive-definite covariance R; bias or model mismatch can invalidate the predicted physical improvement.
+
+---
 ## Scalar Kalman filter and trust
 
 [[VIS:kalman-loop]]
@@ -256,11 +323,31 @@ The two-state model estimates z and vz; it does not automatically estimate accel
 
 **Measured history [P3]:** trial 2 was malformed and rejected; earlier trials exceeded the handler budget. Repair separated acquisition/calculation from synchronous serial formatting using a bounded queue. The later 822 microsecond maximum leaves only 178 microseconds to 1 ms if compared directly; a complete future FC includes additional work.
 
+All measured timing on this page belongs to the **ESP32-S3 preliminary platform**, not RP2350. The main Pico scaffold's 500 Hz setting and unconnected drivers remain a separate implementation baseline [P6].
+
 **Proposed target:** <=800 microseconds critical work, >=200 microseconds reserve, and no observed deadline miss in a defined 10-minute loaded test. Historical samples near 1000.69 Hz do not prove a periodic hard deadline. Inter-service gaps, clocks and source changes remain relevant.
 
 **P5 build only:** 54 Python checks, 19 actual-source host cases, ESP32 compile; 19504 bytes RAM and 312901 bytes flash. Source f26d314e was not uploaded in that record. Historical timing source 91947b5c is different. A host fake peripheral is not an ESP32 timing measurement.
 
 **Bench source configuration:** accelerometer +/-8g, gyro +/-500 degrees/s, nominal 260 Hz low-pass setting with readback checks. Sensor bandwidth is not the PID bandwidth. These settings do not validate the revised sensor wiring or a full control loop.
+
+---
+## ROS 2 software implementation and interfaces
+
+[[VIS:ros2-implementation]]
+
+| Boundary | Implementation contract |
+|---|---|
+| Ground station to companion | IP network, mission upload/approval, status and cancel; separate from LoRa pilot link |
+| Camera and perception | Stamped RGB plus intrinsics; detections become metric obstacles only with validated geometry |
+| Localization | Pose/velocity/covariance with coherent map, odom and body frames; freshness checked |
+| Mission and navigator | Ordered-node progression, local-map updates, replanning and bounded references |
+| Serial bridge to RP2350 | Versioned setpoints and health; CRC, timestamps, expiry and authority arbitration |
+| Evidence recording | rosbag2/topics, video and FC logs aligned to recorded clocks and source versions |
+
+**Existing code [P6]:** qcopter_autonomy contains C++ mission, navigator, YOLO and panel-pose nodes plus custom messages; qcopter_description contains the F450 URDF/RViz model. The existing mission service specifies start/finish only. A cancellable n-node ROS action with progress feedback is a proposed extension, not an already verified feature [R13].
+
+**Communication design:** use small bounded histories; sensor streams prioritize freshness, mission requests need acknowledged handling, and the FC independently rejects stale commands. ROS QoS compatibility must be checked; reliable delivery alone does not guarantee a deadline [R13]. ROS 2 runs on the companion, while the RP2350 runs Pico SDK C firmware rather than a full ROS installation.
 
 ---
 ## YOLO to obstacle avoidance architecture
@@ -310,13 +397,47 @@ The clearance graph assumes 0.25 s total latency and 1 m/s squared braking only 
 **Communication:** versioned framed 3.3 V UART is proposed, with length, CRC, sequence, timestamp, units, mission identity and command expiry. Proposed heartbeat 10 Hz and expiry 300 ms require review. Invalid frames do not renew validity. Companions may be absent; plugging one in never changes mode automatically. Loss reactions remain to approve.
 
 ---
+## Navigation implementation and remaining gaps
+
+[[VIS:navigation-implementation]]
+
+[[EQ:f(n)=g(n)+h(n),\qquad h(n)=\|\mathbf p_n-\mathbf p_{goal}\|]]
+
+[[EQ:r_{inflate}\ge r_{vehicle}+d_{stop}+k_\sigma\sigma_{position}+d_{margin}]]
+
+**Existing algorithm [P6]:** an A* grid planner and waypoint follower exist in the portable C++ core. The inspected prototype uses 0.2 m cells, fixed 0.65 m obstacle inflation and a bounded local XY map. Those constants are prototype settings, not validated aircraft clearance or general 3D navigation. The target must account for swept propeller volume, stopping distance and localization uncertainty.
+
+**Existing range demonstration:** known-size blue panels can supply monocular PnP range when their 1.09 x 1.69 m inner dimensions and trained detector are explicitly confirmed. This does not solve arbitrary obstacle depth. Simulated odometry/contact and any optional depth-image branch must be declared; a real localization source and unknown-space policy remain unresolved.
+
+**Implementation sequence:** synchronize sensors and transforms -> validate metric obstacle observations -> update the local map -> replan -> track the route with bounded angle/yaw-rate/vertical references -> send through the RP2350 bridge. Iterate intermediate nodes; do not teleport or inject forces. Loss of valid pose/perception must invalidate autonomous commands under an approved response policy.
+
+---
+## Onboard computer selection remains open
+
+[[VIS:companion-selection]]
+
+**We are looking for either a Raspberry Pi 4/5 or an NVIDIA Jetson for the onboard ROS 2 computer. Neither is selected or procurement-confirmed.** The FC remains independently usable without it; autonomous mission execution needs a suitable companion and valid localization.
+
+| Decision factor | Raspberry Pi candidate | Jetson candidate |
+|---|---|---|
+| Common software | Same portable ROS 2 C++ mission/navigation core | Same portable ROS 2 C++ mission/navigation core |
+| Inference | Benchmark CPU or selected accelerator/runtime | Benchmark supported GPU/runtime for the exact Jetson |
+| Integration | Camera driver, supported OS/ROS and serial bridge | Camera driver, supported OS/ROS and serial bridge |
+| Flight cost | Board, storage, camera, regulator, cooling and mounts | Board, storage, camera, regulator, cooling and mounts |
+| Selection evidence | Measured latency, power, mass, temperature and cost | Measured latency, power, mass, temperature and cost |
+
+[[EQ:m_{new}=m_{baseline}+\Delta m_{FC/RF}+m_{computer}+m_{camera}+m_{power/mounts}]]
+
+The 1.038 kg parameter set predates this target assembly. Delta m_FC/RF includes replacing the prototype controller and adding radios/antennas. Recompute mass, centre of mass and inertia. Shared C++ source does not imply identical binaries, inference backends or OS images. Select from measured end-to-end latency, localization quality, power, mass and cost, not nominal AI throughput alone.
+
+---
 ## Proving that the FC really flies the simulation
 
 [[VIS:simulation-proof]]
 
 [[VIS:campaign-confidence]]
 
-**Test contract:** stimulate normal input interfaces; log source hashes, messages, estimates and motor requests. Do not apply hidden pose, speed or force corrections to complete a mission. Host-compiled FC code requires disclosed shims; it is not automatically full ESP32 emulation.
+**Test contract:** stimulate normal handheld/radio or companion interfaces; log source hashes, messages, estimates and motor requests. Do not apply hidden pose, speed or force corrections to complete a mission. Host-compiled RP2350 C control code requires disclosed shims; it is not RP2350 instruction emulation or hardware timing evidence.
 
 **Planned Gazebo campaign:** ten environments, five noise seeds each; five additional manual command scenarios. Preserve all failures. Video reviewed at 10-15 fps supports trajectory analysis; full-rate logs establish controller timing. No new campaign has been run for this report.
 
@@ -359,7 +480,7 @@ The clearance graph assumes 0.25 s total latency and 1 m/s squared braking only 
 
 [[BOM:aircraft]]
 
-**Selection logic:** ESP32-S3 is the near-term platform; the Pico/radio architecture remains a separate evolution. BLE controller compatibility must be tested with exact controller firmware and library versions [R2,R6]. The magnetometer's actual silicon and driver must be identified rather than trusting the GY-271 board name.
+**Selection logic:** RP2350 is the aircraft FC and RP2040 the custom handheld. One LoRa and two reserved CC1101 modules are allocated to each side. The exact radio modules, display, antennas and handheld power remain to choose. The magnetometer's actual silicon and driver must be identified rather than trusting the GY-271 board name. The ESP32/Xbox branch is historical experimental work, not the target bill of materials.
 
 ---
 ## Measurement equipment optional hardware and cost
@@ -381,12 +502,13 @@ Use the CSV inventory for owned/to-buy status, vendor, currency, quote date, uni
 | V04 | IF-03/04, EST-06/07 | Known range, invalid returns, removal/restart |
 | V05 | RT-01/02/03/04/06 | Full-load timing, queue/loss counters and deadlines |
 | V06 | FC-02/03/05/07/08, MOD-02/03/04 | Model, gains, steps, saturation, source path |
-| V07 | HMI-01/02/03/04, FC-01/06 | Mapping, gestures, BLE reconnect and expiry |
+| V07 | HMI-01/02/03/04, FC-01/06, SYS-02 | RP2040 inputs, mapping, gestures and command generation |
 | V08 | COM-02/03, EST-06, RT-04 | CRC, replay, stale/delayed messages |
 | V09 | FC-04, EST-05 | Vertical response and lost sensor |
 | V10 | NAV-01/02/05 | All mission nodes, frames and localization |
 | V11 | NAV-03/04 | Off-ray/unclassified obstacles; no oracle |
 | V12 | ENE-01/02/03 | Reference power measurement and threshold faults |
+| V13 | RF-01/02 | LoRa airtime/age/loss/reconnect and CC1101 coexistence; reserved links remain inactive |
 
 **Every result:** commit and source/configuration hashes, engine or hardware identity, original logs, assumptions, fixed criteria, verdict and limits. New gains or configuration invalidate incompatible acceptance. An attractive video is insufficient without the command path and data. No failure is deleted to create a pass.
 
@@ -395,7 +517,7 @@ Use the CSV inventory for owned/to-buy status, vendor, currency, quote date, uni
 ---
 ## Requirements register one
 
-The full engineering baseline is preserved separately. This compact register retains the original requirement identifiers and status, while leaving detailed pinout and API syntax outside the main submission.
+The historical baseline is preserved separately. This register retains the original identifiers, updates platform-specific handheld/software requirements and adds target-system/radio requirements. RP2040 gesture mapping remains TBD rather than silently inheriting Xbox A/B buttons. Detailed pinout/API syntax stays outside the main submission.
 
 [[REQ:one]]
 
@@ -404,7 +526,7 @@ The full engineering baseline is preserved separately. This compact register ret
 
 [[REQ:two]]
 
-**Software inventory:** PlatformIO/Arduino and Adafruit sensor support; candidate Xbox BLE library; ROS 2 C++; Gazebo physics; RViz visualization; YOLO inference; NAssistant configuration; Python analysis; KiCad; Git/GitHub. Pin versions, licences, model hashes and commands. Isaac Sim is excluded from the current workflow.
+**Software inventory:** Pico SDK and C toolchain; one flight_controller.c and one handler_controller.c; selected radio/sensor libraries; ROS 2 C++; Gazebo physics; RViz; YOLO inference; NAssistant configuration; Python analysis; KiCad; Git/GitHub. ESP32/Arduino/Adafruit/Xbox dependencies belong to preliminary evidence only. Pin versions, licences, model hashes and commands. Isaac Sim is excluded.
 
 **Evidence access:** original private recordings must be made available to the examiner through an appropriate sanitized evidence package. Public summaries/hashes are not substitutes for the originals. The supplied model parameters are not independently measured aircraft properties.
 
@@ -413,10 +535,17 @@ The full engineering baseline is preserved separately. This compact register ret
 
 **Primary technical sources:** [R1] NASA systems-engineering verification/validation: https://www.nasa.gov/reference/2-0-fundamentals-of-systems-engineering/ . [R2] Espressif ESP32-S3 datasheet and BLE support: https://www.espressif.com/sites/default/files/documentation/esp32-s3_datasheet_en.pdf . [R3] TDK MPU6050 register map: https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Register-Map1.pdf . [R4] Bosch BMP280 datasheet: https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp280-ds001.pdf .
 
-[R5] Nooploop TOFSense-F V2.0, hardware and protocol: https://support.nooploop.com/tofsense/ . [R6] Xbox BLE library maintainer: https://github.com/asukiaaa/arduino-XboxSeriesXControllerESP32 . [R7] Ultralytics detector outputs: https://docs.ultralytics.com/tasks/detect/ . [R8] MIT OCW 16.30 feedback control: https://ocw.mit.edu/courses/16-30-feedback-control-systems-fall-2010/ . [R9] ROS frame conventions: https://www.ros.org/reps/rep-0105.html . Reviewed 28 October 2026; sources support methods, not acceptance of this aircraft.
+[R5] Nooploop TOFSense-F V2.0, hardware and protocol: https://support.nooploop.com/tofsense/ . [R6] Historical Xbox BLE prototype library: https://github.com/asukiaaa/arduino-XboxSeriesXControllerESP32 . [R7] Ultralytics detector outputs: https://docs.ultralytics.com/tasks/detect/ . [R8] MIT OCW 16.30 feedback control: https://ocw.mit.edu/courses/16-30-feedback-control-systems-fall-2010/ . [R9] ROS frame conventions: https://www.ros.org/reps/rep-0105.html . Reviewed 28 October 2026; sources support methods, not acceptance of this aircraft.
+
+[R10] Raspberry Pi RP2350 and RP2040 specifications: https://www.raspberrypi.com/products/rp2350/ and https://www.raspberrypi.com/documentation/microcontrollers/microcontroller-chips.html . [R11] TI CC1101 transceiver: https://www.ti.com/product/CC1101 . [R12] Semtech LoRa airtime trade-off: https://www.semtech.com/design-support/faq/faq-lora . [R13] ROS 2 action and QoS contracts: https://github.com/ros2/ros2_documentation/blob/jazzy/source/Concepts/Basic/About-Actions.rst and https://github.com/ros2/ros2_documentation/blob/jazzy/source/Concepts/Intermediate/About-Quality-of-Service-Settings.rst .
+
+---
+## Implementation evidence and report provenance
 
 **Project evidence:** [P1] measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/report.md and analysis.json; [P2] measurements/mpu6050/2026-10-26-gyro-restart-validation/report.md; [P3] measurements/mpu6050/2026-10-26-fifo-and-gyro-frame-results/report.md; [P4] measurements/mpu6050/2026-10-26-offline-attitude-preparation/report.md and analysis.json; [P5] measurements/software/2026-10-27-input-guard/summary.json. Paths are relative to the Stepwise checkout. Evidence-manifest.json records source hashes and repository links.
 
+**[P6] Inspected prototype code:** main commit bce665ad97adbfcb282f02970a1db599e67e6479, firmware/flight_controller/flight_controller.c, firmware/handler_controller/handler_controller.c and companion/ros2_ws/src/qcopter_autonomy. Read-only source inspection supports the implementation inventory; no new Pico build, upload, radio test or ROS flight is claimed. source-inventory.json records exact file hashes and repository links.
+
 **Figure provenance:** assets/visual/figure-manifest.json identifies every chart as a historical measured summary, replay/model result, analytic example, schematic or proposal. Model-only plots use explicit assumptions and do not represent Gazebo or hardware tests. The F450 artwork is AI-generated using the built-in image tool; image-provenance.json retains its prompt and origin. It depicts a plausible red/white F450, not the student's assembled hardware.
 
-**Preserved detail:** reference/engineering-baseline-v2.1.md retains the previous detailed engineering discussion, exact interface decisions, original requirements, limitations and project context. This visual edition changes presentation; it neither enables motors nor accepts the estimator, PID or autonomous flight. It does not change firmware or calibration constants.
+**Preserved detail:** reference/engineering-baseline-v2.1.md and reference/visual-edition-v3.md retain the earlier ESP32-oriented documents. Their pin maps and Xbox-specific gestures are historical, not the Pico target interface. This revision updates the intended architecture and explanatory design; it neither enables motors nor accepts RP2350 timing, radio delivery or autonomous flight. No firmware or calibration constant is changed.

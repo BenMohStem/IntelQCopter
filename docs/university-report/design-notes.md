@@ -1,9 +1,9 @@
-# Visual mathematical edition3.0
+# Pico system edition4.0
 
-Identity: IntelQCopter ? Autonomous Quadcopter. Palette remains forest #18382c,leaf #198548 and pale mint. Red/blue/gold encode contrasting physical effects,not decoration.
+Green visual style and labelled F450 concept artwork retained. Target architecture is RP2350 aircraft plus RP2040 handheld,LoRa main link,two reserved CC1101 links per side. Pi or Jetson companion remains unselected. ESP32/Xbox is shown as an alternative preliminary implementation,not deleted or relabelled.
 
-The cover combines an original layout with built-in image_gen concept artwork depicting a plausible red/white F450. Its exact prompt is recorded separately. It is not documentary evidence or a mechanical drawing. Technical diagrams/plots are generated deterministically with Matplotlib; raw/replay-derived evidence keeps its original provenance.
+New visuals:core partition,handheld chain,LoRa symbol/command timing,repository version map,inverse-variance fusion,ROS2 nodes/navigation and companion selection. The repository has a clickable cover URL,chapter link and QR. Source inspection is pinned to main commitbce665ad97adbfcb282f02970a1db599e67e6479; no source review is called hardware acceptance.
 
-The main academic narrative replaces pinout/API explanation and long paragraphs with equations,diagram flows and compact graphs. Calibration includes fit/holdout design,full matrix,biases,residuals,covariance and temporal correlation. Autonomy shows detection,association/local map,localization/planning,transforms,clearance and FC boundaries. All45requirement IDs and31inventory entries remain; complete previous text is preserved in reference/engineering-baseline-v2.1.md.
+PID rationale reflects the student's stated learning objective. Fusion equations state unbiased/common-quantity/covariance conditions and do not promise universal accuracy. A numerical check verifies sigma1=1,sigma2=3 gives naive1.58113883 and weighted0.94868330. Legacy Xbox gestures are not silently inherited by RP2040; mapping remainsTBD. Five target/radio requirements extend the original45IDs to50.
 
-Final QA:30pages,32technical visuals,34equation panels,29PDFbookmarks and28contents links. All-page contact sheet plus representative full-resolution pages inspected. Baseline bytes,requirement IDs,figure checksums,original evidence bytes,source controls and PDF text bounds verified. No hardware or flight result is added.
+QA:38pages,40technical visuals,41equation panels,50requirements,13tests and37BOMentries. Both all-page contact sheets plus full-resolution repository,fusion,Pico,ROS,selection,materials and requirements reviewed. Text bounds,original graph bytes,figure hashes,GitHub URIs and source snapshot hashes checked. No firmware/calibration/hardware acceptance changed.

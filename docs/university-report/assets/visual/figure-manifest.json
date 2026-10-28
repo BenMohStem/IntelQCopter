@@ -4,7 +4,35 @@
     "source": "Report design",
     "caption": "Two command paths; motor commands belong only to the FC. The companion is optional.",
     "file": "assets/visual/system-paths.png",
-    "sha256": "e353df27e244bc28edb86b2361752a1f0f10e2ed941baff37f55b6b4f44c8d0d"
+    "sha256": "9f8526e57527bdc87b7156244cb91cfbdbe0ce4573d42015446669d2115e4aad"
+  },
+  "pico-responsibilities": {
+    "kind": "PROPOSED ARCHITECTURE",
+    "source": "Report design",
+    "caption": "Proposed target partition. Existing Pico scaffold is 500 Hz with stubbed hardware; RP2350 timing remains unverified.",
+    "file": "assets/visual/pico-responsibilities.png",
+    "sha256": "6ca01fe4f382ba9a270987af7eea905a2243a9e611a2bfe336420dbb94430c57"
+  },
+  "handheld-chain": {
+    "kind": "PROPOSED ARCHITECTURE",
+    "source": "Report design",
+    "caption": "One LoRa and two reserved CC1101 modules per side. The secondary links are not an implemented safety system.",
+    "file": "assets/visual/handheld-chain.png",
+    "sha256": "b789a5339e1bd4b6f0e0dbb75123bee57e42ac4eb742c5f9752f2aa8d9342a94"
+  },
+  "radio-budget": {
+    "kind": "ANALYTIC RADIO EXAMPLE + TARGET ARCHITECTURE",
+    "source": "LoRa Tsym=2^SF/BW; parameters illustrative",
+    "caption": "The air link does not transmit a new pilot packet every 1 ms. No module/range/packet-rate acceptance is implied.",
+    "file": "assets/visual/radio-budget.png",
+    "sha256": "05a14f367dad5378e9841eb13e01305228b6a24eabf59545935dfe195a946c3c"
+  },
+  "version-map": {
+    "kind": "REPOSITORY VERSION MAP",
+    "source": "Report design",
+    "caption": "Branch names were inspected locally. Different implementations and their validation results must not be conflated.",
+    "file": "assets/visual/version-map.png",
+    "sha256": "3769c803078569659a9b09eb1fcfe3c0ce926dec7602ab2df4084669e51ac0d3"
   },
   "control-cascade": {
     "kind": "PROPOSED ARCHITECTURE",
@@ -104,6 +132,13 @@
     "file": "assets/visual/kalman-loop.png",
     "sha256": "8d82565f06b2b106ff1a92d01c567c6eab691c4d03908938ffa329813a91e082"
   },
+  "fusion-versus-average": {
+    "kind": "ANALYTIC INDEPENDENT-SENSOR EXAMPLE",
+    "source": "Unbiased observations of the same scalar; known variances",
+    "caption": "Inverse-variance fusion improves the model variance. Correlation, bias, different units or wrong dynamics invalidate the simple comparison.",
+    "file": "assets/visual/fusion-versus-average.png",
+    "sha256": "f501fec4c2aef5a0c7767c0efc1d1d507c15dd4a4b92d5f972d745df4d1098d1"
+  },
   "kalman-trust": {
     "kind": "ANALYTIC LAW + REAL REPLAY SUMMARY",
     "source": "K=P/(P+R); P4 reserved statistics",
@@ -153,6 +188,27 @@
     "file": "assets/visual/yolo-architecture.png",
     "sha256": "2477e8c0d3745338b1ff8bd34506c8a69a3eb5d46425723a70c00ba539439d06"
   },
+  "ros2-implementation": {
+    "kind": "PROPOSED ROS 2 INTEGRATION",
+    "source": "Inspected qcopter_autonomy source contracts plus planned bridge/action",
+    "caption": "ROS 2 C++ runs on the companion. Ground-PC missions enter the mission manager; only the bounded serial interface reaches RP2350.",
+    "file": "assets/visual/ros2-implementation.png",
+    "sha256": "3139af96f34d8569ea7de7edfcdd653133b69e31942d83801e19dc03b66db018"
+  },
+  "navigation-implementation": {
+    "kind": "PROPOSED ARCHITECTURE",
+    "source": "Report design",
+    "caption": "A bounded C++ A* prototype exists; generalized n-node ROS integration, real localization and physical bridge acceptance remain pending.",
+    "file": "assets/visual/navigation-implementation.png",
+    "sha256": "0ccc09861051dfb3993d44550d7281c6ee44392271e5baaf24d078674ed0c49a"
+  },
+  "companion-selection": {
+    "kind": "PROPOSED ARCHITECTURE",
+    "source": "Report design",
+    "caption": "The project is seeking one of these onboard computers. Common source does not imply the same OS image or acceleration backend.",
+    "file": "assets/visual/companion-selection.png",
+    "sha256": "c2b24b3adb85c8666fe224562ba06d7cd35f85a81ae86fad92f9bdfe88e87d5b"
+  },
   "perception-limits": {
     "kind": "GEOMETRIC SCHEMATIC",
     "source": "Pinhole bearing and single-ray sensing",
@@ -186,7 +242,7 @@
     "source": "Report design",
     "caption": "A test harness may stimulate inputs and record outputs; it may not secretly move the aircraft to pass.",
     "file": "assets/visual/simulation-proof.png",
-    "sha256": "8a2a6cf79ada465394f36bc297aef56d9891be4d2a009ab6fbb1470be67df1d7"
+    "sha256": "05a6210dbfafc2ecff640993fa286315b1a8092d450e8448d2e7313bdc29d4c7"
   },
   "campaign-confidence": {
     "kind": "PLANNED CAMPAIGN + STATISTICAL LAW",
@@ -211,9 +267,9 @@
   },
   "readiness": {
     "kind": "PROJECT STATUS SUMMARY",
-    "source": "Current plan and evidence manifest",
-    "caption": "Historical evidence does not imply flight acceptance. New sensor wiring and physical frame checks remain pending.",
+    "source": "Inspected Pico/ROS sources plus ESP32 evidence manifest",
+    "caption": "ESP32 measurements are preliminary evidence, not RP2350 timing or flight acceptance. Pico radio/sensor integration remains pending.",
     "file": "assets/visual/readiness.png",
-    "sha256": "cb9ab64340cba2314812682b02fcbd5081cf7e076b484be36a4fd22665ad544e"
+    "sha256": "f046481f4f9549e9fa17af6492ee60d9f76c538239db180b4d18b64eba476192"
   }
 }

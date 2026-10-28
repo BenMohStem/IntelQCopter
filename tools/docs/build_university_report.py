@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 from PIL import Image as PILImage
 from reportlab.graphics.shapes import Drawing, Rect, String, Line, Circle, Polygon, Ellipse, Image as DrawingImage
 from reportlab.graphics import renderPM
+from reportlab.graphics.barcode.qr import QrCodeWidget
 from reportlab.lib import colors
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
@@ -69,6 +70,7 @@ class ReportDoc(SimpleDocTemplate):
 
 def footer(c, doc):
     if doc.page == 1:
+        c.linkURL('https://github.com/BenMohStem/IntelQCopter',(48,96,559,112),relative=0,thickness=0)
         return
     c.setStrokeColor(TEAL)
     c.setLineWidth(1.1)
@@ -78,7 +80,7 @@ def footer(c, doc):
     c.setFont('ReportArial', 8)
     c.setFillColor(colors.HexColor('#536c5d'))
     c.drawString(42, 816, 'IntelQCopter   /   Autonomous Quadcopter')
-    c.drawRightString(553,816,'VISUAL TECHNICAL REPORT   /   REV 3.0')
+    c.drawRightString(553,816,'PICO SYSTEM REPORT   /   REV 4.0')
     c.setStrokeColor(colors.HexColor('#d2e4d7'))
     c.line(42,39,553,39)
     c.drawString(42, 25, 'Professional and Personal Project   /   28 October 2026')
@@ -92,7 +94,7 @@ def cover():
     pale=colors.HexColor('#edf6ee')
     light=colors.HexColor('#d8ebdc')
     d.add(String(0,708,'PROFESSIONAL AND PERSONAL PROJECT',fontName='ReportArialBold',fontSize=9,fillColor=TEAL))
-    d.add(String(511,708,'REVISION 3.0',fontName='ReportArial',fontSize=9,textAnchor='end',fillColor=TEAL))
+    d.add(String(511,708,'REVISION 4.0',fontName='ReportArial',fontSize=9,textAnchor='end',fillColor=TEAL))
     d.add(String(0,651,'IntelQCopter',fontName='ReportArialBold',fontSize=47,fillColor=INK))
     d.add(String(0,614,'Autonomous Quadcopter',fontName='ReportArial',fontSize=25,fillColor=TEAL))
     d.add(String(0,587,'TECHNICAL DESIGN AND VALIDATION REPORT',fontName='ReportArialBold',fontSize=10,fillColor=INK))
@@ -101,15 +103,16 @@ def cover():
     d.add(String(0,273,'AI CONCEPT ILLUSTRATION  /  RED AND WHITE F450  /  NOT A HARDWARE TEST PHOTO',fontName='ReportArial',fontSize=7,fillColor=colors.HexColor('#65836c')))
     # A restrained product-summary strip rather than a collage of decorative cards.
     d.add(Line(0,250,511,250,strokeColor=TEAL,strokeWidth=.8))
-    for x,a,b in [(0,'F450','X FRAME'),(138,'1 kHz','FC TARGET'),(280,'ESP32-S3','CURRENT FC'),(432,'ROS 2','OPTIONAL')]:
+    for x,a,b in [(0,'F450','X FRAME'),(138,'1 kHz','FC TARGET'),(280,'RP2350','FLIGHT CONTROLLER'),(432,'ROS 2','PI / JETSON TBD')]:
         d.add(String(x,227,a,fontName='ReportArialBold',fontSize=15,fillColor=INK))
         d.add(String(x,210,b,fontName='ReportArial',fontSize=8,fillColor=TEAL))
     d.add(Line(0,194,511,194,strokeColor=light,strokeWidth=.7))
-    for y,t in [(170,'Visual models, calibration, estimation and perception-to-control architecture.'),(153,'Equations, compact graphs, materials and traceable engineering decisions.'),(136,'Current status: sensor and software groundwork; flight acceptance pending.')]:
+    for y,t in [(170,'RP2350 aircraft + RP2040 handheld / LoRa + reserved CC1101 links.'),(153,'ROS 2 onboard computer: seeking a Raspberry Pi or NVIDIA Jetson.'),(136,'Models, sensor fusion and navigation design; flight acceptance pending.')]:
         d.add(String(0,y,t,fontName='ReportArial',fontSize=9.2,fillColor=INK))
     d.add(String(0,104,'IQC-PPP-002   /   28 OCTOBER 2026   /   UNIVERSITY SUBMISSION DRAFT',fontName='ReportArialBold',fontSize=8,fillColor=TEAL))
     d.add(String(0,78,'Student / ID / institution / supervisor / academic year: complete before submission.',fontName='ReportArial',fontSize=8.5,fillColor=INK))
     d.add(String(0,60,'Proposed targets and historical results are distinguished. Motor outputs remain disabled.',fontName='ReportArial',fontSize=8.5,fillColor=INK))
+    d.add(String(0,44,'github.com/BenMohStem/IntelQCopter',fontName='ReportArialBold',fontSize=8,fillColor=TEAL))
     d.add(Line(0,33,511,33,strokeColor=TEAL,strokeWidth=1))
     d.add(String(0,16,'IntelQCopter',fontName='ReportArialBold',fontSize=10,fillColor=INK))
     d.add(String(511,16,'01',fontName='ReportArialBold',fontSize=9,textAnchor='end',fillColor=TEAL))
@@ -202,14 +205,15 @@ if inventory_path.exists():
     with inventory_path.open(encoding='utf-8-sig',newline='') as old:
         existing_inventory={row['id']:row for row in csv.DictReader(old)}
 bom=[]
-for line in BASELINE.splitlines():
-    if re.match(r'\| (?:M|T|O|F)\d{2} x',line):
-        c=[v.strip() for v in line.strip('|').split('|')]
-        match=re.match(r'([MTOF]\d{2}) x(.+)',c[0])
-        category={'M':'Aircraft','T':'Test equipment','O':'Optional companion','F':'Future Pico and radio'}[match[1][0]]
-        bom.append({'id':match[1],'category':category,'quantity':match[2],'component':c[1],'purpose_and_checks':c[2],'exact_model':'TBD','owned_or_to_buy':'Confirm','supplier':'','currency':'','quote_date':'','unit_cost':'','shipping_allocation':'','verified_mass_g':''})
+target_materials=json.loads((OUT/'materials-target.json').read_text(encoding='utf-8'))
+for item in target_materials:
+    row=dict(item)
+    row.update({'exact_model':'TBD','owned_or_to_buy':'Confirm','supplier':'','currency':'','quote_date':'','unit_cost':'','shipping_allocation':'','verified_mass_g':''})
+    old=existing_inventory.get(item['id'],{})
+    if old.get('component')==item['component']:
         for field in ['exact_model','owned_or_to_buy','supplier','currency','quote_date','unit_cost','shipping_allocation','verified_mass_g']:
-            if field in existing_inventory.get(match[1],{}):bom[-1][field]=existing_inventory[match[1]][field]
+            if field in old:row[field]=old[field]
+    bom.append(row)
 with (OUT/'bill-of-materials.csv').open('w',encoding='utf-8-sig',newline='') as f:
     writer=csv.DictWriter(f,fieldnames=list(bom[0]),lineterminator="\n");writer.writeheader();writer.writerows(bom)
 
@@ -236,6 +240,12 @@ def make_story(toc_pages):
             table=Table(toc,colWidths=[480,31],hAlign='LEFT')
             table.setStyle(TableStyle([('LINEBELOW',(0,0),(-1,-1),.25,colors.HexColor('#dce9de')),('LEFTPADDING',(0,0),(-1,-1),0),('RIGHTPADDING',(0,0),(-1,-1),0),('TOPPADDING',(0,0),(-1,-1),1),('BOTTOMPADDING',(0,0),(-1,-1),1)]))
             story.append(table)
+        elif line=='[[REPO]]':
+            url='https://github.com/BenMohStem/IntelQCopter'
+            q=QrCodeWidget(url);b=q.getBounds();scale=70/(b[2]-b[0]);qr=Drawing(70,70,transform=[scale,0,0,scale,0,0]);qr.add(q)
+            link=Paragraph('<b>Public engineering repository</b><br/><link href="'+url+'" color="#198548">'+url+'</link><br/>Source, versions, report, measurements and scoped commit history.',STYLES['body'])
+            table=Table([[link,qr]],colWidths=[425,86]);table.setStyle(TableStyle([('VALIGN',(0,0),(-1,-1),'MIDDLE'),('LEFTPADDING',(0,0),(-1,-1),0),('RIGHTPADDING',(0,0),(-1,-1),0)]));story.extend([table,Spacer(1,10)])
+            web.append('<p><strong>Public engineering repository</strong><br><a href="'+url+'">'+url+'</a></p>'+html_image(save_drawing(qr,'repository-qr'),'GitHub repository QR code'))
         elif line.startswith('[[VIS:'):
             name=line[6:-2];rec=VISUALS[name];path=OUT/rec['file']
             w,h=PILImage.open(path).size;scale=min(511/w,245/h)
@@ -245,11 +255,12 @@ def make_story(toc_pages):
             web.append(html_image(path,note)+'<p class="figure-caption">'+inline(note)+'</p>')
         elif line.startswith('[[BOM:') or line.startswith('[[REQ:'):
             if line.startswith('[[BOM:'):
-                selected=[r for r in bom if (r['id'].startswith('M') and int(r['id'][1:])<=15)==(line=='[[BOM:aircraft]]')]
+                selected=[r for r in bom if (r['group']=='aircraft')==(line=='[[BOM:aircraft]]')]
                 rows=[['ID / qty','Material','Purpose / acceptance']]+[[r['id']+' x'+r['quantity'],r['component'],r['purpose_and_checks']] for r in selected]
                 widths=[65,170,276]
             else:
-                selected=REQUIREMENTS[:23] if line=='[[REQ:one]]' else REQUIREMENTS[23:]
+                cut=(len(REQUIREMENTS)+1)//2
+                selected=REQUIREMENTS[:cut] if line=='[[REQ:one]]' else REQUIREMENTS[cut:]
                 rows=[['ID / status','Requirement','Verify']]+[[r['id']+' '+r['status'],r['requirement'],r['verify']] for r in selected]
                 widths=[75,355,81]
             hs=ParagraphStyle('compact-head',parent=STYLES['cell'],fontName='ReportArialBold',textColor=colors.white)

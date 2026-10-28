@@ -11,7 +11,7 @@
 	<g id="group" transform="scale(1,-1) translate(0,-725)" style="clip-path: url(#clip)">
 		<g transform="">
 			<text x="0" y="708" style="font-family: ReportArialBold; font-size: 9px;fill: rgb(9%,52%,28%); stroke:none;" transform="translate(0,1416) scale(1,-1)">PROFESSIONAL AND PERSONAL PROJECT</text>
-			<text x="452.97900390625" y="708" style="font-family: ReportArial; font-size: 9px;fill: rgb(9%,52%,28%); stroke:none;" transform="translate(0,1416) scale(1,-1)">REVISION 3.0</text>
+			<text x="452.97900390625" y="708" style="font-family: ReportArial; font-size: 9px;fill: rgb(9%,52%,28%); stroke:none;" transform="translate(0,1416) scale(1,-1)">REVISION 4.0</text>
 			<text x="0" y="651" style="font-family: ReportArialBold; font-size: 47px;fill: rgb(9%,21%,17%); stroke:none;" transform="translate(0,1302) scale(1,-1)">IntelQCopter</text>
 			<text x="0" y="614" style="font-family: ReportArial; font-size: 25px;fill: rgb(9%,52%,28%); stroke:none;" transform="translate(0,1228) scale(1,-1)">Autonomous Quadcopter</text>
 			<text x="0" y="587" style="font-family: ReportArialBold; font-size: 10px;fill: rgb(9%,21%,17%); stroke:none;" transform="translate(0,1174) scale(1,-1)">TECHNICAL DESIGN AND VALIDATION REPORT</text>
@@ -23,17 +23,18 @@
 			<text x="0" y="210" style="font-family: ReportArial; font-size: 8px;fill: rgb(9%,52%,28%); stroke:none;" transform="translate(0,420) scale(1,-1)">X FRAME</text>
 			<text x="138" y="227" style="font-family: ReportArialBold; font-size: 15px;fill: rgb(9%,21%,17%); stroke:none;" transform="translate(0,454) scale(1,-1)">1 kHz</text>
 			<text x="138" y="210" style="font-family: ReportArial; font-size: 8px;fill: rgb(9%,52%,28%); stroke:none;" transform="translate(0,420) scale(1,-1)">FC TARGET</text>
-			<text x="280" y="227" style="font-family: ReportArialBold; font-size: 15px;fill: rgb(9%,21%,17%); stroke:none;" transform="translate(0,454) scale(1,-1)">ESP32-S3</text>
-			<text x="280" y="210" style="font-family: ReportArial; font-size: 8px;fill: rgb(9%,52%,28%); stroke:none;" transform="translate(0,420) scale(1,-1)">CURRENT FC</text>
+			<text x="280" y="227" style="font-family: ReportArialBold; font-size: 15px;fill: rgb(9%,21%,17%); stroke:none;" transform="translate(0,454) scale(1,-1)">RP2350</text>
+			<text x="280" y="210" style="font-family: ReportArial; font-size: 8px;fill: rgb(9%,52%,28%); stroke:none;" transform="translate(0,420) scale(1,-1)">FLIGHT CONTROLLER</text>
 			<text x="432" y="227" style="font-family: ReportArialBold; font-size: 15px;fill: rgb(9%,21%,17%); stroke:none;" transform="translate(0,454) scale(1,-1)">ROS 2</text>
-			<text x="432" y="210" style="font-family: ReportArial; font-size: 8px;fill: rgb(9%,52%,28%); stroke:none;" transform="translate(0,420) scale(1,-1)">OPTIONAL</text>
+			<text x="432" y="210" style="font-family: ReportArial; font-size: 8px;fill: rgb(9%,52%,28%); stroke:none;" transform="translate(0,420) scale(1,-1)">PI / JETSON TBD</text>
 			<path d="M 0,194 L 511,194 Z" style="stroke: rgb(84%,92%,86%); stroke-linecap: butt; stroke-width: 0.7;"/>
-			<text x="0" y="170" style="font-family: ReportArial; font-size: 9.2px;fill: rgb(9%,21%,17%); stroke:none;" transform="translate(0,340) scale(1,-1)">Visual models, calibration, estimation and perception-to-control architecture.</text>
-			<text x="0" y="153" style="font-family: ReportArial; font-size: 9.2px;fill: rgb(9%,21%,17%); stroke:none;" transform="translate(0,306) scale(1,-1)">Equations, compact graphs, materials and traceable engineering decisions.</text>
-			<text x="0" y="136" style="font-family: ReportArial; font-size: 9.2px;fill: rgb(9%,21%,17%); stroke:none;" transform="translate(0,272) scale(1,-1)">Current status: sensor and software groundwork; flight acceptance pending.</text>
+			<text x="0" y="170" style="font-family: ReportArial; font-size: 9.2px;fill: rgb(9%,21%,17%); stroke:none;" transform="translate(0,340) scale(1,-1)">RP2350 aircraft + RP2040 handheld / LoRa + reserved CC1101 links.</text>
+			<text x="0" y="153" style="font-family: ReportArial; font-size: 9.2px;fill: rgb(9%,21%,17%); stroke:none;" transform="translate(0,306) scale(1,-1)">ROS 2 onboard computer: seeking a Raspberry Pi or NVIDIA Jetson.</text>
+			<text x="0" y="136" style="font-family: ReportArial; font-size: 9.2px;fill: rgb(9%,21%,17%); stroke:none;" transform="translate(0,272) scale(1,-1)">Models, sensor fusion and navigation design; flight acceptance pending.</text>
 			<text x="0" y="104" style="font-family: ReportArialBold; font-size: 8px;fill: rgb(9%,52%,28%); stroke:none;" transform="translate(0,208) scale(1,-1)">IQC-PPP-002   /   28 OCTOBER 2026   /   UNIVERSITY SUBMISSION DRAFT</text>
 			<text x="0" y="78" style="font-family: ReportArial; font-size: 8.5px;fill: rgb(9%,21%,17%); stroke:none;" transform="translate(0,156) scale(1,-1)">Student / ID / institution / supervisor / academic year: complete before submission.</text>
 			<text x="0" y="60" style="font-family: ReportArial; font-size: 8.5px;fill: rgb(9%,21%,17%); stroke:none;" transform="translate(0,120) scale(1,-1)">Proposed targets and historical results are distinguished. Motor outputs remain disabled.</text>
+			<text x="0" y="44" style="font-family: ReportArialBold; font-size: 8px;fill: rgb(9%,52%,28%); stroke:none;" transform="translate(0,88) scale(1,-1)">github.com/BenMohStem/IntelQCopter</text>
 			<path d="M 0,33 L 511,33 Z" style="stroke: rgb(9%,52%,28%); stroke-linecap: butt; stroke-width: 1;"/>
 			<text x="0" y="16" style="font-family: ReportArialBold; font-size: 10px;fill: rgb(9%,21%,17%); stroke:none;" transform="translate(0,32) scale(1,-1)">IntelQCopter</text>
 			<text x="500.9892578125" y="16" style="font-family: ReportArialBold; font-size: 9px;fill: rgb(9%,52%,28%); stroke:none;" transform="translate(0,32) scale(1,-1)">01</text>

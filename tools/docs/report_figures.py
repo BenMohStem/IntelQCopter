@@ -41,9 +41,26 @@ def build_figures(root):
         save(fig,name,kind,source,caption)
 
     flow('system-paths',[
-        ['Xbox controller\nBLE input','Standalone FC\nestimate + control','Mixer / ESCs\nphysical plant'],
+        ['RP2040 handheld\nLoRa pilot commands','RP2350 flight controller\nestimate + control','Mixer / ESCs\nphysical plant'],
         ['Ground station\napproved nodes','ROS 2 companion\nplan + avoid','FC setpoint interface\nsame inner loops']],
         'Two command paths; motor commands belong only to the FC. The companion is optional.')
+    flow('pico-responsibilities',[
+        ['RP2350 core 0\n1 kHz target','IMU / estimate\nrate + angle PIDs','Mixer / output gate\nactuation disabled'],
+        ['RP2350 core 1\nradio + slow sensors','Timestamped queues\nbounded transfer','Status / logging\nno critical blocking']],
+        'Proposed target partition. Existing Pico scaffold is 500 Hz with stubbed hardware; RP2350 timing remains unverified.')
+    flow('handheld-chain',[
+        ['2 joysticks + LT/RT\nbuttons / display','RP2040 input processing\nneutral + deadzone','LoRa primary link\nversion / sequence / CRC'],
+        ['Handheld 2 x CC1101\nreserved secondary','RP2350 pilot arbiter\nfreshness / mode','Aircraft 2 x CC1101\nreserved secondary']],
+        'One LoRa and two reserved CC1101 modules per side. The secondary links are not an implemented safety system.')
+    fig,(ax,bx)=axes(n=2)
+    sf=np.arange(7,13);sym=1000*2.0**sf/125000
+    ax.bar(sf,sym,color=GREEN);ax.set(xticks=sf,xlabel='Spreading factor SF',ylabel='Symbol duration (ms)',title='Illustration: BW = 125 kHz');ax.grid(axis='y',alpha=.5)
+    bx.set(xlim=(0,1),ylim=(0,1));bx.axis('off');box(bx,.05,.58,.40,.24,'Slow pilot link\ncommands held briefly');box(bx,.56,.58,.39,.24,'Fast local feedback\n1 kHz target');arrow(bx,(.46,.70),(.55,.70));bx.text(.06,.24,'Packet airtime, loss and age must be measured.\nSymbol time is not full packet latency.',fontsize=9)
+    save(fig,'radio-budget','ANALYTIC RADIO EXAMPLE + TARGET ARCHITECTURE','LoRa Tsym=2^SF/BW; parameters illustrative','The air link does not transmit a new pilot packet every 1 ms. No module/range/packet-rate acceptance is implied.')
+    flow('version-map',[
+        ['main branch\nRP2350 + RP2040','Target architecture\nPico SDK C','Pico hardware interfaces\nacceptance pending'],
+        ['esp32-xbox branch\nexperimental platform','codex/stepwise-esp32\nsensor bench evidence','Report revision 4.0\ntarget + evidence distinct']],
+        'Branch names were inspected locally. Different implementations and their validation results must not be conflated.',kind='REPOSITORY VERSION MAP')
     flow('control-cascade',[
         ['Roll / pitch\nangle setpoint','Angle PID x2\nrate setpoint','Rate PID x2\ntorque request'],
         ['Yaw stick\nrate setpoint','Yaw rate PID x1','Mixer\nreserved authority'],
@@ -143,6 +160,10 @@ def build_figures(root):
     flow('kalman-loop',[
         ['Gyro prediction\nangle + dt * rate','Innovation\naccel angle - prediction','Gain K\ntrust from P and R','Correct angle\nupdate P']],
         'Scalar roll/pitch estimator candidate. Translational acceleration can corrupt the gravity observation.')
+    fig,(ax,bx)=axes((8.6,3.1),2)
+    r=np.linspace(1,6,250);ax.plot(r,np.sqrt(1+r*r)/2,color=RED,label='Unweighted average');ax.plot(r,r/np.sqrt(1+r*r),color=GREEN,label='Optimal weighted fusion');ax.axhline(1,color=GRAY,ls=':',label='Best sensor alone');ax.scatter([3,3],[np.sqrt(10)/2,3/np.sqrt(10)],c=[RED,GREEN]);ax.set(xlabel='Sensor std ratio: sigma2 / sigma1',ylabel='Estimate std / sigma1',title='Different noise: weighting matters');ax.legend(fontsize=7.5);ax.grid(alpha=.5)
+    bx.bar(['Best alone','50/50 mean','Weighted'],[1,np.sqrt(10)/2,3/np.sqrt(10)],color=[GRAY,RED,GREEN]);bx.set(ylabel='Standard deviation (common units)',title='Example: sigma1=1, sigma2=3');bx.grid(axis='y',alpha=.5)
+    save(fig,'fusion-versus-average','ANALYTIC INDEPENDENT-SENSOR EXAMPLE','Unbiased observations of the same scalar; known variances','Inverse-variance fusion improves the model variance. Correlation, bias, different units or wrong dynamics invalidate the simple comparison.')
     fig,(ax,bx)=axes(n=2);ratio=np.logspace(-3,3,250);ax.semilogx(ratio,ratio/(1+ratio),color=GREEN);ax.set(xlabel='Predicted variance / observation variance',ylabel='Kalman gain K',title='More observation noise means less trust');ax.grid(alpha=.5)
     names=['Roll','Pitch'];bx.bar(np.arange(2)-.16,[.177569,.213074],.32,color=GRAY,label='Accel angle');bx.bar(np.arange(2)+.16,[.007,.005692],.32,color=GREEN,label='Filter output');bx.set(xticks=range(2),xticklabels=names,ylabel='Standard deviation (degrees)',title='Reserved stationary replay [P4]');bx.legend(fontsize=8);bx.grid(axis='y',alpha=.5)
     save(fig,'kalman-trust','ANALYTIC LAW + REAL REPLAY SUMMARY','K=P/(P+R); P4 reserved statistics','Smoother output is not an independent accuracy result; mean errors and correlation remain.')
@@ -174,6 +195,18 @@ def build_figures(root):
         ['Lidar ray\nrange + status','Association / local\nobstacle hypothesis','Local map\nunknown != free'],
         ['Localization + mission\ncoordinate transforms','Planner + trajectory\nclearance constraints','FC setpoints\nTTL / CRC / bounds']],
         'Proposed perception-to-control pipeline. Detection is not depth, localization or a collision-free corridor.',source='Design + Ultralytics detector output contract')
+    fig,ax=axes((8.6,3.6));ax.set(xlim=(0,1),ylim=(0,1));ax.axis('off')
+    for x,y,t in [(.025,.76,'Camera + calibration'),(.025,.46,'Localization / tf2'),(.025,.13,'Ground PC\napprove / cancel'),(.36,.76,'YOLO / geometry\nmetric obstacle map'),(.36,.46,'A* navigator\nbounded setpoints'),(.36,.13,'Mission manager\nordered nodes'),(.73,.46,'Serial bridge\nCRC / age / bounds'),(.73,.13,'RP2350 FC\nPico SDK C')]:box(ax,x,y,.245,.18,t)
+    for a,b in [((.28,.85),(.35,.85)),((.482,.75),(.482,.66)),((.28,.55),(.35,.55)),((.28,.22),(.35,.22)),((.482,.32),(.482,.45)),((.615,.55),(.72,.55)),((.852,.45),(.852,.33))]:arrow(ax,a,b)
+    save(fig,'ros2-implementation','PROPOSED ROS 2 INTEGRATION','Inspected qcopter_autonomy source contracts plus planned bridge/action','ROS 2 C++ runs on the companion. Ground-PC missions enter the mission manager; only the bounded serial interface reaches RP2350.')
+    flow('navigation-implementation',[
+        ['Validated observations\nlocalization + range','Inflated local map\nunknown-space policy','A* search\nf = g + h'],
+        ['Ordered mission nodes','Route follower\nlimits + freshness','Serial setpoints\nRP2350 feedback loops']],
+        'A bounded C++ A* prototype exists; generalized n-node ROS integration, real localization and physical bridge acceptance remain pending.')
+    flow('companion-selection',[
+        ['Candidate: Raspberry Pi\n4 or 5, not selected','Shared ROS 2 C++\nmission / planning','Candidate: NVIDIA Jetson\nmodel not selected'],
+        ['Camera + inference\nmeasured end-to-end','Power / mass / cooling\nflight integration','Cost / availability\nprocurement decision']],
+        'The project is seeking one of these onboard computers. Common source does not imply the same OS image or acceleration backend.')
 
     fig,(ax,bx)=axes((8.6,3.0),2)
     ax.set(xlim=(0,8),ylim=(-3,3),aspect='equal',title='One ray covers a narrow direction',xlabel='Forward distance (m)',ylabel='Lateral distance (m)')
@@ -201,7 +234,7 @@ def build_figures(root):
     save(fig,'mission-nodes','PLANNED TEST SCHEMATIC','Mission definition, no planner execution','The dashed node sequence is input geometry; it does not claim obstacle avoidance or a collision-free path.')
 
     flow('simulation-proof',[
-        ['Gamepad / replay\ninput messages','Actual FC algorithm\nsource hash','Motor requests\nno pose override','Gazebo physics\nsensor models'],
+        ['RP2040 / radio replay\ninput messages','RP2350 C algorithm\nsource hash','Motor requests\nno pose override','Gazebo physics\nsensor models'],
         ['Ground station\nmission only','Companion planner\nsensed obstacles','FC serial contract\nbounded setpoints','Same FC + plant\nend-to-end logs']],
         'A test harness may stimulate inputs and record outputs; it may not secretly move the aircraft to pass.')
     fig,(ax,bx)=axes(n=2)
@@ -220,8 +253,8 @@ def build_figures(root):
         'Offline preparation is allowed; failed earlier gates invalidate affected downstream acceptance.')
 
     # Readiness chart records acceptance category, not an invented percent complete.
-    fig,ax=axes((8.6,2.6));labels=['Inertial evidence','New I2C topology','Dynamic estimator','PID / mixer','Autonomous flight'];states=[2,1,1,0,0];ax.barh(labels,states,color=[GREEN,GOLD,GOLD,GRAY,GRAY]);ax.set(xticks=[0,1,2],xticklabels=['Planned / pending','Offline or planned','Historical evidence'],xlim=(0,2.8),title='Readiness is evidence-specific, not a progress percentage');ax.invert_yaxis();ax.grid(axis='x',alpha=.5)
-    save(fig,'readiness','PROJECT STATUS SUMMARY','Current plan and evidence manifest','Historical evidence does not imply flight acceptance. New sensor wiring and physical frame checks remain pending.')
+    fig,ax=axes((8.6,2.6));labels=['ESP32 inertial evidence','Pico hardware integration','Dynamic estimator','Pico C / ROS prototypes','Autonomous flight'];states=[2,0,1,1,0];ax.barh(labels,states,color=[GREEN,GRAY,GOLD,GOLD,GRAY]);ax.set(xticks=[0,1,2],xticklabels=['Pending acceptance','Source / offline','Historical evidence'],xlim=(0,2.8),title='Target system and prototype evidence are distinct');ax.invert_yaxis();ax.grid(axis='x',alpha=.5)
+    save(fig,'readiness','PROJECT STATUS SUMMARY','Inspected Pico/ROS sources plus ESP32 evidence manifest','ESP32 measurements are preliminary evidence, not RP2350 timing or flight acceptance. Pico radio/sensor integration remains pending.')
 
     for rec in records.values():rec['sha256']=hashlib.sha256((root/'docs/university-report'/rec['file']).read_bytes()).hexdigest()
     (out/'figure-manifest.json').write_text(json.dumps(records,indent=2)+'\n',encoding='utf-8')

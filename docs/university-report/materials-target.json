@@ -1,0 +1,298 @@
+[
+  {
+    "id": "M01",
+    "category": "Aircraft",
+    "quantity": "1",
+    "component": "F450 or Q450 X frame with plates and arms",
+    "purpose_and_checks": "Structural assembly; verify motor diagonal, stiffness and mounting holes",
+    "group": "aircraft"
+  },
+  {
+    "id": "M02",
+    "category": "Aircraft",
+    "quantity": "4",
+    "component": "Nominal 1400 KV brushless motors",
+    "purpose_and_checks": "Exact model TBD; inspect shaft, mounts and propeller compatibility",
+    "group": "aircraft"
+  },
+  {
+    "id": "M03",
+    "category": "Aircraft",
+    "quantity": "4",
+    "component": "Nominal 40 A ESCs",
+    "purpose_and_checks": "Verify voltage range, input protocol and which unit has a suitable BEC",
+    "group": "aircraft"
+  },
+  {
+    "id": "M04",
+    "category": "Aircraft",
+    "quantity": "4",
+    "component": "9047 propellers, matched CW and CCW pairs",
+    "purpose_and_checks": "Verify handedness, hub fit, balance and motor recommendation",
+    "group": "aircraft"
+  },
+  {
+    "id": "M05",
+    "category": "Aircraft",
+    "quantity": "1",
+    "component": "3S 4200 mAh LiPo, marked 120C",
+    "purpose_and_checks": "Inspect condition; weigh; characterize useful capacity and current demand",
+    "group": "aircraft"
+  },
+  {
+    "id": "M06",
+    "category": "Aircraft",
+    "quantity": "1",
+    "component": "RP2350 development board, variant TBD",
+    "purpose_and_checks": "Pico SDK FC; verify board, memory, interfaces and 1 kHz timing",
+    "group": "aircraft"
+  },
+  {
+    "id": "M07",
+    "category": "Aircraft",
+    "quantity": "1",
+    "component": "GY-521 MPU6050 eight-pin module",
+    "purpose_and_checks": "Check device identity, pin order, offsets and mounting orientation",
+    "group": "aircraft"
+  },
+  {
+    "id": "M08",
+    "category": "Aircraft",
+    "quantity": "1",
+    "component": "BMP280 six-pin module",
+    "purpose_and_checks": "Confirm BMP rather than BME identity; verify I2C at 0x76",
+    "group": "aircraft"
+  },
+  {
+    "id": "M09",
+    "category": "Aircraft",
+    "quantity": "1",
+    "component": "GY-271 style magnetometer module",
+    "purpose_and_checks": "Identify actual HMC/QMC silicon and matching driver; inspect 3.3 V pull-ups",
+    "group": "aircraft"
+  },
+  {
+    "id": "M10",
+    "category": "Aircraft",
+    "quantity": "1",
+    "component": "TOFSense F2 Mini and cable",
+    "purpose_and_checks": "Verify exact model, saved I2C mode, connector orientation and range status",
+    "group": "aircraft"
+  },
+  {
+    "id": "M11",
+    "category": "Handheld",
+    "quantity": "1",
+    "component": "RP2040 development board",
+    "purpose_and_checks": "Custom handheld; joystick, trigger, button, display and radio interfaces",
+    "group": "other"
+  },
+  {
+    "id": "M12",
+    "category": "Aircraft",
+    "quantity": "1 set",
+    "component": "Power distribution assembly",
+    "purpose_and_checks": "Rated wiring/connectors; common reference; propulsion current outside FC",
+    "group": "aircraft"
+  },
+  {
+    "id": "M13",
+    "category": "Aircraft",
+    "quantity": "1",
+    "component": "Regulated FC and sensor supply",
+    "purpose_and_checks": "One verified source; chosen RP2350 board input range and load checked",
+    "group": "aircraft"
+  },
+  {
+    "id": "M14",
+    "category": "Aircraft",
+    "quantity": "1 set",
+    "component": "RP2350 carrier PCB and module sockets",
+    "purpose_and_checks": "User-made; target pin assignment, fit and electrical checks pending",
+    "group": "aircraft"
+  },
+  {
+    "id": "M15",
+    "category": "Aircraft",
+    "quantity": "1 set",
+    "component": "Fasteners, spacers, battery straps and insulation",
+    "purpose_and_checks": "Secure battery and rigid sensor reference; prevent conductive contact",
+    "group": "aircraft"
+  },
+  {
+    "id": "M16",
+    "category": "Aircraft",
+    "quantity": "1 set",
+    "component": "Battery divider and ADC RC filter",
+    "purpose_and_checks": "Candidate 47 kOhm / 10 kOhm, 1 percent resistors and 100 nF; verify ADC range",
+    "group": "aircraft"
+  },
+  {
+    "id": "M17",
+    "category": "Aircraft",
+    "quantity": "1",
+    "component": "Current measurement assembly",
+    "purpose_and_checks": "Sensor/range TBD; compatible conditioned output and external high-current path",
+    "group": "aircraft"
+  },
+  {
+    "id": "M18",
+    "category": "Aircraft",
+    "quantity": "4",
+    "component": "Three-pin ESC signal headers",
+    "purpose_and_checks": "Label GND, isolated BEC positive and signal; cable order must be checked",
+    "group": "aircraft"
+  },
+  {
+    "id": "M19",
+    "category": "Aircraft",
+    "quantity": "1 set",
+    "component": "Lidar solder pads or connector",
+    "purpose_and_checks": "Four conductors; strain relief for remote sensor",
+    "group": "aircraft"
+  },
+  {
+    "id": "T01",
+    "category": "Test equipment",
+    "quantity": "1",
+    "component": "USB-TTL adapter",
+    "purpose_and_checks": "3.3 V logic, 921600 baud capability and suitable 5 V lidar power",
+    "group": "other"
+  },
+  {
+    "id": "T02",
+    "category": "Test equipment",
+    "quantity": "1",
+    "component": "Digital multimeter",
+    "purpose_and_checks": "Voltage, resistance and continuity; known uncertainty",
+    "group": "other"
+  },
+  {
+    "id": "T03",
+    "category": "Test equipment",
+    "quantity": "1",
+    "component": "Current instrument",
+    "purpose_and_checks": "Suitable DC clamp or rated inline sensor; never place ammeter across battery",
+    "group": "other"
+  },
+  {
+    "id": "T04",
+    "category": "Test equipment",
+    "quantity": "1 set",
+    "component": "Scale, level, angle fixture and ruler",
+    "purpose_and_checks": "Record resolution and repeatability; rigid fixtures preferred to hand-held poses",
+    "group": "other"
+  },
+  {
+    "id": "T05",
+    "category": "Test equipment",
+    "quantity": "1",
+    "component": "3S balance charger and suitable charging setup",
+    "purpose_and_checks": "Use battery-compatible settings and inspect pack condition",
+    "group": "other"
+  },
+  {
+    "id": "T06",
+    "category": "Test equipment",
+    "quantity": "1 set",
+    "component": "Soldering, insulation and inspection tools",
+    "purpose_and_checks": "Assembly quality, magnification and continuity before power",
+    "group": "other"
+  },
+  {
+    "id": "O01",
+    "category": "Optional companion",
+    "quantity": "1",
+    "component": "Raspberry Pi 4/5 OR NVIDIA Jetson, plus storage",
+    "purpose_and_checks": "Sought, not selected; benchmark latency, power, mass, OS and cost",
+    "group": "other"
+  },
+  {
+    "id": "O02",
+    "category": "Optional companion",
+    "quantity": "1",
+    "component": "Compatible RGB camera and mount",
+    "purpose_and_checks": "Optional perception; calibrate intrinsics, extrinsics and timestamps",
+    "group": "other"
+  },
+  {
+    "id": "O03",
+    "category": "Optional companion",
+    "quantity": "1 set",
+    "component": "Companion power and serial interface",
+    "purpose_and_checks": "Optional; size separately and verify logic level and shared reference",
+    "group": "other"
+  },
+  {
+    "id": "M20",
+    "category": "Handheld",
+    "quantity": "2",
+    "component": "Centred two-axis joystick modules",
+    "purpose_and_checks": "Four analogue axes; neutral, endpoint and noise calibration",
+    "group": "other"
+  },
+  {
+    "id": "M21",
+    "category": "Handheld",
+    "quantity": "1 set",
+    "component": "LB/RB, direction and mode buttons",
+    "purpose_and_checks": "Final arrangement and gesture mapping TBD; debounce required",
+    "group": "other"
+  },
+  {
+    "id": "M22",
+    "category": "Handheld",
+    "quantity": "2",
+    "component": "LT/RT trigger controls",
+    "purpose_and_checks": "Analogue or digital choice to confirm; calibrate released/pressed states",
+    "group": "other"
+  },
+  {
+    "id": "M23",
+    "category": "Handheld",
+    "quantity": "1",
+    "component": "74HC4051 analogue multiplexer",
+    "purpose_and_checks": "Existing RP2040 prototype acquisition option; settling/crosstalk checks",
+    "group": "other"
+  },
+  {
+    "id": "M24",
+    "category": "Handheld",
+    "quantity": "1",
+    "component": "Handheld display, model TBD",
+    "purpose_and_checks": "Readable link, mode, battery and status information",
+    "group": "other"
+  },
+  {
+    "id": "M25",
+    "category": "Handheld",
+    "quantity": "1 set",
+    "component": "Handheld power and enclosure",
+    "purpose_and_checks": "Battery/regulation/charging and mechanical design TBD",
+    "group": "other"
+  },
+  {
+    "id": "R01",
+    "category": "Both sides radio",
+    "quantity": "2",
+    "component": "LoRa modules, exact type and band TBD",
+    "purpose_and_checks": "One per side, primary pilot link; airtime and loss tests",
+    "group": "other"
+  },
+  {
+    "id": "R02",
+    "category": "Both sides radio",
+    "quantity": "4",
+    "component": "CC1101 modules",
+    "purpose_and_checks": "Two per side, reserved secondary links; not implemented fallback",
+    "group": "other"
+  },
+  {
+    "id": "R03",
+    "category": "Both sides radio",
+    "quantity": "6",
+    "component": "Matched antennas and RF connections",
+    "purpose_and_checks": "Match selected modules/bands; isolation and coexistence checks",
+    "group": "other"
+  }
+]
