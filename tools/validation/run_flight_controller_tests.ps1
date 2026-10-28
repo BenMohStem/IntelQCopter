@@ -2,7 +2,8 @@ param([string]$TracePath, [string]$KalmanPath, [int]$KalmanTrials = 500)
 
 $ErrorActionPreference = "Stop"
 $repoRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
-$zig = Join-Path $repoRoot ".venv-tests\Scripts\python-zig.exe"
+$zigCommand = Get-Command zig -ErrorAction SilentlyContinue
+$zig = if ($zigCommand) { $zigCommand.Source } else { 'C:/WinLibs/zig/zig.exe' }
 $cache = Join-Path $repoRoot "build\zig-cache"
 $outputDir = Join-Path $repoRoot "build\host-tests"
 $testSource = Join-Path $repoRoot "firmware\flight_controller\tests\test_flight_controller.c"
@@ -19,7 +20,7 @@ if (-not $flightWire.Success -or -not $handlerWire.Success -or $flightWire.Value
 }
 Write-Output 'Single-file protocol consistency check passed.'
 
-if (-not (Test-Path $zig)) { throw "Test compiler missing. Create .venv-tests and install ziglang first." }
+if (-not (Test-Path $zig)) { throw "Shared Zig compiler missing. Install Zig system-wide or configure PATH." }
 New-Item -ItemType Directory -Force $cache, $outputDir | Out-Null
 $env:ZIG_GLOBAL_CACHE_DIR = $cache
 & $zig cc $testSource -std=c11 -O2 -Wall -Wextra -Werror -o $testExe -lm

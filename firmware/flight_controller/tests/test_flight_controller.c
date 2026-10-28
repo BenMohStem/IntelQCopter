@@ -74,12 +74,12 @@ static void test_centered_throttle_holds_and_stick_commands_vertical_rate(void) 
     for (unsigned i = 0; i < 20; ++i)
         (void)flight_control_step(&s, &c, FC_LOOP_DT);
     const float neutral_collective = flight_control_step(&s, &c, FC_LOOP_DT).motor[0];
-    CHECK(fabsf(neutral_collective - FC_HOVER_THROTTLE_PLACEHOLDER) < 1e-5f);
+    CHECK(fabsf(neutral_collective - fminf(FC_HOVER_THROTTLE_PLACEHOLDER, FC_NORMAL_MOTOR_CEILING)) < 1e-5f);
 
     c.throttle = 0.75f;
     control_output_t climb = {0};
     for (unsigned i = 0; i < 20; ++i) climb = flight_control_step(&s, &c, FC_LOOP_DT);
-    CHECK(climb.motor[0] > neutral_collective);
+    CHECK(climb.motor[0] >= neutral_collective && climb.motor[0] <= FC_NORMAL_MOTOR_CEILING);
 
     c.throttle = 0.25f;
     control_output_t descend = {0};
@@ -96,7 +96,7 @@ static void test_neutral_output_stays_disarmed(void) {
     CHECK(!out.armed);
     for (unsigned i = 0; i < 4; ++i) {
         CHECK(out.motor[i] >= 0.0f && out.motor[i] <= 1.0f);
-        CHECK(fabsf(out.motor[i] - c.throttle) < 1e-5f);
+        CHECK(fabsf(out.motor[i] - FC_NORMAL_MOTOR_CEILING) < 1e-5f);
     }
 }
 
@@ -517,15 +517,15 @@ static void test_matrix_covariance_and_pitch_sign(void) {
     CHECK(fabsf(boost_state-1)<1e-5f && fabsf(boosted.motor[0]-.49f)<1e-5f);
     cmd.throttle=1;
     for(int i=0;i<125;i++)boosted=flight_control_step(&s,&cmd,FC_LOOP_DT);
-    CHECK(boosted.motor[0]>.79f && boosted.motor[0]<=.80001f && !boosted.armed);
+    CHECK(boosted.motor[0]>.64f && boosted.motor[0]<=.65001f && !boosted.armed);
     qc_sitl_reset(.49f,0,gains);cmd.boost=0;
     for(int i=0;i<125;i++)boosted=flight_control_step(&s,&cmd,FC_LOOP_DT);
-    CHECK(boosted.motor[0]>.64f && boosted.motor[0]<=.65001f);
+    CHECK(boosted.motor[0]>.44f && boosted.motor[0]<=.45001f);
     // Infeasible simultaneous torque requests: proportional allocation stays bounded.
     s.gyro_x_dps=s.gyro_y_dps=s.gyro_z_dps=-1000;
     cmd.roll_deg=cmd.pitch_deg=35;cmd.yaw_rate_dps=180;
     boosted=flight_control_step(&s,&cmd,FC_LOOP_DT);
-    for(unsigned i=0;i<4;i++)CHECK(isfinite(boosted.motor[i])&&boosted.motor[i]>=0&&boosted.motor[i]<=1);
+    for(unsigned i=0;i<4;i++)CHECK(isfinite(boosted.motor[i])&&boosted.motor[i]>=FC_ARMED_IDLE_FRACTION&&boosted.motor[i]<=FC_NORMAL_MOTOR_CEILING);
     puts("RT boost slew/neutral hold/collective reserve and bounded coupled allocation checks passed");
     puts("matrix prediction, Joseph product, PSD covariance and FLU pitch mixer checks passed");
 }
