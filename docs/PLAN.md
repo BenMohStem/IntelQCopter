@@ -125,3 +125,8 @@ Sources:
 - https://support.nooploop.com/tofsense/hardware/
 - https://support.nooploop.com/tofsense/protocol/
 - https://support.nooploop.com/tofsense/FAQ-for-tOfsense/
+
+
+## System specification - 28 October 2026
+
+[French cahier des charges](specification/cahier-des-charges.html) and [PDF](specification/cahier-des-charges.pdf): CDC-IQC-001 revision1.0,45 identified requirements,12 verification cases and staged acceptance gates. Proposed quantitative targets remain unapproved; physical motor restrictions remain. No firmware/hardware acceptance changes. Editable source: specification/cahier-des-charges.md.

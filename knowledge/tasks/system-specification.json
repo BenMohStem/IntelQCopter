@@ -1,0 +1,17 @@
+{
+  "id": "system-specification",
+  "scopes": [
+    "docs/specification",
+    "tools/docs/build_specification.py"
+  ],
+  "title": "Write the French system requirements and verification specification",
+  "depends_on": [],
+  "schema": 1,
+  "status": "done",
+  "acceptance": [
+    "Distinguish agreed requirements, proposed criteria and evidence",
+    "Verify PDF rendering and requirement identifiers",
+    "Commit reviewed source and outputs only"
+  ],
+  "evidence": []
+}
