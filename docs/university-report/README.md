@@ -1,6 +1,6 @@
 # English university project report
 
-Professional and Personal Project, IQC-PPP-002 revision2.0,28October2026.
+Professional and Personal Project, IQC-PPP-002 revision2.1,28October2026.
 
 - [Technical report PDF](technical-report.pdf)
 - [Standalone HTML](technical-report.html)
@@ -20,3 +20,7 @@ python tools/docs/build_university_report.py .
 ```
 
 No environments or downloaded dependencies are vendored. The self-contained HTML embeds its figures. PDF mathematical expressions are rendered; editable equation source is in the Markdown. Existing source figures are copied without alteration and identified by the manifest. No new hardware,upload,simulation or flight test was conducted for this report.
+
+## Visual revision 2.1
+
+IntelQCopter Autonomous Quadcopter identity,original vector cover,forest/leaf-green palette,mint table striping,clickable PDF contents and bookmarks. Technical body,31-entry inventory and original evidence-figure bytes preserved. [Cover preview](assets/cover-preview.png).

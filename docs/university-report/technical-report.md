@@ -1,19 +1,19 @@
 # IntelQCopter
-## Design and validation of a modular quadcopter flight control system
+## Autonomous Quadcopter
 
 **Professional and Personal Project**
 
-Technical report and system requirements specification
+Technical design and validation report
 
-**Report reference IQC-PPP-002 | Revision 2.0 | 28 October 2026**
+**Report reference IQC-PPP-002 | Revision 2.1 | 28 October 2026**
 
 Student name, student number, institution, supervisor and academic year: **to be completed by the student before submission**.
 
-The project investigates how a low-cost F450 quadcopter can acquire trustworthy sensor measurements, estimate its state and execute stable flight commands through an understandable embedded controller. An optional companion computer extends the platform towards local waypoint navigation and obstacle avoidance.
+Embedded control, calibrated sensing and progressive autonomous navigation. Requirements, materials, mathematical models and traceable test evidence.
 
-The main conclusion at this stage is that a reproducible inertial measurement and software-validation foundation exists, while complete closed-loop flight, the revised sensor wiring and autonomous navigation still require verification. The report therefore presents both the engineering design and the evidence needed to advance it responsibly.
+Current status: sensor and software groundwork; flight acceptance pending. F450 X frame; nominal 1 kHz FC target; ESP32-S3 current controller; optional ROS 2 companion.
 
-This submission combines requirements, a bill of materials, physical modelling, control and estimation methods, software architecture, verification, project planning and professional development. It is written for an engineering assessor who needs to distinguish intended performance from demonstrated results.
+The cover uses an original conceptual platform illustration, not a dimensional drawing or a photograph of tested hardware. Motor outputs remain disabled.
 
 **Submission status:** technically reviewed working draft. University marking criteria and cover details have not been supplied. Quantitative targets labelled Proposed require review. Personal reflection and contribution statements require student confirmation. No MIT affiliation, endorsement or certification is claimed.
 

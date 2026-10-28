@@ -13,7 +13,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from PIL import Image as PILImage
-from reportlab.graphics.shapes import Drawing, Rect, String, Line, Circle, Polygon
+from reportlab.graphics.shapes import Drawing, Rect, String, Line, Circle, Polygon, Ellipse
 from reportlab.graphics import renderPM
 from reportlab.lib import colors
 from reportlab.lib.styles import ParagraphStyle
@@ -30,16 +30,16 @@ TEXT = SOURCE.read_text(encoding='utf-8')
 pdfmetrics.registerFont(TTFont('ReportArial', r'C:\Windows\Fonts\arial.ttf'))
 pdfmetrics.registerFont(TTFont('ReportArialBold', r'C:\Windows\Fonts\arialbd.ttf'))
 pdfmetrics.registerFontFamily('ReportArial', normal='ReportArial', bold='ReportArialBold')
-INK = colors.HexColor('#172f46')
-TEAL = colors.HexColor('#116d78')
+INK = colors.HexColor('#18382c')
+TEAL = colors.HexColor('#198548')
 STYLES = {
     'title': ParagraphStyle('title', fontName='ReportArialBold', fontSize=29, leading=34, spaceAfter=17, textColor=colors.black),
     'h2': ParagraphStyle('h2', fontName='ReportArialBold', fontSize=18, leading=23, spaceAfter=13, textColor=INK),
     'h3': ParagraphStyle('h3', fontName='ReportArialBold', fontSize=11, leading=15, spaceBefore=8, spaceAfter=6, textColor=TEAL),
-    'body': ParagraphStyle('body', fontName='ReportArial', fontSize=10.2, leading=14.4, spaceAfter=8, textColor=colors.HexColor('#263645')),
+    'body': ParagraphStyle('body', fontName='ReportArial', fontSize=10.2, leading=14.4, spaceAfter=8, textColor=colors.HexColor('#293b32')),
     'cell': ParagraphStyle('cell', fontName='ReportArial', fontSize=8.2, leading=11.2),
-    'toc': ParagraphStyle('toc', fontName='ReportArial', fontSize=8.8, leading=11.3, spaceAfter=1),
-    'caption': ParagraphStyle('caption', fontName='ReportArial', fontSize=8.7, leading=11.8, spaceAfter=9, textColor=colors.HexColor('#506274')),
+    'toc': ParagraphStyle('toc', fontName='ReportArial', fontSize=8.8, leading=11.3, spaceAfter=1, textColor=INK),
+    'caption': ParagraphStyle('caption', fontName='ReportArial', fontSize=8.7, leading=11.8, spaceAfter=9, textColor=colors.HexColor('#536c5d')),
 }
 HEADINGS = re.findall(r'^## (.+)$', TEXT, re.M)
 PAGES = {}
@@ -47,7 +47,7 @@ PAGES = {}
 def inline(text):
     text = html.escape(text)
     text = re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', text)
-    text = re.sub(r'`(.+?)`', r'<font color="#116d78">\1</font>', text)
+    text = re.sub(r'`(.+?)`', r'<font color="#198548">\1</font>', text)
     return text
 
 class Heading(Paragraph):
@@ -59,21 +59,85 @@ class ReportDoc(SimpleDocTemplate):
     def afterFlowable(self, flowable):
         if hasattr(flowable, 'section_title'):
             PAGES[flowable.section_title] = self.page
+            key='section-'+str(HEADINGS.index(flowable.section_title))
+            self.canv.bookmarkPage(key)
+            self.canv.addOutlineEntry(flowable.section_title,key,level=0,closed=False)
 
 def footer(c, doc):
+    if doc.page == 1:
+        return
     c.setStrokeColor(TEAL)
+    c.setLineWidth(1.1)
     c.line(42, 805, 553, 805)
+    c.setFillColor(TEAL)
+    c.rect(42,805,26,3,fill=1,stroke=0)
     c.setFont('ReportArial', 8)
-    c.setFillColor(colors.HexColor('#536575'))
-    c.drawString(42, 816, 'IntelQCopter  |  Professional and Personal Project  |  Revision 2.0')
-    c.drawString(42, 25, '28 October 2026  |  University submission draft  |  Evidence and targets distinguished')
-    c.drawRightString(553, 25, str(doc.page))
+    c.setFillColor(colors.HexColor('#536c5d'))
+    c.drawString(42, 816, 'IntelQCopter   /   Autonomous Quadcopter')
+    c.drawRightString(553,816,'TECHNICAL REPORT   /   REV 2.1')
+    c.setStrokeColor(colors.HexColor('#d2e4d7'))
+    c.line(42,39,553,39)
+    c.drawString(42, 25, 'Professional and Personal Project   /   28 October 2026')
+    c.setFont('ReportArialBold',9)
+    c.setFillColor(TEAL)
+    c.drawRightString(553,25,f'{doc.page:02d}')
+
+def cover():
+    """Original vector artwork; no manufacturer logo, PCB or drone photograph."""
+    d=Drawing(511,725)
+    pale=colors.HexColor('#edf6ee')
+    light=colors.HexColor('#d8ebdc')
+    d.add(String(0,708,'PROFESSIONAL AND PERSONAL PROJECT',fontName='ReportArialBold',fontSize=9,fillColor=TEAL))
+    d.add(String(511,708,'REVISION 2.1',fontName='ReportArial',fontSize=9,textAnchor='end',fillColor=TEAL))
+    d.add(String(0,651,'IntelQCopter',fontName='ReportArialBold',fontSize=47,fillColor=INK))
+    d.add(String(0,614,'Autonomous Quadcopter',fontName='ReportArial',fontSize=25,fillColor=TEAL))
+    d.add(String(0,587,'TECHNICAL DESIGN AND VALIDATION REPORT',fontName='ReportArialBold',fontSize=10,fillColor=INK))
+    d.add(Line(0,569,511,569,strokeColor=TEAL,strokeWidth=1.1))
+    # Sparse technical construction grid behind an original conceptual F450 view.
+    for x in range(0,512,24):
+        d.add(Line(x,286,x,551,strokeColor=pale,strokeWidth=.5))
+    for y in range(286,552,24):
+        d.add(Line(0,y,511,y,strokeColor=pale,strokeWidth=.5))
+    cx,cy=255,417
+    for dx,dy in [(-148,76),(148,76),(-148,-76),(148,-76)]:
+        d.add(Line(cx,cy,cx+dx,cy+dy,strokeColor=light,strokeWidth=23))
+        d.add(Line(cx,cy+4,cx+dx,cy+dy+4,strokeColor=TEAL,strokeWidth=14))
+        d.add(Ellipse(cx+dx,cy+dy,63,27,fillColor=colors.white,strokeColor=TEAL,strokeWidth=1.4))
+        d.add(Ellipse(cx+dx,cy+dy,54,22,fillColor=None,strokeColor=light,strokeWidth=.7))
+        d.add(Line(cx+dx-45,cy+dy-12,cx+dx+45,cy+dy+12,strokeColor=INK,strokeWidth=4))
+        d.add(Line(cx+dx-41,cy+dy+14,cx+dx+41,cy+dy-14,strokeColor=INK,strokeWidth=4))
+        d.add(Circle(cx+dx,cy+dy,8,fillColor=TEAL,strokeColor=colors.white,strokeWidth=1))
+    d.add(Polygon([206,417,239,447,303,425,270,389],fillColor=INK,strokeColor=INK))
+    d.add(Polygon([206,427,239,457,303,435,270,399],fillColor=colors.HexColor('#2a9b58'),strokeColor=TEAL,strokeWidth=1))
+    d.add(Polygon([227,428,244,443,279,431,262,415],fillColor=pale,strokeColor=light))
+    d.add(Circle(253,430,6,fillColor=INK,strokeColor=INK))
+    for x,y in [(217,425),(239,448),(291,433),(270,407)]:
+        d.add(Circle(x,y,2,fillColor=light,strokeColor=light))
+    d.add(Line(242,450,247,467,strokeColor=INK,strokeWidth=2))
+    d.add(Line(227,405,220,385,strokeColor=INK,strokeWidth=2))
+    d.add(Line(282,413,290,392,strokeColor=INK,strokeWidth=2))
+    d.add(String(0,273,'CONCEPTUAL PLATFORM ILLUSTRATION  /  NOT A DIMENSIONAL DRAWING',fontName='ReportArial',fontSize=7,fillColor=colors.HexColor('#65836c')))
+    # A restrained product-summary strip rather than a collage of decorative cards.
+    d.add(Line(0,250,511,250,strokeColor=TEAL,strokeWidth=.8))
+    for x,a,b in [(0,'F450','X FRAME'),(138,'1 kHz','FC TARGET'),(280,'ESP32-S3','CURRENT FC'),(432,'ROS 2','OPTIONAL')]:
+        d.add(String(x,227,a,fontName='ReportArialBold',fontSize=15,fillColor=INK))
+        d.add(String(x,210,b,fontName='ReportArial',fontSize=8,fillColor=TEAL))
+    d.add(Line(0,194,511,194,strokeColor=light,strokeWidth=.7))
+    for y,t in [(170,'Embedded control, calibrated sensing and progressive autonomous navigation.'),(153,'Requirements, materials, mathematical models and traceable test evidence.'),(136,'Current status: sensor and software groundwork; flight acceptance pending.')]:
+        d.add(String(0,y,t,fontName='ReportArial',fontSize=9.2,fillColor=INK))
+    d.add(String(0,104,'IQC-PPP-002   /   28 OCTOBER 2026   /   UNIVERSITY SUBMISSION DRAFT',fontName='ReportArialBold',fontSize=8,fillColor=TEAL))
+    d.add(String(0,78,'Student / ID / institution / supervisor / academic year: complete before submission.',fontName='ReportArial',fontSize=8.5,fillColor=INK))
+    d.add(String(0,60,'Proposed targets and historical results are distinguished. Motor outputs remain disabled.',fontName='ReportArial',fontSize=8.5,fillColor=INK))
+    d.add(Line(0,33,511,33,strokeColor=TEAL,strokeWidth=1))
+    d.add(String(0,16,'IntelQCopter',fontName='ReportArialBold',fontSize=10,fillColor=INK))
+    d.add(String(511,16,'01',fontName='ReportArialBold',fontSize=9,textAnchor='end',fillColor=TEAL))
+    return d
 
 def architecture():
     d = Drawing(511, 153)
     boxes = [(0,90,112,45,'Xbox input','BLE to verify'), (148,90,172,45,'ESP32-S3 FC','Sensors / estimate / PID'), (358,90,153,45,'ESCs and motors','Outputs disabled'), (0,9,112,46,'Ground station','Approved mission'), (148,9,172,46,'ROS 2 companion','Optional perception / planner')]
     for x,y,w,h,a,b in boxes:
-        d.add(Rect(x,y,w,h,fillColor=colors.HexColor('#edf4f6'),strokeColor=TEAL,strokeWidth=.8))
+        d.add(Rect(x,y,w,h,fillColor=colors.HexColor('#edf6ee'),strokeColor=TEAL,strokeWidth=.8))
         d.add(String(x+w/2,y+28,a,fontName='ReportArialBold',fontSize=9.5,textAnchor='middle',fillColor=INK))
         d.add(String(x+w/2,y+12,b,fontName='ReportArial',fontSize=8.3,textAnchor='middle',fillColor=INK))
     for x1,y1,x2,y2 in [(112,112,148,112),(320,112,358,112),(112,32,148,32),(235,55,235,90)]:
@@ -116,7 +180,7 @@ def html_image(path, alt):
 
 def equation(latex, index):
     fig=plt.figure(figsize=(9,0.65), dpi=220)
-    fig.text(.5,.5,'$'+latex+'$',ha='center',va='center',fontsize=14,color='#172f46')
+    fig.text(.5,.5,'$'+latex+'$',ha='center',va='center',fontsize=14,color='#18382c')
     path=ASSETS/f'equation-{index:02d}.png'
     fig.savefig(path,bbox_inches='tight',pad_inches=.10,facecolor='white')
     plt.close(fig)
@@ -159,13 +223,24 @@ def make_story(toc_pages):
     lines=TEXT.splitlines();i=0
     while i<len(lines):
         line=lines[i]
+        if i==0:
+            d=cover()
+            story.append(d)
+            web.append('<div class="cover">'+html_image(save_drawing(d,'cover'),'IntelQCopter Autonomous Quadcopter technical report cover')+'</div>')
+            PAGES[HEADINGS[0]]=1
+            while i<len(lines) and lines[i]!='---':i+=1
+            continue
         if not line.strip():i+=1;continue
         if line=='---':story.append(PageBreak());web.append('</section><section>');i+=1;continue
         if line=='[[CONTENTS]]':
+            toc=[]
             for title in HEADINGS[2:]:
-                label=title+'  '+str(toc_pages.get(title,''))
-                story.append(Paragraph(inline(label),STYLES['toc']))
-                web.append('<p class="toc"><a href="#'+str(HEADINGS.index(title))+'">'+inline(title)+'</a></p>')
+                key='section-'+str(HEADINGS.index(title))
+                toc.append([Paragraph('<link href="#'+key+'" color="#18382c">'+inline(title)+'</link>',STYLES['toc']),Paragraph(str(toc_pages.get(title,'')),STYLES['toc'])])
+                web.append('<p class="toc"><a href="#'+str(HEADINGS.index(title))+'">'+inline(title)+'</a><span>'+str(toc_pages.get(title,''))+'</span></p>')
+            table=Table(toc,colWidths=[480,31],hAlign='LEFT')
+            table.setStyle(TableStyle([('LINEBELOW',(0,0),(-1,-1),.25,colors.HexColor('#dce9de')),('LEFTPADDING',(0,0),(-1,-1),0),('RIGHTPADDING',(0,0),(-1,-1),0),('TOPPADDING',(0,0),(-1,-1),1),('BOTTOMPADDING',(0,0),(-1,-1),1)]))
+            story.append(table)
         elif line in ('[[ARCHITECTURE]]','[[GEOMETRY]]'):
             key='architecture' if 'ARCHITECTURE' in line else 'geometry'
             d=architecture() if key=='architecture' else geometry()
@@ -202,10 +277,11 @@ def make_story(toc_pages):
             elif rows[0][0]=='ID':widths=[63,350,98]
             elif rows[0][0]=='ID and quantity':widths=[73,177,261]
             else:widths=[110,185,216]
-            data=[[Paragraph(inline(c),STYLES['cell']) for c in r] for r in rows]
+            header_style=ParagraphStyle('header-cell',parent=STYLES['cell'],fontName='ReportArialBold',textColor=colors.white)
+            data=[[Paragraph(inline(c),header_style if j==0 else STYLES['cell']) for c in r] for j,r in enumerate(rows)]
             t=Table(data,colWidths=widths,repeatRows=1,hAlign='LEFT')
             pad=4 if len(rows)>1 and rows[1][0].startswith('M16 ') else 6
-            t.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,0),colors.HexColor('#dcebf0')),('ROWBACKGROUNDS',(0,1),(-1,-1),[colors.white,colors.HexColor('#f6f8fa')]),('GRID',(0,0),(-1,-1),.3,colors.HexColor('#cbd5de')),('VALIGN',(0,0),(-1,-1),'MIDDLE'),('LEFTPADDING',(0,0),(-1,-1),6),('RIGHTPADDING',(0,0),(-1,-1),6),('TOPPADDING',(0,0),(-1,-1),pad),('BOTTOMPADDING',(0,0),(-1,-1),pad)]))
+            t.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,0),colors.HexColor('#246b42')),('ROWBACKGROUNDS',(0,1),(-1,-1),[colors.white,colors.HexColor('#f2f7f1')]),('GRID',(0,0),(-1,-1),.3,colors.HexColor('#cddfcf')),('VALIGN',(0,0),(-1,-1),'MIDDLE'),('LEFTPADDING',(0,0),(-1,-1),6),('RIGHTPADDING',(0,0),(-1,-1),6),('TOPPADDING',(0,0),(-1,-1),pad),('BOTTOMPADDING',(0,0),(-1,-1),pad)]))
             story.extend([t,Spacer(1,9)])
             web.append('<table>'+''.join('<tr>'+''.join('<'+('th' if j==0 else 'td')+'>'+inline(c)+'</'+('th' if j==0 else 'td')+'>' for c in r)+'</tr>' for j,r in enumerate(rows))+'</table>')
             continue
@@ -221,9 +297,9 @@ def make_story(toc_pages):
 target=OUT/'technical-report.pdf'
 for run in range(2):
     story,web=make_story(dict(PAGES))
-    doc=ReportDoc(str(target),pagesize=(595.28,841.89),leftMargin=42,rightMargin=42,topMargin=56,bottomMargin=47,title='IntelQCopter Professional and Personal Project',author='IntelQCopter project - student attribution to confirm')
+    doc=ReportDoc(str(target),pagesize=(595.28,841.89),leftMargin=42,rightMargin=42,topMargin=56,bottomMargin=47,title='IntelQCopter Autonomous Quadcopter',author='IntelQCopter project - student attribution to confirm')
     doc.build(story,onFirstPage=footer,onLaterPages=footer)
-css='body{margin:0;background:#edf2f6;color:#263645;font:17px/1.65 Segoe UI,Arial,sans-serif}main{max-width:1050px;margin:auto}section{background:white;padding:45px;margin:24px 0;box-shadow:0 3px 16px #1232}h1{font-size:42px;color:black}h2{color:#172f46;line-height:1.3}h3{color:#116d78}table{border-collapse:collapse;width:100%;font-size:14px}td,th{border:1px solid #cbd5de;padding:10px;text-align:left}th{background:#dcebf0}tr:nth-child(even){background:#f6f8fa}img{display:block;max-width:100%;max-height:550px;margin:16px auto}.toc{font-size:14px;margin:3px}a{color:#116d78}@media print{section{break-before:page;box-shadow:none;margin:0;padding:12px}section:first-child{break-before:auto}}'
-(OUT/'technical-report.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><title>IntelQCopter Professional and Personal Project</title><style>'+css+'</style><main><section>'+''.join(web)+'</section></main></html>',encoding='utf-8')
+css='body{margin:0;background:#eaf1e9;color:#293b32;font:17px/1.65 Segoe UI,Arial,sans-serif}main{max-width:1050px;margin:auto}section{background:white;padding:45px;margin:24px 0;border-top:4px solid #198548;box-shadow:0 3px 16px #18382c14}h1{font-size:42px;color:#18382c}h2{color:#18382c;line-height:1.3}h3{color:#198548}table{border-collapse:collapse;width:100%;font-size:14px}td,th{border:1px solid #cddfcf;padding:10px;text-align:left}th{background:#246b42;color:white}tr:nth-child(even){background:#f2f7f1}img{display:block;max-width:100%;max-height:550px;margin:16px auto}.cover img{width:100%;max-height:none}.toc{font-size:14px;margin:3px;display:flex;justify-content:space-between;border-bottom:1px dotted #cddfcf}.toc a{text-decoration:none;color:#18382c}a{color:#198548}@media print{section{break-before:page;box-shadow:none;margin:0;padding:12px}section:first-child{break-before:auto}}'
+(OUT/'technical-report.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><title>IntelQCopter Autonomous Quadcopter</title><style>'+css+'</style><main><section>'+''.join(web)+'</section></main></html>',encoding='utf-8')
 (OUT/'section-pages.json').write_text(json.dumps(PAGES,indent=2)+'\n',encoding='utf-8')
 print(json.dumps({'sections':len(HEADINGS),'bom_rows':len(bom),'section_pages':PAGES},indent=2))

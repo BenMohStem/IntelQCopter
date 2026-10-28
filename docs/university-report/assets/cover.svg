@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="511" height="725" preserveAspectRatio="xMinYMin meet" viewBox="0 0 511 725" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="511" height="725"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-725)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="0" y="708" style="font-family: ReportArialBold; font-size: 9px;fill: rgb(9%,52%,28%); stroke:none;" transform="translate(0,1416) scale(1,-1)">PROFESSIONAL AND PERSONAL PROJECT</text>
+			<text x="452.97900390625" y="708" style="font-family: ReportArial; font-size: 9px;fill: rgb(9%,52%,28%); stroke:none;" transform="translate(0,1416) scale(1,-1)">REVISION 2.1</text>
+			<text x="0" y="651" style="font-family: ReportArialBold; font-size: 47px;fill: rgb(9%,21%,17%); stroke:none;" transform="translate(0,1302) scale(1,-1)">IntelQCopter</text>
+			<text x="0" y="614" style="font-family: ReportArial; font-size: 25px;fill: rgb(9%,52%,28%); stroke:none;" transform="translate(0,1228) scale(1,-1)">Autonomous Quadcopter</text>
+			<text x="0" y="587" style="font-family: ReportArialBold; font-size: 10px;fill: rgb(9%,21%,17%); stroke:none;" transform="translate(0,1174) scale(1,-1)">TECHNICAL DESIGN AND VALIDATION REPORT</text>
+			<path d="M 0,569 L 511,569 Z" style="stroke: rgb(9%,52%,28%); stroke-linecap: butt; stroke-width: 1.1;"/>
+			<path d="M 0,286 L 0,551 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 24,286 L 24,551 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 48,286 L 48,551 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 72,286 L 72,551 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 96,286 L 96,551 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 120,286 L 120,551 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 144,286 L 144,551 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 168,286 L 168,551 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 192,286 L 192,551 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 216,286 L 216,551 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 240,286 L 240,551 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 264,286 L 264,551 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 288,286 L 288,551 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 312,286 L 312,551 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 336,286 L 336,551 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 360,286 L 360,551 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 384,286 L 384,551 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 408,286 L 408,551 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 432,286 L 432,551 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 456,286 L 456,551 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 480,286 L 480,551 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 504,286 L 504,551 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 0,286 L 511,286 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 0,310 L 511,310 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 0,334 L 511,334 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 0,358 L 511,358 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 0,382 L 511,382 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 0,406 L 511,406 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 0,430 L 511,430 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 0,454 L 511,454 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 0,478 L 511,478 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 0,502 L 511,502 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 0,526 L 511,526 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 0,550 L 511,550 Z" style="stroke: rgb(92%,96%,93%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 255,417 L 107,493 Z" style="stroke: rgb(84%,92%,86%); stroke-linecap: butt; stroke-width: 23;"/>
+			<path d="M 255,421 L 107,497 Z" style="stroke: rgb(9%,52%,28%); stroke-linecap: butt; stroke-width: 14;"/>
+			<ellipse cx="107.0" cy="493.0" rx="63.0" ry="27.0" style="stroke: rgb(9%,52%,28%); stroke-linecap: butt; stroke-width: 1.4; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<ellipse cx="107.0" cy="493.0" rx="54.0" ry="22.0" style="stroke: rgb(84%,92%,86%); stroke-linecap: butt; stroke-width: 0.7; fill: none; fill-rule: evenodd;"/>
+			<path d="M 62,481 L 152,505 Z" style="stroke: rgb(9%,21%,17%); stroke-linecap: butt; stroke-width: 4;"/>
+			<path d="M 66,507 L 148,479 Z" style="stroke: rgb(9%,21%,17%); stroke-linecap: butt; stroke-width: 4;"/>
+			<circle cx="107" cy="493" r="8" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(9%,52%,28%); fill-rule: evenodd;"/>
+			<path d="M 255,417 L 403,493 Z" style="stroke: rgb(84%,92%,86%); stroke-linecap: butt; stroke-width: 23;"/>
+			<path d="M 255,421 L 403,497 Z" style="stroke: rgb(9%,52%,28%); stroke-linecap: butt; stroke-width: 14;"/>
+			<ellipse cx="403.0" cy="493.0" rx="63.0" ry="27.0" style="stroke: rgb(9%,52%,28%); stroke-linecap: butt; stroke-width: 1.4; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<ellipse cx="403.0" cy="493.0" rx="54.0" ry="22.0" style="stroke: rgb(84%,92%,86%); stroke-linecap: butt; stroke-width: 0.7; fill: none; fill-rule: evenodd;"/>
+			<path d="M 358,481 L 448,505 Z" style="stroke: rgb(9%,21%,17%); stroke-linecap: butt; stroke-width: 4;"/>
+			<path d="M 362,507 L 444,479 Z" style="stroke: rgb(9%,21%,17%); stroke-linecap: butt; stroke-width: 4;"/>
+			<circle cx="403" cy="493" r="8" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(9%,52%,28%); fill-rule: evenodd;"/>
+			<path d="M 255,417 L 107,341 Z" style="stroke: rgb(84%,92%,86%); stroke-linecap: butt; stroke-width: 23;"/>
+			<path d="M 255,421 L 107,345 Z" style="stroke: rgb(9%,52%,28%); stroke-linecap: butt; stroke-width: 14;"/>
+			<ellipse cx="107.0" cy="341.0" rx="63.0" ry="27.0" style="stroke: rgb(9%,52%,28%); stroke-linecap: butt; stroke-width: 1.4; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<ellipse cx="107.0" cy="341.0" rx="54.0" ry="22.0" style="stroke: rgb(84%,92%,86%); stroke-linecap: butt; stroke-width: 0.7; fill: none; fill-rule: evenodd;"/>
+			<path d="M 62,329 L 152,353 Z" style="stroke: rgb(9%,21%,17%); stroke-linecap: butt; stroke-width: 4;"/>
+			<path d="M 66,355 L 148,327 Z" style="stroke: rgb(9%,21%,17%); stroke-linecap: butt; stroke-width: 4;"/>
+			<circle cx="107" cy="341" r="8" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(9%,52%,28%); fill-rule: evenodd;"/>
+			<path d="M 255,417 L 403,341 Z" style="stroke: rgb(84%,92%,86%); stroke-linecap: butt; stroke-width: 23;"/>
+			<path d="M 255,421 L 403,345 Z" style="stroke: rgb(9%,52%,28%); stroke-linecap: butt; stroke-width: 14;"/>
+			<ellipse cx="403.0" cy="341.0" rx="63.0" ry="27.0" style="stroke: rgb(9%,52%,28%); stroke-linecap: butt; stroke-width: 1.4; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<ellipse cx="403.0" cy="341.0" rx="54.0" ry="22.0" style="stroke: rgb(84%,92%,86%); stroke-linecap: butt; stroke-width: 0.7; fill: none; fill-rule: evenodd;"/>
+			<path d="M 358,329 L 448,353 Z" style="stroke: rgb(9%,21%,17%); stroke-linecap: butt; stroke-width: 4;"/>
+			<path d="M 362,355 L 444,327 Z" style="stroke: rgb(9%,21%,17%); stroke-linecap: butt; stroke-width: 4;"/>
+			<circle cx="403" cy="341" r="8" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(9%,52%,28%); fill-rule: evenodd;"/>
+			<polygon points="206 417, 239 447, 303 425, 270 389" style="stroke: rgb(9%,21%,17%); stroke-linecap: butt; stroke-width: 1; fill: rgb(9%,21%,17%); fill-rule: evenodd;"/>
+			<polygon points="206 427, 239 457, 303 435, 270 399" style="stroke: rgb(9%,52%,28%); stroke-linecap: butt; stroke-width: 1; fill: rgb(16%,60%,34%); fill-rule: evenodd;"/>
+			<polygon points="227 428, 244 443, 279 431, 262 415" style="stroke: rgb(84%,92%,86%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,96%,93%); fill-rule: evenodd;"/>
+			<circle cx="253" cy="430" r="6" style="stroke: rgb(9%,21%,17%); stroke-linecap: butt; stroke-width: 1; fill: rgb(9%,21%,17%); fill-rule: evenodd;"/>
+			<circle cx="217" cy="425" r="2" style="stroke: rgb(84%,92%,86%); stroke-linecap: butt; stroke-width: 1; fill: rgb(84%,92%,86%); fill-rule: evenodd;"/>
+			<circle cx="239" cy="448" r="2" style="stroke: rgb(84%,92%,86%); stroke-linecap: butt; stroke-width: 1; fill: rgb(84%,92%,86%); fill-rule: evenodd;"/>
+			<circle cx="291" cy="433" r="2" style="stroke: rgb(84%,92%,86%); stroke-linecap: butt; stroke-width: 1; fill: rgb(84%,92%,86%); fill-rule: evenodd;"/>
+			<circle cx="270" cy="407" r="2" style="stroke: rgb(84%,92%,86%); stroke-linecap: butt; stroke-width: 1; fill: rgb(84%,92%,86%); fill-rule: evenodd;"/>
+			<path d="M 242,450 L 247,467 Z" style="stroke: rgb(9%,21%,17%); stroke-linecap: butt; stroke-width: 2;"/>
+			<path d="M 227,405 L 220,385 Z" style="stroke: rgb(9%,21%,17%); stroke-linecap: butt; stroke-width: 2;"/>
+			<path d="M 282,413 L 290,392 Z" style="stroke: rgb(9%,21%,17%); stroke-linecap: butt; stroke-width: 2;"/>
+			<text x="0" y="273" style="font-family: ReportArial; font-size: 7px;fill: rgb(39%,51%,42%); stroke:none;" transform="translate(0,546) scale(1,-1)">CONCEPTUAL PLATFORM ILLUSTRATION  /  NOT A DIMENSIONAL DRAWING</text>
+			<path d="M 0,250 L 511,250 Z" style="stroke: rgb(9%,52%,28%); stroke-linecap: butt; stroke-width: 0.8;"/>
+			<text x="0" y="227" style="font-family: ReportArialBold; font-size: 15px;fill: rgb(9%,21%,17%); stroke:none;" transform="translate(0,454) scale(1,-1)">F450</text>
+			<text x="0" y="210" style="font-family: ReportArial; font-size: 8px;fill: rgb(9%,52%,28%); stroke:none;" transform="translate(0,420) scale(1,-1)">X FRAME</text>
+			<text x="138" y="227" style="font-family: ReportArialBold; font-size: 15px;fill: rgb(9%,21%,17%); stroke:none;" transform="translate(0,454) scale(1,-1)">1 kHz</text>
+			<text x="138" y="210" style="font-family: ReportArial; font-size: 8px;fill: rgb(9%,52%,28%); stroke:none;" transform="translate(0,420) scale(1,-1)">FC TARGET</text>
+			<text x="280" y="227" style="font-family: ReportArialBold; font-size: 15px;fill: rgb(9%,21%,17%); stroke:none;" transform="translate(0,454) scale(1,-1)">ESP32-S3</text>
+			<text x="280" y="210" style="font-family: ReportArial; font-size: 8px;fill: rgb(9%,52%,28%); stroke:none;" transform="translate(0,420) scale(1,-1)">CURRENT FC</text>
+			<text x="432" y="227" style="font-family: ReportArialBold; font-size: 15px;fill: rgb(9%,21%,17%); stroke:none;" transform="translate(0,454) scale(1,-1)">ROS 2</text>
+			<text x="432" y="210" style="font-family: ReportArial; font-size: 8px;fill: rgb(9%,52%,28%); stroke:none;" transform="translate(0,420) scale(1,-1)">OPTIONAL</text>
+			<path d="M 0,194 L 511,194 Z" style="stroke: rgb(84%,92%,86%); stroke-linecap: butt; stroke-width: 0.7;"/>
+			<text x="0" y="170" style="font-family: ReportArial; font-size: 9.2px;fill: rgb(9%,21%,17%); stroke:none;" transform="translate(0,340) scale(1,-1)">Embedded control, calibrated sensing and progressive autonomous navigation.</text>
+			<text x="0" y="153" style="font-family: ReportArial; font-size: 9.2px;fill: rgb(9%,21%,17%); stroke:none;" transform="translate(0,306) scale(1,-1)">Requirements, materials, mathematical models and traceable test evidence.</text>
+			<text x="0" y="136" style="font-family: ReportArial; font-size: 9.2px;fill: rgb(9%,21%,17%); stroke:none;" transform="translate(0,272) scale(1,-1)">Current status: sensor and software groundwork; flight acceptance pending.</text>
+			<text x="0" y="104" style="font-family: ReportArialBold; font-size: 8px;fill: rgb(9%,52%,28%); stroke:none;" transform="translate(0,208) scale(1,-1)">IQC-PPP-002   /   28 OCTOBER 2026   /   UNIVERSITY SUBMISSION DRAFT</text>
+			<text x="0" y="78" style="font-family: ReportArial; font-size: 8.5px;fill: rgb(9%,21%,17%); stroke:none;" transform="translate(0,156) scale(1,-1)">Student / ID / institution / supervisor / academic year: complete before submission.</text>
+			<text x="0" y="60" style="font-family: ReportArial; font-size: 8.5px;fill: rgb(9%,21%,17%); stroke:none;" transform="translate(0,120) scale(1,-1)">Proposed targets and historical results are distinguished. Motor outputs remain disabled.</text>
+			<path d="M 0,33 L 511,33 Z" style="stroke: rgb(9%,52%,28%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="0" y="16" style="font-family: ReportArialBold; font-size: 10px;fill: rgb(9%,21%,17%); stroke:none;" transform="translate(0,32) scale(1,-1)">IntelQCopter</text>
+			<text x="500.9892578125" y="16" style="font-family: ReportArialBold; font-size: 9px;fill: rgb(9%,52%,28%); stroke:none;" transform="translate(0,32) scale(1,-1)">01</text>
+		</g>
+	</g>
+</svg>
