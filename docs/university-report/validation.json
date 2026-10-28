@@ -25,6 +25,7 @@
     "technical-report.md": "f93ac6a3c59f746949b1fafd7e200b24ae63068fbbe2ac30d9f5dcca378824e5",
     "technical-report.pdf": "940a1745246ddfce42f43090f9b90c37c15fff6e85bfc7ea0387e89730dbbbcd",
     "technical-report.html": "8a7c041773d86005d5708555b7b71eb68b3a4785c69316d1d71f82d5c172bb55",
-    "bill-of-materials.csv": "0492cd413327a71a1c1cbc86b47ff240adf09796c8449b83f8a6d839c7b2a800"
-  }
+    "bill-of-materials.csv": "e2106c28535a549fa3839769c9cb01fa477ee60553d9818b552f64674692e041"
+  },
+  "git_inventory_newlines": "LF, normalized explicitly in renderer"
 }

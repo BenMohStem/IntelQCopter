@@ -152,7 +152,7 @@ for line in TEXT.splitlines():
         category={'M':'Aircraft','T':'Test equipment','O':'Optional companion','F':'Future Pico and radio'}[match[1][0]]
         bom.append({'id':match[1],'category':category,'quantity':match[2],'component':c[1],'purpose_and_checks':c[2],'exact_model':'TBD','owned_or_to_buy':'Confirm','supplier':'','currency':'','quote_date':'','unit_cost':'','shipping_allocation':'','verified_mass_g':''})
 with (OUT/'bill-of-materials.csv').open('w',encoding='utf-8-sig',newline='') as f:
-    writer=csv.DictWriter(f,fieldnames=list(bom[0]));writer.writeheader();writer.writerows(bom)
+    writer=csv.DictWriter(f,fieldnames=list(bom[0]),lineterminator="\n");writer.writeheader();writer.writerows(bom)
 
 def make_story(toc_pages):
     story=[]; web=[]; eq=0
