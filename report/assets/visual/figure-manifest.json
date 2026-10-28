@@ -110,5 +110,40 @@
     "caption": "Two separate authorities: pilot references and selected-mode companion references. CC1101 secondary links remain reserved.",
     "file": "assets/visual/communication-contract.png",
     "sha256": "b529df08e816c3595d2198b939b33820531afd307a99e4348c9347adcae87987"
+  },
+  "pid-parallel": {
+    "file": "assets/visual/pid-parallel.png",
+    "kind": "PROPOSED PID IMPLEMENTATION",
+    "source": "analysis/control-design-example.json and tools/control_design_example.py; no hardware/Gazebo run",
+    "caption": "Three interpretable terms combine before saturation. Back-calculation returns saturation error to the integral branch.",
+    "sha256": "6b53afd540b7a6b1d978159d04db16a8f997895afdea91a9db0590c420b67cac"
+  },
+  "yaw-height-pid": {
+    "file": "assets/visual/yaw-height-pid.png",
+    "kind": "PROPOSED CONTROL PATHS",
+    "source": "analysis/control-design-example.json and tools/control_design_example.py; no hardware/Gazebo run",
+    "caption": "Yaw is rate controlled. A proposed height/climb reference law feeds the vertical-speed PID; its neutral/transition behaviour still needs validation.",
+    "sha256": "a49edfd152040a32202cdbea076615456c7a12db9343e498ffa9199a23ed1a97"
+  },
+  "nyquist-example": {
+    "file": "assets/visual/nyquist-example.png",
+    "kind": "ILLUSTRATIVE PID MODEL",
+    "source": "analysis/control-design-example.json and tools/control_design_example.py; no hardware/Gazebo run",
+    "caption": "Positive-frequency locus and conjugate mirror, clipped near -1. Full origin indentation and outer closure are computed for the winding check; this is not measured aircraft stability.",
+    "sha256": "33efba129af859dbd92bbb19b4fbe7700317f7c3740cec25c1353b5c002bdd56"
+  },
+  "stats-pipeline": {
+    "file": "assets/visual/stats-pipeline.png",
+    "kind": "STATISTICAL METHOD",
+    "source": "analysis/control-design-example.json and tools/control_design_example.py; no hardware/Gazebo run",
+    "caption": "Measured spread informs an observation-error model only after reference, stationarity, bias and correlation checks. This diagram does not assert independent Gaussian sensor noise.",
+    "sha256": "81e2ff5c02416de5e4ed73989309720625a7fdf31f039f5ba4fe76ef5962e694"
+  },
+  "poles-plane": {
+    "file": "assets/visual/poles-plane.png",
+    "kind": "ILLUSTRATIVE PID MODEL",
+    "source": "analysis/control-design-example.json and tools/control_design_example.py; no hardware/Gazebo run",
+    "caption": "Left: the complex pair as gains increase. Right: all five roots for both cases, including the fast real modes. A 2D complex plane displays these quantities directly; no 3D projection is needed.",
+    "sha256": "69140c90b48c16c6db3ed18d4491c7037e59900187fe9a9b16df3fb7a6579f75"
   }
 }

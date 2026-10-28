@@ -1,0 +1,14 @@
+{
+  "source_commit": "600a20a",
+  "artifacts": [
+    {
+      "path": "reference/full-edition-4.1.pdf",
+      "sha256": "47eaa05ee814469de4c65803da4e807a60463b45baecd8c55c43855ef3329cc7"
+    },
+    {
+      "path": "reference/full-edition-4.1.md",
+      "sha256": "2489938175dff2d786bc0bc88ed6b2a5ab3c54020a259e1c180247dc2c2c8ce5"
+    }
+  ],
+  "status": "Unchanged historical full reference; current editions retain updated academic structure and explicit evidence limits."
+}

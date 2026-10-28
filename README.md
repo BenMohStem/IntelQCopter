@@ -4,39 +4,47 @@
 Fourth-year engineering · Personal and Professional Project (RSI7.8)
 Report edition: **27 October 2026**
 
-## Read the report
+## Choose your reading depth
 
-**[Open the 20-page PDF](IntelQCopter.pdf)** · [Browser edition](report/index.html) · [Editable report](report/report.md)
+| Edition | Open | What it contains |
+|---|---|---|
+| **Visual report · 23 pages** | **[PDF](IntelQCopter.pdf)** · [Browser](report/index.html) · [Source](report/report.md) | PID diagrams, Nyquist, complex-plane pole map, sensing, ROS/YOLO, simulation and resources |
+| **Full mathematical reference · 53 pages** | **[PDF](IntelQCopter-Full.pdf)** · [Browser](full/index.html) · [Source](full/report.md) | Applied derivations, Bode, Black–Nichols, 3D stability surface, statistical proofs and full registers |
+| Preserved previous full edition · 38 pages | [Original PDF](reference/full-edition-4.1.pdf) | Unchanged historical reference, retained for traceability |
+
+<p align="center"><img src="report/assets/f450-red-white-concept.png" width="570" alt="Red and white F450 concept illustration"></p>
+
+*AI concept artwork. Physical evidence, analytic examples and proposed designs are labelled separately. Frequency-analysis gains are educational assumptions, not flight settings.*
 
 1. **Flight controller:** physics, PID, sensors, calibration and estimation.
 2. **ROS 2 and YOLO:** companion computer, perception and navigation.
-3. **Gazebo and RViz:** model, environment and software validation.
+3. **Gazebo and RViz:** model, environment and actual FC command-path validation.
 4. **Resources:** hardware, software and professional method.
-5. **Handheld and links:** RP2040, LoRa, CC1101 and companion communication.
+5. **Handheld and links:** RP2040, LoRa, reserved CC1101 and companion communication.
 
-The intended aircraft uses an RP2350 flight controller. A Raspberry Pi or Jetson companion is being sought. Figures distinguish measured evidence, analytic examples and proposed designs. Physical motor outputs remain disabled; flight acceptance is pending.
+The intended aircraft uses an RP2350. Raspberry Pi 4/5 or Jetson is being sought; stable pilot operation remains independent. Physical motor outputs remain disabled; flight acceptance is pending.
 
-<p align="center"><img src="report/assets/f450-red-white-concept.png" width="600" alt="Red and white F450 concept illustration"></p>
+## Evidence and reproducibility
 
-*AI concept illustration; measured evidence and proposed tests are labelled in the report.*
+- [Materials inventory](report/bill-of-materials.csv) · [50 requirements](report/requirements-register.json)
+- [Original-evidence hashes](report/evidence-manifest.json) · [Inspected sources](report/source-inventory.json)
+- [Illustrative PID model and checks](analysis/control-design-example.json)
+- [Short QA](report/validation.json) · [Full QA](full/validation.json)
+- [Curated knowledge catalog](knowledge/README.md): small domains, explicit status/provenance, compact events.
 
-## Supporting evidence
+Selected published recording-derived reports/data remain in evidence/. They do not replace private original recordings. No hidden forces or pose overrides are accepted as proof of a successful FC simulation.
 
-- [Materials inventory](report/bill-of-materials.csv)
-- [Requirements](report/requirements-register.json)
-- [Evidence provenance](report/evidence-manifest.json)
-- [Inspected source identity](report/source-inventory.json)
-- [PDF verification](report/validation.json)
-- `evidence/`: selected published recordings-derived reports/data, including failures; not a replacement for private raw recordings.
+## Rebuild and verify
 
-## Rebuild
-
-Python 3, ReportLab, Matplotlib, NumPy, Pillow and Windows Arial fonts are required.
+Python 3, pinned packages below and Windows Arial fonts are required. No MATLAB or control-toolbox installation is needed for these plots.
 
 ```powershell
 python -m pip install -r requirements.txt
+python tools/control_design_example.py
 python tools/build_report.py .
+python tools/build_report.py . --full
 python tools/check_report.py
+python tools/check_knowledge.py .
 ```
 
-Student and supervisor names remain to complete. The programme identity is confirmed by the [official FGE listing](https://fge.usthb.dz/pages/Orientation-2026-2027). The [official RSI curriculum](https://fge.usthb.dz/storage/disk/Robotique-et-systemes-intelligents-MAJ-2025.pdf), PDF p. 11, lists **Projet Personnel Professionnel**, RSI7.8, semester 7, 2 credits and coefficient 1. The teacher's marking rubric remains to obtain.
+Student/supervisor names and the teacher's marking rubric remain to complete. The [official RSI curriculum](https://fge.usthb.dz/storage/disk/Robotique-et-systemes-intelligents-MAJ-2025.pdf), PDF p. 11, lists Projet Personnel Professionnel, RSI7.8, semester 7, 2 credits and coefficient 1.

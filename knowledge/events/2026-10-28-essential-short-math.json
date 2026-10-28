@@ -1,0 +1,12 @@
+{
+  "schema": 2,
+  "id": "2026-10-28-essential-short-math",
+  "date": "2026-10-28",
+  "domains": [
+    "presentation-preferences",
+    "reporting",
+    "control-example"
+  ],
+  "summary": "User clarified: retain essential short-report math and illustrations;3D only when useful; Wolfram Alpha optional.",
+  "outcome": "Short report remains 23 pages with explicit PID/calibration/variance/Kalman math and2D complex poles. Full reference 53 pages; original 38-page reference preserved. 3Dretained for spatial garden and full gain/lag surface."
+}

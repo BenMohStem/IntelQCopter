@@ -10,3 +10,4 @@
 evidence/** -text
 .gitignore text eol=lf
 .gitattributes text eol=lf
+reference/full-edition-4.1.* -text

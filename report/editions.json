@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "short": {
+    "pdf": "IntelQCopter.pdf",
+    "folder": "report",
+    "expected_pages": 23,
+    "page_budget_maximum": 23
+  },
+  "full": {
+    "pdf": "IntelQCopter-Full.pdf",
+    "folder": "full",
+    "expected_pages": 53
+  },
+  "archived_full": {
+    "pdf": "reference/full-edition-4.1.pdf",
+    "source": "reference/full-edition-4.1.md",
+    "expected_pages": 38,
+    "preserved_from_commit": "600a20a"
+  }
+}

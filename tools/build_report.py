@@ -23,14 +23,17 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak, Table, TableStyle, Image, Flowable
 
 ROOT = Path(sys.argv[1]).resolve()
-OUT = ROOT / 'report'
+EDITION = 'full' if '--full' in sys.argv[2:] else 'short'
+OUT = ROOT / ('full' if EDITION=='full' else 'report')
+OUT.mkdir(exist_ok=True)
+SHARED = ROOT / 'report'
 ASSETS = OUT / 'assets'
 ASSETS.mkdir(parents=True, exist_ok=True)
 SOURCE = OUT / 'report.md'
 TEXT = SOURCE.read_text(encoding='utf-8')
 from report_figures import build_figures
-VISUALS = build_figures(ROOT)
-REQUIREMENTS = json.loads((OUT/'requirements-register.json').read_text(encoding='utf-8'))
+VISUALS = build_figures(ROOT, OUT.relative_to(ROOT).as_posix())
+REQUIREMENTS = json.loads((SHARED/'requirements-register.json').read_text(encoding='utf-8'))
 pdfmetrics.registerFont(TTFont('ReportArial', r'C:\Windows\Fonts\arial.ttf'))
 pdfmetrics.registerFont(TTFont('ReportArialBold', r'C:\Windows\Fonts\arialbd.ttf'))
 pdfmetrics.registerFontFamily('ReportArial', normal='ReportArial', bold='ReportArialBold')
@@ -79,7 +82,7 @@ def footer(c, doc):
     c.setFont('ReportArial', 8)
     c.setFillColor(colors.HexColor('#536c5d'))
     c.drawString(42, 816, 'IntelQCopter   /   Autonomous Quadcopter')
-    c.drawRightString(553,816,'RSI ENGINEERING PROJECT   /   REV 6.0')
+    c.drawRightString(553,816,('FULL MATHEMATICAL REFERENCE' if EDITION=='full' else 'VISUAL UNIVERSITY REPORT')+' / REV 7.0')
     c.setStrokeColor(colors.HexColor('#d2e4d7'))
     c.line(42,39,553,39)
     c.drawString(42, 25, 'USTHB / FGE / RSI   |   Personal and Professional Project   |   27 October 2026')
@@ -96,7 +99,7 @@ def cover():
     d.add(String(0,620,'IntelQCopter',fontName='ReportArialBold',fontSize=46,fillColor=INK))
     d.add(String(0,585,'Autonomous Quadcopter',fontName='ReportArial',fontSize=25,fillColor=TEAL))
     d.add(String(0,557,'PERSONAL AND PROFESSIONAL PROJECT / RSI7.8',fontName='ReportArialBold',fontSize=11,fillColor=INK))
-    d.add(DrawingImage(50,270,410,273,str(ASSETS/'f450-red-white-concept.png')))
+    d.add(DrawingImage(50,270,410,273,str(SHARED/'assets/f450-red-white-concept.png')))
     d.add(String(0,260,'AI CONCEPT ILLUSTRATION  /  RED-WHITE F450  /  NOT A TEST PHOTOGRAPH',fontName='ReportArial',fontSize=7,fillColor=TEAL))
     d.add(Line(0,244,511,244,strokeColor=TEAL,strokeWidth=.9))
     for x,a,b in [(0,'RP2350','FLIGHT CONTROLLER'),(145,'PID','STABILITY CONTROL'),(280,'ROS 2','ONBOARD NAVIGATION'),(424,'Gazebo','VALIDATION TARGET')]:
@@ -104,7 +107,7 @@ def cover():
         d.add(String(x,203,b,fontName='ReportArial',fontSize=7.4,fillColor=TEAL))
     for y,t in [(174,'RP2040 handheld  /  LoRa primary link  /  reserved CC1101 channels'),(155,'Companion computer sought: Raspberry Pi 4/5 or NVIDIA Jetson + camera.'),(136,'Stable manual operation remains independent of the companion computer.')]:
         d.add(String(0,y,t,fontName='ReportArial',fontSize=9,fillColor=INK))
-    d.add(String(0,107,'27 OCTOBER 2026  /  ACADEMIC YEAR 2026-2027  /  EDITION 6.0',fontName='ReportArialBold',fontSize=8.8,fillColor=TEAL))
+    d.add(String(0,107,'27 OCTOBER 2026 / 2026-2027 / '+('FULL MATH' if EDITION=='full' else 'VISUAL SHORT')+' / 7.0',fontName='ReportArialBold',fontSize=8.8,fillColor=TEAL))
     d.add(String(0,85,'Student: __________________________    Supervisor: __________________________',fontName='ReportArial',fontSize=9,fillColor=INK))
     d.add(String(0,65,'Proposed design and measured results are labelled. Flight acceptance remains pending.',fontName='ReportArial',fontSize=8.2,fillColor=INK))
     d.add(String(0,46,'github.com/BenMohStem/IntelQCopter  /  university report',fontName='ReportArialBold',fontSize=8,fillColor=TEAL))
@@ -159,13 +162,14 @@ def html_image(path, alt):
     return '<img alt="'+html.escape(alt,quote=True)+'" src="data:'+mime+';base64,'+encoded+'">'
 
 def equation(latex, index):
-    latex=re.sub(r'\\(mathbf|boldsymbol|widehat|dot|mathrm)\s*(\\[a-zA-Z]+|[a-zA-Z])',lambda m:'\\'+m.group(1)+'{'+m.group(2)+'}',latex)
+    latex=re.sub(r'\\(mathbf|boldsymbol|widehat|dot|mathrm|mathbb)\s*(\\[a-zA-Z]+|[a-zA-Z])',lambda m:'\\'+m.group(1)+'{'+m.group(2)+'}',latex)
     latex=latex.replace(r'\frac1N',r'\frac{1}{N}').replace(r'\frac1{',r'\frac{1}{').replace(r'\tfrac12',r'\frac{1}{2}')
     latex=re.sub(r'\\le\b',r'\\leq',latex)
     latex=re.sub(r'\\ge\b',r'\\geq',latex)
+    latex=re.sub(r'\\tfrac(\d)(\d)',r'\\frac{\1}{\2}',latex)
     fig=plt.figure(figsize=(9,0.65), dpi=220)
     fig.text(.5,.5,'$'+latex+'$',ha='center',va='center',fontsize=14,color='#18382c')
-    path=ASSETS/f'equation-v5-{index:02d}.png'
+    path=ASSETS/f'equation-{index:02d}.png'
     fig.savefig(path,bbox_inches='tight',pad_inches=.10,facecolor='white')
     plt.close(fig)
     return path
@@ -194,13 +198,13 @@ for key,name in [('reserved','reserved-replay.png')]:
     image_paths[key]=dst
 
 # Convert material tables to a useful procurement inventory without inventing prices.
-inventory_path=OUT/'bill-of-materials.csv'
+inventory_path=SHARED/'bill-of-materials.csv'
 existing_inventory={}
 if inventory_path.exists():
     with inventory_path.open(encoding='utf-8-sig',newline='') as old:
         existing_inventory={row['id']:row for row in csv.DictReader(old)}
 bom=[]
-target_materials=json.loads((OUT/'materials-target.json').read_text(encoding='utf-8'))
+target_materials=json.loads((SHARED/'materials-target.json').read_text(encoding='utf-8'))
 for item in target_materials:
     row=dict(item)
     row.update({'exact_model':'TBD','owned_or_to_buy':'Confirm','supplier':'','currency':'','quote_date':'','unit_cost':'','shipping_allocation':'','verified_mass_g':''})
@@ -317,7 +321,7 @@ def make_story(toc_pages):
         i+=1
     return story,web
 
-target=ROOT/'IntelQCopter.pdf'
+target=ROOT/('IntelQCopter-Full.pdf' if EDITION=='full' else 'IntelQCopter.pdf')
 for run in range(2):
     story,web=make_story(dict(PAGES))
     doc=ReportDoc(str(target),pagesize=(595.28,841.89),leftMargin=42,rightMargin=42,topMargin=56,bottomMargin=47,title='IntelQCopter Autonomous Quadcopter',author='IntelQCopter - USTHB FGE RSI engineering project')

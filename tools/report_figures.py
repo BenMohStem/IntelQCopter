@@ -11,11 +11,11 @@ from matplotlib.patches import FancyBboxPatch, FancyArrowPatch, Circle, Rectangl
 GREEN='#198548'; DARK='#18382c'; MINT='#eaf4e8'; GRAY='#718178'; RED='#bb4038'; GOLD='#c48b23'; BLUE='#466fa2'
 plt.rcParams.update({'font.family':'DejaVu Sans','font.size':10,'axes.titlesize':11,'axes.labelsize':10,'axes.spines.top':False,'axes.spines.right':False,'axes.edgecolor':'#abc0af','axes.labelcolor':DARK,'text.color':DARK,'xtick.color':DARK,'ytick.color':DARK,'grid.color':'#dbe7dd','figure.facecolor':'white','savefig.facecolor':'white'})
 
-def build_figures(root):
-    root=Path(root);out=root/'report/assets/visual';out.mkdir(parents=True,exist_ok=True)
+def build_figures(root, edition_dir='report'):
+    root=Path(root);out=root/edition_dir/'assets/visual';out.mkdir(parents=True,exist_ok=True)
     records={}
     import re
-    selected=set(re.findall(r"\[\[VIS:([^]]+)\]\]", (root/"report/report.md").read_text(encoding="utf-8")))
+    selected=set(re.findall(r"\[\[VIS:([^]]+)\]\]", (root/edition_dir/"report.md").read_text(encoding="utf-8")))
     def save(fig,name,kind,source,caption):
         if name not in selected:
             plt.close(fig)
@@ -337,7 +337,9 @@ def build_figures(root):
         ['PC: approved mission','Pi / Jetson: navigation','UART setpoint contract\nRP2350 owns motors']],
         'Two separate authorities: pilot references and selected-mode companion references. CC1101 secondary links remain reserved.')
 
-    for rec in records.values():rec['sha256']=hashlib.sha256((root/'report'/rec['file']).read_bytes()).hexdigest()
+    from advanced_figures import build_advanced
+    records.update(build_advanced(root, edition_dir, selected))
+    for rec in records.values():rec['sha256']=hashlib.sha256((root/edition_dir/rec['file']).read_bytes()).hexdigest()
     (out/'figure-manifest.json').write_text(json.dumps(records,indent=2)+'\n',encoding='utf-8',newline='\n')
     return records
 

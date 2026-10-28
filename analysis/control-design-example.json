@@ -1,0 +1,151 @@
+{
+  "model_id": "PID-RATE-ILLUSTRATIVE-001",
+  "source_sha256": "f8c8f324c6b8a9bab47d491d9701042a38c2984a4d7bed95d3c27218449b9237",
+  "status": "ILLUSTRATIVE_ANALYSIS_ONLY",
+  "engine": "NumPy polynomial frequency evaluation/root solving; no Gazebo or MCU run",
+  "parameters": {
+    "J_kg_m2": 0.006421,
+    "d_Nm_s_rad": 0.01,
+    "motor_tau_s": 0.035,
+    "delay_s": 0.015,
+    "derivative_corner_rad_s": 502.6548245743669,
+    "Kp_Nm_s_rad": 0.12,
+    "Ki_Nm_rad": 0.2,
+    "Kd_Nm_s2_rad": 0.0008
+  },
+  "assumptions": "J from supplied simulation input; damping, actuator lag, delay and gains are chosen educational assumptions. First-order Pade is not an exact delay model.",
+  "negative_feedback": true,
+  "cases": [
+    {
+      "gain_multiplier": 1.0,
+      "open_loop_num": [
+        -0.003915928947446201,
+        0.06823451754256327,
+        59.76459671206248,
+        100.53096491487338
+      ],
+      "open_loop_den": [
+        1.6855124999999998e-06,
+        0.0011227484900054024,
+        0.14533620062966812,
+        3.4511749290361156,
+        5.026548245743669,
+        0.0
+      ],
+      "closed_loop_poles": [
+        {
+          "real": -509.06518101997347,
+          "imag": 0.0
+        },
+        {
+          "real": -131.2447885160814,
+          "imag": 0.0
+        },
+        {
+          "real": -12.05469085310069,
+          "imag": 19.5075635110292
+        },
+        {
+          "real": -12.05469085310069,
+          "imag": -19.5075635110292
+        },
+        {
+          "real": -1.6976250515428861,
+          "imag": 0.0
+        }
+      ],
+      "open_RHP_poles_P": 0,
+      "closed_RHP_poles_Z": 0,
+      "clockwise_encirclements_N": 0,
+      "gain_crossovers_rad_s": [
+        16.23187497961296
+      ],
+      "phase_margins_deg": [
+        52.306529345857555
+      ],
+      "phase_crossovers_rad_s": [
+        57.30012420088663
+      ],
+      "gain_margins_db": [
+        15.919519569678599
+      ],
+      "maximum_normalized_root_residual": 8.493496439663404e-16,
+      "contour": {
+        "epsilon": 0.0001,
+        "outer_radius": 1000000.0,
+        "origin_indented_right": true
+      }
+    },
+    {
+      "gain_multiplier": 8.0,
+      "open_loop_num": [
+        -0.03132743157956961,
+        0.5458761403405061,
+        478.1167736964998,
+        804.247719318987
+      ],
+      "open_loop_den": [
+        1.6855124999999998e-06,
+        0.0011227484900054024,
+        0.14533620062966812,
+        3.4511749290361156,
+        5.026548245743669,
+        0.0
+      ],
+      "closed_loop_poles": [
+        {
+          "real": -549.0645419050401,
+          "imag": 0.0
+        },
+        {
+          "real": -123.43908768641872,
+          "imag": 0.0
+        },
+        {
+          "real": 4.036850146238456,
+          "imag": 64.47296606178568
+        },
+        {
+          "real": 4.036850146238456,
+          "imag": -64.47296606178568
+        },
+        {
+          "real": -1.6870469948175948,
+          "imag": 0.0
+        }
+      ],
+      "open_RHP_poles_P": 0,
+      "closed_RHP_poles_Z": 2,
+      "clockwise_encirclements_N": 2,
+      "gain_crossovers_rad_s": [
+        66.77503247035608
+      ],
+      "phase_margins_deg": [
+        -7.406111410323803
+      ],
+      "phase_crossovers_rad_s": [
+        57.30012420088663
+      ],
+      "gain_margins_db": [
+        -2.1422801701602716
+      ],
+      "maximum_normalized_root_residual": 4.803851974460252e-16,
+      "contour": {
+        "epsilon": 0.0001,
+        "outer_radius": 1000000.0,
+        "origin_indented_right": true
+      }
+    }
+  ],
+  "checks": [
+    "Root count versus indented Nyquist winding",
+    "Alternative contour radii and frequency-grid refinement",
+    "Normalized characteristic-polynomial residuals"
+  ],
+  "limitations": [
+    "Not measured flight gains",
+    "Not sampled 1kHz control acceptance",
+    "One rate loop; other five loops/coupling not certified",
+    "Pade approximation and assumed damping restrict inference"
+  ]
+}

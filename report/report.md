@@ -6,7 +6,6 @@
 **Fourth-year engineering | Personal and Professional Project (RSI7.8)**
 **27 October 2026 | Academic year 2026-2027**
 
-
 ---
 ## IntelQCopter in one page
 
@@ -16,11 +15,11 @@
 
 | Reading route | Essential question | Pages |
 |---|---|---|
-| 1. Flight controller | How does the aircraft sense, estimate and stabilize? | 3-10 |
-| 2. ROS 2 and YOLO | How does the onboard computer perceive and navigate? | 11-13 |
-| 3. Gazebo and RViz | How do the model and actual software get tested? | 14-15 |
-| 4. Resources | What hardware, software and development method are needed? | 16-17 |
-| 5. Handheld and communication | How do pilot and companion commands reach the FC? | 18-19 |
+| 1. Flight controller | How does the aircraft sense, estimate and stabilize? | 3-13 |
+| 2. ROS 2 and YOLO | How does the onboard computer perceive and navigate? | 14-16 |
+| 3. Gazebo and RViz | How do the model and actual software get tested? | 17-18 |
+| 4. Resources | What hardware, software and development method are needed? | 19-20 |
+| 5. Handheld and communication | How do pilot and companion commands reach the FC? | 21-22 |
 
 **Target:** RP2350 aircraft; RP2040 handheld. Stable manual flight works without the companion. Raspberry Pi 4/5 or NVIDIA Jetson is being sought for autonomous operation.
 
@@ -62,9 +61,12 @@
 
 **Symbols:** i: rotor; r_i: lever-arm vector (m); F_i: rotor force (N); τ: torque (N m); J: inertia matrix (kg m²); ω: angular velocity (rad/s); φ/θ: roll/pitch (rad); r: yaw rate (rad/s); z: height (m); ΔT = T - mg; s: Laplace variable (1/s); G: input-to-output transfer function. Rotor reaction torque supplies yaw.
 
-**Gain example:** for one ideal torque-controlled axis with PD feedback, J here is the selected axis inertia; matching the closed-loop denominator gives Kp = J ωn² and Kd = 2 ζ ωn J. Here Kp is in N m/rad and Kd in N m s/rad. These are design relations, not identified flight gains.
 
-**Design scope:** zero-initial-condition Laplace transform gives Jxx s² Φ = Τx, hence Gφ = Φ/Τx. Φ and Τx are the Laplace transforms of φ and τx. Hover linearization assumes small angles/rates and principal axes; it is not a global model. Identify actuator lag Gact = 1/(τm s + 1), where τm is motor/ESC time constant (s), plus delays, thrust curve and saturation. Final gains remain pending those measurements. Plot: educational damping example; ζ is damping ratio, ωn natural frequency.
+[[EQ:K_p=J\omega_n^2,\quad K_d=2\zeta\omega_nJ\quad\mathrm{(ideal\ angle\ PD\ example)}]]
+
+**Gain symbols:** ζ: damping ratio; ωn: natural frequency (rad/s); J: selected-axis inertia. Kp is N m/rad; Kd is N m s/rad. This ideal angle-to-torque relation differs from the rate-loop example used for Nyquist.
+
+**Scope:** zero initial conditions give Jxx s² Φ = Τx, hence Gφ = Φ/Τx; Φ/Τx are transforms of angle/torque. Identify actuator lag, delays, thrust response and saturation before real gain selection. Plot = educational damping example; supplied mass/inertia remain unmeasured inputs.
 
 ---
 ## 1.2 Control | cascaded PID and digital execution
@@ -89,9 +91,62 @@
 **1 kHz target:** timestamp acquisition -> estimate -> PID -> mixer. Proposed collective ceiling 1700-1800 µs reserves PID headroom; it is not measured thrust. Proposed margins: phase >=45°, gain >=6 dB; overshoot <=10%; settling within 5% <=1 s. Numerical gains require identification and closed-loop tests.
 
 ---
-## 1.3 Sensors | six-pose calibration explained
+## 1.3 PID diagrams | separate terms and flight axes
+
+[[VIS:pid-parallel]]
+
+[[VIS:yaw-height-pid]]
+
+**Read left to right:** references define the desired motion; estimated motion returns through negative feedback; PID requests are limited before mixing. Saturation feedback prevents the integral term from accumulating an impossible request.
+
+**Six blocks:** roll/pitch each have angle + rate PID; yaw has rate PID; the vertical path has speed PID. The outer height/climb reference law is still a design choice. All diagrams describe intended software paths; physical output remains disabled.
+
+---
+## 1.4 PID stability | Nyquist in one picture
+
+[[VIS:nyquist-example]]
+
+[[EQ:L(s)=C(s)G(s),\quad C(s)=K_p+\frac{K_i}{s}+K_d\frac{\omega_f s}{s+\omega_f}]]
+
+[[EQ:G(s)=\frac{1-T_d s/2}{(Js+d)(\tau_m s+1)(1+T_d s/2)}]]
+
+**Symbols:** L: dimensionless loop gain, distinct from arm length; C: rate PID; G: torque-to-rate plant; s: Laplace variable; J: axis inertia; d: rotational damping; τm: motor lag; Td: delay represented by first-order Padé; ωf: derivative-filter corner. Feedback is negative and unity-scaled.
+
+**Assumed example:** J = 0.006421 kg m²; d = 0.01 N m s/rad; τm = 35 ms; Td = 15 ms; ωf = 2π x 80 rad/s. Base Kp/Ki/Kd = 0.12/0.2/0.0008 in rate-loop torque units. Only J comes from the supplied model; other numbers are educational assumptions. Gain units: Kp in N m s/rad, Ki in N m/rad, Kd in N m s²/rad.
+
+| Gain multiplier μ | Phase margin | Unstable poles Z | Full clockwise winding N |
+|---|---|---|---|
+| 1 | 52.31° | 0 | 0 |
+| 8 | -7.41° | 2 | 2 |
+
+The critical point is -1 + j0. All three gains scale by μ. The winding calculation includes the origin-pole indentation and outer closure; the plot shows the useful local view. **Not flight gain selection:** full derivation, units and checks are in the mathematical edition.
+
+---
+## 1.5 PID stability | read poles in the complex plane
+
+[[VIS:poles-plane]]
+
+[[EQ:s_p=\sigma+j\omega,\quad e^{s_p t}=e^{\sigma t}[\cos(\omega t)+j\sin(\omega t)]]
+
+| Pole property | Physical interpretation |
+|---|---|
+| σ < 0 | This mode decays |
+| σ > 0 | This mode grows: model instability |
+| Larger absolute ω | Faster oscillation |
+| μ increases | Scales all three illustrative PID gains |
+
+**Symbols:** sp: closed-loop pole (1/s); σ/ω: real/imaginary parts; j: square root of -1; t: time (s); μ: gain multiplier. Roots solve 1 + L(s) = 0 after clearing denominators. An unstable mode is enough to invalidate the model's closed-loop stability.
+
+**Read the plane:** horizontal position gives growth/decay; vertical position gives oscillation. The main view follows the complex pair as gains change; the second panel shows all five poles for both cases. Two dimensions show these quantities directly. This is an analytic model sweep, not a drone trajectory or sampled-MCU test. Delays, saturation, coupling and uncertain hardware still need validation.
+
+---
+## 1.6 Sensors | six-pose calibration explained
 
 [[VIS:calibration-fit]]
+
+[[EQ:b_i=\frac{\bar r_{i,+}+\bar r_{i,-}}{2},\quad c_i=\frac{2g}{\bar r_{i,+}-\bar r_{i,-}}]]
+
+**One-axis intuition:** opposite-pose means r+ / r- give bias bi and dimensionless correction scale ci; corrected reading = ci (raw - bi). This assumes exact aligned ±g poses; the full fit below also models cross-axis/mounting effects.
 
 [[EQ:\mathbf r_j=\mathbf b+A_s\mathbf a_j+\boldsymbol\epsilon_j,\quad\widehat M=[\widehat{\mathbf b}\ \widehat A_s],\quad\mathbf a_{cor}=\widehat A_s^{-1}(\mathbf r-\widehat{\mathbf b})]]
 
@@ -99,9 +154,7 @@
 
 [[EQ:Y\simeq MH,\quad\widehat M=YH^T(HH^T)^{-1}]]
 
-**What are H, Y and M-hat?** H stores the known reference poses, one column per pose; Y stores the corresponding measured three-axis means. M-hat is the fitted 3 x 4 coefficient table: its first column is bias b; its last three columns are sensor response As. The hat means estimated, not exact. For N fit poses: H is 4 x N; Y is 3 x N.
-
-**Why this fit?** Choose M to minimize the sum of squared residuals ||Y - MH||². Differentiating and setting the gradient to zero gives M H H-transpose = Y H-transpose. Full row rank of H allows inversion, producing the formula. Then invert As to correct all three axes together.
+**Read the fit:** H is the 4 x N table of known gravity poses; Y is the 3 x N table of measured XYZ means. M-hat is fitted: first column bias b, last three columns response As. Minimize squared residuals; the normal equation is M HH-transpose = YH-transpose. Full row rank permits the inverse. Detailed proof is in the full edition.
 
 **Symbols:** j: pose; r_j: raw acceleration; a_j: known gravity reference (m/s²); ε_j: residual; b: bias (m/s²); As: dimensionless response; a_cor: corrected acceleration. Six orientations ±g along X/Y/Z reveal offsets, scales and cross-axis effects. One pose cannot.
 
@@ -110,32 +163,32 @@
 **Evidence [P1]:** 18 x 20 s recordings; repetitions 1-2 fit, third held out. Fixture uncertainty remains. MPU registers are volatile: restore/read back at boot; do not subtract bias twice. Full matrix correction stays in software. Gyro needs separate motionless bias plus known signed-rotation checks; those rotation checks remain pending.
 
 ---
-## 1.4 Estimation | why weighted fusion beats averaging
+## 1.7 Uncertainty | sensor spread and fusion weights
+
+[[VIS:stats-pipeline]]
+
+[[EQ:\bar x=\frac{1}{N}\sum_i x_i,\quad s^2=\frac{1}{N-1}\sum_i(x_i-\bar x)^2,\quad s=\sqrt{s^2}]]
 
 [[VIS:fusion-versus-average]]
 
-For two unbiased independent measurements of the same scalar x, let y1 = x + e1 and y2 = x + e2, with variances R1 and R2. Choose an unbiased linear estimate xhat = (1-w)y1 + w y2; its variance is minimized by inverse-variance weighting.
+[[EQ:\widehat x=(1-w)y_1+wy_2,\quad w^*=\frac{R_1}{R_1+R_2},\quad P^*=\frac{R_1R_2}{R_1+R_2}]]
 
-[[EQ:P(w)=(1-w)^2R_1+w^2R_2,\quad\frac{dP}{dw}=0\ \Longrightarrow\ w^*=\frac{R_1}{R_1+R_2}]]
+**Symbols:** xi: samples; N: count; x-bar: mean; s²/s: sample variance/standard deviation. For unbiased independent observations y1/y2 of the same quantity, R1/R2 are error variances, w: sensor 2 weight, P fused variance. Variance carries squared units.
 
-[[EQ:P^*=\frac{R_1R_2}{R_1+R_2}\le\min(R_1,R_2),\qquad P_{average}=\frac{R_1+R_2}{4}]]
+**Example:** σ1 = 1, σ2 = 3. A 50/50 mean gives σ = 1.581; optimal weighting gives 0.949. Equal independent noise makes ordinary averaging optimal among unbiased linear combinations; unequal/correlated noise needs its proper covariance model.
 
-[[EQ:\mathbf w^*=\frac{R^{-1}\mathbf{1}}{\mathbf{1}^TR^{-1}\mathbf{1}},\qquad P^*=(\mathbf{1}^TR^{-1}\mathbf{1})^{-1}\quad\mathrm{(full\ covariance)}]]
-
-**Symbols:** x: true scalar; y1/y2: observations; e1/e2: errors; R1/R2: error variances (measurement units squared); w: weight of sensor 2; P: estimate-error variance; σ: standard deviation; R in the matrix formula: full observation-error covariance; bold 1: vector of ones; bold w: weight vector; *: minimum-variance choice; P_average: equal-weight variance.
-
-**Example:** sigma1 = 1 and sigma2 = 3 in the same units. A 50/50 average gives sigma = 1.581, worse than sensor 1 alone. Optimal weighting gives sigma = 0.949. The noisier sensor contributes only 10 percent. No Gaussian assumption is required for this minimum-variance linear weighting under the stated covariance model.
-
-**Kalman connection:** a prediction is fused with an observation using uncertainty and dynamics. Gyro rate and acceleration cannot be averaged directly: their units and models differ. Integrate the gyro and derive a valid gravity-angle observation first. With equal independent static-sensor variance, the ordinary mean is already optimal among unbiased linear combinations. Known correlation requires the full positive-definite covariance R; bias or model mismatch can invalidate the predicted physical improvement.
+**Kalman input:** estimate observation-error variance R after calibration under a justified stationary reference. Motion, bias, fixture error and temporal correlation are separate. Only independent samples give Var(mean) = σ²/N. Gyro rate and acceleration require a physical model before fusion; they cannot be directly averaged.
 
 ---
-## 1.5 Estimation | attitude and height Kalman filters
+## 1.8 Estimation | attitude and height Kalman filters
 
 [[VIS:estimator-control]]
 
 [[EQ:\theta_k^-=\theta_{k-1}+\omega_k\Delta t,\quad K_k=\frac{P_k^-}{P_k^-+R_k},\quad\theta_k=\theta_k^-+K_k(z_k-\theta_k^-)]]
 
-**Attitude:** integrate gyro rate to predict angle; correct using an accelerometer-derived gravity angle. P-minus = prior angle-error variance; R = observation variance; K = dimensionless trust. θ/z are estimated/observed angles (rad); ω is gyro rate (rad/s); k is sample; Δt is interval (s). Superscript minus means prediction. Prediction variance adds process uncertainty Q each step.
+[[EQ:P_k^-=P_{k-1}+Q_k,\quad P_k=(1-K_k)P_k^-]]
+
+**Attitude:** integrate gyro rate to predict angle; correct using an accelerometer-derived gravity angle. P-minus = prior angle-error variance; R = observation variance; K = dimensionless trust. θ/z are estimated/observed angles (rad); ω is gyro rate (rad/s); k is sample; Δt is interval (s). Superscript minus means prediction. Q is angle-process uncertainty per step. Posterior P is variance; its square root is standard deviation.
 
 [[EQ:h_k^-=h_{k-1}+v_{k-1}\Delta t+\tfrac12 a_k\Delta t^2,\quad v_k^-=v_{k-1}+a_k\Delta t]]
 
@@ -146,7 +199,7 @@ For two unbiased independent measurements of the same scalar x, let y1 = x + e1 
 **Sensor limits:** reject invalid/stale observations; barometer drift, lidar tilt/terrain and dropouts need tests. Bottom-versus-front lidar placement remains open. Historical scalar K values [P4], roll 0.00061129/pitch 0.00048326, are conditional stationary-model values, not accepted flight tuning.
 
 ---
-## 1.6 Evidence | real sensor replay and its limits
+## 1.9 Evidence | real sensor replay and its limits
 
 [[IMAGE:reserved]]
 
@@ -161,7 +214,7 @@ For two unbiased independent measurements of the same scalar x, let y1 = x + e1 
 **Adverse test [P4]:** synthetic 0.1g lateral acceleration produced 5.191 degrees peak error; acceleration plus gyro bias produced 5.355 degrees. Apparent gravity tilt is arctan(0.1) = 5.71 degrees while magnitude is only 1.005g. Norm gating alone is insufficient. Dynamic acceptance remains blocked.
 
 ---
-## 1.7 Energy | battery estimation and avionics safety
+## 1.10 Energy | battery estimation and avionics safety
 
 [[VIS:battery-model]]
 
@@ -354,3 +407,6 @@ For two unbiased independent measurements of the same scalar x, let y1 = x + e1 
 **Project evidence:** [P1] secured-mount six-pose calibration; [P2] gyro restart validation; [P3] FIFO/frame/timing; [P4] reserved recording replay and adverse synthetic models; [P5] input guard checks. Raw evidence is distinguished from derived summaries. [P6] inspected Pico/ROS source commit bce665ad97adbfcb282f02970a1db599e67e6479; source-inventory.json records exact files. No fresh RP2350 flight, hardware-radio acceptance or complete autonomous mission is claimed.
 
 **Reproduce:** report/report.md is editable; tools/build_report.py rebuilds the PDF/HTML; report/ data files and manifests retain requirements, inventory, assumptions and hashes. Original private recordings require a sanitized examiner evidence package. Cover = AI F450 concept, not a hardware photograph. Mathematical schematics and proposed test environments are labelled. Report edition: 27 October 2026; institutional/source checks: 28 October 2026.
+
+
+**Two editions:** this visual report gives the essentials; IntelQCopter-Full.pdf develops the derivations, Bode and Black–Nichols analysis, detailed verification and complete registers. The previous full edition is preserved separately under reference/.
