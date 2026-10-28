@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="511" height="145" preserveAspectRatio="xMinYMin meet" viewBox="0 0 511 145" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="511" height="145"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-145)" style="clip-path: url(#clip)">
+		<g transform="">
+			<path d="M 125,72 L 176,117 Z" style="stroke: rgb(6%,42%,47%); stroke-linecap: butt; stroke-width: 7;"/>
+			<circle cx="176" cy="117" r="14" style="stroke: rgb(9%,18%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="194" y="114" style="font-family: ReportArial; font-size: 8px;fill: rgb(9%,18%,27%); stroke:none;" transform="translate(0,228) scale(1,-1)">(+a,+a)</text>
+			<path d="M 125,72 L 74,117 Z" style="stroke: rgb(6%,42%,47%); stroke-linecap: butt; stroke-width: 7;"/>
+			<circle cx="74" cy="117" r="14" style="stroke: rgb(9%,18%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="92" y="114" style="font-family: ReportArial; font-size: 8px;fill: rgb(9%,18%,27%); stroke:none;" transform="translate(0,228) scale(1,-1)">(+a,-a)</text>
+			<path d="M 125,72 L 74,27 Z" style="stroke: rgb(6%,42%,47%); stroke-linecap: butt; stroke-width: 7;"/>
+			<circle cx="74" cy="27" r="14" style="stroke: rgb(9%,18%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="92" y="24" style="font-family: ReportArial; font-size: 8px;fill: rgb(9%,18%,27%); stroke:none;" transform="translate(0,48) scale(1,-1)">(-a,-a)</text>
+			<path d="M 125,72 L 176,27 Z" style="stroke: rgb(6%,42%,47%); stroke-linecap: butt; stroke-width: 7;"/>
+			<circle cx="176" cy="27" r="14" style="stroke: rgb(9%,18%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="194" y="24" style="font-family: ReportArial; font-size: 8px;fill: rgb(9%,18%,27%); stroke:none;" transform="translate(0,48) scale(1,-1)">(-a,+a)</text>
+			<circle cx="125" cy="72" r="12" style="stroke: rgb(9%,18%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(9%,18%,27%); fill-rule: evenodd;"/>
+			<text x="270" y="113" style="font-family: ReportArialBold; font-size: 10px;fill: rgb(9%,18%,27%); stroke:none;" transform="translate(0,226) scale(1,-1)">Motor diagonal: nominal 450 mm</text>
+			<text x="270" y="90" style="font-family: ReportArial; font-size: 9.5px;fill: rgb(9%,18%,27%); stroke:none;" transform="translate(0,180) scale(1,-1)">Centre to motor: L = 225 mm</text>
+			<text x="270" y="68" style="font-family: ReportArial; font-size: 9.5px;fill: rgb(9%,18%,27%); stroke:none;" transform="translate(0,136) scale(1,-1)">Body frame: x forward, y left, z up</text>
+			<text x="270" y="46" style="font-family: ReportArial; font-size: 9.5px;fill: rgb(9%,18%,27%); stroke:none;" transform="translate(0,92) scale(1,-1)">Lever component: a = L / sqrt(2)</text>
+			<text x="270" y="24" style="font-family: ReportArial; font-size: 9.5px;fill: rgb(9%,18%,27%); stroke:none;" transform="translate(0,48) scale(1,-1)">Measure actual geometry before mixing</text>
+		</g>
+	</g>
+</svg>

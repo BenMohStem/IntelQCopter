@@ -25,3 +25,8 @@ Canonical links, no duplicate runtime copies. The prior FIFO source was flashed/
 14. [Latest minimal input guard and test evidence](../measurements/software/2026-10-27-input-guard/README.md). No motor output; no new hardware test.
 
 15. [Zero-jumper feasibility method and independent CAD gate](../hardware/zero-jumper-study/method/README.md). Tests and negative controls are evidence about the checker; no candidate is accepted merely because it was generated.
+
+
+## University submission in English
+
+[Professional and Personal Project report](../docs/university-report/technical-report.html) ? [PDF](../docs/university-report/technical-report.pdf) ? [Materials list](../docs/university-report/bill-of-materials.csv). Reviewed draft; see its completion checklist before submitting.

@@ -130,3 +130,8 @@ Sources:
 ## System specification - 28 October 2026
 
 [French cahier des charges](specification/cahier-des-charges.html) and [PDF](specification/cahier-des-charges.pdf): CDC-IQC-001 revision1.0,45 identified requirements,12 verification cases and staged acceptance gates. Proposed quantitative targets remain unapproved; physical motor restrictions remain. No firmware/hardware acceptance changes. Editable source: specification/cahier-des-charges.md.
+
+
+## English university report - 28 October 2026
+
+[Professional and Personal Project report](university-report/technical-report.html), [PDF](university-report/technical-report.pdf) and [materials inventory](university-report/bill-of-materials.csv) now provide the English submission draft.26pages,45requirements,12verification cases and31materials/equipment entries. Personal fields/reflection,rubric and quotations remain to complete; no hardware acceptance or firmware changes. French revision preserved.

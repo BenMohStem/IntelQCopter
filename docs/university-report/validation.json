@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-28",
+  "report": "IQC-PPP-002",
+  "revision": "2.0",
+  "language": "English",
+  "pages": 26,
+  "requirements": 45,
+  "verification_cases": 12,
+  "bom_rows": 31,
+  "engine": "ReportLab and Matplotlib document rendering; PyMuPDF read-only checks",
+  "visual_review": "Full contact-sheet review plus full-resolution TOC,materials,math,evidence and appendix pages; orphan paragraph repaired",
+  "text_bounds": "pass",
+  "source_control_characters": "pass",
+  "historical_figure_bytes": "identical to source assets",
+  "new_hardware_test": false,
+  "new_flight_or_simulation": false,
+  "firmware_changed": false,
+  "limits": [
+    "No university rubric or cover details supplied",
+    "Student reflection and contribution must be confirmed",
+    "Supplier quotations and exact inventory remain to complete",
+    "Not a completed flight or guaranteed grade"
+  ],
+  "sha256": {
+    "technical-report.md": "f93ac6a3c59f746949b1fafd7e200b24ae63068fbbe2ac30d9f5dcca378824e5",
+    "technical-report.pdf": "940a1745246ddfce42f43090f9b90c37c15fff6e85bfc7ea0387e89730dbbbcd",
+    "technical-report.html": "8a7c041773d86005d5708555b7b71eb68b3a4785c69316d1d71f82d5c172bb55",
+    "bill-of-materials.csv": "0492cd413327a71a1c1cbc86b47ff240adf09796c8449b83f8a6d839c7b2a800"
+  }
+}
