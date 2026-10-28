@@ -518,6 +518,11 @@ static void test_matrix_covariance_and_pitch_sign(void) {
     cmd.throttle=1;
     for(int i=0;i<125;i++)boosted=flight_control_step(&s,&cmd,FC_LOOP_DT);
     CHECK(boosted.motor[0]>.64f && boosted.motor[0]<=.65001f && !boosted.armed);
+    // Releasing RT must lower the hard cap immediately, even while boost slews down.
+    cmd.boost=0;
+    boosted=flight_control_step(&s,&cmd,FC_LOOP_DT);
+    CHECK(boost_state>0);
+    for(unsigned i=0;i<4;i++)CHECK(boosted.motor[i]<=FC_NORMAL_MOTOR_CEILING);
     qc_sitl_reset(.49f,0,gains);cmd.boost=0;
     for(int i=0;i<125;i++)boosted=flight_control_step(&s,&cmd,FC_LOOP_DT);
     CHECK(boosted.motor[0]>.44f && boosted.motor[0]<=.45001f);

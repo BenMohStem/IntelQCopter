@@ -25,3 +25,5 @@ TMP PWM assumes the original standard 1000-2000 us / 50Hz ESC interface, with Ar
 Shared-tool revision: prefer installed system tools, create venvs only for demonstrated compatibility requirements. Zig moved out of .venv-tests to C:/WinLibs/zig/zig.exe, and normal host scripts now resolve that shared compiler. Custom Gazebo/Pixi and ROS/RViz/URDF setups are preserved. Workspace-wide ML migration inventory remains outside this repository in SYSTEM_TOOLS_AUDIT_2026-10-28.md.
 
 Knowledge-index limitation: the ESP32 knowledge build was run, but it reports a missing original gazebo-suite result removed at the user request in the preceding iteration. Repair of these report/dependency references was explicitly deferred; no historical evidence was fabricated to make the index pass. Important-source refresh and hash checks pass.
+
+Final transition check: releasing RT immediately restores the 45% hard per-motor cap even while the internal boost slew decays. The ESP32 core also rejects nonfinite reduce-trigger input. Both production-core regressions pass with these cases.

@@ -1104,7 +1104,7 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
         altitude_estimator.height_m,pilot_vertical_speed,altitude_estimator.velocity_mps,dt);
     const float tilt_factor=fmaxf(0.5f,cosf(roll_estimator.angle_deg*FC_DEG_TO_RAD)
                                      *cosf(pitch_estimator.angle_deg*FC_DEG_TO_RAD));
-    const float ceiling=FC_NORMAL_MOTOR_CEILING+(FC_BOOST_MOTOR_CEILING-FC_NORMAL_MOTOR_CEILING)*boost;
+    const float ceiling=FC_NORMAL_MOTOR_CEILING+(FC_BOOST_MOTOR_CEILING-FC_NORMAL_MOTOR_CEILING)*fminf(boost,boost_target);
     const float collective=clampf((hover_collective+collective_correction)/tilt_factor,FC_ARMED_IDLE_FRACTION,ceiling);
 
     /* Provisional X-frame math in logical order FL, FR, RR, RL. The result is
