@@ -751,7 +751,7 @@ static fc_trace_t debug_trace[64];
 static uint32_t debug_trace_next,debug_trace_count;
 static uint64_t debug_trace_us;
 static bool gentle_profile=true;
-static const float normal_ceiling=.65f,boost_ceiling=.80f; /* 1650/1800 us equivalent; NOT pulse outputs. */
+static const float armed_idle=.10f,normal_ceiling=.45f,boost_ceiling=.65f; /* User 2026-10-28 ESC command limits; not measured RPM. */
 static bool altitude_reference_initialized;
 static bool user_disarm_latched;
 
@@ -983,9 +983,9 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
         altitude_estimator.height_m,pilot_vertical_speed,altitude_estimator.velocity_mps,dt);
     const float tilt_factor=fmaxf(0.5f,cosf(roll_estimator.angle_deg*FC_DEG_TO_RAD)
                                      *cosf(pitch_estimator.angle_deg*FC_DEG_TO_RAD));
-    const float ceiling=normal_ceiling+(boost_ceiling-normal_ceiling)*boost;
+    const float ceiling=normal_ceiling+(boost_ceiling-normal_ceiling)*clampf(boost,0,1);
     const float requested=(hover_collective+collective_correction)/tilt_factor;
-    const float collective=clampf(requested,0.0f,ceiling);
+    const float collective=clampf(requested,armed_idle,ceiling);
     /* Allocation-aware altitude antiwindup: undo integration when the actual
      * collective ceiling opposes altitude error. Allow unwinding. */
     if((requested>ceiling && altitude_hold_reference_m>altitude_estimator.height_m)
@@ -1000,16 +1000,16 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
     for(unsigned i=1;i<4;i++){low=fminf(low,correction[i]);high=fmaxf(high,correction[i]);}
     // Uniformly scale only infeasible torque combinations, then shift collective
     // into the feasible interval. Independent clipping would distort torques.
-    float scale=high-low>1 ? 1/(high-low) : 1;
-    if(low<0)scale=fminf(scale,ceiling/(-low));
-    const float allocated=clampf(collective,-low*scale,fminf(ceiling,1-high*scale));
+    const float span=ceiling-armed_idle;
+    const float scale=high-low>span ? span/(high-low) : 1;
+    const float allocated=clampf(collective,armed_idle-low*scale,ceiling-high*scale);
     if(debug.level){
         debug.saturation_cycles+=requested<0 || requested>ceiling || fabsf(allocated-collective)>1e-6f;
         debug.torque_scaled_cycles+=scale<.99999f;
         if(debug.level>=2){debug.collective_requested=requested;debug.collective_allocated=allocated;
             debug.collective_ceiling=ceiling;debug.torque_scale=scale;}
     }
-    for(unsigned i=0;i<4;i++)out.motor[i]=clampf(allocated+scale*correction[i],0,1);
+    for(unsigned i=0;i<4;i++)out.motor[i]=clampf(allocated+scale*correction[i],armed_idle,ceiling);
 
     /* There is deliberately no hardware arming/output path in this scaffold. */
     out.armed = false;

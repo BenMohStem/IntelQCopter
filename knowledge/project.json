@@ -2,7 +2,7 @@
   "schema": 2,
   "branch": "esp32-xbox",
   "baseline_main": "3803437",
-  "updated": "2026-10-23",
+  "updated": "2026-10-28",
   "purpose": "Factual project knowledge, decisions, assumptions and evidence index",
   "sources": [
     {
@@ -510,6 +510,16 @@
       "id": "source-photo-header-audit",
       "kind": "file",
       "locator": "artifacts/hardware/photo-headers-20261023/README.md"
+    },
+    {
+      "id": "source-motor-policy-20261028",
+      "kind": "decision",
+      "locator": "User request 2026-10-28: whole-project 10% armed idle / 45% normal / 65% boost; unknown RP hardware deferred to plan."
+    },
+    {
+      "id": "source-motor-report-20261028",
+      "kind": "file",
+      "locator": "docs/motor-limits-2026-10-28.md"
     }
   ],
   "facts": [
@@ -1769,7 +1779,7 @@
           "date": "2026-10-21",
           "status": "implemented",
           "evidence_level": "build",
-          "statement": "Corrected ESP32 grounds: carrier J1.22 and J2.1/21/22 are all common GND with solid B.Cu zone connections and explicit 1.5\u20132.5mm routes. Removed GND_MCU and W22. 12 other insulated links remain. Native KiCad DRC/ERC/unrouted/parity checks pass; independent raster continuity proves all four ground pads connect to input GND and no non-GND pad is shorted to its printed region. Reference-module fit, etched copper and physical behavior remain unmeasured.",
+          "statement": "Corrected ESP32 grounds: carrier J1.22 and J2.1/21/22 are all common GND with solid B.Cu zone connections and explicit 1.5–2.5mm routes. Removed GND_MCU and W22. 12 other insulated links remain. Native KiCad DRC/ERC/unrouted/parity checks pass; independent raster continuity proves all four ground pads connect to input GND and no non-GND pad is shorted to its printed region. Reference-module fit, etched copper and physical behavior remain unmeasured.",
           "sources": [
             "source-direct-common-ground",
             "source-pcb-assembly"
@@ -1991,6 +2001,25 @@
             "source-two-sensor-guide"
           ],
           "reason": "User requests original FC adapted to only plugged MPU6050 and barometer, with an updated curated source copy rather than a separate temporary main.cpp."
+        }
+      ]
+    },
+    {
+      "id": "motor_command_limits_20261028",
+      "topic": "motor-output",
+      "scope": "esp32-xbox and RP2350",
+      "revisions": [
+        {
+          "revision": 1,
+          "date": "2026-10-28",
+          "status": "implemented",
+          "statement": "Final mathematical motor allocation is capped at 45% normal and 65% full boost, with 10% active floor. Physical adapters absent in core scaffolds remain planned; TMP/Drone alone has compiled standard-PWM arming code. No physical motor acceptance. Prefer shared system tools and retain native/specialized integrations.",
+          "sources": [
+            "source-motor-policy-20261028",
+            "source-motor-report-20261028"
+          ],
+          "evidence_level": "source",
+          "reason": "Latest explicit user motor limit and workspace runtime consolidation request; missing RP hardware details were deferred by the user."
         }
       ]
     }

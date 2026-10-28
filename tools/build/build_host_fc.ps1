@@ -3,7 +3,8 @@ $ErrorActionPreference='Stop'
 $root=Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 $configPath=Join-Path $root '.local/config.json'
 $config=if(Test-Path -LiteralPath $configPath){Get-Content -LiteralPath $configPath -Raw | ConvertFrom-Json}else{$null}
-$zig=if($config -and $config.zig){$config.zig}else{'zig'}
+$zigCommand=Get-Command zig -ErrorAction SilentlyContinue
+$zig=if($config -and $config.zig){$config.zig}elseif($zigCommand){$zigCommand.Source}else{'C:/WinLibs/zig/zig.exe'}
 if(-not $SourcePath){$SourcePath=Join-Path $root 'firmware/src/flight_controller.cpp'}
 if(-not $OutputPath){$OutputPath=Join-Path $root 'build/sitl/esp32_flight_core.dll'}
 New-Item -ItemType Directory -Force (Split-Path -Parent $OutputPath) | Out-Null
