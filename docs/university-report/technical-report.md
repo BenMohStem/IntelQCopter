@@ -3,7 +3,7 @@
 
 **Professional and Personal Project**
 
-**IQC-PPP-002 | Pico system edition 4.0 | 28 October 2026**
+**IQC-PPP-002 | Pico system edition 4.1 | 27 October 2026**
 
 Student, institution, supervisor and academic year: complete before submission.
 
@@ -32,9 +32,9 @@ Target system: RP2350 flight controller, RP2040 handheld, LoRa main command link
 
 **D** = user decision; **P** = proposed target; **TBD** = unresolved. Historical hardware evidence, offline replay, synthetic models and planned architectures are labelled separately. No new hardware or flight experiment was run for this edition.
 
-**Target versus prototype:** RP2350/RP2040 is the intended project architecture. The ESP32-S3/Xbox work is an experimental branch that supplied preliminary sensor and software evidence; those measurements are not RP2350 timing or flight acceptance. The companion is optional for stable manual flight and required for the intended onboard navigation mode.
+**Architecture:** RP2350/RP2040 is the target; ESP32-S3/Xbox is an experimental version. ESP32 results do not validate Pico timing. Manual stable flight must work without a companion; autonomous navigation requires one.
 
-**Reading map:** physics -> calibration -> estimation -> control -> perception/navigation -> verification. Complete requirements and materials follow the visual chapters. Pin wiring and low-level syntax are outside the main academic narrative; the preserved engineering baseline remains available as a reference.
+**Reading map:** physics -> calibration -> estimation -> control -> navigation -> verification. Requirements and materials close the report; implementation details remain in the engineering reference.
 
 ---
 ## Repository versions and engineering history
@@ -50,9 +50,9 @@ Target system: RP2350 flight controller, RP2040 handheld, LoRa main command link
 | codex/stepwise-esp32 | Incremental sensor/calibration experiments and current report | ESP32 evidence retains board, source and configuration identity |
 | ROS 2 / Gazebo | Companion, perception, mission and simulation packages | Shared research workstream; each test must name its actual engine and command path |
 
-**Regular version control:** each meaningful completed change receives a descriptive local commit and a GitHub push after relevant checks. Preserve failed logs and earlier versions. If a step fails, repair it in a new commit and revalidate its dependants; do not rewrite history or silently reuse old acceptance. Conversations alone do not need empty commits.
+**Version-control rule:** checked change -> descriptive commit -> GitHub push. Keep failed trials. Repair failed steps in new commits; revalidate dependent steps. Preserve history; exclude credentials and local environments.
 
-**Report lineage:** v2.1 detailed engineering baseline -> v3 visual mathematical edition -> v4 Pico-target system edition. Earlier documents remain in reference files and Git history. The repository is public; credentials, environments and unrelated personal material are excluded. Source/code baselines and hashes are listed separately from measured results.
+**Report lineage:** v2.1 engineering baseline -> v3 visual mathematics -> v4 Pico system. Earlier editions remain in reference files and Git history. Source hashes identify code; evidence records identify measurements.
 
 ---
 ## RP2350 flight controller and RP2040 handheld
@@ -96,9 +96,9 @@ One LoRa module on each side carries the principal pilot-command link. Two CC110
 | Left vertical | Vertical speed | Height retention through the vertical law |
 | RT / LT | Bounded increase / decrease | Gentle profile; reserve correction authority |
 
-**Six PID blocks:** two angle, two rate, one yaw rate and one vertical-speed PID. An outer proportional height-to-speed law is an option, not a frozen implementation. Mode transitions, boost interaction and vertical saturation still require design review.
+**Six PID blocks:** 2 angle + 2 rate + 1 yaw-rate + 1 vertical-speed. An outer height-to-speed P law remains an option. Validate transitions, boost and saturation.
 
-**Personal design rationale:** I chose PID control to apply the feedback-control concepts I learned: error feedback, proportional response, integral rejection of persistent error, derivative damping, stability and sampling. Its interpretable gains let me connect mathematics to measurements. This is an educational and engineering choice, not a claim that PID is optimal for every flight condition. Cascades, filtering and saturation must still be justified experimentally.
+**Why PID?** I chose PID to apply what I learned: proportional response, integral error rejection, derivative damping, stability and sampling. Measurable gains connect theory to experiments. Cascades, filters and saturation still require validation.
 
 ---
 ## F450 geometry and force balance
@@ -111,7 +111,7 @@ One LoRa module on each side carries the principal pilot-command link. Two CC110
 
 [[EQ:J\dot{\boldsymbol\omega}=\boldsymbol\tau-\boldsymbol\omega\times(J\boldsymbol\omega),\qquad\boldsymbol\tau_i=\mathbf r_i\times\mathbf F_i]]
 
-**Meaning:** sum the rotor forces in one reference frame; subtract gravity; the remaining force accelerates the mass. Lever arms convert each rotor force into roll/pitch torque. Rotor reaction torque contributes yaw. The cross term is angular-momentum coupling in rotating body axes.
+**Read the equations:** resultant force = mass x acceleration. Rotor force x lever arm produces roll/pitch torque; rotor reaction produces yaw torque. The cross product accounts for rotating body axes.
 
 **Frame proposal:** ENU world, FLU body. Confirm calibration conventions and physical motor corners before mixing. Geometry is nominal; CW/CCW signs are not assigned by this illustration.
 

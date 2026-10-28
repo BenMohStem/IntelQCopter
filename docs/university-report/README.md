@@ -1,6 +1,6 @@
 # IntelQCopter Autonomous Quadcopter
 
-Professional and Personal Project ? Pico system edition4.0,28October2026.
+Professional and Personal Project ? Pico system edition 4.1, 27 October 2026.
 
 - [PDF report](technical-report.pdf)
 - [Standalone HTML](technical-report.html)
@@ -28,3 +28,5 @@ python tools/docs/build_university_report.py .
 The HTML embeds figures. Inventory fields are preserved only when both ID and component match,to avoid carrying prototype quotations onto different target hardware. No hardware,upload,flight or new simulator run was conducted for this report.
 
 [After-report discussion reminder](discussion-backlog.md):Intel N-series computer plus camera budget idea; not part of the selected baseline.
+
+Editorial principle: **ما قلّ ودلّ** — concise prose, informative diagrams, explicit equations. The edition date is requested presentation metadata; historical evidence dates and source identities remain unchanged.
