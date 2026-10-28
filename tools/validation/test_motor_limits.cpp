@@ -22,6 +22,11 @@ int main(void) {
         CHECK(!out.sensor_fault && !out.armed);
         for(float value:out.motor) { if (!(isfinite(value)&&value>=.099999f&&value<=ceiling+.000001f)) { fprintf(stderr,"n=%u value=%f cap=%f boost=%f state=%f\n",n,value,ceiling,boost,boost_state); return 1; } }
     }
+    fc_init(90000);boost_state=1;cmd.boost=0;
+    control_output_t released=flight_control_step(&sample,&cmd,.002f);
+    CHECK(boost_state>0);for(float v:released.motor)CHECK(v<=.450001f);
+    cmd.reduce=NAN;released=flight_control_step(&sample,&cmd,.002f);
+    CHECK(released.sensor_fault);for(float v:released.motor)CHECK(v==0);cmd.reduce=0;
     cmd.valid=false;control_output_t out=flight_control_step(&sample,&cmd,.002f);
     CHECK(out.sensor_fault);for(float v:out.motor)CHECK(v==0);
     cmd.valid=true;sample.imu_valid=false;out=flight_control_step(&sample,&cmd,.002f);

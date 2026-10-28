@@ -2020,6 +2020,18 @@
           ],
           "evidence_level": "source",
           "reason": "Latest explicit user motor limit and workspace runtime consolidation request; missing RP hardware details were deferred by the user."
+        },
+        {
+          "revision": 2,
+          "date": "2026-10-28",
+          "status": "implemented",
+          "statement": "Hard normal cap returns to 45% immediately on RT release, independently of residual boost slew. Native source tests verify the transition in both cores; ESP32 rejects nonfinite reduce input. Physical acceptance is still pending.",
+          "sources": [
+            "source-motor-policy-20261028",
+            "source-motor-report-20261028"
+          ],
+          "evidence_level": "source",
+          "reason": "Boundary review added an explicit release-transition regression."
         }
       ]
     }

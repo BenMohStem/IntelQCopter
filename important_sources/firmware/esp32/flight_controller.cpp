@@ -931,7 +931,7 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
     }
 
     if (cmd == NULL || !cmd->valid || !isfinite(cmd->roll_deg) || !isfinite(cmd->pitch_deg)
-        || !isfinite(cmd->yaw_rate_dps) || !isfinite(cmd->throttle) || !isfinite(cmd->boost)) {
+        || !isfinite(cmd->yaw_rate_dps) || !isfinite(cmd->throttle) || !isfinite(cmd->boost) || !isfinite(cmd->reduce)) {
         reset_control_state();
         out.sensor_fault = true;
         return out;
@@ -983,7 +983,7 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
         altitude_estimator.height_m,pilot_vertical_speed,altitude_estimator.velocity_mps,dt);
     const float tilt_factor=fmaxf(0.5f,cosf(roll_estimator.angle_deg*FC_DEG_TO_RAD)
                                      *cosf(pitch_estimator.angle_deg*FC_DEG_TO_RAD));
-    const float ceiling=normal_ceiling+(boost_ceiling-normal_ceiling)*clampf(boost,0,1);
+    const float ceiling=normal_ceiling+(boost_ceiling-normal_ceiling)*clampf(fminf(boost,boost_target),0,1);
     const float requested=(hover_collective+collective_correction)/tilt_factor;
     const float collective=clampf(requested,armed_idle,ceiling);
     /* Allocation-aware altitude antiwindup: undo integration when the actual
