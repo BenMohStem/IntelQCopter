@@ -1,32 +1,14 @@
-# IntelQCopter Autonomous Quadcopter
+# IntelQCopter university report
 
-Professional and Personal Project ? Pico system edition 4.1, 27 October 2026.
+**20-page edition 5.0 — 27 October 2026.** Concise prose, selected diagrams, equations with local symbol/unit definitions. Prepared for Professional and Personal Project.
 
-- [PDF report](technical-report.pdf)
-- [Standalone HTML](technical-report.html)
-- [Editable mathematical source](technical-report.md)
-- [Target materials and quotation inventory](bill-of-materials.csv)
-- [Target materials source](materials-target.json)
-- [Requirements register](requirements-register.json)
-- [Exact inspected Pico/ROS source inventory](source-inventory.json)
-- [Historical ESP32 evidence hashes](evidence-manifest.json)
-- [Figure assumptions and provenance](assets/visual/figure-manifest.json)
-- [QA](validation.json)
+- [PDF](technical-report.pdf) · [Standalone HTML](technical-report.html) · [Editable source](technical-report.md)
+- [Full 38-page supporting edition](reference/pico-system-edition-v4.1.md)
+- [37-entry materials CSV](bill-of-materials.csv) · [50 requirements](requirements-register.json)
+- [Evidence hashes](evidence-manifest.json) · [Inspected sources](source-inventory.json) · [QA](validation.json)
 
-Target:RP2350 FC,RP2040 custom handheld,LoRa primary pilot link,two reserved CC1101 modules per side,and an optional Raspberry Pi or NVIDIA Jetson ROS2 computer still being sought. The report's GitHub link/QR and version map distinguish main,esp32-xbox and codex/stepwise-esp32. Runtime sources/branches are unchanged by this documentation revision.
+RP2350 aircraft / RP2040 handheld is the target; ESP32-S3/Xbox is experimental. LoRa is primary; two CC1101 per side are reserved. Pi/Jetson companion is being sought. Historical ESP32 timing is not Pico timing; flight acceptance is pending and motor outputs remain disabled.
 
-38pages,40technical visuals,41equation panels,50requirements,13verification cases and37materials/equipment entries. Explains why the student selected PID to apply learned feedback concepts; derives inverse-variance fusion versus blind averaging with assumptions; details ROS2,localization,YOLO/range association,A* prototypes,n-node mission extension and companion selection. Existing ESP32 measurements are not labelled Pico timing. Inspected main Pico scaffold remains500Hz with hardware stubs; new RP2350 profiling is required.
+Rebuild with Python, ReportLab, Matplotlib, NumPy, Pillow and Arial fonts: `python tools/docs/build_university_report.py .`
 
-The previous report source and ESP materials list are preserved under reference/. The realistic F450 image is labelled AI concept artwork; original evidence plots remain unchanged. Personal details,actual rubric,authentic reflection and quotations still require completion. Physical motor outputs remain disabled.
-
-Build from repository root with Python,ReportLab,Matplotlib,NumPy,Pillow and Windows Arial fonts:
-
-```powershell
-python tools/docs/build_university_report.py .
-```
-
-The HTML embeds figures. Inventory fields are preserved only when both ID and component match,to avoid carrying prototype quotations onto different target hardware. No hardware,upload,flight or new simulator run was conducted for this report.
-
-[After-report discussion reminder](discussion-backlog.md):Intel N-series computer plus camera budget idea; not part of the selected baseline.
-
-Editorial principle: **ما قلّ ودلّ** — concise prose, informative diagrams, explicit equations. The edition date is requested presentation metadata; historical evidence dates and source identities remain unchanged.
+Editorial principle: **ما قلّ ودلّ**. Supporting registers and original evidence retain their detail outside the 20-page submission. No firmware or calibration changes, uploads or new simulation/flight tests were made.

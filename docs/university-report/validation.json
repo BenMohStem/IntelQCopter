@@ -1,18 +1,18 @@
 {
   "date": "2026-10-28",
-  "revision": "4.1",
+  "revision": "5.0",
   "architecture": "RP2350 aircraft + RP2040 handheld; LoRa primary; 2 CC1101 per side; Pi/Jetson companion sought",
-  "pages": 38,
+  "pages": 20,
   "generated_technical_figures": 39,
   "original_recording_figures": 1,
-  "total_technical_visuals": 40,
-  "equation_panels": 41,
+  "total_technical_visuals": 23,
+  "equation_panels": 24,
   "requirements": 50,
   "verification_cases": 13,
   "bom_rows": 37,
   "source_files_inspected": 12,
-  "pdf_outline_entries": 37,
-  "clickable_contents_links": 36,
+  "pdf_outline_entries": 19,
+  "clickable_contents_links": 18,
   "github_cover_and_repository_links": "verified URI",
   "fusion_example": "naive std1.5811388300841898; weighted0.9486832980505138; noisy-sensor weight0.1",
   "text_bounds": "pass",
@@ -22,7 +22,7 @@
   "new_flight_or_simulation": false,
   "firmware_changed": false,
   "calibration_changed": false,
-  "visual_review": "Both full-document contact sheets and changed pages reviewed; no page count or layout regression",
+  "visual_review": "All 20 pages rendered and reviewed as contact sheet; detailed model and navigation pages inspected at full resolution",
   "limits": [
     "Pico scaffold inspected at500Hz; no1kHz RP2350 acceptance",
     "ESP32 evidence not transferred as Pico timing",
@@ -32,13 +32,15 @@
     "Cover/student/rubric/quotes still require completion"
   ],
   "sha256": {
-    "technical-report.md": "8e3b6467097cad0fb1a9403be04a4691914eab970c9691ba9445b20779932617",
-    "technical-report.pdf": "47eaa05ee814469de4c65803da4e807a60463b45baecd8c55c43855ef3329cc7",
-    "technical-report.html": "5ad302f841e75776eed777d38b4e9825293b2a8fbf67a07e45adfdffd206e4f3",
+    "technical-report.md": "55b410c5c84f75bf6b1bfb28f4bc8de6ea2c0c15c1fa2d02afaffae6594cbc3b",
+    "technical-report.pdf": "84453479ea0b211767b30b45a1546b5a0ff15ac1dbef6723da0a964e753fef12",
+    "technical-report.html": "0821bf53270a68f48f812fcdcb154233adddc35ea31e99fadcaf6a1569025d41",
     "bill-of-materials.csv": "cd56112dd252212eb485963f40a6d19706e34bea8ad17b95f9276481fea20aa3",
     "requirements-register.json": "c2f736e9ae9e094d8031c02c3defd7c9b2ea9e6ec3c6c3f91ea2ad8a362df892",
     "materials-target.json": "16705a02630afcd0d22bec280f51879b63719313a150633364ba6592294af8ba",
     "source-inventory.json": "7bee83fbbf1e78297659b1db1e78aa914ed451a22219cba8c9542674417d1094"
   },
-  "edition_date": "2026-10-27"
+  "edition_date": "2026-10-27",
+  "selected_generated_figures": 22,
+  "symbol_definitions": "Local symbol and unit notes on every equation page; shared operator key on page 2"
 }

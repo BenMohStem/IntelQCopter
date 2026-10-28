@@ -80,7 +80,7 @@ def footer(c, doc):
     c.setFont('ReportArial', 8)
     c.setFillColor(colors.HexColor('#536c5d'))
     c.drawString(42, 816, 'IntelQCopter   /   Autonomous Quadcopter')
-    c.drawRightString(553,816,'PICO SYSTEM REPORT   /   REV 4.1')
+    c.drawRightString(553,816,'PICO SYSTEM REPORT   /   REV 5.0')
     c.setStrokeColor(colors.HexColor('#d2e4d7'))
     c.line(42,39,553,39)
     c.drawString(42, 25, 'Professional and Personal Project   /   27 October 2026')
@@ -94,7 +94,7 @@ def cover():
     pale=colors.HexColor('#edf6ee')
     light=colors.HexColor('#d8ebdc')
     d.add(String(0,708,'PROFESSIONAL AND PERSONAL PROJECT',fontName='ReportArialBold',fontSize=9,fillColor=TEAL))
-    d.add(String(511,708,'REVISION 4.1',fontName='ReportArial',fontSize=9,textAnchor='end',fillColor=TEAL))
+    d.add(String(511,708,'REVISION 5.0',fontName='ReportArial',fontSize=9,textAnchor='end',fillColor=TEAL))
     d.add(String(0,651,'IntelQCopter',fontName='ReportArialBold',fontSize=47,fillColor=INK))
     d.add(String(0,614,'Autonomous Quadcopter',fontName='ReportArial',fontSize=25,fillColor=TEAL))
     d.add(String(0,587,'TECHNICAL DESIGN AND VALIDATION REPORT',fontName='ReportArialBold',fontSize=10,fillColor=INK))
@@ -170,7 +170,7 @@ def equation(latex, index):
     latex=re.sub(r'\\ge\b',r'\\geq',latex)
     fig=plt.figure(figsize=(9,0.65), dpi=220)
     fig.text(.5,.5,'$'+latex+'$',ha='center',va='center',fontsize=14,color='#18382c')
-    path=ASSETS/f'equation-{index:02d}.png'
+    path=ASSETS/f'equation-v5-{index:02d}.png'
     fig.savefig(path,bbox_inches='tight',pad_inches=.10,facecolor='white')
     plt.close(fig)
     return path
@@ -317,7 +317,7 @@ def make_story(toc_pages):
             text=line
             while i+1<len(lines) and lines[i+1].strip() and not lines[i+1].startswith(('#','|','---','[[')):
                 i+=1;text+=' '+lines[i]
-            style=STYLES['caption'] if text.startswith('Figure ') else STYLES['body']
+            style=STYLES['caption'] if text.startswith(('Figure ', '**Symbols:', '**Math notation:')) else STYLES['body']
             story.append(Paragraph(inline(text),style));web.append('<p>'+inline(text)+'</p>')
         i+=1
     return story,web
@@ -331,4 +331,5 @@ css='body{margin:0;background:#eaf1e9;color:#293b32;font:17px/1.65 Segoe UI,Aria
 (OUT/'technical-report.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><title>IntelQCopter Autonomous Quadcopter</title><style>'+css+'</style><main><section>'+''.join(web)+'</section></main></html>',encoding='utf-8')
 (OUT/'section-pages.json').write_text(json.dumps(PAGES,indent=2)+'\n',encoding='utf-8')
 print(json.dumps({'sections':len(HEADINGS),'bom_rows':len(bom),'section_pages':PAGES},indent=2))
+
 
