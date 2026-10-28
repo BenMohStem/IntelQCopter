@@ -1,7 +1,0 @@
-{
-  "name": "suite-20261021-env06-nav",
-  "environment": "env06",
-  "kind": "navigation",
-  "passed": false,
-  "error": "[Errno 2] No such file or directory: 'C:\\\\Users\\\\Mohamed\\\\Desktop\\\\Work\\\\QCopter-ESP32-Xbox\\\\artifacts\\\\gazebo-suite\\\\suite-20261021-env06-nav\\\\transport.json'"
-}

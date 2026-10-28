@@ -1,1 +1,0 @@
-{"wall_time_s": 1792584584.5754774, "role": "ground PC endpoint map", "request": {"points": [[0, 0, 0.082], [8.9, 0.3, 0.082]], "start": [0, 0, 0.082], "finish": [8.9, 0.3, 0.082], "cruise": 1.25}, "response": {"accepted": true, "reason": "Route accepted; intermediate waypoint flown before final landing"}}

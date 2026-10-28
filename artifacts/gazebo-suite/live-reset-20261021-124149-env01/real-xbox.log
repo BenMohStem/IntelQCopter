@@ -1,2 +1,0 @@
-LIVE XBOX READY rmw=rmw_cyclonedds_cpp
-XBOX {"connected": true, "index": 0, "packet": 5664, "buttons": 0, "LT": 0, "RT": 0, "axes": [0.039, 0.0009, -0.0147, -0.0017], "wall_time_s": 1792586516.6487849}
