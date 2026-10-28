@@ -135,3 +135,8 @@ Sources:
 ## English university report - 28 October 2026
 
 [Professional and Personal Project report](university-report/technical-report.html), [PDF](university-report/technical-report.pdf) and [materials inventory](university-report/bill-of-materials.csv) now provide the English submission draft.26pages,45requirements,12verification cases and31materials/equipment entries. Personal fields/reflection,rubric and quotations remain to complete; no hardware acceptance or firmware changes. French revision preserved.
+
+
+## Visual mathematical university report - 28 October 2026
+
+English edition3.0 replaces long prose/pinout explanation in the main narrative with32technical visuals and34equation panels.30pages,45requirements,12verification cases and31BOMentries remain; complete v2.1text is preserved separately. The red/white F450 cover is labelled generated concept artwork. No firmware,calibration,simulation,hardware or flight acceptance changes.

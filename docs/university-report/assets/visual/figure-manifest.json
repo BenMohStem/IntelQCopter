@@ -1,0 +1,219 @@
+{
+  "system-paths": {
+    "kind": "PROPOSED ARCHITECTURE",
+    "source": "Report design",
+    "caption": "Two command paths; motor commands belong only to the FC. The companion is optional.",
+    "file": "assets/visual/system-paths.png",
+    "sha256": "e353df27e244bc28edb86b2361752a1f0f10e2ed941baff37f55b6b4f44c8d0d"
+  },
+  "control-cascade": {
+    "kind": "PROPOSED ARCHITECTURE",
+    "source": "Report design",
+    "caption": "Six full PID blocks are requested. The outer height-to-speed law remains a design choice.",
+    "file": "assets/visual/control-cascade.png",
+    "sha256": "b0256fc712920cc829169ed8b827eb41f1e7d107ca59bc1e525473fa3148da39"
+  },
+  "geometry-forces": {
+    "kind": "ANALYTIC GEOMETRY",
+    "source": "Supplied nominal 450 mm diagonal",
+    "caption": "Frame convention is explicit; this drawing does not assign motor numbers or spin signs.",
+    "file": "assets/visual/geometry-forces.png",
+    "sha256": "cf01b261871db3994bbe89a74aa2c8a478787f503c4ec876a6b4d69203d11842"
+  },
+  "hover-sensitivity": {
+    "kind": "ANALYTIC EXAMPLE",
+    "source": "T cos(alpha)=mg; mass sweep illustrative",
+    "caption": "At the supplied mass, hover requires about 2.545 N per rotor; actual capability is unmeasured.",
+    "file": "assets/visual/hover-sensitivity.png",
+    "sha256": "9c1be179da6601e7648543cf3c9b92ef5f0e85db21f4f96d65e718eb305116d7"
+  },
+  "damping-poles": {
+    "kind": "ILLUSTRATIVE LTI MODEL",
+    "source": "wn=4 rad/s; zeta=0.35,0.7,1.2",
+    "caption": "Educational second-order responses, not tuned drone gains or simulated aircraft trials.",
+    "file": "assets/visual/damping-poles.png",
+    "sha256": "c33f1034914447e9a418f3427f0797362c58882e80a5a9b467b3e8fcb3c1ff2c"
+  },
+  "sample-update": {
+    "kind": "PROPOSED ARCHITECTURE",
+    "source": "Report design",
+    "caption": "Sample, estimate, control and ESC update are distinct stages; slow observations are asynchronous.",
+    "file": "assets/visual/sample-update.png",
+    "sha256": "c49b5c8071909ed9ec5798f86350793aa226454b9a8434d7a5cfc35978627687"
+  },
+  "discrete-poles": {
+    "kind": "ANALYTIC SAMPLING EXAMPLE",
+    "source": "z=exp(s*Ts); Ts=0.1 s for plot visibility",
+    "caption": "This example uses 100 ms to show the mapping clearly; it is not the 1 ms FC implementation or its poles.",
+    "file": "assets/visual/discrete-poles.png",
+    "sha256": "53f5b33fe73e15682870ac10ecd2b73d2c5a602454bb0adfdd9622a6386d7e9e"
+  },
+  "calibration-protocol": {
+    "kind": "HISTORICAL TEST DESIGN",
+    "source": "P1 calibration report",
+    "caption": "Existing 18-pose design separates fitting and evaluation. Fixture uncertainty remains.",
+    "file": "assets/visual/calibration-protocol.png",
+    "sha256": "a7d86c97c73fbf48bbaa24c56fe073f722c5f0a0ecbc4e6a121a6690b751d5f8"
+  },
+  "calibration-matrix": {
+    "kind": "HISTORICAL OFFLINE FIT",
+    "source": "P1 analysis.json",
+    "caption": "Coefficients shown are the historical fit candidate, not a new calibration or an instruction to overwrite trims.",
+    "file": "assets/visual/calibration-matrix.png",
+    "sha256": "f64425e9c8a9746714340b6553fc25350a85cdb89140421a496ec2c2c36d7f90"
+  },
+  "calibration-residuals": {
+    "kind": "REAL LOG REPLAY SUMMARY",
+    "source": "P1 report.md reserved-pose table",
+    "caption": "These residuals include reference/placement error; they are not certified sensor accuracy.",
+    "file": "assets/visual/calibration-residuals.png",
+    "sha256": "184a0b7288dc96d8c2a1b63d1e06305c44428d60c86bcd8af17e4ec5270aec11"
+  },
+  "covariance-geometry": {
+    "kind": "SCHEMATIC + MEASURED SUMMARY",
+    "source": "P4 training covariance; ellipse illustrative",
+    "caption": "Off-diagonal terms show shared variation. Zero covariance does not generally imply independence.",
+    "file": "assets/visual/covariance-geometry.png",
+    "sha256": "00a4bce6387bf2cb0503dcf8310479b5bdb36f7067b4185bcbb623fa78fe554d"
+  },
+  "uncertainty-sampling": {
+    "kind": "ANALYTIC EXAMPLE + OBSERVED WIDTHS",
+    "source": "P4 sigma values; Gaussian curves and AR(1) illustrative",
+    "caption": "Density shapes are explanatory references, not a claim that the actual noise is Gaussian or unbiased.",
+    "file": "assets/visual/uncertainty-sampling.png",
+    "sha256": "86b7787e0a46964e85036eaa7e7e4756d11c957026e7f69fa4ab171ac391b855"
+  },
+  "boot-gyro": {
+    "kind": "PROPOSED ARCHITECTURE",
+    "source": "Report design",
+    "caption": "Hardware bias correction and software transform have separate roles; gyro scale/physical axes remain pending.",
+    "file": "assets/visual/boot-gyro.png",
+    "sha256": "49462a9f29a2ade8e62fb088af47f27feeca6b389e8cd5b9659b1bad84c3ae26"
+  },
+  "gyro-bias-noise": {
+    "kind": "ANALYTIC EXAMPLE + MEASURED SUMMARY",
+    "source": "P4 covariance; bias ramp illustrative",
+    "caption": "Averaging reduces random fluctuation but does not remove an unmodelled residual bias.",
+    "file": "assets/visual/gyro-bias-noise.png",
+    "sha256": "dbc9546cf990a65004576476d978db18136d797789f0eca26402e74e8d5f8530"
+  },
+  "kalman-loop": {
+    "kind": "PROPOSED ARCHITECTURE",
+    "source": "Report design",
+    "caption": "Scalar roll/pitch estimator candidate. Translational acceleration can corrupt the gravity observation.",
+    "file": "assets/visual/kalman-loop.png",
+    "sha256": "8d82565f06b2b106ff1a92d01c567c6eab691c4d03908938ffa329813a91e082"
+  },
+  "kalman-trust": {
+    "kind": "ANALYTIC LAW + REAL REPLAY SUMMARY",
+    "source": "K=P/(P+R); P4 reserved statistics",
+    "caption": "Smoother output is not an independent accuracy result; mean errors and correlation remain.",
+    "file": "assets/visual/kalman-trust.png",
+    "sha256": "f5830e8370b3d4b35823feeb70b761da204629c80e9cf61ecb162af446d20a38"
+  },
+  "accel-failure": {
+    "kind": "EXISTING SYNTHETIC MODEL + ANALYTIC LAW",
+    "source": "P4 four-case results; arctan(a/g)",
+    "caption": "Python model results, not Gazebo or flight. The candidate is not accepted for dynamic operation.",
+    "file": "assets/visual/accel-failure.png",
+    "sha256": "f4e7ab6c1efc3fc8c68a0172ec1c19ad0ee95838df6f44fb3e8ec98c35cf4f0c"
+  },
+  "vertical-filter": {
+    "kind": "PROPOSED ARCHITECTURE",
+    "source": "Report design",
+    "caption": "Two-state estimator and vertical control architecture proposed; barometer and lidar integration remain pending.",
+    "file": "assets/visual/vertical-filter.png",
+    "sha256": "3ef2f9d413ef01f34b217274405f35f57d4d130c62a3de4bdbd08072147f4a7c"
+  },
+  "vertical-observation": {
+    "kind": "ANALYTIC EXAMPLE",
+    "source": "Flat ground, aligned geometry; ideal prediction",
+    "caption": "A forward lidar cannot supply this height observation. Terrain and extrinsics must be checked.",
+    "file": "assets/visual/vertical-observation.png",
+    "sha256": "ffc3d12d19d88ae7eeba2c40e9c8f14fa485920d374b2421a2363559f5249873"
+  },
+  "input-headroom": {
+    "kind": "ILLUSTRATIVE CONTROL DESIGN",
+    "source": "Example curves and commands; not firmware gains",
+    "caption": "Actual collective/vertical law and ESC limits are TBD. A boost request is not four identical maximum outputs.",
+    "file": "assets/visual/input-headroom.png",
+    "sha256": "8069d185c1873883f7e8466dc0a715a388764db8f1c5873b67d0145bcede30cf"
+  },
+  "timing-budget": {
+    "kind": "REAL LOG SUMMARY + PROPOSED BUDGET",
+    "source": "P3 timing table; 800/200 us proposed",
+    "caption": "Historical samples were not a complete PID controller; source hashes and inter-service gaps still matter.",
+    "file": "assets/visual/timing-budget.png",
+    "sha256": "141a2a96f7906bc668b7324ebc277d9363b45aa9a7c5619117b863d03d2bafe9"
+  },
+  "yolo-architecture": {
+    "kind": "PROPOSED ARCHITECTURE",
+    "source": "Design + Ultralytics detector output contract",
+    "caption": "Proposed perception-to-control pipeline. Detection is not depth, localization or a collision-free corridor.",
+    "file": "assets/visual/yolo-architecture.png",
+    "sha256": "2477e8c0d3745338b1ff8bd34506c8a69a3eb5d46425723a70c00ba539439d06"
+  },
+  "perception-limits": {
+    "kind": "GEOMETRIC SCHEMATIC",
+    "source": "Pinhole bearing and single-ray sensing",
+    "caption": "Objects, field of view and distances are illustrative, not camera specifications or YOLO detections.",
+    "file": "assets/visual/perception-limits.png",
+    "sha256": "a86c6aed73b55421d30edffe36675b87b6499f655506b6d910cdb1a26855eef3"
+  },
+  "stopping-frames": {
+    "kind": "ANALYTIC EXAMPLE + PROPOSED FRAMES",
+    "source": "Stopping distance v*tau+v\u00b2/(2a); ROS frame concept",
+    "caption": "Real braking, latency and localization are unmeasured; speed limits cannot be inferred from this example.",
+    "file": "assets/visual/stopping-frames.png",
+    "sha256": "3688132e9bf42283b3a34696a9f7e9736565f53f070ceced19219ed4e9effdf6"
+  },
+  "mission-state": {
+    "kind": "PROPOSED ARCHITECTURE",
+    "source": "Report design",
+    "caption": "Mission progression must not stop at node 2. Loss responses and final landing policy require approval.",
+    "file": "assets/visual/mission-state.png",
+    "sha256": "3721d385db4d33e55718c8796b0046bae903a20090c0e7e57db3d32a39f99cbf"
+  },
+  "mission-nodes": {
+    "kind": "PLANNED TEST SCHEMATIC",
+    "source": "Mission definition, no planner execution",
+    "caption": "The dashed node sequence is input geometry; it does not claim obstacle avoidance or a collision-free path.",
+    "file": "assets/visual/mission-nodes.png",
+    "sha256": "839e69f430bf4cb29c33464cca21b29d10f46f08e53eec6f79f8090b640faa14"
+  },
+  "simulation-proof": {
+    "kind": "PROPOSED ARCHITECTURE",
+    "source": "Report design",
+    "caption": "A test harness may stimulate inputs and record outputs; it may not secretly move the aircraft to pass.",
+    "file": "assets/visual/simulation-proof.png",
+    "sha256": "8a2a6cf79ada465394f36bc297aef56d9891be4d2a009ab6fbb1470be67df1d7"
+  },
+  "campaign-confidence": {
+    "kind": "PLANNED CAMPAIGN + STATISTICAL LAW",
+    "source": "Binomial zero-failure one-sided bound",
+    "caption": "No cells represent completed missions. Independence and comparable trials are assumptions, not guarantees.",
+    "file": "assets/visual/campaign-confidence.png",
+    "sha256": "f9e8643c359d65498e65b152eada7e9a15ba29a073a8602a4cdf115f6a7fc2c8"
+  },
+  "battery-model": {
+    "kind": "ANALYTIC EXAMPLE",
+    "source": "4200 mAh; ideal constant 10 A; divider ratio 5.7",
+    "caption": "This is not measured endurance. Whole-pack monitoring cannot protect each cell; a motor cut in flight causes a fall.",
+    "file": "assets/visual/battery-model.png",
+    "sha256": "83349fa18be57be1a341865afecdde903b91d4d41fa71e00f277ad4b5d4faa31"
+  },
+  "gates": {
+    "kind": "PROPOSED ARCHITECTURE",
+    "source": "Report design",
+    "caption": "Offline preparation is allowed; failed earlier gates invalidate affected downstream acceptance.",
+    "file": "assets/visual/gates.png",
+    "sha256": "ae0ca44b986521d3d06742b124789b038bbba9a45229e1e24d88dd61d7746dbb"
+  },
+  "readiness": {
+    "kind": "PROJECT STATUS SUMMARY",
+    "source": "Current plan and evidence manifest",
+    "caption": "Historical evidence does not imply flight acceptance. New sensor wiring and physical frame checks remain pending.",
+    "file": "assets/visual/readiness.png",
+    "sha256": "cb9ab64340cba2314812682b02fcbd5081cf7e076b484be36a4fd22665ad544e"
+  }
+}

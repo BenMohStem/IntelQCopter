@@ -13,7 +13,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from PIL import Image as PILImage
-from reportlab.graphics.shapes import Drawing, Rect, String, Line, Circle, Polygon, Ellipse
+from reportlab.graphics.shapes import Drawing, Rect, String, Line, Circle, Polygon, Ellipse, Image as DrawingImage
 from reportlab.graphics import renderPM
 from reportlab.lib import colors
 from reportlab.lib.styles import ParagraphStyle
@@ -27,6 +27,10 @@ ASSETS = OUT / 'assets'
 ASSETS.mkdir(parents=True, exist_ok=True)
 SOURCE = OUT / 'technical-report.md'
 TEXT = SOURCE.read_text(encoding='utf-8')
+BASELINE = (OUT / 'reference/engineering-baseline-v2.1.md').read_text(encoding='utf-8')
+from report_figures import build_figures
+VISUALS = build_figures(ROOT)
+REQUIREMENTS = json.loads((OUT/'requirements-register.json').read_text(encoding='utf-8'))
 pdfmetrics.registerFont(TTFont('ReportArial', r'C:\Windows\Fonts\arial.ttf'))
 pdfmetrics.registerFont(TTFont('ReportArialBold', r'C:\Windows\Fonts\arialbd.ttf'))
 pdfmetrics.registerFontFamily('ReportArial', normal='ReportArial', bold='ReportArialBold')
@@ -74,7 +78,7 @@ def footer(c, doc):
     c.setFont('ReportArial', 8)
     c.setFillColor(colors.HexColor('#536c5d'))
     c.drawString(42, 816, 'IntelQCopter   /   Autonomous Quadcopter')
-    c.drawRightString(553,816,'TECHNICAL REPORT   /   REV 2.1')
+    c.drawRightString(553,816,'VISUAL TECHNICAL REPORT   /   REV 3.0')
     c.setStrokeColor(colors.HexColor('#d2e4d7'))
     c.line(42,39,553,39)
     c.drawString(42, 25, 'Professional and Personal Project   /   28 October 2026')
@@ -83,47 +87,25 @@ def footer(c, doc):
     c.drawRightString(553,25,f'{doc.page:02d}')
 
 def cover():
-    """Original vector artwork; no manufacturer logo, PCB or drone photograph."""
+    """Original cover layout with a labelled AI-generated F450 concept image."""
     d=Drawing(511,725)
     pale=colors.HexColor('#edf6ee')
     light=colors.HexColor('#d8ebdc')
     d.add(String(0,708,'PROFESSIONAL AND PERSONAL PROJECT',fontName='ReportArialBold',fontSize=9,fillColor=TEAL))
-    d.add(String(511,708,'REVISION 2.1',fontName='ReportArial',fontSize=9,textAnchor='end',fillColor=TEAL))
+    d.add(String(511,708,'REVISION 3.0',fontName='ReportArial',fontSize=9,textAnchor='end',fillColor=TEAL))
     d.add(String(0,651,'IntelQCopter',fontName='ReportArialBold',fontSize=47,fillColor=INK))
     d.add(String(0,614,'Autonomous Quadcopter',fontName='ReportArial',fontSize=25,fillColor=TEAL))
     d.add(String(0,587,'TECHNICAL DESIGN AND VALIDATION REPORT',fontName='ReportArialBold',fontSize=10,fillColor=INK))
     d.add(Line(0,569,511,569,strokeColor=TEAL,strokeWidth=1.1))
-    # Sparse technical construction grid behind an original conceptual F450 view.
-    for x in range(0,512,24):
-        d.add(Line(x,286,x,551,strokeColor=pale,strokeWidth=.5))
-    for y in range(286,552,24):
-        d.add(Line(0,y,511,y,strokeColor=pale,strokeWidth=.5))
-    cx,cy=255,417
-    for dx,dy in [(-148,76),(148,76),(-148,-76),(148,-76)]:
-        d.add(Line(cx,cy,cx+dx,cy+dy,strokeColor=light,strokeWidth=23))
-        d.add(Line(cx,cy+4,cx+dx,cy+dy+4,strokeColor=TEAL,strokeWidth=14))
-        d.add(Ellipse(cx+dx,cy+dy,63,27,fillColor=colors.white,strokeColor=TEAL,strokeWidth=1.4))
-        d.add(Ellipse(cx+dx,cy+dy,54,22,fillColor=None,strokeColor=light,strokeWidth=.7))
-        d.add(Line(cx+dx-45,cy+dy-12,cx+dx+45,cy+dy+12,strokeColor=INK,strokeWidth=4))
-        d.add(Line(cx+dx-41,cy+dy+14,cx+dx+41,cy+dy-14,strokeColor=INK,strokeWidth=4))
-        d.add(Circle(cx+dx,cy+dy,8,fillColor=TEAL,strokeColor=colors.white,strokeWidth=1))
-    d.add(Polygon([206,417,239,447,303,425,270,389],fillColor=INK,strokeColor=INK))
-    d.add(Polygon([206,427,239,457,303,435,270,399],fillColor=colors.HexColor('#2a9b58'),strokeColor=TEAL,strokeWidth=1))
-    d.add(Polygon([227,428,244,443,279,431,262,415],fillColor=pale,strokeColor=light))
-    d.add(Circle(253,430,6,fillColor=INK,strokeColor=INK))
-    for x,y in [(217,425),(239,448),(291,433),(270,407)]:
-        d.add(Circle(x,y,2,fillColor=light,strokeColor=light))
-    d.add(Line(242,450,247,467,strokeColor=INK,strokeWidth=2))
-    d.add(Line(227,405,220,385,strokeColor=INK,strokeWidth=2))
-    d.add(Line(282,413,290,392,strokeColor=INK,strokeWidth=2))
-    d.add(String(0,273,'CONCEPTUAL PLATFORM ILLUSTRATION  /  NOT A DIMENSIONAL DRAWING',fontName='ReportArial',fontSize=7,fillColor=colors.HexColor('#65836c')))
+    d.add(DrawingImage(45,282,420,280,str(ASSETS/'f450-red-white-concept.png')))
+    d.add(String(0,273,'AI CONCEPT ILLUSTRATION  /  RED AND WHITE F450  /  NOT A HARDWARE TEST PHOTO',fontName='ReportArial',fontSize=7,fillColor=colors.HexColor('#65836c')))
     # A restrained product-summary strip rather than a collage of decorative cards.
     d.add(Line(0,250,511,250,strokeColor=TEAL,strokeWidth=.8))
     for x,a,b in [(0,'F450','X FRAME'),(138,'1 kHz','FC TARGET'),(280,'ESP32-S3','CURRENT FC'),(432,'ROS 2','OPTIONAL')]:
         d.add(String(x,227,a,fontName='ReportArialBold',fontSize=15,fillColor=INK))
         d.add(String(x,210,b,fontName='ReportArial',fontSize=8,fillColor=TEAL))
     d.add(Line(0,194,511,194,strokeColor=light,strokeWidth=.7))
-    for y,t in [(170,'Embedded control, calibrated sensing and progressive autonomous navigation.'),(153,'Requirements, materials, mathematical models and traceable test evidence.'),(136,'Current status: sensor and software groundwork; flight acceptance pending.')]:
+    for y,t in [(170,'Visual models, calibration, estimation and perception-to-control architecture.'),(153,'Equations, compact graphs, materials and traceable engineering decisions.'),(136,'Current status: sensor and software groundwork; flight acceptance pending.')]:
         d.add(String(0,y,t,fontName='ReportArial',fontSize=9.2,fillColor=INK))
     d.add(String(0,104,'IQC-PPP-002   /   28 OCTOBER 2026   /   UNIVERSITY SUBMISSION DRAFT',fontName='ReportArialBold',fontSize=8,fillColor=TEAL))
     d.add(String(0,78,'Student / ID / institution / supervisor / academic year: complete before submission.',fontName='ReportArial',fontSize=8.5,fillColor=INK))
@@ -179,6 +161,10 @@ def html_image(path, alt):
     return '<img alt="'+html.escape(alt,quote=True)+'" src="data:'+mime+';base64,'+encoded+'">'
 
 def equation(latex, index):
+    latex=re.sub(r'\\(mathbf|boldsymbol|widehat|dot|mathrm)\s*(\\[a-zA-Z]+|[a-zA-Z])',lambda m:'\\'+m.group(1)+'{'+m.group(2)+'}',latex)
+    latex=latex.replace(r'\frac1N',r'\frac{1}{N}').replace(r'\frac1{',r'\frac{1}{').replace(r'\tfrac12',r'\frac{1}{2}')
+    latex=re.sub(r'\\le\b',r'\\leq',latex)
+    latex=re.sub(r'\\ge\b',r'\\geq',latex)
     fig=plt.figure(figsize=(9,0.65), dpi=220)
     fig.text(.5,.5,'$'+latex+'$',ha='center',va='center',fontsize=14,color='#18382c')
     path=ASSETS/f'equation-{index:02d}.png'
@@ -192,6 +178,8 @@ EVIDENCE = [
     ('P3','measurements/mpu6050/2026-10-26-fifo-and-gyro-frame-results/report.md'),
     ('P4','measurements/mpu6050/2026-10-26-offline-attitude-preparation/report.md'),
     ('P5','measurements/software/2026-10-27-input-guard/summary.json'),
+    ('P1-data','measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/analysis.json'),
+    ('P4-data','measurements/mpu6050/2026-10-26-offline-attitude-preparation/analysis.json'),
 ]
 manifest=[]
 for label,rel in EVIDENCE:
@@ -208,13 +196,20 @@ for key,name in [('reserved','reserved-replay.png'),('factorial','factorial-mode
     image_paths[key]=dst
 
 # Convert material tables to a useful procurement inventory without inventing prices.
+inventory_path=OUT/'bill-of-materials.csv'
+existing_inventory={}
+if inventory_path.exists():
+    with inventory_path.open(encoding='utf-8-sig',newline='') as old:
+        existing_inventory={row['id']:row for row in csv.DictReader(old)}
 bom=[]
-for line in TEXT.splitlines():
+for line in BASELINE.splitlines():
     if re.match(r'\| (?:M|T|O|F)\d{2} x',line):
         c=[v.strip() for v in line.strip('|').split('|')]
         match=re.match(r'([MTOF]\d{2}) x(.+)',c[0])
         category={'M':'Aircraft','T':'Test equipment','O':'Optional companion','F':'Future Pico and radio'}[match[1][0]]
         bom.append({'id':match[1],'category':category,'quantity':match[2],'component':c[1],'purpose_and_checks':c[2],'exact_model':'TBD','owned_or_to_buy':'Confirm','supplier':'','currency':'','quote_date':'','unit_cost':'','shipping_allocation':'','verified_mass_g':''})
+        for field in ['exact_model','owned_or_to_buy','supplier','currency','quote_date','unit_cost','shipping_allocation','verified_mass_g']:
+            if field in existing_inventory.get(match[1],{}):bom[-1][field]=existing_inventory[match[1]][field]
 with (OUT/'bill-of-materials.csv').open('w',encoding='utf-8-sig',newline='') as f:
     writer=csv.DictWriter(f,fieldnames=list(bom[0]),lineterminator="\n");writer.writeheader();writer.writerows(bom)
 
@@ -222,7 +217,7 @@ def make_story(toc_pages):
     story=[]; web=[]; eq=0
     lines=TEXT.splitlines();i=0
     while i<len(lines):
-        line=lines[i]
+        line=lines[i].strip()
         if i==0:
             d=cover()
             story.append(d)
@@ -241,6 +236,28 @@ def make_story(toc_pages):
             table=Table(toc,colWidths=[480,31],hAlign='LEFT')
             table.setStyle(TableStyle([('LINEBELOW',(0,0),(-1,-1),.25,colors.HexColor('#dce9de')),('LEFTPADDING',(0,0),(-1,-1),0),('RIGHTPADDING',(0,0),(-1,-1),0),('TOPPADDING',(0,0),(-1,-1),1),('BOTTOMPADDING',(0,0),(-1,-1),1)]))
             story.append(table)
+        elif line.startswith('[[VIS:'):
+            name=line[6:-2];rec=VISUALS[name];path=OUT/rec['file']
+            w,h=PILImage.open(path).size;scale=min(511/w,245/h)
+            story.extend([Image(str(path),width=w*scale,height=h*scale),Spacer(1,5)])
+            note=rec['kind']+' — '+rec['caption']
+            story.append(Paragraph(inline(note),STYLES['caption']))
+            web.append(html_image(path,note)+'<p class="figure-caption">'+inline(note)+'</p>')
+        elif line.startswith('[[BOM:') or line.startswith('[[REQ:'):
+            if line.startswith('[[BOM:'):
+                selected=[r for r in bom if (r['id'].startswith('M') and int(r['id'][1:])<=15)==(line=='[[BOM:aircraft]]')]
+                rows=[['ID / qty','Material','Purpose / acceptance']]+[[r['id']+' x'+r['quantity'],r['component'],r['purpose_and_checks']] for r in selected]
+                widths=[65,170,276]
+            else:
+                selected=REQUIREMENTS[:23] if line=='[[REQ:one]]' else REQUIREMENTS[23:]
+                rows=[['ID / status','Requirement','Verify']]+[[r['id']+' '+r['status'],r['requirement'],r['verify']] for r in selected]
+                widths=[75,355,81]
+            hs=ParagraphStyle('compact-head',parent=STYLES['cell'],fontName='ReportArialBold',textColor=colors.white)
+            data=[[Paragraph(inline(c),hs if j==0 else STYLES['cell']) for c in r] for j,r in enumerate(rows)]
+            table=Table(data,colWidths=widths,repeatRows=1,hAlign='LEFT')
+            table.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,0),colors.HexColor('#246b42')),('ROWBACKGROUNDS',(0,1),(-1,-1),[colors.white,colors.HexColor('#f2f7f1')]),('GRID',(0,0),(-1,-1),.3,colors.HexColor('#cddfcf')),('VALIGN',(0,0),(-1,-1),'MIDDLE'),('LEFTPADDING',(0,0),(-1,-1),6),('RIGHTPADDING',(0,0),(-1,-1),6),('TOPPADDING',(0,0),(-1,-1),4.5),('BOTTOMPADDING',(0,0),(-1,-1),4.5)]))
+            story.extend([table,Spacer(1,9)])
+            web.append('<table>'+''.join('<tr>'+''.join('<'+('th' if j==0 else 'td')+'>'+inline(c)+'</'+('th' if j==0 else 'td')+'>' for c in r)+'</tr>' for j,r in enumerate(rows))+'</table>')
         elif line in ('[[ARCHITECTURE]]','[[GEOMETRY]]'):
             key='architecture' if 'ARCHITECTURE' in line else 'geometry'
             d=architecture() if key=='architecture' else geometry()

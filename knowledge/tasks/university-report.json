@@ -8,7 +8,8 @@
   ],
   "scopes": [
     "docs/university-report",
-    "tools/docs/build_university_report.py"
+    "tools/docs/build_university_report.py",
+    "tools/docs/report_figures.py"
   ],
   "evidence": [],
   "acceptance": [

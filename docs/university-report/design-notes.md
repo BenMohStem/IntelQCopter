@@ -1,9 +1,9 @@
-# Visual design revision 2.1
+# Visual mathematical edition3.0
 
-Title: IntelQCopter ? Autonomous Quadcopter.
+Identity: IntelQCopter ? Autonomous Quadcopter. Palette remains forest #18382c,leaf #198548 and pale mint. Red/blue/gold encode contrasting physical effects,not decoration.
 
-Palette: forest #18382c,leaf #198548,table green #246b42,pale mint #f2f7f1,grid #cddfcf. White header text on dark green is used for contrast. The reference is the clarity and restraint of hardware datasheets,including the Raspberry Pi Pico 2 datasheet:https://datasheets.raspberrypi.com/pico/pico-2-datasheet.pdf . No manufacturer logo,product photo,technical text or illustration was copied.
+The cover combines an original layout with built-in image_gen concept artwork depicting a plausible red/white F450. Its exact prompt is recorded separately. It is not documentary evidence or a mechanical drawing. Technical diagrams/plots are generated deterministically with Matplotlib; raw/replay-derived evidence keeps its original provenance.
 
-Original ReportLab vector artwork depicts a conceptual quadcopter. It is not a hardware photograph,validated mechanical model or dimensional drawing. Cover facts distinguish target and optional capability from achieved results. Existing evidence plots retain their original bytes and colours.
+The main academic narrative replaces pinout/API explanation and long paragraphs with equations,diagram flows and compact graphs. Calibration includes fit/holdout design,full matrix,biases,residuals,covariance and temporal correlation. Autonomy shows detection,association/local map,localization/planning,transforms,clearance and FC boundaries. All45requirement IDs and31inventory entries remain; complete previous text is preserved in reference/engineering-baseline-v2.1.md.
 
-The PDF retains26pages,45requirement identifiers,31materials entries and12verification cases. Contents has24internal links and25outline entries. The technical body after the cover is byte-identical to revision2.0 source; changes concern cover identity,typography,navigation and palette. Editable Markdown,PDF,HTML,assets and renderer are tracked. Student cover fields and prior acceptance restrictions remain unchanged.
+Final QA:30pages,32technical visuals,34equation panels,29PDFbookmarks and28contents links. All-page contact sheet plus representative full-resolution pages inspected. Baseline bytes,requirement IDs,figure checksums,original evidence bytes,source controls and PDF text bounds verified. No hardware or flight result is added.

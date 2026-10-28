@@ -1,26 +1,25 @@
-# English university project report
+# IntelQCopter Autonomous Quadcopter
 
-Professional and Personal Project, IQC-PPP-002 revision2.1,28October2026.
+Professional and Personal Project ? visual mathematical edition3.0,28October2026.
 
-- [Technical report PDF](technical-report.pdf)
-- [Standalone HTML](technical-report.html)
-- [Editable Markdown](technical-report.md)
-- [31-entry bill of materials and quotation inventory](bill-of-materials.csv)
-- [Historical evidence sources and hashes](evidence-manifest.json)
-- [Document quality checks](validation.json)
+- [PDF report](technical-report.pdf)
+- [Standalone HTML report](technical-report.html)
+- [Editable mathematical source](technical-report.md)
+- [Materials and quotation inventory](bill-of-materials.csv)
+- [45 requirements](requirements-register.json)
+- [Figure provenance and assumptions](assets/visual/figure-manifest.json)
+- [Source evidence hashes](evidence-manifest.json)
+- [Cover artwork prompt and origin](image-provenance.json)
+- [Document QA](validation.json)
 
-26 pages,45 identified requirements,12 verification cases,rendered equations,two architecture/geometry diagrams and two original derived evidence figures. The CSV separates aircraft,test equipment,optional companion and future Pico/radio hardware. Prices are deliberately blank pending verified quotes.
+30pages,32technical visuals including an original recording figure,34equation panels,45requirements,12verification cases and31BOMentries. Prose is reduced; calibration,matrix correction,covariance,Kalman,PID,continuous/discrete dynamics,timing failures,YOLO-to-avoidance,navigation and proof architecture are visual. Exact pinout and low-level syntax are outside the academic narrative. [The complete earlier engineering baseline](reference/engineering-baseline-v2.1.md) preserves detail.
 
-This is an English university submission draft replacing the French document for that purpose; the earlier French specification remains preserved. Complete the cover fields,authentic personal reflection,contribution statement and university-rubric mapping before submission. Proposed targets are not verified aircraft performance. Motor restrictions and all physical acceptance gates remain unchanged.
+The red-and-white F450 cover is generated concept artwork,not a photo of assembled or tested hardware. Every technical figure is identified as measured summary,existing model,analytic example,schematic or proposal. No new firmware,calibration,measurement,simulation or flight was performed. Motor outputs remain disabled.
 
-Rebuild from the repository root with Python,ReportLab,Matplotlib,Pillow and Windows Arial fonts available:
+Build from the repository root with Python,ReportLab,Matplotlib,NumPy,Pillow and Windows Arial fonts:
 
 ```powershell
 python tools/docs/build_university_report.py .
 ```
 
-No environments or downloaded dependencies are vendored. The self-contained HTML embeds its figures. PDF mathematical expressions are rendered; editable equation source is in the Markdown. Existing source figures are copied without alteration and identified by the manifest. No new hardware,upload,simulation or flight test was conducted for this report.
-
-## Visual revision 2.1
-
-IntelQCopter Autonomous Quadcopter identity,original vector cover,forest/leaf-green palette,mint table striping,clickable PDF contents and bookmarks. Technical body,31-entry inventory and original evidence-figure bytes preserved. [Cover preview](assets/cover-preview.png).
+The builder regenerates technical figures and embeds all images in the portable HTML. Manual inventory/quotation fields are preserved when IDs match. Student details,authentic reflection,actual rubric and dated supplier quotes must be completed before submission. No grade is guaranteed.

@@ -1,0 +1,9 @@
+{
+  "asset": "assets/f450-red-white-concept.png",
+  "generator": "Built-in image_gen tool",
+  "purpose": "Conceptual report cover artwork; not a photograph, tested hardware or dimensional CAD",
+  "prompt": "Create one photorealistic industrial product rendering for the cover of an engineering university report. Subject: a realistic classic F450/Q450 hobby quadcopter X frame, with TWO RED molded lattice arms at the front and TWO WHITE molded lattice arms at the rear, dark fiberglass upper and lower center plates, four realistic orange brushless outrunner motors and four black two-bladed 9047 propellers, four slim black ESCs strapped along the arms, modest black landing feet, a compact generic electronics stack and a 3S rectangular LiPo held centrally by a black strap. Correct physically plausible quadcopter geometry: exactly four arms, four motors, four propellers. All propellers stationary. Three-quarter view from above showing all four motors and the red/white arm geometry clearly. Restrained technically plausible cabling, no camera gimbal or fantasy devices. Isolated on a pure white studio background, soft shadow, crisp realistic plastic lattice and metal texture, tasteful professional hardware datasheet product photography aesthetic. Landscape image with generous white margin; drone occupies around 80 percent of width. No text, no watermark, no logos, no human, no landscape. This is a conceptual visualization, not documentary evidence.",
+  "date": "2026-10-28",
+  "source_saved_filename": "exec-fd5609d9-c905-4d7c-8bc6-f9c643008040.png",
+  "asset_sha256": "12d8d39ebf9ea91237305de360a874b69cab0f6078b5736c7b65f2e892ec20d1"
+}

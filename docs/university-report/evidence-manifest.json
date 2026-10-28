@@ -28,5 +28,17 @@
     "path": "measurements/software/2026-10-27-input-guard/summary.json",
     "sha256": "1dfc13b3dc4e8b6a68a5f972e6c0d4ce1a4660b36610faa05954b8a87dc9b444",
     "url": "https://github.com/BenMohStem/IntelQCopter/blob/codex/stepwise-esp32/measurements/software/2026-10-27-input-guard/summary.json"
+  },
+  {
+    "reference": "P1-data",
+    "path": "measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/analysis.json",
+    "sha256": "a7222d590d032c4a2de277ea4d1e75d29355a82fc6c667de6f3d56bc8b017fc9",
+    "url": "https://github.com/BenMohStem/IntelQCopter/blob/codex/stepwise-esp32/measurements/mpu6050/2026-10-25-secured-mount-analysis-v2/analysis.json"
+  },
+  {
+    "reference": "P4-data",
+    "path": "measurements/mpu6050/2026-10-26-offline-attitude-preparation/analysis.json",
+    "sha256": "8a571c969faa1f3bbde0d53d275b7c91799f526065cbb443a38062f2c5503ee9",
+    "url": "https://github.com/BenMohStem/IntelQCopter/blob/codex/stepwise-esp32/measurements/mpu6050/2026-10-26-offline-attitude-preparation/analysis.json"
   }
 ]
