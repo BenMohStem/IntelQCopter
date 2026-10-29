@@ -1,0 +1,54 @@
+{
+  "source_sha256": "7d6c2904dc0a841af5967dd2eebfa5c5d00d644aa13653e5cb957b5df9e31cbb",
+  "output_sha256": "ab956e67391cc9e56b7da8d7bc23a3d02d7c669e4a510c05d0a7095a259e05d0",
+  "copies": 3,
+  "paper_mm": [
+    210,
+    297
+  ],
+  "scale": 1,
+  "source_artwork_bounds_points": [
+    54.0,
+    50.760009765625,
+    255.24000549316406,
+    323.6400146484375
+  ],
+  "source_clip_points": [
+    53.400001525878906,
+    50.160011291503906,
+    255.8400115966797,
+    324.2400207519531
+  ],
+  "placements_points": [
+    [
+      81.0245568583331,
+      132.69164408285795,
+      283.46456692913387,
+      406.77165354330714
+    ],
+    [
+      311.81102362204723,
+      132.69164408285795,
+      514.2510336928481,
+      406.77165354330714
+    ],
+    [
+      196.4177902401902,
+      435.1181102362205,
+      398.85780031099097,
+      709.1981196966697
+    ]
+  ],
+  "artwork_bounds_mm": [
+    70.9930019378662,
+    96.26600172254773
+  ],
+  "orientation": "unchanged; no additional mirror",
+  "polarity": "unchanged from supplied PDF",
+  "checks": [
+    "Three vector placements with identity scale matrices",
+    "No added text; original source retained",
+    "PrintScaling=None; printer must use Actual size/100 percent"
+  ],
+  "limits": "Print preparation only; no electrical design or original export scale certification"
+}
