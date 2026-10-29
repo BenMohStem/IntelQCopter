@@ -129,8 +129,40 @@
     "file": "assets/visual/nyquist-example.png",
     "kind": "ILLUSTRATIVE PID MODEL",
     "source": "analysis/control-design-example.json and tools/control_design_example.py; no hardware/Gazebo run",
-    "caption": "Positive-frequency locus and conjugate mirror, clipped near -1. Full origin indentation and outer closure are computed for the winding check; this is not measured aircraft stability.",
-    "sha256": "33efba129af859dbd92bbb19b4fbe7700317f7c3740cec25c1353b5c002bdd56"
+    "caption": "A shows the complete numerical contour: solid +\u03c9, dashed \u2212\u03c9, dotted connecting arcs; 10^-4 \u2264 |\u03c9| \u2264 10^6 rad/s. Arrows follow increasing positive frequency. Symmetric-log axes compress distances, not topology. B magnifies \u22121 on equal linear axes. The integrator makes the branches unbounded as \u03c9 approaches zero; full contour closure is shown in appendix A6.",
+    "coverage_checks": [
+      {
+        "gain_multiplier": 1.0,
+        "sample_count": 42000,
+        "every_point_inside_overview": true,
+        "clockwise_turns": 2.473764752249402e-16,
+        "expected_from_roots": 0,
+        "real_bounds": [
+          -1.8419999956740114,
+          199998.13063614213
+        ],
+        "imag_bounds": [
+          -199999.99993000017,
+          199999.99993000017
+        ]
+      },
+      {
+        "gain_multiplier": 8.0,
+        "sample_count": 42000,
+        "every_point_inside_overview": true,
+        "clockwise_turns": 2.0000000000000004,
+        "expected_from_roots": 2,
+        "real_bounds": [
+          -14.735999965392091,
+          1599985.045089137
+        ],
+        "imag_bounds": [
+          -1599999.9994400013,
+          1599999.9994400013
+        ]
+      }
+    ],
+    "sha256": "d73cb80acab109e34bbc69ebab2569f2a9947c5014357256ca9b1221efb3ebc3"
   },
   "stats-pipeline": {
     "file": "assets/visual/stats-pipeline.png",

@@ -1,7 +1,7 @@
 {
-  "checked_on": "2026-10-28",
+  "checked_on": "2026-10-29",
   "edition_date": "2026-10-27",
-  "revision": "7.0",
+  "revision": "7.1",
   "edition": "short",
   "pages": 23,
   "institution": "USTHB / FGE / Automatique / RSI / fourth-year engineering",
@@ -31,43 +31,45 @@
     "5.1 Links | LoRa, CC1101 and companion contract": 22,
     "References and reproducible evidence": 23
   },
-  "technical_visual_instances": 22,
+  "technical_visual_instances": 21,
   "unique_generated_figures": 21,
   "equation_panels": 27,
   "important_short_math": "Dynamics, PID gains and recurrence, bias/scale/full calibration, sample variance, fusion, Kalman prediction/correction, navigation and battery laws",
-  "frequency_plot_policy": "Short: Nyquist and2Dpoles; full: Bode, Black–Nichols, Nyquist and sensitivity plots",
+  "frequency_plot_policy": "Short: Nyquist and2Dpoles; full: Bode, BlackÃ¢â‚¬â€œNichols, Nyquist and sensitivity plots",
   "three_dimensional_policy": "Only where it adds information: spatial garden scene and full two-parameter stability surface",
-  "visual_review": "All pages rendered to contact sheets; changed short math/PID/calibration/statistics/Kalman/pole pages and full frequency/proof pages inspected full-size",
+  "visual_review": "Rendered short Nyquist page and full Nyquist, contour, anti-windup and asymptotic-derivation pages inspected; complete-page contact sheets reviewed.",
   "checks": [
     "Both edition counts and one-section-per-page layout",
     "Text bounds and missing glyph scan",
     "Original replay and archive bytes unchanged",
     "Figure/evidence/model-source hashes",
     "Polynomial roots versus indented Nyquist contour; refined brackets; contour-radius sensitivity",
-    "Seven knowledge-catalog fixture/failure cases"
+    "Seven knowledge-catalog fixture/failure cases",
+    "All42,000complete Nyquist contour points per case fit global viewport; computed winding equals characteristic-root count"
   ],
   "new_hardware_test": false,
   "new_flight_or_simulation": false,
   "firmware_changed": false,
   "calibration_changed": false,
   "limits": [
-    "Illustrative gains/damping/lag/Padé delay are not measured aircraft tuning",
+    "Illustrative gains/damping/lag/PadÃƒÂ© delay are not measured aircraft tuning",
     "No full1kHz hardware acceptance or autonomous flight claimed",
     "Physical gyro rotations, actuator identification and Pi/Jetson selection remain open",
     "Student/supervisor names and actual marking rubric still require completion"
   ],
   "sha256": {
-    "IntelQCopter.pdf": "06b0dba93cefaff00fb53cd18511ba9a063bb53c9f9b37c51c250138628f81e0",
-    "report/report.md": "c1663eb9a0c4851cd0e837ebace21e7d60d131ae2e88b2ca8ee35f358dc93093",
-    "report/index.html": "c1121528c9c7e15298b57e90ab12961fb1546383f186a20464ba0f5635b6df1f",
+    "IntelQCopter.pdf": "0defee106064f89789906759e3d0e73717b503c1be09e5ac548f6a6c356fc67c",
+    "report/report.md": "7a7b9864e353f0a807eef56869ef31dc2418e9138231685a8233de77f173fb2e",
+    "report/index.html": "dde2eeed084855863a45cf65d72d6cfb0d39d69cb92926b67032deee552e863a",
     "report/academic-context.json": "b04d1d147ca12e86c7032848dca10e14ee08080312c16a400062e94978b977c1",
     "report/evidence-manifest.json": "aca40b4692122d239d9d7be0ef3e65868756cab1e52653b9acc23ba56b9c5d5c",
     "report/source-inventory.json": "20ce038e086a6edca47beef9ac16e85237e0cdffd344d1c5d37cce6e35ebd48e",
     "report/requirements-register.json": "91b6e0e78ec7f43742e34c0d0b469b8a0497e605b68c29c4485e42bcedf42169",
     "analysis/control-design-example.json": "b13cdd8b8c4a4fe2858be8a072112478acad67ab7a113a13664a0dbdfb79662c",
     "tools/control_design_example.py": "f8c8f324c6b8a9bab47d491d9701042a38c2984a4d7bed95d3c27218449b9237",
-    "tools/build_report.py": "def0129de96069b122f31a1d1314f512d9b2cf1281848380393df89e16e3bc03",
+    "tools/build_report.py": "75bf1b65dc280d4d2ec9b7b27abbc6e66bb41306796968f3b202c0b33ab25ba6",
     "tools/report_figures.py": "cb911db8aba21ca928604931574b275eece4658629078e2bd08c5dfba1aafe4d",
-    "tools/advanced_figures.py": "c15034dbfb3c3887c815bc77fccf81e4d2baa9d0617d8da571420d6ac0faa132"
-  }
+    "tools/advanced_figures.py": "0c1778766cc8f46f67a2d5ad38d1d475f6b2b4aa1cf283e7d248743a0649d0cf"
+  },
+  "nyquist_improvement": "Complete finite indented contour with every sampled point in overview, symmetric-log global axes, equal-linear -1 detail, winding/root cross-check. Plot limits and42,000samples/case checked."
 }

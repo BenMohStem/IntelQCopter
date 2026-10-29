@@ -119,7 +119,7 @@
 | 1 | 52.31° | 0 | 0 |
 | 8 | -7.41° | 2 | 2 |
 
-The critical point is -1 + j0. All three gains scale by μ. The winding calculation includes the origin-pole indentation and outer closure; the plot shows the useful local view. **Not flight gain selection:** full derivation, units and checks are in the mathematical edition.
+The critical point is -1 + j0. All three gains scale by μ. The winding calculation includes the origin-pole indentation and outer closure; panel A retains every sampled frequency branch and panel B zooms around -1. The origin pole sends the low-frequency branches to infinity; a finite picture cannot contain that limit at linear scale. **Not flight gain selection:** full derivation, units and checks are in the mathematical edition.
 
 ---
 ## 1.5 PID stability | read poles in the complex plane

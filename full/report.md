@@ -122,7 +122,7 @@
 | 1 | 52.31° | 0 | 0 |
 | 8 | -7.41° | 2 | 2 |
 
-The critical point is -1 + j0. All three gains scale by μ. The winding calculation includes the origin-pole indentation and outer closure; the plot shows the useful local view. **Not flight gain selection:** full derivation, units and checks are in the mathematical edition.
+The critical point is -1 + j0. All three gains scale by μ. The winding calculation includes the origin-pole indentation and outer closure; panel A retains every sampled frequency branch and panel B zooms around -1. The origin pole sends the low-frequency branches to infinity; a finite picture cannot contain that limit at linear scale. **Not flight gain selection:** full derivation, units and checks are in the mathematical edition.
 
 ---
 ## 1.5 PID stability | read poles in the complex plane
@@ -485,6 +485,29 @@ I is integral contribution, u_raw unsaturated request, u applied bounded request
 Use coherent timestamps; bound waits/output/integration; reject invalid intervals; handle stale observations and mode changes. Target 1 kHz means nominal 1 ms, not automatic complete-FC deadline acceptance. Slow sensors update asynchronously and physical outputs remain disabled.
 
 ---
+## A4.1 Anti-windup | why return the saturation error?
+
+[[VIS:anti-windup-example]]
+
+[[EQ:u_{raw}=v+I,\quad v=K_pe+D,\quad u=\operatorname{clip}(u_{raw},u_{min},u_{max})]]
+
+[[EQ:\dot I=K_ie+K_{aw}(u-u_{raw})]]
+
+**Derive the sign:** upper saturation means u < u_raw. Their difference is negative, so it opposes further integral accumulation. Lower saturation reverses this sign. Without saturation u = u_raw, so ordinary integration is recovered exactly.
+
+Hold e and v constant during upper saturation. Substitute u = u_max and collect I terms:
+
+[[EQ:\dot I+K_{aw}I=K_ie+K_{aw}(u_{max}-v),\quad I_* =u_{max}-v+\frac{K_ie}{K_{aw}}]]
+
+[[EQ:I(t)=I_*+[I(0)-I_*]e^{-K_{aw}t},\quad T_{aw}=1/K_{aw}]]
+
+This solution holds only while that saturation regime persists. Kaw has units 1/s; T_aw is the tracking time constant. The integrator approaches a finite value rather than growing indefinitely. It need not become zero when the error becomes zero: a nonzero integral can supply steady load compensation.
+
+For explicit Euler, the tracking error multiplier is 1 - Δt Kaw. Its isolated constant-regime recurrence decays if 0 < Δt Kaw < 2; monotonic decay needs at most 1. This condition alone does not prove closed-loop or switching stability.
+
+**Quadcopter integration gate:** actual motor clipping happens after mixing. Recover achievable collective/torques through a validated allocator before feeding an equivalent output error back to each integrator; subtracting raw motor PWM directly from axis torque is dimensionally wrong. This experiment changes no firmware or motor policy.
+
+---
 ## A5. Frequency model | parameters and rate-loop units
 
 [[EQ:C(s)=K_p+\frac{K_i}{s}+K_d\frac{\omega_f s}{s+\omega_f},\quad L(s)=C(s)G(s)]]
@@ -519,6 +542,32 @@ The PID integrator gives a pole at s = 0. Indent the contour to its right, exclu
 **Checks:** compute at indentation radius 10^-4 and outer radius 10^6, repeat at 10^-3/10^5, and compare the integer winding with all polynomial roots. Refine crossover brackets and check normalized characteristic-polynomial residuals. This is a finite numerical consistency check for the specified rational model, not a physical stability proof.
 
 If a pole or zero lies on the contour, a new limit/contour analysis is required. Reference [R14] defines the frequency-domain margins; a plot does not replace assumptions and root counts.
+
+---
+## A6.1 Nyquist | where do the large turns come from?
+
+The loop contains Ki/s. Near s = 0 the derivative term vanishes, the actuator and Padé factors tend to one, and the damped rate plant tends to 1/d. Therefore:
+
+[[EQ:C(s)=K_i/s+O(1),\quad G(s)=1/d+O(s),\quad L_\mu(s)=\frac{\mu K_i}{d s}+O(1)]]
+
+[[EQ:L_\mu(j\omega)\sim-j\frac{\mu K_i}{d\omega},\qquad |L_\mu(j\omega)|\longrightarrow\infty\quad(\omega\to0^+)]]
+
+**Meaning:** the apparent missing ends in a linear close-up are not missing data or a finite oval. They extend without bound. The conjugate branch goes upward. Both are included in the symmetric-log overview; the linear close-up retains undistorted distance to -1.
+
+On the right indentation s = ε exp(jθ), θ increases from -π/2 to +π/2. Substitution gives:
+
+[[EQ:L_\mu(\epsilon e^{j\theta})\sim\frac{\mu K_i}{d\epsilon}e^{-j\theta},\quad |L|\approx\frac{\mu K_i}{d\epsilon}]]
+
+For ε = 10^-4, Ki = 0.2 and d = 0.01, the large mapped arc has approximate radius 200000 μ: 200000 for baseline and 1600000 for μ = 8. This joins the two low-frequency ends through the right side in the leading-order approximation. The exact rational values, not this asymptote, are plotted in A6.
+
+| Contour piece, in traversal order | Image in the loop plane |
+|---|---|
+| Negative branch: -jR to -jε | Conjugate frequency branch |
+| Right origin indentation | Large connecting arc; do not omit |
+| Positive branch: +jε to +jR | Positive-frequency branch |
+| Clockwise outer RHP arc | Tiny closure near L = 0 as R grows |
+
+The symmetric-log transform is continuous, one-to-one and increasing on each axis. It preserves whether a closed curve encloses the transformed critical point, but changes lengths, angles and curvature. Compute Δarg(1+L) from the original complex values, never from displayed distances. The actual characteristic-root count independently checks the winding result.
 
 ---
 ## A7. Bode | gain phase and crossover margins

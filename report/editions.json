@@ -9,7 +9,7 @@
   "full": {
     "pdf": "IntelQCopter-Full.pdf",
     "folder": "full",
-    "expected_pages": 53
+    "expected_pages": 55
   },
   "archived_full": {
     "pdf": "reference/full-edition-4.1.pdf",

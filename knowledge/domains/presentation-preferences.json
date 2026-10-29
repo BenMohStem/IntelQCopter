@@ -1,7 +1,7 @@
 {
   "schema": 2,
   "id": "presentation-preferences",
-  "updated": "2026-10-28",
+  "updated": "2026-10-29",
   "entries": [
     {
       "id": "preferences.two-editions",
@@ -35,7 +35,7 @@
     {
       "id": "preferences.frequency-split",
       "status": "user_preference",
-      "summary": "Short edition: Nyquist and clear pole views. Full edition: Bode and Black–Nichols plus detailed proofs. Control remains PID-based.",
+      "summary": "Short edition: Nyquist and clear pole views. Full edition: Bode and Blackâ€“Nichols plus detailed proofs. Control remains PID-based.",
       "sources": [
         {
           "kind": "user",
@@ -65,6 +65,18 @@
           "kind": "user",
           "date": "2026-10-28",
           "reference": "Latest follow-up requesting important mathematics in the illustrated short edition and3D only when needed"
+        }
+      ]
+    },
+    {
+      "id": "preferences.complete-nyquist",
+      "status": "user_preference",
+      "summary": "Show every Nyquist turn with a full contour overview plus a critical-point close-up; retain the rest of the short report and continue improving full appendices. MATLAB or another suitable analysis tool is optional.",
+      "sources": [
+        {
+          "kind": "user",
+          "date": "2026-10-29",
+          "reference": "Current request: show whole Nyquist turns; short edition otherwise good; improve full appendices. Follow-up permits MATLAB or another tool if needed."
         }
       ]
     }

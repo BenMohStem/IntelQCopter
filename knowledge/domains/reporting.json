@@ -1,39 +1,39 @@
 {
   "schema": 2,
   "id": "reporting",
-  "updated": "2026-10-28",
+  "updated": "2026-10-29",
   "entries": [
     {
       "id": "reporting.short-edition",
       "status": "verified_artifact",
-      "summary": "Visual edition 7.0 has 23 pages; FC first, ROS/YOLO, Gazebo/RViz, resources, handheld/links last.",
+      "summary": "Visual edition 7.1 has 23 pages; complete Nyquist overview plus linear critical-point detail; remaining short structure retained.",
       "sources": [
         {
           "kind": "file",
           "path": "IntelQCopter.pdf",
-          "sha256": "06b0dba93cefaff00fb53cd18511ba9a063bb53c9f9b37c51c250138628f81e0"
+          "sha256": "0defee106064f89789906759e3d0e73717b503c1be09e5ac548f6a6c356fc67c"
         },
         {
           "kind": "file",
           "path": "report/report.md",
-          "sha256": "c1663eb9a0c4851cd0e837ebace21e7d60d131ae2e88b2ca8ee35f358dc93093"
+          "sha256": "7a7b9864e353f0a807eef56869ef31dc2418e9138231685a8233de77f173fb2e"
         }
       ]
     },
     {
       "id": "reporting.full-edition",
       "status": "verified_artifact",
-      "summary": "Full mathematical edition 7.0 has 53 pages, with 30 applied appendices, frequency plots, statistical proofs and complete registers.",
+      "summary": "Full mathematical edition 7.1 has 55 pages, with 32 applied appendix sections: new anti-windup proof/experiment and origin-pole contour explanation; other proofs/registers retained.",
       "sources": [
         {
           "kind": "file",
           "path": "IntelQCopter-Full.pdf",
-          "sha256": "8d1e92aca07ee9fcc2d5b601665f4002b05f789be2474cc34ab2e55b5036c179"
+          "sha256": "d1bffcc16bf6cf7cd237847ecf96f992d16d4cc615b82bc18016892f736aaa7e"
         },
         {
           "kind": "file",
           "path": "full/report.md",
-          "sha256": "b0f5c08be4ad97e7e91d2f5d73aa92e496152ae76017af9ca045c6bc41885dee"
+          "sha256": "d6bbd851aec300d3febd1112a773b22e8639a78343c84dbff06ddb2673db20c2"
         }
       ]
     },

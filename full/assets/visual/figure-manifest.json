@@ -227,8 +227,40 @@
     "file": "assets/visual/nyquist-example.png",
     "kind": "ILLUSTRATIVE PID MODEL",
     "source": "analysis/control-design-example.json and tools/control_design_example.py; no hardware/Gazebo run",
-    "caption": "Positive-frequency locus and conjugate mirror, clipped near -1. Full origin indentation and outer closure are computed for the winding check; this is not measured aircraft stability.",
-    "sha256": "33efba129af859dbd92bbb19b4fbe7700317f7c3740cec25c1353b5c002bdd56"
+    "caption": "A shows the complete numerical contour: solid +\u03c9, dashed \u2212\u03c9, dotted connecting arcs; 10^-4 \u2264 |\u03c9| \u2264 10^6 rad/s. Arrows follow increasing positive frequency. Symmetric-log axes compress distances, not topology. B magnifies \u22121 on equal linear axes. The integrator makes the branches unbounded as \u03c9 approaches zero; full contour closure is shown in appendix A6.",
+    "coverage_checks": [
+      {
+        "gain_multiplier": 1.0,
+        "sample_count": 42000,
+        "every_point_inside_overview": true,
+        "clockwise_turns": 2.473764752249402e-16,
+        "expected_from_roots": 0,
+        "real_bounds": [
+          -1.8419999956740114,
+          199998.13063614213
+        ],
+        "imag_bounds": [
+          -199999.99993000017,
+          199999.99993000017
+        ]
+      },
+      {
+        "gain_multiplier": 8.0,
+        "sample_count": 42000,
+        "every_point_inside_overview": true,
+        "clockwise_turns": 2.0000000000000004,
+        "expected_from_roots": 2,
+        "real_bounds": [
+          -14.735999965392091,
+          1599985.045089137
+        ],
+        "imag_bounds": [
+          -1599999.9994400013,
+          1599999.9994400013
+        ]
+      }
+    ],
+    "sha256": "d73cb80acab109e34bbc69ebab2569f2a9947c5014357256ca9b1221efb3ebc3"
   },
   "bode-example": {
     "file": "assets/visual/bode-example.png",
@@ -248,8 +280,15 @@
     "file": "assets/visual/nyquist-contour.png",
     "kind": "ILLUSTRATIVE PID MODEL",
     "source": "analysis/control-design-example.json and tools/control_design_example.py; no hardware/Gazebo run",
-    "caption": "Numerical winding uses \u03b5=10^-4 and outer radius10^6, then repeats at10^-3/10^5. The finite-frequency display is not substituted for contour closure.",
-    "sha256": "840b3e34d4f2027e770b3e790e19428e7af93e44730469bbcda0a69dc49693c3"
+    "caption": "Left: s-plane contour schematic. Right: all four mapped pieces, including the very large origin-indentation arc, with no clipped data. Symmetric-log axes preserve encirclement but not Euclidean distances. \u03b5=10^-4; outer radius10^6; closure near L=0 is tiny. Winding is computed from untransformed complex values.",
+    "sha256": "3a2050a66300eedfafd4f1627ef420a599ad01e227edccce809cfc803b71cbad"
+  },
+  "anti-windup-example": {
+    "file": "assets/visual/anti-windup-example.png",
+    "kind": "ILLUSTRATIVE ANTI-WINDUP RECURRENCE",
+    "source": "analysis/control-design-example.json and tools/control_design_example.py; no hardware/Gazebo run",
+    "caption": "Synthetic integrator-only experiment: e=1 for2s then0; Kp=0.2, Ki=1, Kd=0, limits[0,0.45], \u0394t=1ms, Kaw=10/s. No aircraft, sensor, actuator or closed-loop plant is simulated. Units are normalized controller-output units; 0.45 is an example limit, not a flight-tuning result.",
+    "sha256": "b65cb682987f2eaa7562dd5b41b14c017c168b99d10ce4b11cd8c3f8bb0e4028"
   },
   "stability-surface": {
     "file": "assets/visual/stability-surface.png",

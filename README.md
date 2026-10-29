@@ -9,7 +9,7 @@ Report edition: **27 October 2026**
 | Edition | Open | What it contains |
 |---|---|---|
 | **Visual report · 23 pages** | **[PDF](IntelQCopter.pdf)** · [Browser](report/index.html) · [Source](report/report.md) | PID diagrams, Nyquist, complex-plane pole map, sensing, ROS/YOLO, simulation and resources |
-| **Full mathematical reference · 53 pages** | **[PDF](IntelQCopter-Full.pdf)** · [Browser](full/index.html) · [Source](full/report.md) | Applied derivations, Bode, Black–Nichols, 3D stability surface, statistical proofs and full registers |
+| **Full mathematical reference · 55 pages** | **[PDF](IntelQCopter-Full.pdf)** · [Browser](full/index.html) · [Source](full/report.md) | Complete Nyquist contours, anti-windup proof, applied derivations, Bode, Black–Nichols, 3D stability surface, statistical proofs and full registers |
 | Preserved previous full edition · 38 pages | [Original PDF](reference/full-edition-4.1.pdf) | Unchanged historical reference, retained for traceability |
 
 <p align="center"><img src="report/assets/f450-red-white-concept.png" width="570" alt="Red and white F450 concept illustration"></p>

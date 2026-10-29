@@ -38,15 +38,42 @@ def build_advanced(root, edition_dir, selected):
             box(ax,.015,y-.09,.24,.18,first);ax.add_patch(Circle((.32,y),.025,fc='white',ec=GREEN));ax.text(.32,y,'+',ha='center',va='center',fontsize=9);arrow(ax,(.26,y),(.295,y));box(ax,.40,y-.09,.21,.18,middle);arrow(ax,(.345,y),(.40,y));box(ax,.72,y-.09,.25,.18,last);arrow(ax,(.615,y),(.72,y));ax.plot([.86,.86,.32],[y-.10,y-.21,y-.21],c=BLUE,lw=1.1);arrow(ax,(.32,y-.21),(.32,y-.025),BLUE);ax.text(.31,y-.10,'−',color=BLUE);ax.text(.59,y-.20,feedback,fontsize=8,ha='center',color=BLUE)
         save(fig,'yaw-height-pid','Yaw is rate controlled. A proposed height/climb reference law feeds the vertical-speed PID; its neutral/transition behaviour still needs validation.','PROPOSED CONTROL PATHS')
     if 'nyquist-example' in selected:
-        fig,ax=plt.subplots(figsize=(8.6,3.1),layout='constrained');w=np.geomspace(.005,1e5,14000)
-        for mu,c,label in [(1,GREEN,'Baseline: no unstable roots'),(8,RED,'8x gains: two unstable roots')]:
-            z=response(1j*w,mu);ax.plot(z.real,z.imag,c=c,lw=1.8,label=label);ax.plot(z.real,-z.imag,c=c,lw=1.1,ls='--',alpha=.65)
-            for f in [15,45,100]:
-                a=response(1j*f,mu);b=response(1j*(f*1.04),mu)
-                if -3<a.real<2 and -2.5<a.imag<2.5:arrow(ax,(a.real,a.imag),(b.real,b.imag),c)
-        ax.scatter([-1],[0],c=DARK,marker='x',s=75,zorder=4,label='Critical point -1 + j0');ax.axhline(0,c=GRAY,lw=.7);ax.axvline(0,c=GRAY,lw=.7)
-        ax.set(xlim=(-3,2),ylim=(-2.5,2.5),aspect='equal',xlabel='Real loop gain Re L(jω)',ylabel='Imaginary loop gain Im L(jω)',title='Nyquist frequency locus: approaching -1 matters');ax.grid(alpha=.5);ax.legend(fontsize=8,loc='upper right')
-        save(fig,'nyquist-example','Positive-frequency locus and conjugate mirror, clipped near -1. Full origin indentation and outer closure are computed for the winding check; this is not measured aircraft stability.')
+        fig,(ax,bx)=plt.subplots(1,2,figsize=(8.6,3.15),gridspec_kw={'width_ratios':[1.35,1]},layout='constrained')
+        w=np.geomspace(1e-4,1e6,18000)
+        for mu,c in [(1,GREEN),(8,RED)]:
+            z=response(1j*w,mu)
+            # Include every finite contour piece; log compression prevents clipping.
+            for target in (ax,bx):
+                target.plot(z.real,z.imag,c=c,lw=1.6,label=f'μ={mu:g}: +ω')
+                target.plot(z.real,-z.imag,c=c,lw=1.1,ls='--',alpha=.8)
+            for arc in [1e-4*np.exp(1j*np.linspace(-np.pi/2,np.pi/2,3000)),1e6*np.exp(1j*np.linspace(np.pi/2,-np.pi/2,3000))]:
+                closure=response(arc,mu);ax.plot(closure.real,closure.imag,c=c,ls=':',lw=1.2,alpha=.85)
+            for f in [.01,.1,1,5,15,45,100,300]:
+                a=response(1j*f,mu);b=response(1j*(f*1.12),mu)
+                arrow(ax,(a.real,a.imag),(b.real,b.imag),c)
+                if -3<a.real<1 and -2.5<a.imag<2.5:
+                    arrow(bx,(a.real,a.imag),(b.real,b.imag),c)
+        ax.set_xscale('symlog',linthresh=1);ax.set_yscale('symlog',linthresh=1)
+        ax.margins(.08);ax.set(title='A. Complete contour: every turn',xlabel='Re L (symmetric-log scale)',ylabel='Im L (symmetric-log scale)')
+        bx.set(xlim=(-3,1),ylim=(-2.5,2.5),aspect='equal',title='B. Critical-point detail: linear axes',xlabel='Re L',ylabel='Im L')
+        for target in (ax,bx):
+            target.scatter([-1],[0],c=DARK,marker='x',s=48,zorder=6)
+            target.axhline(0,c=GRAY,lw=.6);target.axvline(0,c=GRAY,lw=.6);target.grid(alpha=.3)
+        ax.set_xticks([-10,-1,0,100,10000,1000000]);ax.set_yticks([-1000000,-1000,-1,0,1,1000,1000000]);ax.tick_params(labelsize=8)
+        ax.legend(fontsize=7,loc='center right');bx.annotate('−1 + j0',(-1,0),xytext=(-2.75,.65),fontsize=8,arrowprops={'arrowstyle':'->','color':DARK})
+        coverage=[]
+        for mu in [1.,8.]:
+            points=np.concatenate((-1j*w[::-1],1e-4*np.exp(1j*np.linspace(-np.pi/2,np.pi/2,3000)),1j*w,1e6*np.exp(1j*np.linspace(np.pi/2,-np.pi/2,3000))))
+            z=response(points,mu);limits=(ax.get_xlim(),ax.get_ylim())
+            assert np.isfinite(z).all()
+            assert limits[0][0]<=z.real.min()<=z.real.max()<=limits[0][1]
+            assert limits[1][0]<=z.imag.min()<=z.imag.max()<=limits[1][1]
+            f=1+np.append(z,z[0]);turns=-np.angle(f[1:]/f[:-1]).sum()/(2*np.pi)
+            expected=next(case['clockwise_encirclements_N'] for case in data['cases'] if case['gain_multiplier']==mu)
+            assert abs(turns-expected)<1e-6
+            coverage.append({'gain_multiplier':mu,'sample_count':len(z),'every_point_inside_overview':True,'clockwise_turns':float(turns),'expected_from_roots':expected,'real_bounds':[float(z.real.min()),float(z.real.max())],'imag_bounds':[float(z.imag.min()),float(z.imag.max())]})
+        save(fig,'nyquist-example','A shows the complete numerical contour: solid +ω, dashed −ω, dotted connecting arcs; 10^-4 ≤ |ω| ≤ 10^6 rad/s. Arrows follow increasing positive frequency. Symmetric-log axes compress distances, not topology. B magnifies −1 on equal linear axes. The integrator makes the branches unbounded as ω approaches zero; full contour closure is shown in appendix A6.')
+        records['nyquist-example']['coverage_checks']=coverage
     if 'poles-3d' in selected:
         fig=plt.figure(figsize=(8.6,3.4),layout='constrained');ax=fig.add_subplot(111,projection='3d');multipliers=np.linspace(.5,8,110)
         for sign in [-1,1]:
@@ -79,11 +106,33 @@ def build_advanced(root, edition_dir, selected):
         fig,(ax,bx)=plt.subplots(1,2,figsize=(8.6,2.8),layout='constrained')
         # Topological sketch: no misleading claim of actual numerical scale.
         ax.plot([0,0],[-3,-.5],c=BLUE);th=np.linspace(-np.pi/2,np.pi/2,150);ax.plot(.5*np.cos(th),.5*np.sin(th),c=GOLD);ax.plot([0,0],[.5,3],c=BLUE);th=np.linspace(np.pi/2,-np.pi/2,200);ax.plot(3*np.cos(th),3*np.sin(th),c=BLUE);ax.scatter([0],[0],marker='x',c=RED);ax.text(.65,.05,'Origin excluded\nby right indentation',fontsize=8);ax.set(aspect='equal',xlabel='Re s',ylabel='Im s',title='Clockwise RHP contour (schematic)');ax.grid(alpha=.3)
-        w=np.geomspace(.02,1e5,5000)
-        for mu,c in [(1,GREEN),(8,RED)]:
-            z=response(1j*w,mu);bx.plot(z.real,z.imag,c=c,label=f'μ={mu:g}');bx.plot(z.real,-z.imag,c=c,ls='--',alpha=.6)
-        bx.scatter([-1],[0],c=DARK,marker='x');bx.set(xlim=(-3,1),ylim=(-2,2),aspect='equal',xlabel='Re L',ylabel='Im L',title='Local view; winding uses full contour');bx.grid(alpha=.3);bx.legend(fontsize=8)
-        save(fig,'nyquist-contour','Numerical winding uses ε=10^-4 and outer radius10^6, then repeats at10^-3/10^5. The finite-frequency display is not substituted for contour closure.')
+        eps=1e-4;outer=1e6;w=np.geomspace(eps,outer,12000)
+        pieces=[(-1j*w[::-1],BLUE,'Negative-frequency branch'),
+                (eps*np.exp(1j*np.linspace(-np.pi/2,np.pi/2,3000)),GOLD,'Origin indentation'),
+                (1j*w,GREEN,'Positive-frequency branch'),
+                (outer*np.exp(1j*np.linspace(np.pi/2,-np.pi/2,3000)),RED,'Outer closure')]
+        for points,c,label in pieces:
+            z=response(points,8);bx.plot(z.real,z.imag,c=c,lw=1.4,label=label)
+            i=len(z)//2;arrow(bx,(z[i].real,z[i].imag),(z[i+20].real,z[i+20].imag),c)
+        bx.scatter([-1],[0],c=DARK,marker='x',s=40,zorder=6)
+        bx.set_xscale('symlog',linthresh=1);bx.set_yscale('symlog',linthresh=1);bx.margins(.10)
+        bx.set(xlabel='Re L (symmetric-log)',ylabel='Im L (symmetric-log)',title='Entire mapped contour: μ=8, Ncw=2');bx.set_xticks([-10,-1,0,100,10000,1000000]);bx.set_yticks([-1000000,-1000,-1,0,1,1000,1000000]);bx.tick_params(labelsize=8);bx.grid(alpha=.3);bx.legend(fontsize=6.4,loc='center right')
+        save(fig,'nyquist-contour','Left: s-plane contour schematic. Right: all four mapped pieces, including the very large origin-indentation arc, with no clipped data. Symmetric-log axes preserve encirclement but not Euclidean distances. ε=10^-4; outer radius10^6; closure near L=0 is tiny. Winding is computed from untransformed complex values.')
+    if 'anti-windup-example' in selected:
+        # Scripted error isolates the integrator; this is deliberately not a plant simulation.
+        dt=.001;t=np.arange(3001)*dt;e=np.where(t<2,1.,0.)
+        fig,(ax,bx)=plt.subplots(1,2,figsize=(8.6,2.75),layout='constrained')
+        for kaw,c,label in [(0,RED,'No anti-windup'),(10,GREEN,'Back-calculation')]:
+            integral=0.;history=[];raw=[];applied=[]
+            for ek in e:
+                request=.2*ek+integral;limited=np.clip(request,0,.45)
+                history.append(integral);raw.append(request);applied.append(limited)
+                integral+=dt*(ek+kaw*(limited-request))
+            ax.plot(t,history,c=c,label=label);bx.plot(t,applied,c=c,label=label)
+        ax.set(xlabel='Time (s)',ylabel='Integral contribution I',title='Stored integral: bounded versus growing')
+        bx.axhline(.45,c=GRAY,ls=':',lw=.8);bx.set(xlabel='Time (s)',ylabel='Bounded output u',title='At 2 s, scripted error becomes zero')
+        for target in (ax,bx):target.axvline(2,c=GRAY,ls=':',lw=.8);target.grid(alpha=.3);target.legend(fontsize=7)
+        save(fig,'anti-windup-example','Synthetic integrator-only experiment: e=1 for2s then0; Kp=0.2, Ki=1, Kd=0, limits[0,0.45], Δt=1ms, Kaw=10/s. No aircraft, sensor, actuator or closed-loop plant is simulated. Units are normalized controller-output units; 0.45 is an example limit, not a flight-tuning result.','ILLUSTRATIVE ANTI-WINDUP RECURRENCE')
     if 'stability-surface' in selected:
         mu=np.linspace(.5,8,31);tm=np.linspace(.015,.080,27);mm,tt=np.meshgrid(mu,tm);z=np.empty_like(mm)
         for i in range(mm.shape[0]):

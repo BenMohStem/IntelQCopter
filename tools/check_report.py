@@ -29,6 +29,10 @@ for name in ['short','full']:
     for figure in re.findall(r'\[\[VIS:([^]]+)\]\]',source):
         entry=figures[figure]
         assert hashlib.sha256((folder/entry['file']).read_bytes()).hexdigest()==entry['sha256']
+    for case in figures['nyquist-example']['coverage_checks']:
+        assert case['every_point_inside_overview'] and case['sample_count']==42000
+        assert abs(case['clockwise_turns']-case['expected_from_roots'])<1e-6
+    assert len(figures['nyquist-example']['coverage_checks'])==2
     for entry in json.loads((folder/'evidence-manifest.json').read_text()):
         assert hashlib.sha256((ROOT/entry['path']).read_bytes()).hexdigest()==entry['sha256']
     original=ROOT/'evidence/mpu6050/2026-10-26-offline-attitude-preparation/reserved-replay.png'

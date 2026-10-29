@@ -82,7 +82,7 @@ def footer(c, doc):
     c.setFont('ReportArial', 8)
     c.setFillColor(colors.HexColor('#536c5d'))
     c.drawString(42, 816, 'IntelQCopter   /   Autonomous Quadcopter')
-    c.drawRightString(553,816,('FULL MATHEMATICAL REFERENCE' if EDITION=='full' else 'VISUAL UNIVERSITY REPORT')+' / REV 7.0')
+    c.drawRightString(553,816,('FULL MATHEMATICAL REFERENCE' if EDITION=='full' else 'VISUAL UNIVERSITY REPORT')+' / REV 7.1')
     c.setStrokeColor(colors.HexColor('#d2e4d7'))
     c.line(42,39,553,39)
     c.drawString(42, 25, 'USTHB / FGE / RSI   |   Personal and Professional Project   |   27 October 2026')
@@ -107,7 +107,7 @@ def cover():
         d.add(String(x,203,b,fontName='ReportArial',fontSize=7.4,fillColor=TEAL))
     for y,t in [(174,'RP2040 handheld  /  LoRa primary link  /  reserved CC1101 channels'),(155,'Companion computer sought: Raspberry Pi 4/5 or NVIDIA Jetson + camera.'),(136,'Stable manual operation remains independent of the companion computer.')]:
         d.add(String(0,y,t,fontName='ReportArial',fontSize=9,fillColor=INK))
-    d.add(String(0,107,'27 OCTOBER 2026 / 2026-2027 / '+('FULL MATH' if EDITION=='full' else 'VISUAL SHORT')+' / 7.0',fontName='ReportArialBold',fontSize=8.8,fillColor=TEAL))
+    d.add(String(0,107,'27 OCTOBER 2026 / 2026-2027 / '+('FULL MATH' if EDITION=='full' else 'VISUAL SHORT')+' / 7.1',fontName='ReportArialBold',fontSize=8.8,fillColor=TEAL))
     d.add(String(0,85,'Student: __________________________    Supervisor: __________________________',fontName='ReportArial',fontSize=9,fillColor=INK))
     d.add(String(0,65,'Proposed design and measured results are labelled. Flight acceptance remains pending.',fontName='ReportArial',fontSize=8.2,fillColor=INK))
     d.add(String(0,46,'github.com/BenMohStem/IntelQCopter  /  university report',fontName='ReportArialBold',fontSize=8,fillColor=TEAL))
