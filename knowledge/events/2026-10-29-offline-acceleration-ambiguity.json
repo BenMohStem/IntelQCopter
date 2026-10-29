@@ -1,0 +1,8 @@
+{
+  "schema": 2,
+  "id": "2026-10-29-offline-acceleration-ambiguity",
+  "date": "2026-10-29",
+  "domains": ["safety-and-evidence"],
+  "summary": "User has no drone available; continue Stepwise with an offline analytic acceleration ambiguity lesson.",
+  "outcome": "Constructed 10-degree tilt and level accelerating cases have identical ideal IMU inputs and 1 g magnitude. Model assertions pass; no firmware/calibration changes or hardware acceptance. Existing uncommitted gyro coefficient mismatch preserved; default Python gyro-frame checks blocked by missing serial module."
+}

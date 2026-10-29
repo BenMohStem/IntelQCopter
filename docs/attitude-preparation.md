@@ -213,3 +213,27 @@ From the Stepwise folder:
 Choose a new output directory each time. Original private capture folders must
 exist to reproduce the real-data analysis; the public repo contains reviewed
 derived evidence. The analytical checks run without hardware or private logs.
+
+## Next small offline lesson: identical readings, different attitudes
+
+Run `python tools/estimation/acceleration_ambiguity.py` (standard library only).
+This analytic model compares a stationary 10-degree roll with a level vehicle
+under constant body-Y and body-Z acceleration. Both have zero angular rate,
+identical accelerometer readings and exactly 1 g measured magnitude. Therefore
+an acceleration gate based only on magnitude cannot reject the misleading case.
+An accelerometer-only angle reports 10 degrees for both; its level-case error is
+10 degrees. These are constructed assumptions, not measured drone motion.
+
+Initial attitude is unknown and transitions are excluded. Known initial attitude,
+reliable gyro integration over a finite interval, or independent velocity/position
+information may help. A more elaborate filter cannot recover information absent
+from identical inputs. Next compare a bounded acceleration disturbance and recovery
+before choosing an offline candidate. Do not activate the MCU filter yet.
+
+2026-10-29 checkout review also found an existing uncommitted gyro matrix change:
+`0.288364175f` became `0.2808364175f` in main.cpp. It is preserved, not accepted as
+a new calibration, and is inconsistent with config/gyro-frame.json. Existing
+source fingerprints must remain stale until that change is resolved explicitly.
+The existing gyro-frame test could not start under the default system Python:
+`ModuleNotFoundError: No module named 'serial'`. This failure is retained here;
+it is not a passing test or evidence against the historical rotation model.
