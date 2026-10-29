@@ -1,0 +1,12 @@
+{
+  "schema": 2,
+  "id": "2026-10-29-complete-nyquist-and-appendices",
+  "date": "2026-10-29",
+  "domains": [
+    "presentation-preferences",
+    "reporting",
+    "control-example"
+  ],
+  "summary": "User requests whole Nyquist turns and continued full-appendix improvement; MATLAB optional.",
+  "outcome": "NumPy/Matplotlib complete indented contour plus equal-linear critical-point detail; all42,000points/case inside overview and winding checked against roots. Short23pages; full55pages with two new worked derivations. No firmware, calibration, physical test or flight simulation changed."
+}

@@ -1,39 +1,39 @@
 {
   "schema": 2,
   "id": "reporting",
-  "updated": "2026-10-28",
+  "updated": "2026-10-29",
   "entries": [
     {
       "id": "reporting.short-edition",
       "status": "verified_artifact",
-      "summary": "Visual edition 7.0 has 23 pages; FC first, ROS/YOLO, Gazebo/RViz, resources, handheld/links last.",
+      "summary": "Visual edition 7.1 has 23 pages; complete Nyquist overview plus linear critical-point detail; remaining short structure retained.",
       "sources": [
         {
           "kind": "url",
-          "url": "https://github.com/BenMohStem/IntelQCopter/blob/codex/usthb-university-report/IntelQCopter.pdf",
-          "sha256_at_authoring": "06b0dba93cefaff00fb53cd18511ba9a063bb53c9f9b37c51c250138628f81e0"
+          "url": "https://github.com/BenMohStem/IntelQCopter/blob/d4bdfce/IntelQCopter.pdf",
+          "sha256_at_authoring": "0defee106064f89789906759e3d0e73717b503c1be09e5ac548f6a6c356fc67c"
         },
         {
           "kind": "url",
-          "url": "https://github.com/BenMohStem/IntelQCopter/blob/codex/usthb-university-report/report/report.md",
-          "sha256_at_authoring": "c1663eb9a0c4851cd0e837ebace21e7d60d131ae2e88b2ca8ee35f358dc93093"
+          "url": "https://github.com/BenMohStem/IntelQCopter/blob/d4bdfce/report/report.md",
+          "sha256_at_authoring": "7a7b9864e353f0a807eef56869ef31dc2418e9138231685a8233de77f173fb2e"
         }
       ]
     },
     {
       "id": "reporting.full-edition",
       "status": "verified_artifact",
-      "summary": "Full mathematical edition 7.0 has 53 pages, with 30 applied appendices, frequency plots, statistical proofs and complete registers.",
+      "summary": "Full mathematical edition 7.1 has 55 pages, with 32 applied appendix sections: new anti-windup proof/experiment and origin-pole contour explanation; other proofs/registers retained.",
       "sources": [
         {
           "kind": "url",
-          "url": "https://github.com/BenMohStem/IntelQCopter/blob/codex/usthb-university-report/IntelQCopter-Full.pdf",
-          "sha256_at_authoring": "8d1e92aca07ee9fcc2d5b601665f4002b05f789be2474cc34ab2e55b5036c179"
+          "url": "https://github.com/BenMohStem/IntelQCopter/blob/d4bdfce/IntelQCopter-Full.pdf",
+          "sha256_at_authoring": "d1bffcc16bf6cf7cd237847ecf96f992d16d4cc615b82bc18016892f736aaa7e"
         },
         {
           "kind": "url",
-          "url": "https://github.com/BenMohStem/IntelQCopter/blob/codex/usthb-university-report/full/report.md",
-          "sha256_at_authoring": "b0f5c08be4ad97e7e91d2f5d73aa92e496152ae76017af9ca045c6bc41885dee"
+          "url": "https://github.com/BenMohStem/IntelQCopter/blob/d4bdfce/full/report.md",
+          "sha256_at_authoring": "d6bbd851aec300d3febd1112a773b22e8639a78343c84dbff06ddb2673db20c2"
         }
       ]
     },
@@ -44,12 +44,12 @@
       "sources": [
         {
           "kind": "url",
-          "url": "https://github.com/BenMohStem/IntelQCopter/blob/codex/usthb-university-report/reference/full-edition-4.1.pdf",
+          "url": "https://github.com/BenMohStem/IntelQCopter/blob/d4bdfce/reference/full-edition-4.1.pdf",
           "sha256_at_authoring": "47eaa05ee814469de4c65803da4e807a60463b45baecd8c55c43855ef3329cc7"
         },
         {
           "kind": "url",
-          "url": "https://github.com/BenMohStem/IntelQCopter/blob/codex/usthb-university-report/reference/full-edition-4.1.md",
+          "url": "https://github.com/BenMohStem/IntelQCopter/blob/d4bdfce/reference/full-edition-4.1.md",
           "sha256_at_authoring": "2489938175dff2d786bc0bc88ed6b2a5ab3c54020a259e1c180247dc2c2c8ce5"
         }
       ]
@@ -61,7 +61,7 @@
       "sources": [
         {
           "kind": "url",
-          "url": "https://github.com/BenMohStem/IntelQCopter/blob/codex/usthb-university-report/report/academic-context.json",
+          "url": "https://github.com/BenMohStem/IntelQCopter/blob/d4bdfce/report/academic-context.json",
           "sha256_at_authoring": "b04d1d147ca12e86c7032848dca10e14ee08080312c16a400062e94978b977c1"
         }
       ]
