@@ -1,0 +1,72 @@
+{
+  "schema": 2,
+  "id": "presentation-preferences",
+  "updated": "2026-10-28",
+  "entries": [
+    {
+      "id": "preferences.two-editions",
+      "status": "user_preference",
+      "summary": "Keep the visual teacher report and a rigorous full mathematical edition on the teacher branch; preserve the previous full edition too.",
+      "sources": [
+        {
+          "kind": "user",
+          "date": "2026-10-28",
+          "reference": "Current request: keep the big full report even on the teacher branch"
+        }
+      ]
+    },
+    {
+      "id": "preferences.visual-density",
+      "status": "user_preference",
+      "summary": "Use few necessary words and many explanatory illustrations. Use 3D only when it adds information; complex poles are clearer in 2D, while spatial garden geometry and a two-parameter gain/lag surface benefit from 3D.",
+      "sources": [
+        {
+          "kind": "user",
+          "date": "2026-10-28",
+          "reference": "Current request: 3D illustrations, little text, 21or23 pages if needed"
+        },
+        {
+          "kind": "user",
+          "date": "2026-10-28",
+          "reference": "Follow-up: important short-report mathematics with illustrations; use3D only when necessary; Wolfram Alpha optional"
+        }
+      ]
+    },
+    {
+      "id": "preferences.frequency-split",
+      "status": "user_preference",
+      "summary": "Short edition: Nyquist and clear pole views. Full edition: Bode and Black–Nichols plus detailed proofs. Control remains PID-based.",
+      "sources": [
+        {
+          "kind": "user",
+          "date": "2026-10-28",
+          "reference": "Current frequency-plot request and preceding PID-only instruction"
+        }
+      ]
+    },
+    {
+      "id": "preferences.knowledge-maintenance",
+      "status": "user_preference",
+      "summary": "Update curated knowledge after prompts that add durable facts/preferences/decisions/evidence; review architecture when growth mixes topics. No empty churn or hidden reasoning transcripts.",
+      "sources": [
+        {
+          "kind": "user",
+          "date": "2026-10-28",
+          "reference": "Current request to update thought database every prompt if possible and reorganize at major growth"
+        }
+      ]
+    },
+    {
+      "id": "preferences.essential-short-math",
+      "status": "user_preference",
+      "summary": "Keep dynamics, PID gain relations, bias/scale/full calibration, variance and Kalman updates visible in the short report with illustrations. Put detailed proofs in the full reference. Wolfram Alpha is optional, not a required dependency.",
+      "sources": [
+        {
+          "kind": "user",
+          "date": "2026-10-28",
+          "reference": "Latest follow-up requesting important mathematics in the illustrated short edition and3D only when needed"
+        }
+      ]
+    }
+  ]
+}

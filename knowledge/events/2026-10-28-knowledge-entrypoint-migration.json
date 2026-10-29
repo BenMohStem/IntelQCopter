@@ -1,0 +1,11 @@
+{
+  "schema": 2,
+  "id": "2026-10-28-knowledge-entrypoint-migration",
+  "date": "2026-10-28",
+  "domains": [
+    "maintenance-history",
+    "presentation-preferences"
+  ],
+  "summary": "Separate standing instructions, curated domain facts and frozen chronological history.",
+  "outcome": "Original AGENTS bytes retained with manifest; index/checker/events added; runtime fingerprints, evidence and task dependencies are not refreshed or bypassed."
+}

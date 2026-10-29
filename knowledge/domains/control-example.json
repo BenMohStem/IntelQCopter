@@ -1,0 +1,36 @@
+{
+  "schema": 2,
+  "id": "control-example",
+  "updated": "2026-10-28",
+  "entries": [
+    {
+      "id": "control.example-assumptions",
+      "status": "assumed",
+      "summary": "One continuous rate loop uses supplied J but assumed rotational damping, motor lag, Padé delay and filtered PID gains. These are not flight gains or1kHz acceptance.",
+      "sources": [
+        {
+          "kind": "url",
+          "url": "https://github.com/BenMohStem/IntelQCopter/blob/codex/usthb-university-report/analysis/control-design-example.json",
+          "sha256_at_authoring": "b13cdd8b8c4a4fe2858be8a072112478acad67ab7a113a13664a0dbdfb79662c"
+        }
+      ]
+    },
+    {
+      "id": "control.example-checks",
+      "status": "verified_artifact",
+      "summary": "For this rational model only: baseline P/Z/N=0/0/0; 8x gains gives0/2/2. Root counts match indented contour winding; crossover refinement and polynomial residual checks pass.",
+      "sources": [
+        {
+          "kind": "url",
+          "url": "https://github.com/BenMohStem/IntelQCopter/blob/codex/usthb-university-report/analysis/control-design-example.json",
+          "sha256_at_authoring": "b13cdd8b8c4a4fe2858be8a072112478acad67ab7a113a13664a0dbdfb79662c"
+        },
+        {
+          "kind": "url",
+          "url": "https://github.com/BenMohStem/IntelQCopter/blob/codex/usthb-university-report/tools/control_design_example.py",
+          "sha256_at_authoring": "f8c8f324c6b8a9bab47d491d9701042a38c2984a4d7bed95d3c27218449b9237"
+        }
+      ]
+    }
+  ]
+}

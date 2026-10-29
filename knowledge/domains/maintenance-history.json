@@ -1,0 +1,34 @@
+{
+  "schema": 2,
+  "id": "maintenance-history",
+  "updated": "2026-10-28",
+  "entries": [
+    {
+      "id": "maintenance.entrypoint-history",
+      "status": "verified_artifact",
+      "summary": "Earlier chronological AGENTS entry point preserved byte-for-byte; current standing rules link to history instead of repeating it.",
+      "sources": [
+        {
+          "kind": "file",
+          "path": "knowledge/history/AGENTS-before-domain-catalog.md",
+          "sha256": "c47781d15b6e62e8987e0f018e8ac853c88bdfb3c76de8011b6aff10e5bad5c4"
+        }
+      ]
+    },
+    {
+      "id": "maintenance.runtime-review",
+      "status": "pending",
+      "summary": "This reporting work does not revalidate or refresh runtime source fingerprints; current firmware edits remain outside the report commit. Use the original runtime checker before hardware acceptance.",
+      "sources": [
+        {
+          "kind": "file",
+          "path": "knowledge/state.json"
+        },
+        {
+          "kind": "file",
+          "path": "firmware/main.cpp"
+        }
+      ]
+    }
+  ]
+}

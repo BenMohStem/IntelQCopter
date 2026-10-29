@@ -1,0 +1,70 @@
+{
+  "schema": 2,
+  "id": "reporting",
+  "updated": "2026-10-28",
+  "entries": [
+    {
+      "id": "reporting.short-edition",
+      "status": "verified_artifact",
+      "summary": "Visual edition 7.0 has 23 pages; FC first, ROS/YOLO, Gazebo/RViz, resources, handheld/links last.",
+      "sources": [
+        {
+          "kind": "url",
+          "url": "https://github.com/BenMohStem/IntelQCopter/blob/codex/usthb-university-report/IntelQCopter.pdf",
+          "sha256_at_authoring": "06b0dba93cefaff00fb53cd18511ba9a063bb53c9f9b37c51c250138628f81e0"
+        },
+        {
+          "kind": "url",
+          "url": "https://github.com/BenMohStem/IntelQCopter/blob/codex/usthb-university-report/report/report.md",
+          "sha256_at_authoring": "c1663eb9a0c4851cd0e837ebace21e7d60d131ae2e88b2ca8ee35f358dc93093"
+        }
+      ]
+    },
+    {
+      "id": "reporting.full-edition",
+      "status": "verified_artifact",
+      "summary": "Full mathematical edition 7.0 has 53 pages, with 30 applied appendices, frequency plots, statistical proofs and complete registers.",
+      "sources": [
+        {
+          "kind": "url",
+          "url": "https://github.com/BenMohStem/IntelQCopter/blob/codex/usthb-university-report/IntelQCopter-Full.pdf",
+          "sha256_at_authoring": "8d1e92aca07ee9fcc2d5b601665f4002b05f789be2474cc34ab2e55b5036c179"
+        },
+        {
+          "kind": "url",
+          "url": "https://github.com/BenMohStem/IntelQCopter/blob/codex/usthb-university-report/full/report.md",
+          "sha256_at_authoring": "b0f5c08be4ad97e7e91d2f5d73aa92e496152ae76017af9ca045c6bc41885dee"
+        }
+      ]
+    },
+    {
+      "id": "reporting.archived-full",
+      "status": "verified_artifact",
+      "summary": "Original 38-page full edition 4.1 is preserved unchanged from commit 600a20a.",
+      "sources": [
+        {
+          "kind": "url",
+          "url": "https://github.com/BenMohStem/IntelQCopter/blob/codex/usthb-university-report/reference/full-edition-4.1.pdf",
+          "sha256_at_authoring": "47eaa05ee814469de4c65803da4e807a60463b45baecd8c55c43855ef3329cc7"
+        },
+        {
+          "kind": "url",
+          "url": "https://github.com/BenMohStem/IntelQCopter/blob/codex/usthb-university-report/reference/full-edition-4.1.md",
+          "sha256_at_authoring": "2489938175dff2d786bc0bc88ed6b2a5ab3c54020a259e1c180247dc2c2c8ce5"
+        }
+      ]
+    },
+    {
+      "id": "reporting.academic-context",
+      "status": "verified_source",
+      "summary": "USTHB/FGE/Automatique/RSI; fourth-year engineering; published curriculum lists Projet Personnel Professionnel, RSI7.8. Teacher rubric and names remain to complete.",
+      "sources": [
+        {
+          "kind": "url",
+          "url": "https://github.com/BenMohStem/IntelQCopter/blob/codex/usthb-university-report/report/academic-context.json",
+          "sha256_at_authoring": "b04d1d147ca12e86c7032848dca10e14ee08080312c16a400062e94978b977c1"
+        }
+      ]
+    }
+  ]
+}

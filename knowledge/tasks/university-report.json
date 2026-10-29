@@ -2,19 +2,30 @@
   "schema": 1,
   "id": "university-report",
   "status": "done",
-  "title": "English Professional and Personal Project technical report and bill of materials",
+  "title": "USTHB visual and full mathematical report editions with evidence provenance",
   "depends_on": [
     "system-specification"
   ],
   "scopes": [
     "docs/university-report",
     "tools/docs/build_university_report.py",
-    "tools/docs/report_figures.py"
+    "tools/docs/report_figures.py",
+    "report",
+    "full",
+    "IntelQCopter.pdf",
+    "IntelQCopter-Full.pdf",
+    "tools/build_report.py",
+    "tools/report_figures.py",
+    "tools/advanced_figures.py",
+    "analysis/control-design-example.json"
   ],
   "evidence": [],
   "acceptance": [
     "English report and BOM distinguish proposed and verified claims",
     "Review all rendered pages and evidence references",
-    "Publish reviewed sources and outputs"
+    "Publish reviewed sources and outputs",
+    "Keep both current editions and unchanged previous full reference",
+    "Short report uses Nyquist/poles; Bode/Nichols in full; all example gains labelled assumed",
+    "Update additive domain catalog without refreshing runtime fingerprints"
   ]
 }

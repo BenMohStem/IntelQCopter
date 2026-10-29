@@ -45,3 +45,7 @@ No external service, embeddings, credentials or downloaded dependencies needed.
 The latest user instruction and applicable working agreement take precedence.
 Historical prose may be superseded; report contradictions instead of silently
 using an old calibration, 500 Hz target, upload prohibition or simulated pass.
+
+## Domain catalog (schema2)
+
+Read [the catalog](index.json) and [maintenance policy](DOMAIN-CATALOG.md) for report facts and current presentation preferences. It is additive: state.json, evidence.json, task dependencies and SQLite claims remain authoritative for their runtime/coordination scopes. Run `python tools/knowledge/check_domains.py .`; remote references are not fetched. Do not refresh stale firmware fingerprints to satisfy a report check.

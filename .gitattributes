@@ -9,3 +9,4 @@
 # Preserve exact raw-source fingerprint for the measurement checkpoint.
 archive/bench-checkpoints/raw-pose1000/main.cpp.txt -text
 firmware/main.cpp text eol=lf
+knowledge/history/AGENTS-before-domain-catalog.md -text

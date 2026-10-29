@@ -1,0 +1,33 @@
+{
+  "schema": 2,
+  "updated": "2026-10-28",
+  "scope": "Additive curated domain catalog; facts/decisions/evidence, not private reasoning or a chat transcript",
+  "domains": [
+    {
+      "id": "presentation-preferences",
+      "path": "domains/presentation-preferences.json"
+    },
+    {
+      "id": "reporting",
+      "path": "domains/reporting.json"
+    },
+    {
+      "id": "control-example",
+      "path": "domains/control-example.json"
+    },
+    {
+      "id": "safety-and-evidence",
+      "path": "domains/safety-and-evidence.json"
+    },
+    {
+      "id": "maintenance-history",
+      "path": "domains/maintenance-history.json"
+    }
+  ],
+  "events": "events/",
+  "maintenance": {
+    "split_above_entries": 25,
+    "split_above_bytes": 15000,
+    "action": "Review and split mixed/growing domains; preserve IDs/provenance/history; no automatic evidence deletion"
+  }
+}

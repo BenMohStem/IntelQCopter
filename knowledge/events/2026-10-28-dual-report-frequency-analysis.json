@@ -1,0 +1,13 @@
+{
+  "schema": 2,
+  "id": "2026-10-28-dual-report-frequency-analysis",
+  "date": "2026-10-28",
+  "domains": [
+    "presentation-preferences",
+    "reporting",
+    "control-example",
+    "safety-and-evidence"
+  ],
+  "summary": "User requested preservation of the full report, PID diagrams, split frequency plots, useful3D visuals and prompt-level knowledge maintenance.",
+  "outcome": "Prepared23-page visual and52-page full editions; preserved38-page original; checked illustrative model; introduced domain catalog and append-only event policy. No hardware/firmware acceptance changed."
+}

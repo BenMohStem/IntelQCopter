@@ -1,0 +1,31 @@
+{
+  "schema": 2,
+  "id": "safety-and-evidence",
+  "updated": "2026-10-28",
+  "entries": [
+    {
+      "id": "safety.physical-arming",
+      "status": "user_preference",
+      "summary": "Physical motor arming/output authorization remains disabled under the standing working agreement. Report work does not flash firmware.",
+      "sources": [
+        {
+          "kind": "user",
+          "date": "2026-10-28",
+          "reference": "Standing working agreement: physical motor arming remains disabled"
+        }
+      ]
+    },
+    {
+      "id": "evidence.engine-labels",
+      "status": "user_preference",
+      "summary": "Preserve original failed evidence. Label physical sensor recording, Python replay, analytic models, MCU emulation and Gazebo separately; do not silently transfer ESP32 timing to RP2350.",
+      "sources": [
+        {
+          "kind": "user",
+          "date": "2026-10-28",
+          "reference": "Standing project evidence and engine-identification agreement"
+        }
+      ]
+    }
+  ]
+}

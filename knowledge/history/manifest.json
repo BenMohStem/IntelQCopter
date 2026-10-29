@@ -1,0 +1,7 @@
+{
+  "source": "AGENTS.md before schema2domain-catalog migration",
+  "source_commit": "85c48cd",
+  "sha256": "c47781d15b6e62e8987e0f018e8ac853c88bdfb3c76de8011b6aff10e5bad5c4",
+  "path": "knowledge/history/AGENTS-before-domain-catalog.md",
+  "purpose": "Frozen historical context; current agreement and user instructions govern actions"
+}
