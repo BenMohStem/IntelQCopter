@@ -356,6 +356,24 @@
         "115200"
       ],
       "description": "Open Xbox input Serial Monitor at115200; specify --port"
+    },
+    "record-acquisition-comparison": {
+      "runtime": "python",
+      "path": "tools/validation/compare_imu_acquisition.py",
+      "args": [],
+      "description": "Run direct/FIFO real bench trials; requires matching flashed motor-disabled harness, --port and fresh --output"
+    },
+    "analyze-acquisition-comparison": {
+      "runtime": "python",
+      "path": "lessons/imu-acquisition-benchmark/analyze.py",
+      "args": [],
+      "description": "Replay saved comparison originals and regenerate graphs/tutorial; no serial or flash"
+    },
+    "check-acquisition-comparison": {
+      "runtime": "python",
+      "path": "lessons/imu-acquisition-benchmark/test_analysis.py",
+      "args": [],
+      "description": "Eight synthetic timing/checksum rejection controls; no serial or flash"
     }
   }
 }

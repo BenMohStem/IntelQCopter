@@ -40,3 +40,6 @@ __pycache__/
 /artifacts/bench-checks/
 
 /artifacts/uploads/
+
+# Private original flash/NVS, serial probes and full acquisition recordings.
+/artifacts/acquisition-comparison/
