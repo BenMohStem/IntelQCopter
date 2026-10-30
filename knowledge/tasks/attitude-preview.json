@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "id": "attitude-preview",
-  "status": "ready",
+  "status": "waiting_user",
   "title": "Motor-disabled live attitude preview using existing calibration",
   "depends_on": [],
   "scopes": [

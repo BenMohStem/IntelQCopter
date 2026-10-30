@@ -38,10 +38,10 @@ verified=False
 pending=b''
 history=[deque(maxlen=300) for _ in range(4)]
 fig,axes=plt.subplots(2,1,sharex=True)
-fig.suptitle('Calibrated gravity tilt preview - motors disabled')
+fig.suptitle('Quaternion fusion preview - motors disabled')
 lines=[axes[0].plot([],[],label=name)[0] for name in ['Roll','Pitch']]
 lines.append(axes[1].plot([],[],label='Yaw rate')[0])
-axes[0].set_ylabel('Gravity tilt (deg)')
+axes[0].set_ylabel('Fused Euler angles (deg)')
 axes[0].set_ylim(-180,180)
 status=axes[0].text(0.01,0.98,'Waiting for data',transform=axes[0].transAxes,va='top',fontsize=9)
 axes[1].set_ylabel('Yaw rate (deg/s)')
@@ -66,7 +66,7 @@ def update(_):
             if len(fields)!=13:continue
             roll,pitch=float(fields[8]),float(fields[9])
             norm=sum(float(fields[i])**2 for i in (2,3,4))**0.5
-            warning='Near vertical pitch: roll is poorly observable from gravity' if abs(pitch)>80 else 'Gravity tilt only - axes provisional'
+            warning='Near vertical pitch: Euler roll is ambiguous' if abs(pitch)>80 else 'Mahony fusion - axes provisional'
             if abs(norm-9.80665)>1.5:warning+=' | Acceleration disturbance'
             status.set_text(warning)
             for buf,v in zip(history,[time.monotonic()-started,roll,pitch,float(fields[12])*57.295779513]):buf.append(v)

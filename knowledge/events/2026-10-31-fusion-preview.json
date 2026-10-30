@@ -1,0 +1,10 @@
+{
+  "schema": 2,
+  "id": "2026-10-31-fusion-preview",
+  "date": "2026-10-31",
+  "domains": [
+    "operator-revision"
+  ],
+  "summary": "User requests next implementation after quaternion explanation.",
+  "outcome": "Prepared motor-disabled Mahony quaternion fusion using pinned Arduino library, acceleration gating, normalization and Euler warnings; no Kalman/physical flight acceptance implied."
+}

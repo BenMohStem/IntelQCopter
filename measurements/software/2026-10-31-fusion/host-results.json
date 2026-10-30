@@ -1,0 +1,6 @@
+{
+  "engine": "Native host compiler, actual helper and Adafruit source; not ESP timing or physical simulation",
+  "source_sha256": "53a7f37086916ed53eb6b6ac257aafe1ee19e964a96974d86fb41b1cc329e10e",
+  "library_cpp_sha256": "94cfaac71333931baa2742f2381730e38da66df0925f7390ea986d0e62fe1bab",
+  "result": "PASS 9 actual-source host cases; no hardware acceptance"
+}

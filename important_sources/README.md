@@ -64,3 +64,5 @@ Latest Xbox menu/LED instructions: [connection indicator and simpler test select
 [First live gravity-tilt and yaw-rate preview](../lessons/attitude-preview/README.md). Fusion follows; no motor outputs.
 
 [Selected illustrated learning notes](../docs/learning/index.html), also published to the university-report branch.
+
+[Quaternion fusion preview and limits](../measurements/software/2026-10-31-fusion/README.md). Adafruit Mahony, not Kalman.

@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "updated": "2026-10-30",
+  "updated": "2026-10-31",
   "evidence_baseline_commit": "a961a8a87cb612adebf31a1814d2a2ad61252fd6",
   "active_branch": "codex/stepwise-esp32",
   "active_checkout": "QCopter-Stepwise",
   "purpose": "Verified facts, concise decision rationale and coordination; not a transcript or private reasoning dump",
-  "current_stage": "Replanned around visible milestones: next is motor-disabled live attitude preview using frozen calibration. No further calibration campaign now. Physical direction gate remains before motor feedback; precise scale study optional unless a measured discrepancy justifies it.",
+  "current_stage": "Mahony quaternion fusion preview compiled;9 actual-source host cases pass. New source not uploaded or physically validated. Next is one gentle tilt/return preview; no recalibration. Existing installed firmware remains prior gravity preview.",
   "rules": [
     "One Arduino main.cpp, C-like code, Allman braces, Serial.printf",
     "Motor arming and outputs disabled; no actuator tests",

@@ -4,6 +4,7 @@
 #include <Adafruit_I2CDevice.h>
 #include <Adafruit_BusIO_Register.h>
 #include <math.h>
+#include <Adafruit_AHRS_Mahony.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/queue.h>
 #include <freertos/task.h>
@@ -300,7 +301,7 @@ static void report(void)
         Serial.printf("ERROR,SENSOR_OR_OFFSET_CHECK_FAILED\n");
         return;
     }
-    Serial.printf("HELLO,FIFO1000_V2,%s\n", BENCH_SOURCE_SHA);
+    Serial.printf("HELLO,FUSION_PREVIEW_V1,%s\n", BENCH_SOURCE_SHA);
     Serial.printf("CONFIG,accel_g=8,gyro_dps=500,dlpf=0,divider=7,i2c_hz=400000,user_cal=xyz_mpu_plus_matrix\n");
     Serial.printf("BOARD,%s,%012llX\n", ESP.getChipModel(), ESP.getEfuseMac());
     for (uint8_t axis = 0; axis < 3; axis++)
@@ -328,7 +329,7 @@ static void report(void)
     Serial.printf("GYRO_SCALE,65.5,counts_per_degree_per_second,frame=sensor,correction=mpu_plus_remainder\n");
     Serial.printf("LOG,acquisition_core=%d,serial_core=0,queue_capacity=128\n", xPortGetCoreID());
     Serial.printf("RATE,hz=1000,packet_bytes=14,clock=mpu_fifo,diagnostic_divider=100\n");
-    Serial.printf("READY,FIFO1000_V2\n");
+    Serial.printf("READY,FUSION_PREVIEW_V1\n");
 }
 
 void setup(void)
@@ -402,6 +403,60 @@ static void start_capture(void)
     }
 }
 
+// Quaternion complementary preview. Gains are provisional, not flight gains.
+static Adafruit_Mahony attitude;
+static bool attitude_started = false;
+static float attitude_q[4] = {1.0f, 0.0f, 0.0f, 0.0f};
+
+static bool update_attitude(const float acceleration[3], const float rate[3])
+{
+    float magnitude = sqrtf(acceleration[0] * acceleration[0]
+        + acceleration[1] * acceleration[1] + acceleration[2] * acceleration[2]);
+    bool gravity_usable = isfinite(magnitude) && fabsf(magnitude - 9.80665f) < 1.5f;
+    for (uint8_t axis = 0; axis < 3; axis++)
+    {
+        if (!isfinite(rate[axis]) || !isfinite(acceleration[axis]))
+        {
+            return false;
+        }
+    }
+    if (!attitude_started)
+    {
+        if (!gravity_usable)
+        {
+            return false;
+        }
+        float roll = atan2f(acceleration[1], acceleration[2]);
+        float pitch = atan2f(-acceleration[0], hypotf(acceleration[1], acceleration[2]));
+        attitude.begin(1000.0f);
+        attitude.setKp(0.5f);
+        attitude.setKi(0.0f);
+        attitude.setQuaternion(cosf(roll / 2) * cosf(pitch / 2),
+            sinf(roll / 2) * cosf(pitch / 2), cosf(roll / 2) * sinf(pitch / 2),
+            -sinf(roll / 2) * sinf(pitch / 2));
+        attitude_started = true;
+    }
+    // FIFO sample period, not host receive timing. Library expects gyro deg/s.
+    attitude.updateIMU(rate[0] * radians_to_degrees,
+        rate[1] * radians_to_degrees, rate[2] * radians_to_degrees,
+        gravity_usable ? acceleration[0] : 0.0f,
+        gravity_usable ? acceleration[1] : 0.0f,
+        gravity_usable ? acceleration[2] : 0.0f, 0.001f);
+    attitude.getQuaternion(&attitude_q[0], &attitude_q[1], &attitude_q[2], &attitude_q[3]);
+    float norm = sqrtf(attitude_q[0] * attitude_q[0] + attitude_q[1] * attitude_q[1]
+        + attitude_q[2] * attitude_q[2] + attitude_q[3] * attitude_q[3]);
+    if (!isfinite(norm) || norm < 0.5f || norm > 1.5f)
+    {
+        return false;
+    }
+    for (uint8_t component = 0; component < 4; component++)
+    {
+        attitude_q[component] /= norm;
+    }
+    attitude.setQuaternion(attitude_q[0], attitude_q[1], attitude_q[2], attitude_q[3]);
+    return true;
+}
+
 static void process_one_sample(void)
 {
     uint32_t handler_started_us = micros();
@@ -459,9 +514,20 @@ static void process_one_sample(void)
         }
         latest_drone_gyro[row] = body_gyro[row];
     }
-    float yz = hypotf(drone[1], drone[2]);
-    float roll = yz > 0.001f ? atan2f(drone[1], drone[2]) * radians_to_degrees : NAN;
-    float pitch = yz > 0.001f ? atan2f(-drone[0], yz) * radians_to_degrees : NAN;
+    if (!update_attitude(drone, body_gyro))
+    {
+        stop_acquisition("ATTITUDE_INVALID_OR_STARTUP_ACCELERATION");
+        return;
+    }
+    const float w = attitude_q[0];
+    const float x = attitude_q[1];
+    const float y = attitude_q[2];
+    const float z = attitude_q[3];
+    float roll = atan2f(2.0f * (w * x + y * z),
+        1.0f - 2.0f * (x * x + y * y)) * radians_to_degrees;
+    float sine_pitch = 2.0f * (w * y - z * x);
+    sine_pitch = fmaxf(-1.0f, fminf(1.0f, sine_pitch));
+    float pitch = asinf(sine_pitch) * radians_to_degrees;
     for (uint8_t axis = 0; axis < 3; axis++)
     {
         latest_drone_accel[axis] = drone[axis];
