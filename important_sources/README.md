@@ -48,3 +48,5 @@ Canonical links, no duplicate runtime copies. The prior FIFO source was flashed/
 Latest Xbox menu/LED instructions: [connection indicator and simpler test selection](../measurements/software/2026-10-30-xbox-led/README.md). Supersedes earlier Menu-only interaction instructions.
 
 [Next step: physical Xbox input mapping and why acquisition tests were needed](../measurements/software/2026-10-30-xbox-mapping/README.md). Includes monitor-only command; Menu/Y correction is controller-specific.
+
+[Operator Xbox input results and future battery LED requirement](../measurements/software/2026-10-30-input-results/README.md). No firmware/actuator changes.

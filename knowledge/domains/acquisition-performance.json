@@ -77,6 +77,17 @@
           "path": "measurements/software/2026-10-30-xbox-test-menu/README.md"
         }
       ]
+    },
+    {
+      "id": "acquisition.xbox-input-endpoints",
+      "status": "verified_artifact",
+      "summary": "466 real snapshots reviewed; all logged button groups responded, stick full endpoints and trigger0..1023 observed. Small LED circuit unknown; no guessed GPIO or firmware change. Battery sensing/GPS/landing future only.",
+      "sources": [
+        {
+          "kind": "file",
+          "path": "measurements/software/2026-10-30-input-results/README.md"
+        }
+      ]
     }
   ]
 }

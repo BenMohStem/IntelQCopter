@@ -5,7 +5,7 @@
   "active_branch": "codex/stepwise-esp32",
   "active_checkout": "QCopter-Stepwise",
   "purpose": "Verified facts, concise decision rationale and coordination; not a transcript or private reasoning dump",
-  "current_stage": "Xbox Menu/Y mismatch reported; next step is raw button/axis mapping in monitor-only mode, then physical gyro direction checks. Operator acquisition completion not evidenced in latest inspected log. See 2026-10-30-xbox-mapping report for new firmware validation.",
+  "current_stage": "Operator Xbox input session reviewed: 466 snapshots, all logged button fields active, sticks0..65535/triggers0..1023. Physical label/direction/deadband and gyro-motion gate remain. Small activity LED circuit unknown; large RGB reserved by user for future battery indication/landing, not implemented.",
   "rules": [
     "One Arduino main.cpp, C-like code, Allman braces, Serial.printf",
     "Motor arming and outputs disabled; no actuator tests",

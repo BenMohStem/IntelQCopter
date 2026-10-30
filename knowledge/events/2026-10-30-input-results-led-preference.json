@@ -1,0 +1,10 @@
+{
+  "schema": 2,
+  "id": "2026-10-30-input-results-led-preference",
+  "date": "2026-10-30",
+  "domains": [
+    "acquisition-performance"
+  ],
+  "summary": "Operator completed input test and clarified small activity LED intended; RGB reserved for future battery warning/landing.",
+  "outcome": "466 real snapshots reviewed; all logged button groups responded, stick full endpoints and trigger0..1023 observed. Small LED circuit unknown; no guessed GPIO or firmware change. Battery sensing/GPS/landing future only."
+}

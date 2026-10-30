@@ -1,0 +1,53 @@
+{
+  "engine": "Offline analysis of actual ESP32-S3 Xbox serial recording",
+  "recording": "20261030T193739Z",
+  "original_log_sha256": "f75ddc27ed6275594fabebdd4386bb59d0c4dcdf4a4e37c911898fbfe3231150",
+  "snapshots": 466,
+  "snapshot_rate_hz": 5,
+  "buttons_nonzero_snapshots": {
+    "rawA": 7,
+    "rawB": 7,
+    "rawX": 7,
+    "rawY": 7,
+    "rawStart": 10,
+    "LB": 7,
+    "RB": 7,
+    "UP": 9,
+    "DOWN": 7,
+    "LEFT": 8,
+    "RIGHT": 13
+  },
+  "analog_observed_min_max": {
+    "LX": [
+      0,
+      65535
+    ],
+    "LY": [
+      0,
+      65535
+    ],
+    "RX": [
+      0,
+      65535
+    ],
+    "RY": [
+      0,
+      65535
+    ],
+    "LT": [
+      0,
+      1023
+    ],
+    "RT": [
+      0,
+      1023
+    ]
+  },
+  "operator_statement": "Done testing buttons; small blue/activity LED intended instead of RGB",
+  "limits": [
+    "Snapshot counts are not press counts",
+    "Physical labels/direction/center drift/deadband not established solely by min/max",
+    "No PID or actuator test",
+    "No GPS or battery sensing available"
+  ]
+}
