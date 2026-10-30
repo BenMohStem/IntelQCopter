@@ -374,6 +374,22 @@
       "path": "lessons/imu-acquisition-benchmark/test_analysis.py",
       "args": [],
       "description": "Eight synthetic timing/checksum rejection controls; no serial or flash"
+    },
+    "record-xbox-menu": {
+      "runtime": "python",
+      "path": "tools/validation/record_xbox_menu.py",
+      "args": [],
+      "description": "Automatically save Xbox-selected bench captures; --port COM3, optional --run-all"
+    },
+    "build-xbox-menu": {
+      "runtime": "pio",
+      "path": "lessons/xbox-test-menu/platformio.ini",
+      "args": [
+        "run",
+        "-d",
+        "lessons/xbox-test-menu"
+      ],
+      "description": "Build separate two-core motor-disabled Xbox test-menu firmware"
     }
   }
 }

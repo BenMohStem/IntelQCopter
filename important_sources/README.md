@@ -40,3 +40,7 @@ Canonical links, no duplicate runtime copies. The prior FIFO source was flashed/
 ## Real acquisition comparison - 30 October 2026
 
 [Actual results and analysis lesson](../measurements/mpu6050/2026-10-30-acquisition-comparison/report.html), [Markdown](../measurements/mpu6050/2026-10-30-acquisition-comparison/report.md), [12-run timing CSV](../measurements/mpu6050/2026-10-30-acquisition-comparison/runs-summary.csv), [separate motor-disabled measurement main.cpp](../lessons/imu-acquisition-benchmark/main.cpp). Board now runs this benchmark; original16MBflash backup is private. Production MPU source/calibration unchanged. No production direct/FIFO choice or flight acceptance implied.
+
+## Current installed bench firmware — 30 October 2026
+
+[Two-core Xbox menu main.cpp](../lessons/xbox-test-menu/main.cpp), [recording instructions and actual results](../measurements/software/2026-10-30-xbox-test-menu/README.md). Supersedes the earlier installed-benchmark statement above. Four serial-requested captures passed; Xbox disconnected, physical buttons pending. No PID/motor output.

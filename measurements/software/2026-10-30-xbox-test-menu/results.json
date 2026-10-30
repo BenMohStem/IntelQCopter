@@ -1,0 +1,249 @@
+{
+  "engine": "Real ESP32-S3 core assignment and capture timings; Python serial recorder/integrity checks",
+  "source_sha256": "48678d2b730e9a9e0a3d39f49a07f62159f175f6dc98a6a827ff38f84136603b",
+  "identity": "ACQ_MENU_V1,48678d2b730e9a9e0a3d39f49a07f62159f175f6dc98a6a827ff38f84136603b,WHO=104,READY=1,WINDOW_US=4000000",
+  "core_report": "CORE,acquisition=1,slow=0,heap=150276,min_heap=149600,PID=NOT_IMPLEMENTED",
+  "runs": [
+    {
+      "mode": "d",
+      "samples": 4002,
+      "elapsed_us": 4000035,
+      "injected_pauses": 0,
+      "tail_bytes": 0,
+      "checksum": 3364049725,
+      "data_read_us": {
+        "min": 450.0,
+        "median": 451.0,
+        "p95": 458.0,
+        "p99": 459.0,
+        "max": 503.0,
+        "mean": 451.80984507746126
+      },
+      "successful_service_us": {
+        "min": 602.0,
+        "median": 603.0,
+        "p95": 611.0,
+        "p99": 612.0,
+        "max": 696.0,
+        "mean": 604.092203898051
+      },
+      "observed_ready_to_completion_us": {
+        "min": 451.0,
+        "median": 452.0,
+        "p95": 459.0,
+        "p99": 460.0,
+        "max": 504.0,
+        "mean": 452.67616191904045
+      },
+      "completion_gap_us": {
+        "min": 796.0,
+        "median": 1065.0,
+        "p95": 1073.0,
+        "p99": 1076.0,
+        "max": 1202.0,
+        "mean": 999.3346663334166
+      },
+      "gaps_over_1500us": 0,
+      "maximum_fifo_packets_before_read": 0,
+      "fifo_oldest_extra_queue_age_proxy_us": 0,
+      "read_rate_hz": 1000.4912457016001,
+      "tail_packets": 0,
+      "gyro_mean_raw": [
+        7.022488755622189,
+        -21.45702148925537,
+        -59.61944027986007
+      ],
+      "temperature_mean_C": 28.91432548431666,
+      "serial_integrity": "sequence, raw checksum and timestamp ordering verified",
+      "accepted_record": true
+    },
+    {
+      "mode": "f",
+      "samples": 4003,
+      "elapsed_us": 4000596,
+      "injected_pauses": 0,
+      "tail_bytes": 0,
+      "checksum": 540587994,
+      "data_read_us": {
+        "min": 450.0,
+        "median": 451.0,
+        "p95": 456.0,
+        "p99": 459.0,
+        "max": 503.0,
+        "mean": 451.7361978516113
+      },
+      "successful_service_us": {
+        "min": 778.0,
+        "median": 780.0,
+        "p95": 787.0,
+        "p99": 788.0,
+        "max": 924.0,
+        "mean": 781.2720459655259
+      },
+      "observed_ready_to_completion_us": {
+        "min": 628.0,
+        "median": 629.0,
+        "p95": 636.0,
+        "p99": 637.0,
+        "max": 717.0,
+        "mean": 629.9410442168373
+      },
+      "completion_gap_us": {
+        "min": 926.0,
+        "median": 942.0,
+        "p95": 1096.0,
+        "p99": 1099.0,
+        "max": 1111.0,
+        "mean": 999.3360819590205
+      },
+      "gaps_over_1500us": 0,
+      "maximum_fifo_packets_before_read": 1,
+      "fifo_oldest_extra_queue_age_proxy_us": 0,
+      "read_rate_hz": 1000.6009104643408,
+      "tail_packets": 0,
+      "gyro_mean_raw": [
+        6.925306020484636,
+        -21.561329003247565,
+        -59.84686485136148
+      ],
+      "temperature_mean_C": 28.964144979500666,
+      "serial_integrity": "sequence, raw checksum and timestamp ordering verified",
+      "accepted_record": true
+    },
+    {
+      "mode": "D",
+      "samples": 3925,
+      "elapsed_us": 4000297,
+      "injected_pauses": 39,
+      "tail_bytes": 0,
+      "checksum": 2327712883,
+      "data_read_us": {
+        "min": 450.0,
+        "median": 451.0,
+        "p95": 458.0,
+        "p99": 459.0,
+        "max": 522.0,
+        "mean": 451.75847133757964
+      },
+      "successful_service_us": {
+        "min": 602.0,
+        "median": 603.0,
+        "p95": 611.0,
+        "p99": 611.7599999999998,
+        "max": 746.0,
+        "mean": 604.123821656051
+      },
+      "observed_ready_to_completion_us": {
+        "min": 451.0,
+        "median": 452.0,
+        "p95": 459.0,
+        "p99": 460.0,
+        "max": 525.0,
+        "mean": 452.6807643312102
+      },
+      "completion_gap_us": {
+        "min": 607.0,
+        "median": 1068.0,
+        "p95": 1076.0,
+        "p99": 1120.1699999999996,
+        "max": 3649.0,
+        "mean": 1019.2079510703364
+      },
+      "gaps_over_1500us": 39,
+      "maximum_fifo_packets_before_read": 0,
+      "fifo_oldest_extra_queue_age_proxy_us": 0,
+      "read_rate_hz": 981.177147596791,
+      "tail_packets": 0,
+      "gyro_mean_raw": [
+        6.459872611464968,
+        -21.817579617834394,
+        -59.98929936305733
+      ],
+      "temperature_mean_C": 29.027708505058072,
+      "serial_integrity": "sequence, raw checksum and timestamp ordering verified",
+      "accepted_record": true
+    },
+    {
+      "mode": "F",
+      "samples": 4003,
+      "elapsed_us": 4000354,
+      "injected_pauses": 39,
+      "tail_bytes": 0,
+      "checksum": 2407367484,
+      "data_read_us": {
+        "min": 450.0,
+        "median": 451.0,
+        "p95": 454.0,
+        "p99": 459.0,
+        "max": 551.0,
+        "mean": 451.62553085186113
+      },
+      "successful_service_us": {
+        "min": 778.0,
+        "median": 780.0,
+        "p95": 787.0,
+        "p99": 788.0,
+        "max": 946.0,
+        "mean": 781.4926305271047
+      },
+      "observed_ready_to_completion_us": {
+        "min": 628.0,
+        "median": 629.0,
+        "p95": 636.0,
+        "p99": 637.0,
+        "max": 762.0,
+        "mean": 629.8633524856358
+      },
+      "completion_gap_us": {
+        "min": 783.0,
+        "median": 941.0,
+        "p95": 1099.0,
+        "p99": 1113.9799999999996,
+        "max": 3600.0,
+        "mean": 999.3513243378311
+      },
+      "gaps_over_1500us": 39,
+      "maximum_fifo_packets_before_read": 3,
+      "fifo_oldest_extra_queue_age_proxy_us": 2000,
+      "read_rate_hz": 1000.6614414624306,
+      "tail_packets": 0,
+      "gyro_mean_raw": [
+        6.240819385460904,
+        -21.874344241818637,
+        -60.4446665001249
+      ],
+      "temperature_mean_C": 29.08123363359833,
+      "serial_integrity": "sequence, raw checksum and timestamp ordering verified",
+      "accepted_record": true
+    }
+  ],
+  "xbox_status": [
+    "XBOX,CONNECTED=0,FRESH=0,CORE=0,HEAP=150276,MIN_HEAP=149600",
+    "XBOX,CONNECTED=0,FRESH=0,CORE=0,HEAP=150276,MIN_HEAP=149600",
+    "XBOX,CONNECTED=0,FRESH=0,CORE=0,HEAP=150276,MIN_HEAP=149600",
+    "XBOX,CONNECTED=0,FRESH=0,CORE=0,HEAP=150636,MIN_HEAP=149600",
+    "XBOX,CONNECTED=0,FRESH=0,CORE=0,HEAP=150348,MIN_HEAP=149600",
+    "XBOX,CONNECTED=0,FRESH=0,CORE=0,HEAP=150276,MIN_HEAP=149600",
+    "XBOX,CONNECTED=0,FRESH=0,CORE=0,HEAP=150276,MIN_HEAP=149600",
+    "XBOX,CONNECTED=0,FRESH=0,CORE=0,HEAP=150276,MIN_HEAP=149600",
+    "XBOX,CONNECTED=0,FRESH=0,CORE=0,HEAP=150536,MIN_HEAP=149600",
+    "XBOX,CONNECTED=0,FRESH=0,CORE=0,HEAP=150536,MIN_HEAP=149600",
+    "XBOX,CONNECTED=0,FRESH=0,CORE=0,HEAP=150176,MIN_HEAP=149600",
+    "XBOX,CONNECTED=0,FRESH=0,CORE=0,HEAP=150176,MIN_HEAP=149600",
+    "XBOX,CONNECTED=0,FRESH=0,CORE=0,HEAP=150176,MIN_HEAP=149600",
+    "XBOX,CONNECTED=0,FRESH=0,CORE=0,HEAP=150536,MIN_HEAP=149600",
+    "XBOX,CONNECTED=0,FRESH=0,CORE=0,HEAP=150536,MIN_HEAP=149600",
+    "XBOX,CONNECTED=0,FRESH=0,CORE=0,HEAP=150360,MIN_HEAP=149600",
+    "XBOX,CONNECTED=0,FRESH=0,CORE=0,HEAP=150360,MIN_HEAP=149600",
+    "XBOX,CONNECTED=0,FRESH=0,CORE=0,HEAP=150360,MIN_HEAP=149600",
+    "XBOX,CONNECTED=0,FRESH=0,CORE=0,HEAP=150636,MIN_HEAP=149600"
+  ],
+  "menu_events": [
+    "MENU,Menu=OPEN_OR_NEXT,A=RUN,B=CANCEL,Y=INFO,MOTORS=DISABLED"
+  ],
+  "request_source": "PC serial through slow-core request queue",
+  "physical_button_validation": "pending unless operator separately attests button actions",
+  "session_log_sha256": "08ee22b893f0352da409a2c05dd0880b102fd822d53360adb2c2c4d1e3ea0a1e",
+  "motor_outputs_enabled": false,
+  "PID_implemented": false
+}

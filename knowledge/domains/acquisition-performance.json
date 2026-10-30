@@ -66,6 +66,17 @@
           "reference": "Current request to measure FIFO versus direct and learn data analysis together"
         }
       ]
+    },
+    {
+      "id": "acquisition.two-core-menu",
+      "status": "verified_artifact",
+      "summary": "Separate one-file menu firmware built/uploaded; core1 acquisition/core0 BLE and serial verified; four serial-requested tests passed integrity. Physical Xbox disconnected; no PID, motors or calibration changes. Production fingerprint intentionally unchanged.",
+      "sources": [
+        {
+          "kind": "file",
+          "path": "measurements/software/2026-10-30-xbox-test-menu/README.md"
+        }
+      ]
     }
   ]
 }

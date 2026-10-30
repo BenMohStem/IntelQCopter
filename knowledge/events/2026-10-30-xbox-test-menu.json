@@ -1,0 +1,10 @@
+{
+  "schema": 2,
+  "id": "2026-10-30-xbox-test-menu",
+  "date": "2026-10-30",
+  "domains": [
+    "acquisition-performance"
+  ],
+  "summary": "User requested dual-core slow task isolation, Xbox-selected tests and MPU range/filter/clock explanations.",
+  "outcome": "Separate one-file menu firmware built/uploaded; core1 acquisition/core0 BLE and serial verified; four serial-requested tests passed integrity. Physical Xbox disconnected; no PID, motors or calibration changes. Production fingerprint intentionally unchanged."
+}

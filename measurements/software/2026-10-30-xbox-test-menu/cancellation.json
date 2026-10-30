@@ -1,0 +1,9 @@
+{
+  "engine": "Real ESP32-S3; serial d then x through slow core",
+  "observed": [
+    "START,d",
+    "DONE,d,USER_ABORT"
+  ],
+  "physical_Xbox_B_tested": false,
+  "motor_outputs_enabled": false
+}
