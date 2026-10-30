@@ -1,0 +1,10 @@
+{
+  "schema": 2,
+  "id": "2026-10-30-project-focused-teacher-notes",
+  "date": "2026-10-30",
+  "domains": [
+    "presentation-preferences"
+  ],
+  "summary": "Teacher illustrations should explain the drone and essential engineering, not development tools or syntax; detailed tools remain in personal learning material.",
+  "outcome": "Teacher note now emphasizes sensor fusion, quaternion rotation and feedback qualification; plotting syntax removed from teacher note only. Quaternion fusion clearly labelled proposed."
+}
