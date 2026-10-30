@@ -52,3 +52,5 @@ Latest Xbox menu/LED instructions: [connection indicator and simpler test select
 [Operator Xbox input results and future battery LED requirement](../measurements/software/2026-10-30-input-results/README.md). No firmware/actuator changes.
 
 [Next: one labelled positive-X gyro direction recording](../docs/gyro-single-check.md). No firmware upload or calibration change.
+
+[Twenty-second gyro-only rotation recording](../docs/gyro-single-check.md): --single r; old timing tests stay four seconds.

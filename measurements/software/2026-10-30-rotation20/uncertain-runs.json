@@ -1,0 +1,10 @@
+{
+  "operator_statement": "Three runs; +X/-X positions may have been switched",
+  "runs": [
+    "20261030T200128Z",
+    "20261030T200145Z",
+    "20261030T200157Z"
+  ],
+  "axis_sign_acceptance": false,
+  "treatment": "Preserve originals; do not relabel from gyro output or use to validate sign"
+}

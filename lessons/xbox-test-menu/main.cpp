@@ -28,7 +28,19 @@ struct Sample
     uint16_t fifo_bytes;
     int16_t raw[7];
 };
-static Sample samples[capacity];
+struct RotationSample
+{
+    uint16_t read_gap_us;
+    int16_t gyro[3];
+};
+static const uint16_t rotation_capacity = 20200;
+static const uint32_t rotation_window_us = 20000000;
+static union
+{
+    Sample samples[capacity];
+    RotationSample rotations[rotation_capacity];
+} records;
+static Sample (&samples)[capacity] = records.samples;
 
 struct Trial
 {
@@ -101,8 +113,90 @@ static bool check_config(void)
         && (power & 0x7F) == 1 && Wire.getClock() == 400000;
 }
 
+// Rotation-only FIFO capture: retain gyro, not the full timing benchmark rows.
+static void capture_rotation(void)
+{
+    Trial result = {};
+    result.mode = 'r';
+    result.checksum = 2166136261u;
+    bool ok = ready && check_config();
+    ok = ok && write_register(0x23, 0) && write_register(0x6A, 0x04);
+    delay(2);
+    ok = ok && write_register(0x6A, 0x40) && write_register(0x23, 0xF8);
+    uint32_t started = micros();
+    uint32_t previous = 0;
+    while (ok && (uint32_t)(micros() - started) < rotation_window_us)
+    {
+        if (xEventGroupGetBits(events) & abort_bit)
+        {
+            result.failure = "USER_ABORT";
+            break;
+        }
+        uint8_t status;
+        uint8_t size[2];
+        ok = read_registers(0x3A, &status, 1) && read_registers(0x72, size, 2);
+        if (!ok)
+        {
+            break;
+        }
+        uint16_t queued = ((uint16_t)size[0] << 8) | size[1];
+        if ((status & 0x10) || queued >= 1024)
+        {
+            result.failure = "FIFO_OVERFLOW";
+            break;
+        }
+        if (queued < 14)
+        {
+            continue;
+        }
+        if (result.count >= rotation_capacity)
+        {
+            result.failure = "RECORD_BUFFER_FULL";
+            break;
+        }
+        uint8_t bytes[14];
+        ok = read_registers(0x74, bytes, 14);
+        if (!ok)
+        {
+            break;
+        }
+        uint32_t now = micros() - started;
+        if (now - previous > 65535)
+        {
+            result.failure = "READ_GAP_TOO_LONG";
+            break;
+        }
+        RotationSample &row = records.rotations[result.count++];
+        row.read_gap_us = now - previous;
+        previous = now;
+        for (uint8_t axis = 0; axis < 3; axis++)
+        {
+            row.gyro[axis] = (int16_t)(((uint16_t)bytes[8 + 2 * axis] << 8) | bytes[9 + 2 * axis]);
+        }
+        for (uint8_t j = 8; j < 14; j++)
+        {
+            result.checksum = (result.checksum ^ bytes[j]) * 16777619u;
+        }
+    }
+    result.elapsed = micros() - started;
+    uint8_t tail[2] = {};
+    ok = read_registers(0x72, tail, 2) && ok;
+    result.tail = ((uint16_t)tail[0] << 8) | tail[1];
+    ok = write_register(0x23, 0) && write_register(0x6A, 0) && ok;
+    if (!ok && !result.failure)
+    {
+        result.failure = "I2C_OR_CONFIG_FAILURE";
+    }
+    xQueueSend(completed, &result, 0);
+}
+
 static void capture(char mode)
 {
+    if (mode == 'r')
+    {
+        capture_rotation();
+        return;
+    }
     bool fifo = mode == 'f' || mode == 'F';
     bool pauses = mode == 'D' || mode == 'F';
     if (!ready || !check_config())
@@ -326,14 +420,14 @@ static void slow_worker(void *unused)
             {
                 xEventGroupSetBits(events, abort_bit);
             }
-            if (!inputs_only && (command == 'd' || command == 'f' || command == 'D' || command == 'F'))
+            if (!inputs_only && (command == 'd' || command == 'f' || command == 'D' || command == 'F' || command == 'r'))
             {
                 request_test(command);
             }
         }
         if (!dumping && xQueueReceive(completed, &result, 0) == pdTRUE)
         {
-            Serial.printf("DATA,%c,%u,%lu,%lu,%u,%08lX\n", result.mode, result.count,
+            Serial.printf("%s,%c,%u,%lu,%lu,%u,%08lX\n", result.mode == 'r' ? "RDATA" : "DATA", result.mode, result.count,
                 (unsigned long)result.elapsed, (unsigned long)result.injected,
                 result.tail, (unsigned long)result.checksum);
             dump_index = 0;
@@ -344,6 +438,14 @@ static void slow_worker(void *unused)
             uint16_t limit = min((uint16_t)(dump_index + 32), result.count);
             while (dump_index < limit)
             {
+                if (result.mode == 'r')
+                {
+                    const RotationSample &row = records.rotations[dump_index];
+                    Serial.printf("G,%u,%u,%d,%d,%d\n", dump_index, row.read_gap_us,
+                        row.gyro[0], row.gyro[1], row.gyro[2]);
+                    dump_index++;
+                    continue;
+                }
                 const Sample &row = samples[dump_index];
                 Serial.printf("S,%u,%lu,%lu,%lu,%lu,%u", dump_index,
                     (unsigned long)row.service_start, (unsigned long)row.ready_observed,

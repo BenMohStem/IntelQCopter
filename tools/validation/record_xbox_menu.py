@@ -5,11 +5,30 @@ import hashlib
 import json
 from pathlib import Path
 import time
+import struct
 import serial
 import numpy as np
 from compare_imu_acquisition import summarize
 
 ROOT=Path(__file__).resolve().parents[2]
+
+
+def summarize_rotation(rows, metadata):
+    a=np.asarray(rows,dtype=np.int64)
+    if a.ndim!=2 or a.shape[1]!=5 or len(a)<100:raise ValueError('Invalid rotation rows')
+    if not np.array_equal(a[:,0],np.arange(len(a))):raise ValueError('Rotation sequence mismatch')
+    if np.any(a[:,1]<=0) or np.any(a[:,1]>65535):raise ValueError('Invalid read gaps')
+    if not 20000000<=metadata['elapsed_us']<=20100000:raise ValueError('Wrong rotation duration')
+    if a[:,1].sum()>metadata['elapsed_us']:raise ValueError('Read times exceed duration')
+    checksum=2166136261
+    for row in rows:
+        for byte in struct.pack('>3h',*row[2:]):checksum=((checksum^byte)*16777619)&0xffffffff
+    if len(a)!=metadata['samples'] or checksum!=metadata['checksum']:raise ValueError('Gyro payload integrity mismatch')
+    if not 0<=metadata['tail_bytes']<1024:raise ValueError('Invalid FIFO tail')
+    return {**metadata,'read_rate_hz':len(a)*1e6/metadata['elapsed_us'],
+            'max_read_gap_us':int(a[:,1].max()),'serial_integrity':'gyro count, sequence, checksum and read-gap sum verified',
+            'measurement_interval':'nominal 1 ms FIFO; read gaps are not sensor sample times',
+            'retained_channels':'raw sensor gyro only; no accelerometer or temperature in rotation mode'}
 
 
 def main():
@@ -18,7 +37,7 @@ def main():
     parser.add_argument('--output',type=Path)
     parser.add_argument('--run-all',action='store_true')
     parser.add_argument('--inputs-only',action='store_true',help='Show raw controller inputs; disable test starts')
-    parser.add_argument('--single',choices=list('dfDF'),help='Request one acquisition test, save and exit')
+    parser.add_argument('--single',choices=list('dfDFr'),help='Request one acquisition test, save and exit')
     parser.add_argument('--note',default='',help='Physical condition/reference; retained with evidence')
     args=parser.parse_args()
     if args.single and (args.run_all or args.inputs_only):parser.error('Choose single, inputs-only or run-all')
@@ -55,10 +74,11 @@ def main():
         print('Automatic recording folder:',output,flush=True)
         print('D-pad LEFT/RIGHT selects; A starts; B cancels; Y shows selection.',flush=True)
         print('1 DIRECT_NORMAL | 2 FIFO_NORMAL | 3 DIRECT_PAUSES | 4 FIFO_PAUSES',flush=True)
-        print('Initial selection: DIRECT_NORMAL. Each capture is 4 seconds, then automatic saving.',flush=True)
+        print('Initial selection: DIRECT_NORMAL. Timing tests: 4 seconds. Rotation r: 20 seconds, then automatic saving.',flush=True)
         print('RECENT_INPUT=0 means no report in 300 ms; it does not mean disconnected.',flush=True)
         if args.single:
-            print('Keep still. After START, make the labelled motion gently within 4 seconds, then hold.',flush=True)
+            duration=20 if args.single=='r' else 4
+            print(f'Capture {duration} seconds: stay still first, make the labelled motion gently, then hold.',flush=True)
             input('Press Enter when positioned and ready: ')
         if args.inputs_only:
             device.write(b'i')
@@ -72,18 +92,23 @@ def main():
                 if mode is not None:raise ValueError('Overlapping tests')
                 mode=fields[1];rows=[];metadata=None
                 print('Recording test:',mode,flush=True)
-            elif fields[0]=='DATA':
+            elif fields[0] in ('DATA','RDATA'):
                 if len(fields)!=7 or fields[1]!=mode or metadata is not None:raise ValueError('Malformed DATA')
                 metadata={'mode':mode,'samples':int(fields[2]),'elapsed_us':int(fields[3]),'injected_pauses':int(fields[4]),'tail_bytes':int(fields[5]),'checksum':int(fields[6],16)}
+            elif fields[0]=='G':
+                if mode!='r' or metadata is None or len(fields)!=6:raise ValueError('Malformed gyro row')
+                rows.append([int(x) for x in fields[1:]])
+                if len(rows)%1000==0:print(f'  Saved {len(rows)} gyro samples',flush=True)
             elif fields[0]=='S':
                 if mode is None or metadata is None or len(fields)!=14:raise ValueError('Detached/malformed sample')
                 rows.append([int(x) for x in fields[1:]])
                 if len(rows)%1000==0:print(f'  Saved {len(rows)} samples',flush=True)
             elif fields[0]=='DONE':
                 if len(fields)!=3 or fields[1]!=mode or metadata is None:raise ValueError('Malformed completion')
-                np.savetxt(output/f'run-{len(runs)+1:02d}-{mode}.csv',rows,delimiter=',',fmt='%d',header='index,service_start_us,ready_observed_us,read_start_us,read_end_us,fifo_bytes,ax,ay,az,temp,gx,gy,gz',comments='')
+                np.savetxt(output/f'run-{len(runs)+1:02d}-{mode}.csv',rows,delimiter=',',fmt='%d',header=('index,read_gap_us,gx,gy,gz' if mode=='r' else 'index,service_start_us,ready_observed_us,read_start_us,read_end_us,fifo_bytes,ax,ay,az,temp,gx,gy,gz'),comments='')
                 if fields[2]=='OK':
-                    result=summarize(rows,metadata);result['accepted_record']=True
+                    result=summarize_rotation(rows,metadata) if mode=='r' else summarize(rows,metadata)
+                    result['accepted_record']=True
                 else:
                     result={**metadata,'accepted_record':False,'reason':fields[2]}
                 runs.append(result);print('Saved test:',mode,fields[2],flush=True);mode=None

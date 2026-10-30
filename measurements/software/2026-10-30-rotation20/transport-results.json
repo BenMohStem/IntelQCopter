@@ -1,0 +1,37 @@
+{
+  "engine": "Real ESP32-S3 core assignment and capture timings; Python serial recorder/integrity checks",
+  "source_sha256": "e88ffe9bcd3203f488ecadaf0fe7a66fa87244d5c4ed877f93bf889a1f393851",
+  "identity": "ACQ_MENU_V1,e88ffe9bcd3203f488ecadaf0fe7a66fa87244d5c4ed877f93bf889a1f393851,WHO=104,READY=1,WINDOW_US=4000000",
+  "core_report": "CORE,acquisition=1,slow=0,heap=122708,min_heap=122060,PID=NOT_IMPLEMENTED",
+  "runs": [
+    {
+      "mode": "r",
+      "samples": 20012,
+      "elapsed_us": 20000673,
+      "injected_pauses": 0,
+      "tail_bytes": 0,
+      "checksum": 3324681177,
+      "read_rate_hz": 1000.5663309429638,
+      "max_read_gap_us": 1779,
+      "serial_integrity": "gyro count, sequence, checksum and read-gap sum verified",
+      "measurement_interval": "nominal 1 ms FIFO; read gaps are not sensor sample times",
+      "retained_channels": "raw sensor gyro only; no accelerometer or temperature in rotation mode",
+      "accepted_record": true
+    }
+  ],
+  "xbox_status": [
+    "XBOX,CONNECTED=0,RECENT_INPUT=0,CORE=0,HEAP=122800,MIN_HEAP=122060,SCANNING=1",
+    "XBOX,CONNECTED=0,RECENT_INPUT=0,CORE=0,HEAP=122724,MIN_HEAP=122060,SCANNING=1",
+    "XBOX,CONNECTED=0,RECENT_INPUT=0,CORE=0,HEAP=122568,MIN_HEAP=122060,SCANNING=1",
+    "XBOX,CONNECTED=0,RECENT_INPUT=0,CORE=0,HEAP=122800,MIN_HEAP=122060,SCANNING=1"
+  ],
+  "menu_events": [
+    "MENU,Menu=SHOW_OR_NEXT,Dpad=SELECT,A=RUN_SELECTED,B=CANCEL,Y=INFO,MOTORS=DISABLED"
+  ],
+  "request_source": "PC serial through slow-core request queue",
+  "physical_condition_note": "Automatic transport-only check; physical motion uncontrolled; no calibration or sign acceptance",
+  "physical_button_validation": "pending unless operator separately attests button actions",
+  "session_log_sha256": "75193f7c65022332b0b5b4526e6530ee63cf79dd11d3413a4c1cc4121acc032a",
+  "motor_outputs_enabled": false,
+  "PID_implemented": false
+}

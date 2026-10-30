@@ -1,29 +1,15 @@
-# Next small step: one positive X rotation
+# Twenty-second gyro rotation check
 
-No firmware upload, motor output or calibration change. This uses the installed ACQ_MENU_V1 bench firmware, raw FIFO samples, ±500 deg/s and nominal 1 kHz. It does not apply the production calibration or gyro-to-drone matrix on the MCU.
+New dedicated `r` mode retains all three RAW gyro axes at nominal 1 kHz for 20 seconds. It uses a compact 20200-row buffer shared with the old timing buffer, rather than allocating a too-large full timing buffer. No accelerometer or temperature is retained in this mode. No calibration, PID or motor changes. The old d/f/D/F timing tests stay four seconds.
 
-Why: a stationary gyro can reveal bias/noise but cannot prove axis sign or scale. For a near-pure rotation, integrating corrected angular rate should approximately match the known physical angle. Here we first record a clean labelled motion; analysis follows separately. Hand positioning supports a rough sign/axis check, not precision scale acceptance.
-
-## One recording now
-
-Propellers removed; motors disabled. Keep sensor mounting fixed. Close Serial Monitor/other recorders.
+Three earlier operator runs have uncertain +X/-X labels. Originals remain untouched; no physical sign validation is claimed. See uncertain-runs.json. Do not infer the intended physical label from the same gyro output being tested.
 
 ```powershell
-.\qcopter.ps1 record-xbox-menu --port COM3 --single f --note "operator_rotation; drone +X; right-hand +90 degrees; hand reference approximately 90 degrees"
+.\qcopter.ps1 record-xbox-menu --port COM3 --single r --note "rotation about marked drone X; physical direction described after run; approx 90 deg"
 ```
 
-Use the SAME drone X direction used when labelling the six-pose calibration. Do not rename axes from the sensor silkscreen. If its physical direction is unclear, stop and identify/mark it before recording.
+Mark the existing drone +X direction with tape. Right thumb along +X, curled fingers give positive rotation ABOUT X (not raising the X end). If unsure, use a literal description of which side rises and include a photo; leave sign unknown instead of guessing.
 
-1. Support the assembly so you can rotate about that axis without moving the sensor mount. Begin stationary.
-2. Point your right thumb along drone +X. Curling fingers define positive rotation. This is an angular rotation ABOUT X, not translating along X or simply raising the +X end.
-3. Press Enter when ready. Wait for `Recording test: f` (START).
-4. Start from rest; gently rotate approximately +90 degrees in about 1–2 seconds, finish before the four-second capture ends, then hold still. Avoid a reverse movement during capture. Do not press Xbox A or change tests during capture.
-5. Wait for `Saved test: f OK` and automatic exit. Return the assembly afterward. Share the printed folder path and describe which side physically moved upward. Record an actual reference angle/uncertainty if you have a fixed jig; do not claim 90° precision from hand motion.
+Press Enter ready. At `Recording test: r`: hold still for about 3 seconds; rotate once gently about X over 3–5 seconds; hold the new position until 20 seconds ends. Do not rotate back during capture. Wait for Saved test and automatic exit before returning the drone. No Xbox button needed. One run first; sign and opposite direction can be checked after reviewing the physical description. Approximate hand angle is not precision gyro scale evidence.
 
-This is only the first direction. Negative X and Y/Z directions follow after reviewing this one; do not collect six confusing runs at once.
-
-## What analysis will establish
-
-Raw sensor rates: omega_i = raw_i / 65.5 deg/s. Correct sensor bias once, then transform through an explicitly identified candidate rotation. Approximate single-axis angle is the time integral of rate. A FIFO record's read-completion time is not its measurement time: at nominal 1 kHz the sample interval is approximately 0.001 s, subject to clock uncertainty. This is not an exact timestamped motion reference. Three-axis body-rate integrals are not general Euler angles for arbitrary coupled rotations.
-
-Direction, dominant axis, stationary portions, clipping, sequence/checksum and FIFO backlog are reviewed. No automatic calibration refit or pass based just on approximate 90°. The existing production main.cpp has a user edit (0.288364175 to 0.2808364175 in the candidate rotation); it is preserved and must be reviewed before using that matrix for flight. Current capture does not depend on it.
+Data saves afterward; every 1000 saved samples is reported during transfer. Sensor measurement times are nominal 1 ms apart; saved read_gap_us is retrieval timing, not exact measurement timing. Overflow, excessive gap, I2C errors, full buffer and cancellation reject the run. Checksum covers raw gyro words; count, sequence, duration and timestamp accumulation are also checked. No model-derived physical pass.

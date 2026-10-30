@@ -1,0 +1,10 @@
+{
+  "schema": 2,
+  "id": "2026-10-30-rotation20",
+  "date": "2026-10-30",
+  "domains": [
+    "acquisition-performance"
+  ],
+  "summary": "User requests15\u201320second capture and reports uncertain signs in three earlier runs.",
+  "outcome": "Prepare compact20second gyro-only FIFO mode r; preserve ambiguous runs without sign acceptance; existing timing tests remain4seconds. Hardware result recorded separately."
+}
