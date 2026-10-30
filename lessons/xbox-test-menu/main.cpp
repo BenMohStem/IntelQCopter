@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <esp32-hal-rgb-led.h>
 #include <Wire.h>
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_I2CDevice.h>
@@ -48,6 +49,24 @@ static uint8_t identity = 0;
 static int acquisition_core = -1;
 static XboxSeriesXControllerESP32_asukiaaa::Core xbox;
 
+// DevKitC-1 addressable RGB LED. The separate power LED cannot be controlled.
+// Override at build time for boards whose RGB LED is wired to another GPIO.
+#ifndef XBOX_LED_GPIO
+#define XBOX_LED_GPIO 48
+#endif
+
+static void connection_led(uint32_t now, bool connected, bool fresh)
+{
+    static int previous = -1;
+    // Search: 80 ms per edge. Connected but waiting/stale: 500 ms per edge.
+    bool on = fresh || ((now / (connected ? 500 : 80)) % 2 == 0);
+    if ((int)on != previous)
+    {
+        neopixelWrite(XBOX_LED_GPIO, 0, on ? 24 : 0, 0);
+        previous = on;
+    }
+}
+
 static bool write_register(uint8_t reg, uint8_t value)
 {
     uint8_t bytes[2] = {reg, value};
@@ -66,7 +85,7 @@ static void report(void)
         BENCH_SOURCE_SHA, identity, ready, (unsigned long)window_us);
     Serial.printf("CORE,acquisition=%d,slow=%d,heap=%u,min_heap=%u,PID=NOT_IMPLEMENTED\n",
         acquisition_core, xPortGetCoreID(), ESP.getFreeHeap(), ESP.getMinFreeHeap());
-    Serial.printf("MENU,Menu=OPEN_OR_NEXT,A=RUN,B=CANCEL,Y=INFO,MOTORS=DISABLED\n");
+    Serial.printf("MENU,Menu=SHOW_OR_NEXT,Dpad=SELECT,A=RUN_SELECTED,B=CANCEL,Y=INFO,MOTORS=DISABLED\n");
 }
 
 static bool check_config(void)
@@ -220,7 +239,7 @@ static void slow_worker(void *unused)
     const char modes[4] = {'d', 'f', 'D', 'F'};
     const char *names[4] = {"DIRECT_NORMAL", "FIFO_NORMAL", "DIRECT_PAUSES", "FIFO_PAUSES"};
     uint8_t selected = 0;
-    bool menu_open = false;
+    bool menu_open = true;
     bool released = false;
     uint8_t previous = 0;
     bool dumping = false;
@@ -228,7 +247,12 @@ static void slow_worker(void *unused)
     Trial result = {};
     uint32_t last_status = 0;
     report();
+    connection_led(millis(), false, false);
+    Serial.printf("MENU,SELECTED=DIRECT_NORMAL,COMMAND=d,A=RUN,DpadLeftRight=SELECT,B=CANCEL\n");
     xbox.begin();
+    // Request scan-response data as well as advertisements for discovery.
+    NimBLEDevice::getScan()->setActiveScan(true);
+    Serial.printf("XBOX_LED,GPIO=%u,SEARCH_EDGE_MS=80,WAIT_EDGE_MS=500,READY=STEADY_GREEN\n", XBOX_LED_GPIO);
     for (;;)
     {
         xbox.onLoop();
@@ -236,13 +260,17 @@ static void slow_worker(void *unused)
         bool connected = xbox.isConnected();
         bool fresh = connected && !xbox.isWaitingForFirstNotification()
             && (uint32_t)(now - xbox.getReceiveNotificationAt()) <= 300;
+        bool input_ready = connected && !xbox.isWaitingForFirstNotification();
+        connection_led(now, connected, input_ready);
         uint8_t buttons = 0;
-        if (fresh)
+        if (input_ready)
         {
             buttons = (xbox.xboxNotif.btnStart ? 1 : 0)
                 | (xbox.xboxNotif.btnA ? 2 : 0)
                 | (xbox.xboxNotif.btnB ? 4 : 0)
-                | (xbox.xboxNotif.btnY ? 8 : 0);
+                | (xbox.xboxNotif.btnY ? 8 : 0)
+                | (xbox.xboxNotif.btnDirRight ? 16 : 0)
+                | (xbox.xboxNotif.btnDirLeft ? 32 : 0);
             if (buttons == 0)
             {
                 released = true;
@@ -251,23 +279,27 @@ static void slow_worker(void *unused)
         else
         {
             released = false;
-            menu_open = false;
+            menu_open = true;
         }
         uint8_t pressed = released ? buttons & ~previous : 0;
         previous = buttons;
-        if (pressed & 1)
+        if (pressed & (1 | 16 | 32))
         {
-            if (menu_open)
+            if (pressed & 32)
+            {
+                selected = (selected + 3) % 4;
+            }
+            else
             {
                 selected = (selected + 1) % 4;
             }
             menu_open = true;
             Serial.printf("MENU,SELECTED=%s,COMMAND=%c\n", names[selected], modes[selected]);
         }
-        if ((pressed & 2) && menu_open)
+        if (pressed & 2)
         {
             request_test(modes[selected]);
-            menu_open = false;
+            menu_open = true;
         }
         if (pressed & 4)
         {
@@ -278,6 +310,7 @@ static void slow_worker(void *unused)
         if (pressed & 8)
         {
             report();
+            Serial.printf("MENU,SELECTED=%s,COMMAND=%c,A=RUN\n", names[selected], modes[selected]);
         }
         if (Serial.available())
         {
@@ -326,10 +359,11 @@ static void slow_worker(void *unused)
                 xSemaphoreGive(buffer_free);
             }
         }
-        if (!dumping && (uint32_t)(now - last_status) >= 1000)
+        if (!dumping && (uint32_t)(now - last_status) >= 5000)
         {
-            Serial.printf("XBOX,CONNECTED=%u,FRESH=%u,CORE=%d,HEAP=%u,MIN_HEAP=%u\n",
-                connected, fresh, xPortGetCoreID(), ESP.getFreeHeap(), ESP.getMinFreeHeap());
+            Serial.printf("XBOX,CONNECTED=%u,RECENT_INPUT=%u,CORE=%d,HEAP=%u,MIN_HEAP=%u,SCANNING=%u\n",
+                connected, fresh, xPortGetCoreID(), ESP.getFreeHeap(), ESP.getMinFreeHeap(),
+                NimBLEDevice::getScan()->isScanning());
             last_status = now;
         }
         vTaskDelay(pdMS_TO_TICKS(5));

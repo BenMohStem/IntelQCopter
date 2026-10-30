@@ -48,6 +48,10 @@ def main():
         if not core:raise TimeoutError('Menu identity/core verification timed out')
         print(identity,flush=True);print(core,flush=True)
         print('Automatic recording folder:',output,flush=True)
+        print('D-pad LEFT/RIGHT selects; A starts; B cancels; Y shows selection.',flush=True)
+        print('1 DIRECT_NORMAL | 2 FIFO_NORMAL | 3 DIRECT_PAUSES | 4 FIFO_PAUSES',flush=True)
+        print('Initial selection: DIRECT_NORMAL. Each capture is 4 seconds, then automatic saving.',flush=True)
+        print('RECENT_INPUT=0 means no report in 300 ms; it does not mean disconnected.',flush=True)
         if pending:device.write(pending.pop(0).encode())
         while True:
             value=line()

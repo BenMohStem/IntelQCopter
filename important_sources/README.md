@@ -44,3 +44,5 @@ Canonical links, no duplicate runtime copies. The prior FIFO source was flashed/
 ## Current installed bench firmware — 30 October 2026
 
 [Two-core Xbox menu main.cpp](../lessons/xbox-test-menu/main.cpp), [recording instructions and actual results](../measurements/software/2026-10-30-xbox-test-menu/README.md). Supersedes the earlier installed-benchmark statement above. Four serial-requested captures passed; Xbox disconnected, physical buttons pending. No PID/motor output.
+
+Latest Xbox menu/LED instructions: [connection indicator and simpler test selection](../measurements/software/2026-10-30-xbox-led/README.md). Supersedes earlier Menu-only interaction instructions.

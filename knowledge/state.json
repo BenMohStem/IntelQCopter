@@ -5,7 +5,7 @@
   "active_branch": "codex/stepwise-esp32",
   "active_checkout": "QCopter-Stepwise",
   "purpose": "Verified facts, concise decision rationale and coordination; not a transcript or private reasoning dump",
-  "current_stage": "Motor-disabled two-core Xbox test-menu harness installed on COM3; four serial-requested captures passed integrity checks. Xbox disconnected; physical buttons and connected-load timing pending. Production source unchanged, existing user edit remains unreviewed.",
+  "current_stage": "Xbox menu revised: RGB search/connected indicator, idle report age separated from connection, D-pad selection and A-run. Built/uploaded; see new boot evidence. Physical LED/buttons and timing for this changed source pending. Previous captures remain historical.",
   "rules": [
     "One Arduino main.cpp, C-like code, Allman braces, Serial.printf",
     "Motor arming and outputs disabled; no actuator tests",
@@ -88,7 +88,7 @@
     "xbox_hardware_acceptance": "pending",
     "old_pcb_mpu_only": "user-confirmed",
     "new_pcb": "in progress, not installed",
-    "last_port_inventory": "COM3 confirmed by user and ESP32-S3 upload; currently motor-disabled acquisition benchmark",
+    "last_port_inventory": "COM3; motor-disabled two-core Xbox menu with LED status",
     "historical_fingerprints": "preserved; current user MPU coefficient edit remains stale"
   },
   "acquisition_comparison": {

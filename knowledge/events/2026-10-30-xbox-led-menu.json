@@ -1,0 +1,10 @@
+{
+  "schema": 2,
+  "id": "2026-10-30-xbox-led-menu",
+  "date": "2026-10-30",
+  "domains": [
+    "acquisition-performance"
+  ],
+  "summary": "User reports connected Xbox with intermittent freshness and unclear tests; requests fast green search indicator and simpler selection.",
+  "outcome": "Xbox menu revised: RGB search/connected indicator, idle report age separated from connection, D-pad selection and A-run. Built/uploaded; see new boot evidence. Physical LED/buttons and timing for this changed source pending. Previous captures remain historical."
+}

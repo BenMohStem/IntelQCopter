@@ -1,0 +1,13 @@
+{
+  "source_sha256": "3e4648940a193706c4ba30d8f0daa2f6051de753eaf635c45d87916d77363033",
+  "observed": [
+    "ACQ_MENU_V1,3e4648940a193706c4ba30d8f0daa2f6051de753eaf635c45d87916d77363033,WHO=104,READY=1,WINDOW_US=4000000",
+    "CORE,acquisition=1,slow=0,heap=147860,min_heap=147632,PID=NOT_IMPLEMENTED",
+    "MENU,Menu=SHOW_OR_NEXT,Dpad=SELECT,A=RUN_SELECTED,B=CANCEL,Y=INFO,MOTORS=DISABLED",
+    "XBOX,CONNECTED=1,RECENT_INPUT=0,CORE=0,HEAP=147860,MIN_HEAP=147632,SCANNING=0",
+    "XBOX,CONNECTED=1,RECENT_INPUT=0,CORE=0,HEAP=147860,MIN_HEAP=147632,SCANNING=0"
+  ],
+  "engine": "Real ESP32-S3 serial query",
+  "LED_visual_validation": "pending operator observation",
+  "button_validation": "pending operator actions"
+}
