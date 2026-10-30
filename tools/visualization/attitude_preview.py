@@ -38,10 +38,12 @@ verified=False
 pending=b''
 history=[deque(maxlen=300) for _ in range(4)]
 fig,axes=plt.subplots(2,1,sharex=True)
-fig.suptitle('Calibrated gravity tilt preview â€” provisional axes, motors disabled')
+fig.suptitle('Calibrated gravity tilt preview - motors disabled')
 lines=[axes[0].plot([],[],label=name)[0] for name in ['Roll','Pitch']]
 lines.append(axes[1].plot([],[],label='Yaw rate')[0])
 axes[0].set_ylabel('Gravity tilt (deg)')
+axes[0].set_ylim(-180,180)
+status=axes[0].text(0.01,0.98,'Waiting for data',transform=axes[0].transAxes,va='top',fontsize=9)
 axes[1].set_ylabel('Yaw rate (deg/s)')
 axes[1].set_xlabel('Host receive time (s)')
 for ax in axes:ax.legend();ax.grid(alpha=.2)
@@ -62,9 +64,15 @@ def update(_):
         if verified and value.startswith('D,'):
             fields=value.split(',')
             if len(fields)!=13:continue
-            for buf,v in zip(history,[time.monotonic()-started,float(fields[8]),float(fields[9]),float(fields[12])*57.295779513]):buf.append(v)
+            roll,pitch=float(fields[8]),float(fields[9])
+            norm=sum(float(fields[i])**2 for i in (2,3,4))**0.5
+            warning='Near vertical pitch: roll is poorly observable from gravity' if abs(pitch)>80 else 'Gravity tilt only - axes provisional'
+            if abs(norm-9.80665)>1.5:warning+=' | Acceleration disturbance'
+            status.set_text(warning)
+            for buf,v in zip(history,[time.monotonic()-started,roll,pitch,float(fields[12])*57.295779513]):buf.append(v)
     for i,line in enumerate(lines):line.set_data(history[0],history[i+1])
     for ax in axes:ax.relim();ax.autoscale_view()
+    axes[0].set_ylim(-180,180)
     return lines
 try:
     print('Recording automatically to',folder)

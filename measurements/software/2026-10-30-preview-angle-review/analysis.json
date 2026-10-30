@@ -1,0 +1,16 @@
+{
+  "engine": "Offline recomputation of actual preview acceleration/angle diagnostics",
+  "rows": 1166,
+  "max_pitch_recomputation_error_deg": 0.0005017694747664336,
+  "max_roll_recomputation_error_deg": 0.0007419280053113653,
+  "roll_range_deg": [
+    -178.875,
+    173.315
+  ],
+  "pitch_range_deg": [
+    -87.978,
+    89.573
+  ],
+  "near_vertical_pitch_rows": 225,
+  "limitations": "Firmware rounds angles to0.001deg and acceleration to6decimal places. No independent pose reference; cannot attribute every fluctuation to a unique cause."
+}

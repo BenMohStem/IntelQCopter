@@ -1,0 +1,10 @@
+{
+  "schema": 2,
+  "id": "2026-10-30-preview-angle-review",
+  "date": "2026-10-30",
+  "domains": [
+    "operator-revision"
+  ],
+  "summary": "User reports angle fluctuations at large tilt and corrupted plot title.",
+  "outcome": "Reviewed actual logged angle formulas; near-vertical pitch observed. Fixed title encoding and angle scale; added observability/disturbance notices. No firmware or calibration change; fusion still pending."
+}
