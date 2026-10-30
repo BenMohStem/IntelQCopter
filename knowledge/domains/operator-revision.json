@@ -64,6 +64,17 @@
           "path": "docs/battery-current-sensor.md"
         }
       ]
+    },
+    {
+      "id": "operator.visible-milestones",
+      "status": "user_preference",
+      "summary": "User asks to replace endless unexplained calibration/testing with a clear plan. New work order and stopping conditions in docs/PLAN.md.",
+      "sources": [
+        {
+          "kind": "file",
+          "path": "knowledge/decisions/2026-10-30-visible-milestones.md"
+        }
+      ]
     }
   ]
 }

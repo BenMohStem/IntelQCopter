@@ -2,7 +2,7 @@
   "schema": 1,
   "id": "rotation-check",
   "status": "waiting_user",
-  "title": "Physical bidirectional X/Y/Z reference rotations",
+  "title": "One guided bidirectional axis-direction check before motor feedback",
   "depends_on": [],
   "scopes": [
     "device:COM3",
@@ -13,9 +13,10 @@
     "E-FIFO"
   ],
   "acceptance": [
-    "Operator confirms axis/direction/reference and rigid mounting",
-    "Preserve raw capture and source/config hashes",
-    "Separate sign and scale conclusions"
+    "Operator identifies physical drone axes and describes rotation directions in one guided session",
+    "Preserve exact source/configuration and raw evidence; combine plus/minusX/Y/Z rather than repeated calibration runs",
+    "Establish axis/sign mapping; precision scale acceptance requires a measured reference and is tracked separately",
+    "Ambiguous motion is not relabelled from sensor output; does not block motor-disabled preview work"
   ],
   "owner": "See local transactional claims, not this Git record"
 }

@@ -2,10 +2,10 @@
   "schema": 1,
   "id": "mcu-filter",
   "status": "blocked",
-  "title": "Port accepted estimator into the single MCU runtime",
+  "title": "Qualify preview attitude estimator for later closed-loop control",
   "depends_on": [
     "rotation-check",
-    "offline-estimator"
+    "attitude-preview"
   ],
   "scopes": [
     "firmware/main.cpp",

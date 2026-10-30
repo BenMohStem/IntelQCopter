@@ -56,3 +56,7 @@ Latest Xbox menu/LED instructions: [connection indicator and simpler test select
 [Twenty-second gyro-only rotation recording](../docs/gyro-single-check.md): --single r; old timing tests stay four seconds.
 
 [Actual 20-second motion traces and provisional rate integrals](../measurements/mpu6050/2026-10-30-rotation-review/README.md). Second run preferred by operator; physical reference still pending.
+
+## Current work order
+
+[Visible milestones and finite test plan](../docs/PLAN.md): live attitude preview next; existing calibration frozen for development. Earlier chronological next-step entries are historical.

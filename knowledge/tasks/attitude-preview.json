@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "id": "attitude-preview",
+  "status": "ready",
+  "title": "Motor-disabled live attitude preview using existing calibration",
+  "depends_on": [],
+  "scopes": [
+    "firmware/main.cpp",
+    "tools/estimation",
+    "docs/attitude-preview.md"
+  ],
+  "evidence": [
+    "E-FILTER",
+    "E-FIFO"
+  ],
+  "acceptance": [
+    "Review existing coefficient edit without silently overwriting it",
+    "Use preserved calibration and existing offline candidate; no automatic refit",
+    "Build and relevant saved-data checks before upload",
+    "Show roll/pitch and yaw rate with provisional frame labels until one guided physical check resolves them",
+    "No actuator output; no flight acceptance from a display"
+  ],
+  "owner": "See local transactional claims"
+}

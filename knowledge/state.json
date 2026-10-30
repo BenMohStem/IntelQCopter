@@ -5,7 +5,7 @@
   "active_branch": "codex/stepwise-esp32",
   "active_checkout": "QCopter-Stepwise",
   "purpose": "Verified facts, concise decision rationale and coordination; not a transcript or private reasoning dump",
-  "current_stage": "Both raw recordings independently reverified; preferred second plotted with candidate rates/integrals and retrieval gaps. No physical sign/reference provided; direction/scale remain unvalidated. No refit or source change.",
+  "current_stage": "Replanned around visible milestones: next is motor-disabled live attitude preview using frozen calibration. No further calibration campaign now. Physical direction gate remains before motor feedback; precise scale study optional unless a measured discrepancy justifies it.",
   "rules": [
     "One Arduino main.cpp, C-like code, Allman braces, Serial.printf",
     "Motor arming and outputs disabled; no actuator tests",
@@ -103,5 +103,7 @@
     "production_firmware_changed": false,
     "flash_backup": "private artifacts/acquisition-comparison/2026-10-30/pre-benchmark-flash.bin",
     "old_firmware_restored": false
-  }
+  },
+  "roadmap": "docs/PLAN.md",
+  "next_task": "attitude-preview"
 }

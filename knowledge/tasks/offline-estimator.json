@@ -2,7 +2,7 @@
   "schema": 1,
   "id": "offline-estimator",
   "status": "ready",
-  "title": "Improve dynamic acceleration/bias treatment offline",
+  "title": "Optional estimator refinement when an observed preview limitation requires it",
   "depends_on": [],
   "scopes": [
     "tools/estimation",

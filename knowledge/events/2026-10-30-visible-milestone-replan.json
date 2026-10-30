@@ -1,0 +1,10 @@
+{
+  "schema": 2,
+  "id": "2026-10-30-visible-milestone-replan",
+  "date": "2026-10-30",
+  "domains": [
+    "operator-revision"
+  ],
+  "summary": "User asks to replace endless unexplained calibration/testing with a clear plan.",
+  "outcome": "Archived old mixed plan, replaced roadmap and README, created ready attitude-preview task; retained physical feedback-direction and disabled-output gates. Froze calibration for development and bounded new physical test requests."
+}
