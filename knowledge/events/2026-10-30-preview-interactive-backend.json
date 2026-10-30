@@ -1,0 +1,10 @@
+{
+  "schema": 2,
+  "id": "2026-10-30-preview-interactive-backend",
+  "date": "2026-10-30",
+  "domains": [
+    "operator-revision"
+  ],
+  "summary": "User upload succeeds but preview exits with FigureCanvasAgg noninteractive.",
+  "outcome": "Viewer now explicitly selects QtAgg/PyQt5 before pyplot and uses its Qt plugin path. Missing PyQt5 installed in existing runner environment. No firmware upload needed."
+}

@@ -5,6 +5,16 @@ import time
 from pathlib import Path
 from collections import deque
 import serial
+import os
+import matplotlib
+try:
+    import PyQt5
+except ImportError as error:
+    raise SystemExit('Interactive plotting needs PyQt5: install PyQt5==5.15.11 in the Python environment used by qcopter.ps1') from error
+# Use this interpreter's Qt plugins, even when started from a ROS terminal.
+os.environ['QT_QPA_PLATFORM_PLUGIN_PATH']=str(Path(PyQt5.__file__).parent/'Qt5/plugins/platforms')
+os.environ['QT_API']='pyqt5'
+matplotlib.use('QtAgg',force=True)
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
@@ -28,7 +38,7 @@ verified=False
 pending=b''
 history=[deque(maxlen=300) for _ in range(4)]
 fig,axes=plt.subplots(2,1,sharex=True)
-fig.suptitle('Calibrated gravity tilt preview — provisional axes, motors disabled')
+fig.suptitle('Calibrated gravity tilt preview â€” provisional axes, motors disabled')
 lines=[axes[0].plot([],[],label=name)[0] for name in ['Roll','Pitch']]
 lines.append(axes[1].plot([],[],label='Yaw rate')[0])
 axes[0].set_ylabel('Gravity tilt (deg)')
