@@ -1,0 +1,14 @@
+{
+  "engine": "Offline NumPy/Matplotlib analysis of actual FUSION_PREVIEW_V2 diagnostics",
+  "source_identity": [
+    "HELLO,FUSION_PREVIEW_V2,ae736edcad7544e4cc8d411f244b468ee5a73b08f08a600752d36c15c3ebb7ee"
+  ],
+  "log_sha256": "69aa0fd4dd9a7987c3f619ab2757cabf8205f56c2830d8c9e0b1868dfd19b58f",
+  "quaternion_rows": 1055,
+  "norm_min": 0.9999999317055601,
+  "norm_max": 1.0000000871060797,
+  "max_relative_step_deg": 19.908487617901745,
+  "logged_errors": [],
+  "operator_reference": "User says result very good and jitter from deliberate shaking",
+  "limitation": "No external reference, no physical accuracy/sign or real-time certification; nominal10Hz diagnostics, not raw1kHz history. This run precedes Xbox integration."
+}
