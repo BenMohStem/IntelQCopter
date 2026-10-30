@@ -62,3 +62,5 @@ Latest Xbox menu/LED instructions: [connection indicator and simpler test select
 [Visible milestones and finite test plan](../docs/PLAN.md): live attitude preview next; existing calibration frozen for development. Earlier chronological next-step entries are historical.
 
 [First live gravity-tilt and yaw-rate preview](../lessons/attitude-preview/README.md). Fusion follows; no motor outputs.
+
+[Selected illustrated learning notes](../docs/learning/index.html), also published to the university-report branch.

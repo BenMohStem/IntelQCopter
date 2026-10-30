@@ -1,0 +1,23 @@
+{
+  "engine": "Offline recomputation of actual preview acceleration/angle diagnostics",
+  "rows": 1166,
+  "max_pitch_recomputation_error_deg": 0.0005017694747664336,
+  "max_roll_recomputation_error_deg": 0.0007419280053113653,
+  "roll_range_deg": [
+    -178.875,
+    173.315
+  ],
+  "pitch_range_deg": [
+    -87.978,
+    89.573
+  ],
+  "near_vertical_pitch_rows": 225,
+  "limitations": "Firmware rounds angles to0.001deg and acceleration to6decimal places. No independent pose reference; cannot attribute every fluctuation to a unique cause.",
+  "original_serial_sha256": "1214c9287c6a2a040c7bd6cee9ba2e616f1d5f7609975bf17976789860f1b709",
+  "preview_source_sha256": "f26d314eb637b9ccac15ee0a62376f722900d8affbbf0f8c66d20df1b2235422",
+  "plot_source_commit": "c5d6966",
+  "figure_engines": {
+    "actual-trace": "NumPy/Matplotlib replay of real serial diagnostics",
+    "geometry": "Analytic static-gravity ideal model"
+  }
+}
