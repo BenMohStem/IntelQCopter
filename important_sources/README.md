@@ -54,3 +54,5 @@ Latest Xbox menu/LED instructions: [connection indicator and simpler test select
 [Next: one labelled positive-X gyro direction recording](../docs/gyro-single-check.md). No firmware upload or calibration change.
 
 [Twenty-second gyro-only rotation recording](../docs/gyro-single-check.md): --single r; old timing tests stay four seconds.
+
+[Actual 20-second motion traces and provisional rate integrals](../measurements/mpu6050/2026-10-30-rotation-review/README.md). Second run preferred by operator; physical reference still pending.

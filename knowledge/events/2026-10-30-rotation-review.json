@@ -1,0 +1,10 @@
+{
+  "schema": 2,
+  "id": "2026-10-30-rotation-review",
+  "date": "2026-10-30",
+  "domains": [
+    "acquisition-performance"
+  ],
+  "summary": "User completed two new20second runs; says first unsuitable, second better.",
+  "outcome": "Both raw recordings independently reverified; preferred second plotted with candidate rates/integrals and retrieval gaps. No physical sign/reference provided; direction/scale remain unvalidated. No refit or source change."
+}

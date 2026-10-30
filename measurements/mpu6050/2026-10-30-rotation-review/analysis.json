@@ -1,0 +1,95 @@
+{
+  "engine": "Offline NumPy analysis of actual ESP32-S3 FIFO gyro recordings; not simulation",
+  "runs": [
+    {
+      "recording": "20261030T201749Z",
+      "operator_role": "exploratory; operator says motion unsuitable",
+      "source_sha256": "e88ffe9bcd3203f488ecadaf0fe7a66fa87244d5c4ed877f93bf889a1f393851",
+      "original_log_sha256": "9002838acfe812266ff690b646256cf000e6bcfad79b65dd95ea7c2c53c04c9b",
+      "verified_samples": 20012,
+      "duration_us": 20000456,
+      "read_rate_hz": 1000.57718684014,
+      "max_retrieval_gap_us": 1443,
+      "raw_clipped_samples": 0,
+      "candidate_body_peak_abs_deg_s": [
+        18.311427972595546,
+        50.65256570489121,
+        6.561601415694467
+      ],
+      "candidate_body_rate_integrals_deg": [
+        -5.276028673806874,
+        -30.927348807383783,
+        -3.3326846737053506
+      ],
+      "candidate_absolute_axis_integrals_deg": [
+        65.49843818764441,
+        189.36674088950625,
+        25.367604132226237
+      ],
+      "first2s_candidate_mean_deg_s": [
+        -0.47101755246831,
+        0.9387345644678984,
+        -0.5182115449354727
+      ],
+      "first2s_candidate_std_deg_s": [
+        2.3307231955847514,
+        3.1095326664816487,
+        2.350358190787333
+      ],
+      "last2s_candidate_mean_deg_s": [
+        3.711337880941358,
+        -10.874872310135276,
+        0.20729011135351869
+      ],
+      "physical_axis_sign_validated": false,
+      "gyro_scale_validated": false,
+      "assumptions": "65.5counts/(deg/s), nominal1ms, historical frozen bias and config/gyro-frame.json candidate rotation; no calibration written; integrals are NOT general Euler angles"
+    },
+    {
+      "recording": "20261030T202029Z",
+      "operator_role": "preferred run; physical direction/reference pending",
+      "source_sha256": "e88ffe9bcd3203f488ecadaf0fe7a66fa87244d5c4ed877f93bf889a1f393851",
+      "original_log_sha256": "fd63a49be57f32cde911d21a29bef75d0efc8ebcf84d23f41c2acae9e472e4d8",
+      "verified_samples": 20012,
+      "duration_us": 20000682,
+      "read_rate_hz": 1000.565880703468,
+      "max_retrieval_gap_us": 2586,
+      "raw_clipped_samples": 0,
+      "candidate_body_peak_abs_deg_s": [
+        11.069984587194531,
+        40.55398031003486,
+        10.391586183582918
+      ],
+      "candidate_body_rate_integrals_deg": [
+        6.526750254986025,
+        -76.32949694078684,
+        9.057420190285013
+      ],
+      "candidate_absolute_axis_integrals_deg": [
+        40.17207375931785,
+        92.46198709384177,
+        31.11903724008715
+      ],
+      "first2s_candidate_mean_deg_s": [
+        -1.7179904208968984,
+        0.9691761894449595,
+        -0.3179442274495886
+      ],
+      "first2s_candidate_std_deg_s": [
+        3.121764060425249,
+        2.0021256961292333,
+        1.720539754268536
+      ],
+      "last2s_candidate_mean_deg_s": [
+        -0.28603527040140264,
+        -0.2864810932782703,
+        0.20195706860805773
+      ],
+      "physical_axis_sign_validated": false,
+      "gyro_scale_validated": false,
+      "assumptions": "65.5counts/(deg/s), nominal1ms, historical frozen bias and config/gyro-frame.json candidate rotation; no calibration written; integrals are NOT general Euler angles"
+    }
+  ],
+  "mapping_source": "config/gyro-frame.json",
+  "mapping_sha256": "946c2ad8d95d6cca22b9cbc4e52758ff4f08ba4374455534d909b2ec0c6f626d"
+}

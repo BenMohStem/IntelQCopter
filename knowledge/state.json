@@ -5,7 +5,7 @@
   "active_branch": "codex/stepwise-esp32",
   "active_checkout": "QCopter-Stepwise",
   "purpose": "Verified facts, concise decision rationale and coordination; not a transcript or private reasoning dump",
-  "current_stage": "20-second gyro-only rotation capture r prepared. Three previous rotations have uncertain physical signs, preserved and not accepted. Hardware installation/test evidence in 2026-10-30-rotation20 report; no calibration or PID change.",
+  "current_stage": "Both raw recordings independently reverified; preferred second plotted with candidate rates/integrals and retrieval gaps. No physical sign/reference provided; direction/scale remain unvalidated. No refit or source change.",
   "rules": [
     "One Arduino main.cpp, C-like code, Allman braces, Serial.printf",
     "Motor arming and outputs disabled; no actuator tests",
