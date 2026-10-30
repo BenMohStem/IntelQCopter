@@ -35,7 +35,7 @@
     {
       "id": "preferences.frequency-split",
       "status": "user_preference",
-      "summary": "Short edition: Nyquist and clear pole views. Full edition: Bode and Blackâ€“Nichols plus detailed proofs. Control remains PID-based.",
+      "summary": "Short edition: Nyquist and clear pole views. Full edition: Bode and Black\u00c3\u00a2\u00e2\u201a\u00ac\u00e2\u20ac\u0153Nichols plus detailed proofs. Control remains PID-based.",
       "sources": [
         {
           "kind": "user",
@@ -77,6 +77,18 @@
           "kind": "user",
           "date": "2026-10-29",
           "reference": "Current request: show whole Nyquist turns; short edition otherwise good; improve full appendices. Follow-up permits MATLAB or another tool if needed."
+        }
+      ]
+    },
+    {
+      "id": "preferences.project-focused-notes",
+      "status": "user_preference",
+      "summary": "Teacher illustrations should explain the drone and essential engineering, not development tools or syntax; detailed tools remain in personal learning material.",
+      "sources": [
+        {
+          "kind": "user",
+          "date": "2026-10-30",
+          "reference": "User clarifies teacher illustrations must discuss the project, not its tools"
         }
       ]
     }
