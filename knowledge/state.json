@@ -5,7 +5,7 @@
   "active_branch": "codex/stepwise-esp32",
   "active_checkout": "QCopter-Stepwise",
   "purpose": "Verified facts, concise decision rationale and coordination; not a transcript or private reasoning dump",
-  "current_stage": "Actual V1 fusion log confirms source and68Euler wraps; largest apparent358.782deg jump is1.218deg circular difference, but119deg residual Euler step remains unresolved. V2 quaternion telemetry builds and9host checks pass; upload/newphysical trace pending. No gain/calibration changes.",
+  "current_stage": "Operator reports good V2 quaternion preview during deliberate shaking;1055diagnostics retain unit norm. Xbox setpoint-only feature implemented next, software checks pass; combined hardware timing/physical input signs pending. No PID/motor outputs or calibration changes.",
   "rules": [
     "One Arduino main.cpp, C-like code, Allman braces, Serial.printf",
     "Motor arming and outputs disabled; no actuator tests",

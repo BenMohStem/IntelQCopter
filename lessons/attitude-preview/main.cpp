@@ -5,6 +5,7 @@
 #include <Adafruit_BusIO_Register.h>
 #include <math.h>
 #include <Adafruit_AHRS_Mahony.h>
+#include <XboxSeriesXControllerESP32_asukiaaa.hpp>
 #include <freertos/FreeRTOS.h>
 #include <freertos/queue.h>
 #include <freertos/task.h>
@@ -203,12 +204,101 @@ static QueueHandle_t telemetry_queue = nullptr;
 static SemaphoreHandle_t telemetry_drained = nullptr;
 static uint32_t maximum_queue_depth = 0;
 
+// Preview setpoints only: there is no PID, PWM, ESC or motor output here.
+static XboxSeriesXControllerESP32_asukiaaa::Core xbox;
+struct TargetPacket
+{
+    uint32_t timestamp;
+    bool valid;
+    float roll;
+    float pitch;
+    float yaw;
+    float vertical;
+};
+static QueueHandle_t target_queue;
+
+
+static float stick_command(uint16_t raw)
+{
+    const float deadband = 0.08f;
+    float value = ((float)raw - 32767.5f) / 32767.5f;
+    float magnitude = fabsf(value);
+    if (magnitude <= deadband)
+    {
+        return 0.0f;
+    }
+    float shaped = (magnitude - deadband) / (1.0f - deadband);
+    shaped = 0.6f * shaped + 0.4f * shaped * shaped * shaped;
+    return value < 0.0f ? -shaped : shaped;
+}
+
+static void report_targets(void)
+{
+    static bool neutral_seen = false;
+    static uint32_t previous_report = 0;
+    uint32_t now = millis();
+    bool recent = xbox.isConnected() && !xbox.isWaitingForFirstNotification()
+        && (uint32_t)(now - xbox.getReceiveNotificationAt()) <= 300;
+    float roll = 0.0f;
+    float pitch = 0.0f;
+    float yaw = 0.0f;
+    float vertical = 0.0f;
+    if (recent)
+    {
+        roll = stick_command(xbox.xboxNotif.joyRHori);
+        pitch = stick_command(xbox.xboxNotif.joyRVert);
+        yaw = -stick_command(xbox.xboxNotif.joyLHori);
+        vertical = -stick_command(xbox.xboxNotif.joyLVert);
+        if (roll == 0.0f && pitch == 0.0f && yaw == 0.0f && vertical == 0.0f)
+        {
+            neutral_seen = true;
+        }
+    }
+    else
+    {
+        neutral_seen = false;
+    }
+    bool valid = recent && neutral_seen;
+    if ((uint32_t)(now - previous_report) >= 100)
+    {
+        TargetPacket target = {now, valid, valid ? 20.0f * roll : 0.0f,
+            valid ? 20.0f * pitch : 0.0f, valid ? 30.0f * yaw : 0.0f,
+            valid ? vertical : 0.0f};
+        xQueueOverwrite(target_queue, &target);
+        previous_report = now;
+    }
+}
+
+static void xbox_worker(void *)
+{
+    xbox.begin();
+    NimBLEDevice::getScan()->setActiveScan(true);
+    for (;;)
+    {
+        xbox.onLoop();
+        report_targets();
+        vTaskDelay(pdMS_TO_TICKS(5));
+    }
+}
+
 static void telemetry_worker(void *)
 {
     TelemetryPacket packet;
+    TargetPacket target = {};
+    uint32_t previous_target_report = 0;
     for (;;)
     {
-        if (xQueueReceive(telemetry_queue, &packet, portMAX_DELAY) != pdTRUE)
+        xQueueReceive(target_queue, &target, 0);
+        uint32_t now = millis();
+        if ((uint32_t)(now - previous_target_report) >= 100)
+        {
+            bool valid = target.valid && (uint32_t)(now - target.timestamp) <= 300;
+            Serial.printf("T,%u,%.3f,%.3f,%.3f,%.3f\n", valid,
+                valid ? target.roll : 0.0f, valid ? target.pitch : 0.0f,
+                valid ? target.yaw : 0.0f, valid ? target.vertical : 0.0f);
+            previous_target_report = now;
+        }
+        if (xQueueReceive(telemetry_queue, &packet, pdMS_TO_TICKS(5)) != pdTRUE)
         {
             continue;
         }
@@ -240,7 +330,9 @@ static bool start_telemetry(void)
 {
     telemetry_queue = xQueueCreate(128, sizeof(TelemetryPacket));
     telemetry_drained = xSemaphoreCreateBinary();
-    return telemetry_queue && telemetry_drained
+    target_queue = xQueueCreate(1, sizeof(TargetPacket));
+    return telemetry_queue && telemetry_drained && target_queue
+        && xTaskCreatePinnedToCore(xbox_worker, "xbox", 6144, nullptr, 1, nullptr, 0) == pdPASS
         && xTaskCreatePinnedToCore(telemetry_worker, "telemetry", 4096, nullptr, 1, nullptr, 0) == pdPASS;
 }
 
@@ -305,7 +397,7 @@ static void report(void)
         Serial.printf("ERROR,SENSOR_OR_OFFSET_CHECK_FAILED\n");
         return;
     }
-    Serial.printf("HELLO,FUSION_PREVIEW_V2,%s\n", BENCH_SOURCE_SHA);
+    Serial.printf("HELLO,FUSION_TARGETS_V1,%s\n", BENCH_SOURCE_SHA);
     Serial.printf("CONFIG,accel_g=8,gyro_dps=500,dlpf=0,divider=7,i2c_hz=400000,user_cal=xyz_mpu_plus_matrix\n");
     Serial.printf("BOARD,%s,%012llX\n", ESP.getChipModel(), ESP.getEfuseMac());
     for (uint8_t axis = 0; axis < 3; axis++)
@@ -333,7 +425,7 @@ static void report(void)
     Serial.printf("GYRO_SCALE,65.5,counts_per_degree_per_second,frame=sensor,correction=mpu_plus_remainder\n");
     Serial.printf("LOG,acquisition_core=%d,serial_core=0,queue_capacity=128\n", xPortGetCoreID());
     Serial.printf("RATE,hz=1000,packet_bytes=14,clock=mpu_fifo,diagnostic_divider=100\n");
-    Serial.printf("READY,FUSION_PREVIEW_V2\n");
+    Serial.printf("READY,FUSION_TARGETS_V1\n");
 }
 
 void setup(void)

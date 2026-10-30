@@ -76,6 +76,17 @@
           "path": "docs/learning/index.html"
         }
       ]
+    },
+    {
+      "id": "reporting.fusion-lesson",
+      "status": "verified_artifact",
+      "summary": "Actual shaking-test quaternion lesson; numerical normalization observed, not true-attitude accuracy. Code/math explanation in developer copy; teacher summary project-focused.",
+      "sources": [
+        {
+          "kind": "file",
+          "path": "docs/learning/quaternion-fusion/report.html"
+        }
+      ]
     }
   ]
 }
