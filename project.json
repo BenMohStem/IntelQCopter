@@ -390,6 +390,34 @@
         "lessons/xbox-test-menu"
       ],
       "description": "Build separate two-core motor-disabled Xbox test-menu firmware"
+    },
+    "build-attitude-preview": {
+      "runtime": "pio",
+      "path": "lessons/attitude-preview/platformio.ini",
+      "args": [
+        "run",
+        "-d",
+        "lessons/attitude-preview"
+      ],
+      "description": "build attitude preview"
+    },
+    "upload-attitude-preview": {
+      "runtime": "pio",
+      "path": "lessons/attitude-preview/platformio.ini",
+      "args": [
+        "run",
+        "-d",
+        "lessons/attitude-preview",
+        "-t",
+        "upload"
+      ],
+      "description": "upload attitude preview"
+    },
+    "view-attitude": {
+      "runtime": "python",
+      "path": "tools/visualization/attitude_preview.py",
+      "args": [],
+      "description": "Live gravity tilt/yaw-rate plot with automatic original logging"
     }
   }
 }

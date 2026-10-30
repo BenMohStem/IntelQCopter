@@ -1,0 +1,10 @@
+{
+  "schema": 2,
+  "id": "2026-10-30-attitude-preview-preparation",
+  "date": "2026-10-30",
+  "domains": [
+    "operator-revision"
+  ],
+  "summary": "Start visible attitude milestone.",
+  "outcome": "Prepared isolated calibrated gravity-tilt/yaw-rate preview and auto-logging plot; fusion remains next small change. User firmware edit preserved; no physical acceptance inferred."
+}
