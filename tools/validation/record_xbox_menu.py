@@ -18,14 +18,17 @@ def main():
     parser.add_argument('--output',type=Path)
     parser.add_argument('--run-all',action='store_true')
     parser.add_argument('--inputs-only',action='store_true',help='Show raw controller inputs; disable test starts')
+    parser.add_argument('--single',choices=list('dfDF'),help='Request one acquisition test, save and exit')
+    parser.add_argument('--note',default='',help='Physical condition/reference; retained with evidence')
     args=parser.parse_args()
+    if args.single and (args.run_all or args.inputs_only):parser.error('Choose single, inputs-only or run-all')
     if args.inputs_only and args.run_all:parser.error('Choose inputs-only or run-all')
     output=args.output or ROOT/'artifacts/acquisition-comparison/xbox-menu'/dt.datetime.now(dt.timezone.utc).strftime('%Y%m%dT%H%M%SZ')
     output.mkdir(parents=True,exist_ok=False)
     expected=hashlib.sha256((ROOT/'lessons/xbox-test-menu/main.cpp').read_bytes()).hexdigest()
     device=serial.Serial();device.port=args.port;device.baudrate=921600;device.timeout=1;device.dtr=False;device.rts=False
     runs=[];rows=[];metadata=None;mode=None;core=None;identity=None
-    xbox_status=[];menu_lines=[];pending=list('dfDF') if args.run_all else []
+    xbox_status=[];menu_lines=[];pending=list('dfDF') if args.run_all else ([args.single] if args.single else [])
     log=(output/'session-original.log').open('xb')
     def line():
         raw=device.readline()
@@ -54,6 +57,9 @@ def main():
         print('1 DIRECT_NORMAL | 2 FIFO_NORMAL | 3 DIRECT_PAUSES | 4 FIFO_PAUSES',flush=True)
         print('Initial selection: DIRECT_NORMAL. Each capture is 4 seconds, then automatic saving.',flush=True)
         print('RECENT_INPUT=0 means no report in 300 ms; it does not mean disconnected.',flush=True)
+        if args.single:
+            print('Keep still. After START, make the labelled motion gently within 4 seconds, then hold.',flush=True)
+            input('Press Enter when positioned and ready: ')
         if args.inputs_only:
             device.write(b'i')
             print('INPUT MONITOR ONLY: tests disabled. Press each button separately, then move sticks/triggers.',flush=True)
@@ -81,7 +87,7 @@ def main():
                 else:
                     result={**metadata,'accepted_record':False,'reason':fields[2]}
                 runs.append(result);print('Saved test:',mode,fields[2],flush=True);mode=None
-                if args.run_all:
+                if args.run_all or args.single:
                     if fields[2]!='OK':raise ValueError('Automatic test rejected: '+fields[2])
                     if not pending:break
                     time.sleep(.2);device.write(pending.pop(0).encode())
@@ -104,7 +110,8 @@ def main():
         device.close();log.close()
         result={'engine':'Real ESP32-S3 core assignment and capture timings; Python serial recorder/integrity checks',
                 'source_sha256':expected,'identity':identity,'core_report':core,'runs':runs,'xbox_status':xbox_status,'menu_events':menu_lines,
-                'request_source':'PC serial through slow-core request queue' if args.run_all else 'Xbox menu (or manual serial)',
+                'request_source':'PC serial through slow-core request queue' if (args.run_all or args.single) else 'Xbox menu (or manual serial)',
+                'physical_condition_note':args.note,
                 'physical_button_validation':'pending unless operator separately attests button actions',
                 'session_log_sha256':hashlib.sha256((output/'session-original.log').read_bytes()).hexdigest(),
                 'motor_outputs_enabled':False,'PID_implemented':False}

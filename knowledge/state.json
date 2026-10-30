@@ -5,7 +5,7 @@
   "active_branch": "codex/stepwise-esp32",
   "active_checkout": "QCopter-Stepwise",
   "purpose": "Verified facts, concise decision rationale and coordination; not a transcript or private reasoning dump",
-  "current_stage": "Operator Xbox input session reviewed: 466 snapshots, all logged button fields active, sticks0..65535/triggers0..1023. Physical label/direction/deadband and gyro-motion gate remain. Small activity LED circuit unknown; large RGB reserved by user for future battery indication/landing, not implemented.",
+  "current_stage": "Single labelled positive-X physical gyro recording prepared using installed raw FIFO menu harness and record-xbox-menu --single f --note. No motion performed remotely; physical gyro direction gate remains pending. Production coefficient edit preserved.",
   "rules": [
     "One Arduino main.cpp, C-like code, Allman braces, Serial.printf",
     "Motor arming and outputs disabled; no actuator tests",

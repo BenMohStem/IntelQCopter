@@ -1,0 +1,10 @@
+{
+  "schema": 2,
+  "id": "2026-10-30-single-gyro-preparation",
+  "date": "2026-10-30",
+  "domains": [
+    "acquisition-performance"
+  ],
+  "summary": "User requests next step after input endpoint tests.",
+  "outcome": "Prepared one FIFO capture with explicit physical note and automatic exit; first positive-X reference rotation, no hardware action or calibration change. Physical gyro validation remains pending; existing production coefficient edit preserved."
+}
