@@ -1,6 +1,6 @@
 {
   "schema": 2,
-  "updated": "2026-10-29",
+  "updated": "2026-10-30",
   "scope": "Additive curated domain catalog; facts/decisions/evidence, not private reasoning or a chat transcript",
   "domains": [
     {
@@ -22,6 +22,10 @@
     {
       "id": "maintenance-history",
       "path": "domains/maintenance-history.json"
+    },
+    {
+      "id": "operator-revision",
+      "path": "domains/operator-revision.json"
     }
   ],
   "events": "events/",

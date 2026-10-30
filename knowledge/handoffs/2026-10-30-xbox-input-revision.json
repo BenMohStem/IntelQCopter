@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-30",
+  "owner": "xbox-revision-20261030",
+  "scope": "Independent Xbox lesson and operator revision docs",
+  "engine": "PlatformIO espressif32@7.1.3 Arduino cross-build for esp32-s3-devkitc-1",
+  "result": "ESP32-S3 cross-build passes; no hardware access",
+  "evidence": "lessons/xbox-input/validation/summary.json",
+  "pending": [
+    "Operator pairing/controls/reconnection",
+    "Review existing MPU source difference before regression",
+    "Current sensor hardware selection and load measurements"
+  ],
+  "knowledge_check": "Domain catalog passes; full snapshot check correctly reports existing stale firmware/main.cpp fingerprint. Not overwritten."
+}

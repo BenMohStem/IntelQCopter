@@ -1,0 +1,69 @@
+{
+  "schema": 2,
+  "id": "operator-revision",
+  "updated": "2026-10-30",
+  "entries": [
+    {
+      "id": "revision.old-pcb",
+      "status": "user_preference",
+      "summary": "Current hardware is old ESP32-S3 PCB with MPU6050 only; new PCB in progress. User wants to personally repeat earlier assistant-only steps without losing evidence.",
+      "sources": [
+        {
+          "kind": "user",
+          "date": "2026-10-30",
+          "reference": "Latest resumption and revision instructions"
+        }
+      ]
+    },
+    {
+      "id": "revision.xbox-next",
+      "status": "user_preference",
+      "summary": "Next small implementation is Xbox Series X/S BLE library input-only on ESP32-S3, independent from ROS and before combined FC integration. No new motor arming authorization.",
+      "sources": [
+        {
+          "kind": "user",
+          "date": "2026-10-30",
+          "reference": "Make Xbox library implementation next step; return to ESP32-S3 and repeat tests together"
+        }
+      ]
+    },
+    {
+      "id": "revision.port",
+      "status": "pending",
+      "summary": "User suggests COM4; Windows port inventory currently lists COM3. No serial device opened or flashed; operator must identify the ESP32.",
+      "sources": [
+        {
+          "kind": "file",
+          "path": "docs/revision-and-xbox.md"
+        }
+      ]
+    },
+    {
+      "id": "revision.calibration-review",
+      "status": "pending",
+      "summary": "Existing uncommitted gyro-matrix coefficient differs from tested snapshot. Preserve it and review before MPU upload/tests; do not silently refresh fingerprints or recalibrate from validation data.",
+      "sources": [
+        {
+          "kind": "file",
+          "path": "docs/revision-and-xbox.md"
+        }
+      ]
+    },
+    {
+      "id": "revision.hall-selection",
+      "status": "user_preference",
+      "summary": "User explicitly requests Hall-effect current-sensor selection; recommend one total-feed measurement first, with200A-class ACS773 candidate and conditional150A ready-board alternative. No purchase/installation/ADC pin accepted.",
+      "sources": [
+        {
+          "kind": "user",
+          "date": "2026-10-30",
+          "reference": "Follow-up: a Hall effect one also, make a selection of sensors"
+        },
+        {
+          "kind": "file",
+          "path": "docs/battery-current-sensor.md"
+        }
+      ]
+    }
+  ]
+}

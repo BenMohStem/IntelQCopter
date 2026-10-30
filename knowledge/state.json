@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "updated": "2026-10-26",
+  "updated": "2026-10-30",
   "evidence_baseline_commit": "a961a8a87cb612adebf31a1814d2a2ad61252fd6",
   "active_branch": "codex/stepwise-esp32",
   "active_checkout": "QCopter-Stepwise",
   "purpose": "Verified facts, concise decision rationale and coordination; not a transcript or private reasoning dump",
-  "current_stage": "1kHz calibrated FIFO bench; startup input guard build/host-tested, unflashed; physical gyro rotations pending",
+  "current_stage": "Operator-led revision on old ESP32-S3 MPU-only PCB; separate Xbox input lesson ESP32-target-built, not flashed; current MPU coefficient edit needs review",
   "rules": [
     "One Arduino main.cpp, C-like code, Allman braces, Serial.printf",
     "Motor arming and outputs disabled; no actuator tests",
@@ -81,5 +81,14 @@
     "qcopter.ps1",
     "docs/PLAN.md",
     "important_sources/README.md"
-  ]
+  ],
+  "operator_revision": {
+    "guide": "docs/revision-and-xbox.md",
+    "xbox_source": "lessons/xbox-input/main.cpp",
+    "xbox_hardware_acceptance": "pending",
+    "old_pcb_mpu_only": "user-confirmed",
+    "new_pcb": "in progress, not installed",
+    "last_port_inventory": "COM3 listed; COM4 user guess unconfirmed; no serial access",
+    "historical_fingerprints": "preserved; current user MPU coefficient edit remains stale"
+  }
 }

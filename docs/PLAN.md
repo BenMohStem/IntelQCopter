@@ -1,5 +1,14 @@
 # Current software plan
 
+## Operator revision priority - 30 October 2026
+
+User is still on the OLD ESP32-S3 PCB with MPU6050 only; new PCB is in progress. Resume by reviewing the current source and personally repeating small steps. Historical evidence remains historical, not a fresh pass for changed source.
+
+**Next implementation: isolated Xbox BLE input-only lesson**, before combining inputs with acquisition/control. [New revision sequence and commands](revision-and-xbox.md) is the current entry point. It preserves firmware/main.cpp and its uncommitted gyro coefficient, keeps motors disabled, and requires no ROS computer. [Battery current-sensor selection](battery-current-sensor.md) proposes one main-feed sensor; no hardware/ADC pin has been accepted.
+
+The following chronological sections preserve earlier planning. Where they say Xbox is a later stage or physical tests are deferred, this operator revision sequence supersedes the scheduling, without bypassing physical acceptance dependencies.
+
+
 **FC target: 1,000 Hz.** Runtime stays in one Arduino-style main.cpp, mostly C-style functions, Allman braces and Serial.printf. Motor outputs/physical arming remain disabled. BMP280 is unavailable and deferred. ROS2, Xbox and simulation remain later software stages. PCB exploration is a separate user-authorized workstream; small sensor/software gates stay in force.
 
 | Stage | Current evidence | Next action |

@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "id": "xbox-input-bench",
+  "status": "ready",
+  "title": "Operator revision: isolated ESP32-S3 Xbox BLE input lesson",
+  "depends_on": [],
+  "scopes": [
+    "lessons/xbox-input",
+    "docs/revision-and-xbox.md"
+  ],
+  "evidence": [],
+  "acceptance": [
+    "ESP32-S3 target build and retained compiler log; no host build presented as hardware",
+    "Operator verifies stick/trigger/button ranges and disconnect/reconnect before integration",
+    "No PWM/Servo/motor output or calibration change; preserve original MPU source",
+    "Integrated BLE plus IMU timing remains a separate pending gate"
+  ]
+}
