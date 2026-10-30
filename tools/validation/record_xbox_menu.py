@@ -17,7 +17,9 @@ def main():
     parser.add_argument('--port',required=True)
     parser.add_argument('--output',type=Path)
     parser.add_argument('--run-all',action='store_true')
+    parser.add_argument('--inputs-only',action='store_true',help='Show raw controller inputs; disable test starts')
     args=parser.parse_args()
+    if args.inputs_only and args.run_all:parser.error('Choose inputs-only or run-all')
     output=args.output or ROOT/'artifacts/acquisition-comparison/xbox-menu'/dt.datetime.now(dt.timezone.utc).strftime('%Y%m%dT%H%M%SZ')
     output.mkdir(parents=True,exist_ok=False)
     expected=hashlib.sha256((ROOT/'lessons/xbox-test-menu/main.cpp').read_bytes()).hexdigest()
@@ -52,6 +54,9 @@ def main():
         print('1 DIRECT_NORMAL | 2 FIFO_NORMAL | 3 DIRECT_PAUSES | 4 FIFO_PAUSES',flush=True)
         print('Initial selection: DIRECT_NORMAL. Each capture is 4 seconds, then automatic saving.',flush=True)
         print('RECENT_INPUT=0 means no report in 300 ms; it does not mean disconnected.',flush=True)
+        if args.inputs_only:
+            device.write(b'i')
+            print('INPUT MONITOR ONLY: tests disabled. Press each button separately, then move sticks/triggers.',flush=True)
         if pending:device.write(pending.pop(0).encode())
         while True:
             value=line()
@@ -85,6 +90,8 @@ def main():
                 print(value,flush=True)
             elif fields[0]=='MENU':
                 menu_lines.append(value);print(value,flush=True)
+            elif fields[0] in ('INPUT','INPUT_MODE'):
+                print(value,flush=True)
             elif fields[0]=='ERROR':raise ValueError(value)
     except KeyboardInterrupt:
         device.write(b'x')
@@ -93,6 +100,7 @@ def main():
         (output/'failure.json').write_text(json.dumps({'error':str(error),'mode':mode,'partial_rows':len(rows)},indent=2)+'\n',encoding='utf-8')
         raise
     finally:
+        if device.is_open and args.inputs_only:device.write(b't')
         device.close();log.close()
         result={'engine':'Real ESP32-S3 core assignment and capture timings; Python serial recorder/integrity checks',
                 'source_sha256':expected,'identity':identity,'core_report':core,'runs':runs,'xbox_status':xbox_status,'menu_events':menu_lines,

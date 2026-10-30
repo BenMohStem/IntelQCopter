@@ -1,0 +1,11 @@
+{
+  "engine": "Actual ESP32-S3 serial query and monitor-only command",
+  "source_sha256": "bed6637bd553bfa18d9c0cf5f678ca5fc4699e6da4269b1e41e72d2e19244523",
+  "identity_and_mode": [
+    "ACQ_MENU_V1,bed6637bd553bfa18d9c0cf5f678ca5fc4699e6da4269b1e41e72d2e19244523,WHO=104,READY=1,WINDOW_US=4000000",
+    "CORE,acquisition=1,slow=0,heap=147988,min_heap=147764,PID=NOT_IMPLEMENTED",
+    "INPUT_MODE,MONITOR_ONLY_NO_TESTS"
+  ],
+  "input_rows_observed": 16,
+  "physical_button_validation": "pending operator review; no physical button actions inferred"
+}

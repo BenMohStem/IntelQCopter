@@ -1,0 +1,10 @@
+{
+  "schema": 2,
+  "id": "2026-10-30-xbox-mapping",
+  "date": "2026-10-30",
+  "domains": [
+    "acquisition-performance"
+  ],
+  "summary": "Operator reports Menu/Y roles exchanged and tests completed; local latest log has menu events but no acquisition records.",
+  "outcome": "Swap reported Menu/Y action fields locally; add optional raw input monitor with test starts disabled. Build/upload and physical validation tracked in report. No acquisition or flight acceptance inferred."
+}

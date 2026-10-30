@@ -239,13 +239,14 @@ static void slow_worker(void *unused)
     const char modes[4] = {'d', 'f', 'D', 'F'};
     const char *names[4] = {"DIRECT_NORMAL", "FIFO_NORMAL", "DIRECT_PAUSES", "FIFO_PAUSES"};
     uint8_t selected = 0;
-    bool menu_open = true;
     bool released = false;
     uint8_t previous = 0;
     bool dumping = false;
     uint16_t dump_index = 0;
     Trial result = {};
     uint32_t last_status = 0;
+    uint32_t last_input = 0;
+    bool inputs_only = false;
     report();
     connection_led(millis(), false, false);
     Serial.printf("MENU,SELECTED=DIRECT_NORMAL,COMMAND=d,A=RUN,DpadLeftRight=SELECT,B=CANCEL\n");
@@ -265,10 +266,11 @@ static void slow_worker(void *unused)
         uint8_t buttons = 0;
         if (input_ready)
         {
-            buttons = (xbox.xboxNotif.btnStart ? 1 : 0)
+            // Operator observed these two library fields exchanged on this controller.
+            buttons = (xbox.xboxNotif.btnY ? 1 : 0)
                 | (xbox.xboxNotif.btnA ? 2 : 0)
                 | (xbox.xboxNotif.btnB ? 4 : 0)
-                | (xbox.xboxNotif.btnY ? 8 : 0)
+                | (xbox.xboxNotif.btnStart ? 8 : 0)
                 | (xbox.xboxNotif.btnDirRight ? 16 : 0)
                 | (xbox.xboxNotif.btnDirLeft ? 32 : 0);
             if (buttons == 0)
@@ -279,7 +281,6 @@ static void slow_worker(void *unused)
         else
         {
             released = false;
-            menu_open = true;
         }
         uint8_t pressed = released ? buttons & ~previous : 0;
         previous = buttons;
@@ -293,17 +294,14 @@ static void slow_worker(void *unused)
             {
                 selected = (selected + 1) % 4;
             }
-            menu_open = true;
             Serial.printf("MENU,SELECTED=%s,COMMAND=%c\n", names[selected], modes[selected]);
         }
-        if (pressed & 2)
+        if ((pressed & 2) && !inputs_only)
         {
             request_test(modes[selected]);
-            menu_open = true;
         }
-        if (pressed & 4)
+        if ((pressed & 4) && !inputs_only)
         {
-            menu_open = false;
             xEventGroupSetBits(events, abort_bit);
             Serial.printf("MENU,CANCEL_REQUESTED\n");
         }
@@ -315,6 +313,11 @@ static void slow_worker(void *unused)
         if (Serial.available())
         {
             char command = Serial.read();
+            if (command == 'i' || command == 't')
+            {
+                inputs_only = command == 'i';
+                Serial.printf("INPUT_MODE,%s\n", inputs_only ? "MONITOR_ONLY_NO_TESTS" : "TEST_MENU");
+            }
             if (command == '?')
             {
                 report();
@@ -323,7 +326,7 @@ static void slow_worker(void *unused)
             {
                 xEventGroupSetBits(events, abort_bit);
             }
-            if (command == 'd' || command == 'f' || command == 'D' || command == 'F')
+            if (!inputs_only && (command == 'd' || command == 'f' || command == 'D' || command == 'F'))
             {
                 request_test(command);
             }
@@ -358,6 +361,17 @@ static void slow_worker(void *unused)
                 dumping = false;
                 xSemaphoreGive(buffer_free);
             }
+        }
+        if (inputs_only && input_ready && (uint32_t)(now - last_input) >= 200)
+        {
+            // Library field names are raw decoder labels, not yet physical acceptance.
+            const auto &input = xbox.xboxNotif;
+            Serial.printf("INPUT,rawA=%u,rawB=%u,rawX=%u,rawY=%u,rawStart=%u,LB=%u,RB=%u,UP=%u,DOWN=%u,LEFT=%u,RIGHT=%u,LX=%u,LY=%u,RX=%u,RY=%u,LT=%u,RT=%u\n",
+                input.btnA, input.btnB, input.btnX, input.btnY, input.btnStart,
+                input.btnLB, input.btnRB, input.btnDirUp, input.btnDirDown,
+                input.btnDirLeft, input.btnDirRight, input.joyLHori, input.joyLVert,
+                input.joyRHori, input.joyRVert, input.trigLT, input.trigRT);
+            last_input = now;
         }
         if (!dumping && (uint32_t)(now - last_status) >= 5000)
         {

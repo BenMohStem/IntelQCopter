@@ -5,7 +5,7 @@
   "active_branch": "codex/stepwise-esp32",
   "active_checkout": "QCopter-Stepwise",
   "purpose": "Verified facts, concise decision rationale and coordination; not a transcript or private reasoning dump",
-  "current_stage": "Xbox menu revised: RGB search/connected indicator, idle report age separated from connection, D-pad selection and A-run. Built/uploaded; see new boot evidence. Physical LED/buttons and timing for this changed source pending. Previous captures remain historical.",
+  "current_stage": "Xbox Menu/Y mismatch reported; next step is raw button/axis mapping in monitor-only mode, then physical gyro direction checks. Operator acquisition completion not evidenced in latest inspected log. See 2026-10-30-xbox-mapping report for new firmware validation.",
   "rules": [
     "One Arduino main.cpp, C-like code, Allman braces, Serial.printf",
     "Motor arming and outputs disabled; no actuator tests",
