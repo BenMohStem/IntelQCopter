@@ -26,6 +26,10 @@
     {
       "id": "operator-revision",
       "path": "domains/operator-revision.json"
+    },
+    {
+      "id": "acquisition-performance",
+      "path": "domains/acquisition-performance.json"
     }
   ],
   "events": "events/",

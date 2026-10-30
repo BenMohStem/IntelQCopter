@@ -1,0 +1,71 @@
+{
+  "schema": 2,
+  "id": "acquisition-performance",
+  "updated": "2026-10-30",
+  "entries": [
+    {
+      "id": "acquisition.real-comparison",
+      "status": "verified_artifact",
+      "summary": "12real ESP32-S3/MPU6050 four-second trials,47798samples reverified. Direct/FIFO payload medians451us; successful services603/780us. Same400kHz,8g,500dps,DLPF0,divider7. Raw source is a separate motor-disabled harness, not production main.cpp.",
+      "sources": [
+        {
+          "kind": "file",
+          "path": "measurements/mpu6050/2026-10-30-acquisition-comparison/analysis.json",
+          "sha256": "1d77d68a358975a2e476fe94a3a3dc3a0821ca520fa381687828844c5c0bacf6"
+        }
+      ]
+    },
+    {
+      "id": "acquisition.pause-tradeoff",
+      "status": "verified_artifact",
+      "summary": "39injected2500us pauses per stressed trial. Direct3925records versus roughly4003unpaused; FIFO4002-4003with peak3packets. Both have approximately3.6ms read-completion gaps. Throughput preservation is not a fresh1kHz control deadline pass.",
+      "sources": [
+        {
+          "kind": "file",
+          "path": "measurements/mpu6050/2026-10-30-acquisition-comparison/report.md",
+          "sha256": "b1d208665aacab5e5c29885c3295718009da19c538d6b6425d7bfddd2c9cb2e6"
+        }
+      ]
+    },
+    {
+      "id": "acquisition.absolute-latency",
+      "status": "pending",
+      "summary": "No external DRDY/motion timing or exact direct physical-sample-loss count; packet-age estimate is nominal only. No BLE/PID/motor load tested and no production acquisition switch accepted.",
+      "sources": [
+        {
+          "kind": "file",
+          "path": "measurements/mpu6050/2026-10-30-acquisition-comparison/report.md",
+          "sha256": "b1d208665aacab5e5c29885c3295718009da19c538d6b6425d7bfddd2c9cb2e6"
+        }
+      ]
+    },
+    {
+      "id": "acquisition.operator-target",
+      "status": "user_preference",
+      "summary": "User confirmed COM3 as target when it was found instead of guessed COM4 and explicitly authorized building/installing the benchmark. Original16MB flash backup retained privately. Board left running motor-disabled benchmark.",
+      "sources": [
+        {
+          "kind": "user",
+          "date": "2026-10-30",
+          "reference": "Reply: if it is COM3, build and install in the correct one"
+        },
+        {
+          "kind": "file",
+          "path": "measurements/mpu6050/2026-10-30-acquisition-comparison/upload-summary.json"
+        }
+      ]
+    },
+    {
+      "id": "acquisition.learning",
+      "status": "user_preference",
+      "summary": "User wants real tests now, then step-by-step joint data interpretation in later lessons; provide raw-evidence provenance, definitions, worked timestamp differences, distribution tails and repetitions.",
+      "sources": [
+        {
+          "kind": "user",
+          "date": "2026-10-30",
+          "reference": "Current request to measure FIFO versus direct and learn data analysis together"
+        }
+      ]
+    }
+  ]
+}

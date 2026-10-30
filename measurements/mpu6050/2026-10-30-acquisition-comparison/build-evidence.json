@@ -1,0 +1,7 @@
+{
+  "initial_build_log": "build.log",
+  "initial_build_log_sha256": "96913dfe84649c956e2632b8d6cc3e5bdbbaac9357c871558aa13a7606829b9e",
+  "final_binary_and_source_binding": "upload-summary.json; source also verified from live benchmark identity before recording",
+  "full_final_upload_console": "preserved privately because it contains device identifiers",
+  "note": "Do not infer the final binary hash solely from the initial cross-build log."
+}

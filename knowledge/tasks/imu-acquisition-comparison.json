@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "id": "imu-acquisition-comparison",
+  "status": "done",
+  "title": "Measure direct versus FIFO standalone sensor timing and teach analysis",
+  "depends_on": [],
+  "scopes": [
+    "lessons/imu-acquisition-benchmark",
+    "tools/validation/compare_imu_acquisition.py",
+    "measurements/mpu6050/2026-10-30-acquisition-comparison"
+  ],
+  "evidence": [
+    "E-ACQ-COMPARISON"
+  ],
+  "acceptance": [
+    "User-authorized confirmed ESP32-S3 target; private original full flash backup",
+    "No motor outputs or production source/calibration edits",
+    "Twelve real repeated same-setting acquisitions with saved originals and independent checksum/timestamp replay",
+    "Clearly separate observed duration, data retention, queue-age proxy and unmeasured physical latency",
+    "Retain source hashes,8checker negative controls, graphs and worked tutorial"
+  ]
+}

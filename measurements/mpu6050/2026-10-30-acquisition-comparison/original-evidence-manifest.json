@@ -1,0 +1,50 @@
+[
+  {
+    "path": "artifacts/acquisition-comparison/2026-10-30/experiment-01/run-01-D.log",
+    "sha256": "2928ef2c4e249e8e054a73bb7e01ddc6fd494fec845e736b5322804ffcf18157"
+  },
+  {
+    "path": "artifacts/acquisition-comparison/2026-10-30/experiment-01/run-02-f.log",
+    "sha256": "5bf76a0a659a474f381dc129b942874d06330a3e41c79b6dd87be09da11b8aee"
+  },
+  {
+    "path": "artifacts/acquisition-comparison/2026-10-30/experiment-01/run-03-F.log",
+    "sha256": "825372f694305eafa1a37441439beacbabd9892a5c50b8ccf13d3555bfaf5fde"
+  },
+  {
+    "path": "artifacts/acquisition-comparison/2026-10-30/experiment-01/run-04-d.log",
+    "sha256": "b5b6ac8191187b4563c95b34e9d599bacc19da4f3da0dd7fb945bd9abef1ecb1"
+  },
+  {
+    "path": "artifacts/acquisition-comparison/2026-10-30/experiment-01/run-05-d.log",
+    "sha256": "29b30704ca029dff21bdd0521cbb6d4a06f567d396e0339ad0cdcf82e7a9d6d9"
+  },
+  {
+    "path": "artifacts/acquisition-comparison/2026-10-30/experiment-01/run-06-F.log",
+    "sha256": "8459e4c0ad13b4e643f35acc06ec09e5f42e01edc50c966b8d682c6d66743be9"
+  },
+  {
+    "path": "artifacts/acquisition-comparison/2026-10-30/experiment-01/run-07-D.log",
+    "sha256": "5cc9f7e5c95c2f351f00931d6e8e829eaaced382ccfc9412d6672204127453df"
+  },
+  {
+    "path": "artifacts/acquisition-comparison/2026-10-30/experiment-01/run-08-f.log",
+    "sha256": "56aa09f032f9f2cfaf57108472cbbd7821258b415bf403d0130040a4376522f7"
+  },
+  {
+    "path": "artifacts/acquisition-comparison/2026-10-30/experiment-01/run-09-D.log",
+    "sha256": "d583e9e5668a5cc9a4bc65591bb4f55b23bc8a0c83d81eff2e52c73a8f1e8bb7"
+  },
+  {
+    "path": "artifacts/acquisition-comparison/2026-10-30/experiment-01/run-10-d.log",
+    "sha256": "c893efa11be8e0ba5f2745931eb7ceda687f6d05854e65dc5009188c114c566e"
+  },
+  {
+    "path": "artifacts/acquisition-comparison/2026-10-30/experiment-01/run-11-F.log",
+    "sha256": "b9d202d92a02be0d40286dfe404ae07c7c740e38d582c0e629a4f3dec930a18b"
+  },
+  {
+    "path": "artifacts/acquisition-comparison/2026-10-30/experiment-01/run-12-f.log",
+    "sha256": "5f6f237141634978bb820ac692c5bb208dd7d06970dae1275c760261d1c5c79f"
+  }
+]

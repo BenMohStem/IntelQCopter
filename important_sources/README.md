@@ -35,3 +35,8 @@ Canonical links, no duplicate runtime copies. The prior FIFO source was flashed/
 ## Current operator revision - 30 October 2026
 
 [Small Xbox input-only main.cpp](../lessons/xbox-input/main.cpp), [PlatformIO configuration](../lessons/xbox-input/platformio.ini), [revision guide](../docs/revision-and-xbox.md). Temporary independent lesson; replaces running firmware only when YOU upload it. No motors/PID; original MPU runtime remains in firmware/main.cpp. [Battery-current sensor choices](../docs/battery-current-sensor.md).
+
+
+## Real acquisition comparison - 30 October 2026
+
+[Actual results and analysis lesson](../measurements/mpu6050/2026-10-30-acquisition-comparison/report.html), [Markdown](../measurements/mpu6050/2026-10-30-acquisition-comparison/report.md), [12-run timing CSV](../measurements/mpu6050/2026-10-30-acquisition-comparison/runs-summary.csv), [separate motor-disabled measurement main.cpp](../lessons/imu-acquisition-benchmark/main.cpp). Board now runs this benchmark; original16MBflash backup is private. Production MPU source/calibration unchanged. No production direct/FIFO choice or flight acceptance implied.

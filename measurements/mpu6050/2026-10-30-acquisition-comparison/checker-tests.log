@@ -1,0 +1,13 @@
+test_corrupt_payload (__main__.AnalysisChecks.test_corrupt_payload) ... ok
+test_fake_fifo_in_direct (__main__.AnalysisChecks.test_fake_fifo_in_direct) ... ok
+test_known_durations_and_units (__main__.AnalysisChecks.test_known_durations_and_units) ... ok
+test_missing_sequence (__main__.AnalysisChecks.test_missing_sequence) ... ok
+test_timestamp_order (__main__.AnalysisChecks.test_timestamp_order) ... ok
+test_valid_fifo_and_impossible_fifo (__main__.AnalysisChecks.test_valid_fifo_and_impossible_fifo) ... ok
+test_wrong_pause_condition (__main__.AnalysisChecks.test_wrong_pause_condition) ... ok
+test_wrong_window (__main__.AnalysisChecks.test_wrong_window) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.015s
+
+OK

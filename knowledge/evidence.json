@@ -110,5 +110,12 @@
     "report": "hardware/zero-jumper-study/method/README.md",
     "claim": "Validator verifies actual bare-carrier ground/power geometry, pin maps, RF keepout coverage and native DRC/parity; 38 focused controls pass; current three-wire board correctly rejected as zero-wire",
     "limits": "Synthetic fixtures not manufactured; no accepted zero-wire board implied; bounded routing failure is not proof of global impossibility"
+  },
+  {
+    "id": "E-ACQ-COMPARISON",
+    "kind": "actual_ESP32S3_measurements_and_independent_raw_log_replay",
+    "report": "measurements/mpu6050/2026-10-30-acquisition-comparison/report.md",
+    "claim": "12four-second captures and47798samples; same settings; successful service603vs780us and equal451us payload read; stress throughput/backlog documented",
+    "limits": "Standalone uncalibrated raw sensor harness. No external sample timestamp, exact direct-loss count, BLE/PID/flight acceptance or production source validation."
   }
 ]

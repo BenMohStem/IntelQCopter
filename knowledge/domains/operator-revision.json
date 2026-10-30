@@ -29,12 +29,12 @@
     },
     {
       "id": "revision.port",
-      "status": "pending",
-      "summary": "User suggests COM4; Windows port inventory currently lists COM3. No serial device opened or flashed; operator must identify the ESP32.",
+      "status": "verified_artifact",
+      "summary": "COM3 subsequently confirmed by user and actual ESP32-S3 benchmark upload on30October2026. It now runs the separate motor-disabled acquisition benchmark; original flash saved privately.",
       "sources": [
         {
           "kind": "file",
-          "path": "docs/revision-and-xbox.md"
+          "path": "measurements/mpu6050/2026-10-30-acquisition-comparison/upload-summary.json"
         }
       ]
     },

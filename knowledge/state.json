@@ -5,7 +5,7 @@
   "active_branch": "codex/stepwise-esp32",
   "active_checkout": "QCopter-Stepwise",
   "purpose": "Verified facts, concise decision rationale and coordination; not a transcript or private reasoning dump",
-  "current_stage": "Operator-led revision on old ESP32-S3 MPU-only PCB; separate Xbox input lesson ESP32-target-built, not flashed; current MPU coefficient edit needs review",
+  "current_stage": "Real direct/FIFO sensor-only comparison complete; separate motor-disabled benchmark installed on COM3. Production MCU gyro coefficient remains unreviewed; Xbox lesson still awaiting operator pairing.",
   "rules": [
     "One Arduino main.cpp, C-like code, Allman braces, Serial.printf",
     "Motor arming and outputs disabled; no actuator tests",
@@ -88,7 +88,20 @@
     "xbox_hardware_acceptance": "pending",
     "old_pcb_mpu_only": "user-confirmed",
     "new_pcb": "in progress, not installed",
-    "last_port_inventory": "COM3 listed; COM4 user guess unconfirmed; no serial access",
+    "last_port_inventory": "COM3 confirmed by user and ESP32-S3 upload; currently motor-disabled acquisition benchmark",
     "historical_fingerprints": "preserved; current user MPU coefficient edit remains stale"
+  },
+  "acquisition_comparison": {
+    "report": "measurements/mpu6050/2026-10-30-acquisition-comparison/report.md",
+    "analysis": "measurements/mpu6050/2026-10-30-acquisition-comparison/analysis.json",
+    "source": "lessons/imu-acquisition-benchmark/main.cpp",
+    "source_sha256": "f02daf91f07a3062c13705cb36dfbf0b52a71192ded3d11f7c5e22ab8b8f9136",
+    "hardware_trials": 12,
+    "samples_verified": 47798,
+    "absolute_latency_measured": false,
+    "motor_outputs_enabled": false,
+    "production_firmware_changed": false,
+    "flash_backup": "private artifacts/acquisition-comparison/2026-10-30/pre-benchmark-flash.bin",
+    "old_firmware_restored": false
   }
 }

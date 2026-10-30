@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-30",
+  "owner": "imu-compare-20261030",
+  "engine": "Real ESP32-S3 micros timestamps + MPU6050; Python NumPy statistics/Matplotlib graphs",
+  "source_sha256": "f02daf91f07a3062c13705cb36dfbf0b52a71192ded3d11f7c5e22ab8b8f9136",
+  "result": "12hardwaretrials,47798rawsamples,8syntheticcheckercontrols pass",
+  "report": "measurements/mpu6050/2026-10-30-acquisition-comparison/report.md",
+  "pending": [
+    "External DRDY timestamp and representative integrated load",
+    "Original production gyro coefficient review",
+    "No physical gyro sign/scale, estimator, PID or flight acceptance"
+  ],
+  "knowledge_check": "Domain checker passes; existing production-main snapshot remains stale due preserved user edit. No blind fingerprint update."
+}

@@ -1,0 +1,11 @@
+{
+  "schema": 2,
+  "id": "2026-10-30-real-acquisition-comparison",
+  "date": "2026-10-30",
+  "domains": [
+    "acquisition-performance",
+    "operator-revision"
+  ],
+  "summary": "User requested immediate real direct/FIFO timing comparison and joint data-analysis teaching; confirmed COM3 and authorized benchmark installation.",
+  "outcome": "Original16MB flash backed up privately; motor-disabled harness uploaded;12actual trials and47798samples verified. Direct successful service177us shorter; FIFO preserved throughput under artificial pauses while both had3.6ms read gaps. No fullFC/absolute-latency claim or production acquisition switch. Board remains motor-disabled benchmark."
+}

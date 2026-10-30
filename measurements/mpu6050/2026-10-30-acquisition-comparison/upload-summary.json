@@ -1,0 +1,10 @@
+{
+  "success": true,
+  "target": "ESP32-S3 on COM3, user confirmed",
+  "source_sha256": "f02daf91f07a3062c13705cb36dfbf0b52a71192ded3d11f7c5e22ab8b8f9136",
+  "binary_sha256": "afa52c9e50e24a478279c068ce8213e48acce78e65db5e9bb529b601e1018110",
+  "original_upload_log_sha256": "f37844c7c6660a1142c55f55c4e717c62b866b63273a97d85f11395f239fe2ca",
+  "private_flash_backup_bytes": 16777216,
+  "private_flash_backup_sha256": "e3c31af7e707acb57a0715ad583c30456e27aea6c9eea3a31414763cbb9766a6",
+  "installed_program": "motor-disabled acquisition harness; no old motor program restoration"
+}
