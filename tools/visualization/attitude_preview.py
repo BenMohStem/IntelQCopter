@@ -37,7 +37,8 @@ device.write(b'?')
 verified=False
 pending=b''
 history=[deque(maxlen=300) for _ in range(4)]
-fig,axes=plt.subplots(3,1,sharex=True,figsize=(10,8))
+fig,axes=plt.subplots(4,1,sharex=True,figsize=(11,10))
+pid_history=[deque(maxlen=300) for _ in range(5)]
 qhistory=[deque(maxlen=300) for _ in range(5)]
 target_history=[deque(maxlen=300) for _ in range(4)]
 fig.suptitle('Quaternion fusion preview - motors disabled')
@@ -50,7 +51,9 @@ target_lines.append(axes[1].plot([],[],'--',label='Yaw-rate target')[0])
 target_text=axes[1].text(0.01,0.02,'Xbox: waiting',transform=axes[1].transAxes,fontsize=9)
 status=axes[0].text(0.01,0.98,'Waiting for data',transform=axes[0].transAxes,va='top',fontsize=9)
 axes[1].set_ylabel('Yaw rate (deg/s)')
-axes[2].set_xlabel('Host receive time (s)')
+axes[3].set_xlabel('Host receive time (s)')
+axes[3].set_ylabel('Roll-rate PID demo')
+pid_lines=[axes[3].plot([],[],label=name)[0] for name in ['P','I','D','Sum (bounded)']]
 axes[2].set_ylabel('Quaternion components')
 axes[2].set_ylim(-1.05,1.05)
 qlines=[axes[2].plot([],[],label=name)[0] for name in ['w','x','y','z']]
@@ -69,6 +72,10 @@ def update(_):
         if value.startswith('HELLO,'):
             if expected not in value:raise ValueError('Wrong firmware source; upload preview first')
             verified=True
+        if verified and value.startswith('C,'):
+            fields=value.split(',')
+            if len(fields)==6:
+                for buf,v in zip(pid_history,[time.monotonic()-started]+[float(v) for v in fields[2:]]):buf.append(v)
         if verified and value.startswith('T,'):
             fields=value.split(',')
             if len(fields)==6:
@@ -97,10 +104,11 @@ def update(_):
         line.set_data(history[0],values)
     for i,line in enumerate(qlines):line.set_data(qhistory[0],qhistory[i+1])
     for i,line in enumerate(target_lines):line.set_data(target_history[0],target_history[i+1])
+    for i,line in enumerate(pid_lines):line.set_data(pid_history[0],pid_history[i+1])
     for ax in axes:ax.relim();ax.autoscale_view()
     axes[0].set_ylim(-180,180)
     axes[2].set_ylim(-1.05,1.05)
-    return lines+qlines+target_lines
+    return lines+qlines+target_lines+pid_lines
 try:
     print('Recording automatically to',folder)
     print('Tilt gently, then return to the starting position. Close plot to finish.')

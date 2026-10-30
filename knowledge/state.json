@@ -5,7 +5,7 @@
   "active_branch": "codex/stepwise-esp32",
   "active_checkout": "QCopter-Stepwise",
   "purpose": "Verified facts, concise decision rationale and coordination; not a transcript or private reasoning dump",
-  "current_stage": "Operator reports good V2 quaternion preview during deliberate shaking;1055diagnostics retain unit norm. Xbox setpoint-only feature implemented next, software checks pass; combined hardware timing/physical input signs pending. No PID/motor outputs or calibration changes.",
+  "current_stage": "Roll-rate PID zero-target numerical demonstration built and actual-helper host tests pass. P/I/filtered-D/bounded sum logged and graphed; no angle cascade, mixer or actuator path. New source not uploaded. Previous target log shows configured endpoints but physical signs/link acceptance pending.",
   "rules": [
     "One Arduino main.cpp, C-like code, Allman braces, Serial.printf",
     "Motor arming and outputs disabled; no actuator tests",

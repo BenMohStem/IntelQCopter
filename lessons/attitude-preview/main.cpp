@@ -185,6 +185,40 @@ volatile float latest_drone_gyro[3] = { 0 };
 volatile float latest_roll_deg = 0;
 volatile float latest_pitch_deg = 0;
 
+// Diagnostic roll-rate PID, zero setpoint. No actuator consumes this value.
+// Illustrative normalized-output gains, NOT physical flight settings.
+struct PidPreview
+{
+    float p;
+    float i;
+    float d;
+    float output;
+    float previous_rate;
+    bool initialized;
+};
+static PidPreview roll_pid = {};
+
+static void update_pid_preview(PidPreview *pid, float rate)
+{
+    const float dt = 0.001f;
+    const float limit = 0.2f;
+    const float error = -rate;
+    pid->p = 0.1f * error;
+    float slope = pid->initialized ? (rate - pid->previous_rate) / dt : 0.0f;
+    float derivative = -0.001f * slope;
+    pid->d += dt / (0.02f + dt) * (derivative - pid->d);
+    float candidate_i = fmaxf(-limit, fminf(limit, pid->i + 0.05f * error * dt));
+    float sum = pid->p + candidate_i + pid->d;
+    // Keep integration when it helps leave saturation; reject outward growth.
+    if (!((sum > limit && error > 0.0f) || (sum < -limit && error < 0.0f)))
+    {
+        pid->i = candidate_i;
+    }
+    pid->output = fmaxf(-limit, fminf(limit, pid->p + pid->i + pid->d));
+    pid->previous_rate = rate;
+    pid->initialized = true;
+}
+
 // Core 1 owns sensor state. Core 0 owns slow serial formatting/transmission.
 struct TelemetryPacket
 {
@@ -196,6 +230,7 @@ struct TelemetryPacket
     float roll;
     float pitch;
     float quaternion[4];
+    float pid_terms[4];
     bool capture;
     bool diagnostic;
     bool barrier;
@@ -315,6 +350,8 @@ static void telemetry_worker(void *)
         }
         if (packet.diagnostic)
         {
+            Serial.printf("C,%lu,%.6f,%.6f,%.6f,%.6f\n", (unsigned long)packet.sequence,
+                packet.pid_terms[0], packet.pid_terms[1], packet.pid_terms[2], packet.pid_terms[3]);
             Serial.printf("Q,%lu,%.8f,%.8f,%.8f,%.8f\n", (unsigned long)packet.sequence,
                 packet.quaternion[0], packet.quaternion[1],
                 packet.quaternion[2], packet.quaternion[3]);
@@ -397,7 +434,7 @@ static void report(void)
         Serial.printf("ERROR,SENSOR_OR_OFFSET_CHECK_FAILED\n");
         return;
     }
-    Serial.printf("HELLO,FUSION_TARGETS_V1,%s\n", BENCH_SOURCE_SHA);
+    Serial.printf("HELLO,PID_DEMO_V1,%s\n", BENCH_SOURCE_SHA);
     Serial.printf("CONFIG,accel_g=8,gyro_dps=500,dlpf=0,divider=7,i2c_hz=400000,user_cal=xyz_mpu_plus_matrix\n");
     Serial.printf("BOARD,%s,%012llX\n", ESP.getChipModel(), ESP.getEfuseMac());
     for (uint8_t axis = 0; axis < 3; axis++)
@@ -425,7 +462,7 @@ static void report(void)
     Serial.printf("GYRO_SCALE,65.5,counts_per_degree_per_second,frame=sensor,correction=mpu_plus_remainder\n");
     Serial.printf("LOG,acquisition_core=%d,serial_core=0,queue_capacity=128\n", xPortGetCoreID());
     Serial.printf("RATE,hz=1000,packet_bytes=14,clock=mpu_fifo,diagnostic_divider=100\n");
-    Serial.printf("READY,FUSION_TARGETS_V1\n");
+    Serial.printf("READY,PID_DEMO_V1\n");
 }
 
 void setup(void)
@@ -629,6 +666,7 @@ static void process_one_sample(void)
         latest_drone_accel[axis] = drone[axis];
         latest_sensor_gyro[axis] = gyro[axis];
     }
+    update_pid_preview(&roll_pid, body_gyro[0]);
     latest_roll_deg = roll;
     latest_pitch_deg = pitch;
     maximum_processing_us = max(maximum_processing_us, (uint32_t)(micros() - service_us));
@@ -661,6 +699,10 @@ static void process_one_sample(void)
         {
             packet.quaternion[component] = attitude_q[component];
         }
+        packet.pid_terms[0] = roll_pid.p;
+        packet.pid_terms[1] = roll_pid.i;
+        packet.pid_terms[2] = roll_pid.d;
+        packet.pid_terms[3] = roll_pid.output;
         packet.roll = roll;
         packet.pitch = pitch;
         if (xQueueSend(telemetry_queue, &packet, 0) != pdTRUE)

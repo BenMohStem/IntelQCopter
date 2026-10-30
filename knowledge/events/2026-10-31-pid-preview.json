@@ -1,0 +1,10 @@
+{
+  "schema": 2,
+  "id": "2026-10-31-pid-preview",
+  "date": "2026-10-31",
+  "domains": [
+    "operator-revision"
+  ],
+  "summary": "User requests next step; prior illustration already published to teacher branch.",
+  "outcome": "Prepare one roll-rate PID numerical demonstration with zero target and illustrative gains, saturation/conditional integration/filtered measurement derivative. Graphs only, no angle cascade/mixer/output or hardware acceptance."
+}

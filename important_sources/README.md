@@ -70,3 +70,5 @@ Latest Xbox menu/LED instructions: [connection indicator and simpler test select
 [Actual fusion wrap diagnosis and quaternion instrumentation](../measurements/software/2026-10-31-wrap-review/README.md). No claim all residual jitter is solved.
 
 [Quaternion fusion visual code/math lesson](../docs/learning/quaternion-fusion/report.html), [next Xbox setpoint-only stage](../measurements/software/2026-10-31-xbox-targets/README.md). Actual fusion evidence precedes target integration.
+
+[First roll-rate PID numerical demonstration](../measurements/software/2026-10-31-pid-preview/README.md). Graphs only; no actuator path.
