@@ -30,3 +30,8 @@ Canonical links, no duplicate runtime copies. The prior FIFO source was flashed/
 ## University submission in English
 
 [Professional and Personal Project report](../docs/university-report/technical-report.html) ? [PDF](../docs/university-report/technical-report.pdf) ? [Materials list](../docs/university-report/bill-of-materials.csv). Reviewed draft; see its completion checklist before submitting.
+
+
+## Current operator revision - 30 October 2026
+
+[Small Xbox input-only main.cpp](../lessons/xbox-input/main.cpp), [PlatformIO configuration](../lessons/xbox-input/platformio.ini), [revision guide](../docs/revision-and-xbox.md). Temporary independent lesson; replaces running firmware only when YOU upload it. No motors/PID; original MPU runtime remains in firmware/main.cpp. [Battery-current sensor choices](../docs/battery-current-sensor.md).

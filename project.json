@@ -319,6 +319,43 @@
       "path": "tools/calibration/test_gyro_motion.py",
       "args": [],
       "description": "Eight synthetic rotation and malformed-protocol controls; no physical acceptance"
+    },
+    "build-xbox": {
+      "runtime": "pio",
+      "path": "lessons/xbox-input/platformio.ini",
+      "args": [
+        "run",
+        "--project-dir",
+        "lessons/xbox-input",
+        "--environment",
+        "xbox-input"
+      ],
+      "description": "Compile isolated ESP32-S3 Xbox input lesson; no upload or sensor changes"
+    },
+    "upload-xbox": {
+      "runtime": "pio",
+      "path": "lessons/xbox-input/platformio.ini",
+      "args": [
+        "run",
+        "--project-dir",
+        "lessons/xbox-input",
+        "--environment",
+        "xbox-input",
+        "--target",
+        "upload"
+      ],
+      "description": "Manually upload input-only Xbox lesson; replaces running firmware; specify --upload-port"
+    },
+    "monitor-xbox": {
+      "runtime": "pio",
+      "path": "lessons/xbox-input/platformio.ini",
+      "args": [
+        "device",
+        "monitor",
+        "--baud",
+        "115200"
+      ],
+      "description": "Open Xbox input Serial Monitor at115200; specify --port"
     }
   }
 }
