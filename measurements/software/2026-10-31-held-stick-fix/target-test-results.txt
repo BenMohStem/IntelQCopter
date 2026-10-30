@@ -1,0 +1,1 @@
+PASS actual stick mapping: all65536codes bounded/monotonic, neutral, startup, held stick without reports, reversed pitch, disconnect and recenter; host only

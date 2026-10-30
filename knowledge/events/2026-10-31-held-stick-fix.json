@@ -1,0 +1,10 @@
+{
+  "schema": 2,
+  "id": "2026-10-31-held-stick-fix",
+  "date": "2026-10-31",
+  "domains": [
+    "operator-revision"
+  ],
+  "summary": "User reports reversed pitch and held-stick commands dropping to zero until recentered; asks simple correct code at nominal1kHz, optimization later.",
+  "outcome": "Reverse pitch sign and remove input-report-age gate from display readiness. Preserve disconnect-neutral gate and independent worker watchdog; no actuator or flight failsafe acceptance."
+}

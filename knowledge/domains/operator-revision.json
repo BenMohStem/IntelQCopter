@@ -75,6 +75,18 @@
           "path": "knowledge/decisions/2026-10-30-visible-milestones.md"
         }
       ]
+    },
+    {
+      "id": "operator.simple-correct-first",
+      "status": "user_preference",
+      "summary": "Prefer the simplest correct, accurate implementation. Keep nominal1kHz acquisition; defer optimization/profiling expansion until later.",
+      "sources": [
+        {
+          "kind": "user",
+          "date": "2026-10-31",
+          "reference": "Do not overengineer; correctness and simplicity first, speed/optimization later, approximately1kHz"
+        }
+      ]
     }
   ]
 }

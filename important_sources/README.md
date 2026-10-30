@@ -72,3 +72,5 @@ Latest Xbox menu/LED instructions: [connection indicator and simpler test select
 [Quaternion fusion visual code/math lesson](../docs/learning/quaternion-fusion/report.html), [next Xbox setpoint-only stage](../measurements/software/2026-10-31-xbox-targets/README.md). Actual fusion evidence precedes target integration.
 
 [First roll-rate PID numerical demonstration](../measurements/software/2026-10-31-pid-preview/README.md). Graphs only; no actuator path.
+
+[Simple pitch/held-stick preview correction](../measurements/software/2026-10-31-held-stick-fix/README.md).

@@ -272,16 +272,16 @@ static void report_targets(void)
     static bool neutral_seen = false;
     static uint32_t previous_report = 0;
     uint32_t now = millis();
-    bool recent = xbox.isConnected() && !xbox.isWaitingForFirstNotification()
-        && (uint32_t)(now - xbox.getReceiveNotificationAt()) <= 300;
+    // A held stick may produce no new report. Keep its DISPLAY target connected.
+    bool input_ready = xbox.isConnected() && !xbox.isWaitingForFirstNotification();
     float roll = 0.0f;
     float pitch = 0.0f;
     float yaw = 0.0f;
     float vertical = 0.0f;
-    if (recent)
+    if (input_ready)
     {
         roll = stick_command(xbox.xboxNotif.joyRHori);
-        pitch = stick_command(xbox.xboxNotif.joyRVert);
+        pitch = -stick_command(xbox.xboxNotif.joyRVert);
         yaw = -stick_command(xbox.xboxNotif.joyLHori);
         vertical = -stick_command(xbox.xboxNotif.joyLVert);
         if (roll == 0.0f && pitch == 0.0f && yaw == 0.0f && vertical == 0.0f)
@@ -293,7 +293,7 @@ static void report_targets(void)
     {
         neutral_seen = false;
     }
-    bool valid = recent && neutral_seen;
+    bool valid = input_ready && neutral_seen;
     if ((uint32_t)(now - previous_report) >= 100)
     {
         TargetPacket target = {now, valid, valid ? 20.0f * roll : 0.0f,
@@ -434,7 +434,7 @@ static void report(void)
         Serial.printf("ERROR,SENSOR_OR_OFFSET_CHECK_FAILED\n");
         return;
     }
-    Serial.printf("HELLO,PID_DEMO_V1,%s\n", BENCH_SOURCE_SHA);
+    Serial.printf("HELLO,PID_DEMO_V2,%s\n", BENCH_SOURCE_SHA);
     Serial.printf("CONFIG,accel_g=8,gyro_dps=500,dlpf=0,divider=7,i2c_hz=400000,user_cal=xyz_mpu_plus_matrix\n");
     Serial.printf("BOARD,%s,%012llX\n", ESP.getChipModel(), ESP.getEfuseMac());
     for (uint8_t axis = 0; axis < 3; axis++)
@@ -462,7 +462,7 @@ static void report(void)
     Serial.printf("GYRO_SCALE,65.5,counts_per_degree_per_second,frame=sensor,correction=mpu_plus_remainder\n");
     Serial.printf("LOG,acquisition_core=%d,serial_core=0,queue_capacity=128\n", xPortGetCoreID());
     Serial.printf("RATE,hz=1000,packet_bytes=14,clock=mpu_fifo,diagnostic_divider=100\n");
-    Serial.printf("READY,PID_DEMO_V1\n");
+    Serial.printf("READY,PID_DEMO_V2\n");
 }
 
 void setup(void)
