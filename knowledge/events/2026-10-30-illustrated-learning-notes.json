@@ -1,0 +1,10 @@
+{
+  "schema": 2,
+  "id": "2026-10-30-illustrated-learning-notes",
+  "date": "2026-10-30",
+  "domains": [
+    "reporting"
+  ],
+  "summary": "User requests illustrated HTML explanations of important completed steps and publication to teacher branch, including symbol-by-symbol explanation of plot fix.",
+  "outcome": "Added selected engineering-note index and gravity-angle lesson with actual data/analytic geometry labelled separately; expandable explanation covers each changed plot expression. Existing PDFs unchanged."
+}

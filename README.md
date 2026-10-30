@@ -48,3 +48,7 @@ python tools/check_knowledge.py .
 ```
 
 Student/supervisor names and the teacher's marking rubric remain to complete. The [official RSI curriculum](https://fge.usthb.dz/storage/disk/Robotique-et-systemes-intelligents-MAJ-2025.pdf), PDF p. 11, lists Projet Personnel Professionnel, RSI7.8, semester 7, 2 credits and coefficient 1.
+
+## Selected engineering notes
+
+[Illustrated engineering notes](learning/index.html): important implementation lessons, measured evidence, equations and expandable code explanations. These supplements do not change the dated report PDFs or their page counts.

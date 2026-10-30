@@ -65,6 +65,17 @@
           "sha256": "b04d1d147ca12e86c7032848dca10e14ee08080312c16a400062e94978b977c1"
         }
       ]
+    },
+    {
+      "id": "reporting.illustrated-learning-notes",
+      "status": "user_preference",
+      "summary": "User requests illustrated HTML explanations of important completed steps and publication to teacher branch, including symbol-by-symbol explanation of plot fix.",
+      "sources": [
+        {
+          "kind": "file",
+          "path": "learning/index.html"
+        }
+      ]
     }
   ]
 }
