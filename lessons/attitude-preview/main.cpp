@@ -194,6 +194,7 @@ struct TelemetryPacket
     float body_gyro[3];
     float roll;
     float pitch;
+    float quaternion[4];
     bool capture;
     bool diagnostic;
     bool barrier;
@@ -224,6 +225,9 @@ static void telemetry_worker(void *)
         }
         if (packet.diagnostic)
         {
+            Serial.printf("Q,%lu,%.8f,%.8f,%.8f,%.8f\n", (unsigned long)packet.sequence,
+                packet.quaternion[0], packet.quaternion[1],
+                packet.quaternion[2], packet.quaternion[3]);
             Serial.printf("D,%lu,%.6f,%.6f,%.6f,%.7f,%.7f,%.7f,%.3f,%.3f,%.7f,%.7f,%.7f\n",
                 (unsigned long)packet.sequence, packet.acceleration[0], packet.acceleration[1],
                 packet.acceleration[2], packet.gyro[0], packet.gyro[1], packet.gyro[2], packet.roll, packet.pitch,
@@ -301,7 +305,7 @@ static void report(void)
         Serial.printf("ERROR,SENSOR_OR_OFFSET_CHECK_FAILED\n");
         return;
     }
-    Serial.printf("HELLO,FUSION_PREVIEW_V1,%s\n", BENCH_SOURCE_SHA);
+    Serial.printf("HELLO,FUSION_PREVIEW_V2,%s\n", BENCH_SOURCE_SHA);
     Serial.printf("CONFIG,accel_g=8,gyro_dps=500,dlpf=0,divider=7,i2c_hz=400000,user_cal=xyz_mpu_plus_matrix\n");
     Serial.printf("BOARD,%s,%012llX\n", ESP.getChipModel(), ESP.getEfuseMac());
     for (uint8_t axis = 0; axis < 3; axis++)
@@ -329,7 +333,7 @@ static void report(void)
     Serial.printf("GYRO_SCALE,65.5,counts_per_degree_per_second,frame=sensor,correction=mpu_plus_remainder\n");
     Serial.printf("LOG,acquisition_core=%d,serial_core=0,queue_capacity=128\n", xPortGetCoreID());
     Serial.printf("RATE,hz=1000,packet_bytes=14,clock=mpu_fifo,diagnostic_divider=100\n");
-    Serial.printf("READY,FUSION_PREVIEW_V1\n");
+    Serial.printf("READY,FUSION_PREVIEW_V2\n");
 }
 
 void setup(void)
@@ -560,6 +564,10 @@ static void process_one_sample(void)
             packet.acceleration[axis] = drone[axis];
             packet.gyro[axis] = gyro[axis];
             packet.body_gyro[axis] = body_gyro[axis];
+        }
+        for (uint8_t component = 0; component < 4; component++)
+        {
+            packet.quaternion[component] = attitude_q[component];
         }
         packet.roll = roll;
         packet.pitch = pitch;

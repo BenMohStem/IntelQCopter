@@ -37,7 +37,8 @@ device.write(b'?')
 verified=False
 pending=b''
 history=[deque(maxlen=300) for _ in range(4)]
-fig,axes=plt.subplots(2,1,sharex=True)
+fig,axes=plt.subplots(3,1,sharex=True,figsize=(10,8))
+qhistory=[deque(maxlen=300) for _ in range(5)]
 fig.suptitle('Quaternion fusion preview - motors disabled')
 lines=[axes[0].plot([],[],label=name)[0] for name in ['Roll','Pitch']]
 lines.append(axes[1].plot([],[],label='Yaw rate')[0])
@@ -45,7 +46,10 @@ axes[0].set_ylabel('Fused Euler angles (deg)')
 axes[0].set_ylim(-180,180)
 status=axes[0].text(0.01,0.98,'Waiting for data',transform=axes[0].transAxes,va='top',fontsize=9)
 axes[1].set_ylabel('Yaw rate (deg/s)')
-axes[1].set_xlabel('Host receive time (s)')
+axes[2].set_xlabel('Host receive time (s)')
+axes[2].set_ylabel('Quaternion components')
+axes[2].set_ylim(-1.05,1.05)
+qlines=[axes[2].plot([],[],label=name)[0] for name in ['w','x','y','z']]
 for ax in axes:ax.legend();ax.grid(alpha=.2)
 started=time.monotonic()
 def update(_):
@@ -61,6 +65,11 @@ def update(_):
         if value.startswith('HELLO,'):
             if expected not in value:raise ValueError('Wrong firmware source; upload preview first')
             verified=True
+        if verified and value.startswith('Q,'):
+            fields=value.split(',')
+            if len(fields)==6:
+                values=[float(v) for v in fields[2:]]
+                for buf,v in zip(qhistory,[time.monotonic()-started]+values):buf.append(v)
         if verified and value.startswith('D,'):
             fields=value.split(',')
             if len(fields)!=13:continue
@@ -70,10 +79,18 @@ def update(_):
             if abs(norm-9.80665)>1.5:warning+=' | Acceleration disturbance'
             status.set_text(warning)
             for buf,v in zip(history,[time.monotonic()-started,roll,pitch,float(fields[12])*57.295779513]):buf.append(v)
-    for i,line in enumerate(lines):line.set_data(history[0],history[i+1])
+    for i,line in enumerate(lines):
+        values=list(history[i+1])
+        # Euler wrap is a coordinate boundary. Preserve originals in the log.
+        if i==0:
+            for j in range(len(values)-1,0,-1):
+                if abs(values[j]-values[j-1])>180:values[j]=float('nan')
+        line.set_data(history[0],values)
+    for i,line in enumerate(qlines):line.set_data(qhistory[0],qhistory[i+1])
     for ax in axes:ax.relim();ax.autoscale_view()
     axes[0].set_ylim(-180,180)
-    return lines
+    axes[2].set_ylim(-1.05,1.05)
+    return lines+qlines
 try:
     print('Recording automatically to',folder)
     print('Tilt gently, then return to the starting position. Close plot to finish.')

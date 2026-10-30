@@ -1,0 +1,10 @@
+{
+  "schema": 2,
+  "id": "2026-10-31-wrap-review",
+  "date": "2026-10-31",
+  "domains": [
+    "operator-revision"
+  ],
+  "summary": "User reports same jitter after fusion and requests deeper analysis/research.",
+  "outcome": "Confirmed fusion source from actual log; quantified Euler wrap jumps separately from vertical singularity. Add same-sample quaternion telemetry and diagnostic traces; no claim of physical estimator fix before new evidence."
+}

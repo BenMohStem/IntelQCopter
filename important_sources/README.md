@@ -66,3 +66,5 @@ Latest Xbox menu/LED instructions: [connection indicator and simpler test select
 [Selected illustrated learning notes](../docs/learning/index.html), also published to the university-report branch.
 
 [Quaternion fusion preview and limits](../measurements/software/2026-10-31-fusion/README.md). Adafruit Mahony, not Kalman.
+
+[Actual fusion wrap diagnosis and quaternion instrumentation](../measurements/software/2026-10-31-wrap-review/README.md). No claim all residual jitter is solved.

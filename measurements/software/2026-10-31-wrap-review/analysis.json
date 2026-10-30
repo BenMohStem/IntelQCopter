@@ -1,0 +1,14 @@
+{
+  "engine": "Offline analysis of actual FUSION_PREVIEW_V1 log, not simulation",
+  "log_sha256": "2f5bda3e39c6defe155fb54d6bc6ac2eb5f15c787da0e7635f9aaa63606004c5",
+  "identity": [
+    "HELLO,FUSION_PREVIEW_V1,53a7f37086916ed53eb6b6ac257aafe1ee19e964a96974d86fb41b1cc329e10e"
+  ],
+  "rows": 668,
+  "roll_wrap_crossings": 68,
+  "raw_step_max_deg": 358.782,
+  "same_step_shortest_arc_deg": 1.2180000000000177,
+  "max_shortest_arc_step_deg": 119.084,
+  "near_vertical_pitch_rows": 237,
+  "limits": "Euler-only log cannot establish quaternion continuity, physical truth or full estimator accuracy. Some residual motion may be real, coordinate sensitivity or estimator error; do not conflate all with wrap."
+}
