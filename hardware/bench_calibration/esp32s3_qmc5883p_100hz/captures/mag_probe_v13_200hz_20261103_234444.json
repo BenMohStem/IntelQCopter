@@ -1,0 +1,48 @@
+{
+  "csv_samples": 504,
+  "csv_rate_hz": 46.65,
+  "last_health_hz": 186.82,
+  "peak_health_hz": 188.61,
+  "last_health": {
+    "profile": "200",
+    "measured_fresh_hz": "186.82",
+    "fresh": "1864",
+    "not_ready": "2827",
+    "overflow": "0",
+    "status_fail": "5",
+    "xyz_fail": "0",
+    "verify_fail": "0",
+    "identical": "2",
+    "regs_ok": "1",
+    "writes_ack": "1",
+    "csv_every": "4",
+    "last_status": "0x19",
+    "xyz": "-1327,-1653,-2422",
+    "age_sec": "0.000"
+  },
+  "verify_lines": [
+    "VERIFY reason=IMMEDIATE id=0x80 C1=0x3D C2=0x08 this_read=1 confirmed_ever_and_not_contradicted=1",
+    "VERIFY reason=PERIODIC_READ_ONLY id=0x80 C1=0x3D C2=0x08 this_read=1 confirmed_ever_and_not_contradicted=1",
+    "VERIFY reason=PERIODIC_READ_ONLY id=0x80 C1=0x3D C2=0x08 this_read=1 confirmed_ever_and_not_contradicted=1"
+  ],
+  "errors": [
+    "FIRST_BUS_READ_FAILURE stage=STATUS_09 t_us=1169225 reg_phase=2 returned_bytes=0 SDA=1 SCL=1"
+  ],
+  "boot_profiles": [
+    "BOOT_PROFILE requested=200 ctrl1=0x3D ctrl2=0x08 I2C=100000Hz poll_us=2000 stop_start=1 csv_every=4"
+  ],
+  "v13_boot_confirmed": true,
+  "first_non_rom_line": "Calculated checksum='24f3506e'",
+  "first_sample": [
+    1212853,
+    -1335,
+    -1680,
+    -2468
+  ],
+  "last_sample": [
+    11995853,
+    -1278,
+    -1665,
+    -2429
+  ]
+}

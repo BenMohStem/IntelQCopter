@@ -216,3 +216,35 @@ GPIOs held INPUT.
   normal-mode current 280/1180 µA at 200 Hz for OSR1=1/8 respectively. This
   variant is intended to check whether the high-OSR profile's greater sensor
   load is related to intermittent operation. No hardware trial has been run.
+
+## Sustained 200 Hz and continuous-mode attempts — 2026-11-03
+
+Engine/hardware assumptions: PlatformIO 7.1.3 / Arduino, physical ESP32-S3
+DevKitC-1 revision 0.2 / CH343 COM3; QMC5883P 0x2C / ID 0x80 and MPU bypass
+observed, SDA GPIO9/SCL GPIO8 and sensor rail/wiring/pull-ups assumed. Diagnostic
+firmware UART 115200, I2C 100 kHz unless stated, Wi-Fi off, no ESC output.
+
+- After the user power-cycled the board, the low-current 200 Hz profile
+  (`CTRL1=0x3D`, ODR=200, OSR1=1, OSR2=1) ran a 30 s confirmation. HEALTH
+  reported 14,730 fresh samples, 188.84 Hz, final age 0.001 s, verified
+  C1=0x3D/C2=0x08 on six periodic checks, zero overflows, five status-read
+  failures, and 41 repeated adjacent vectors. The result is stable and close
+  to nominal 200 Hz but does not reach exactly 200. Evidence:
+  `captures/mag_probe_v13_200hz_20261103_234534.log` and `.json`.
+- Tried low-OSR continuous (`CTRL1=0x33`) at 100 kHz I2C and 2 kHz poll
+  schedule. It produced zero fresh samples; C1 read back 0 and DRDY stayed
+  clear (`0x18`). Evidence: `captures/mag_probe_v13_continuous-fast_20261103_234703.log`
+  and `.json`.
+- Then flashed QST's exact continuous example (`CTRL1=0xC3`) at 100 kHz. The
+  capture saw ROM `waiting for download`, so the image had not started and no
+  QMC result can be inferred. User was prompted to power-cycle again; await
+  confirmation before any further COM3 access.
+- The probe's capture acceptance now uses final HEALTH (profile, confirmed
+  register readback, recent sample age and rate), and treats fresh HEALTH as
+  evidence even when the serial-open buffer reset discarded earlier CSV rows.
+  This prevents stale bursts from passing and avoids false zero-sample reports.
+- The 100 Hz `0xC9` trial with STOP+START had already confirmed intermittent
+  status/bus behavior, while the low-OSR 200 Hz trial is stable. This suggests
+  reduced OSR/current is beneficial, but current was not measured and causation
+  is not established. Continuous mode is not yet working. No ≥500 Hz result;
+  the user's target remains unverified.

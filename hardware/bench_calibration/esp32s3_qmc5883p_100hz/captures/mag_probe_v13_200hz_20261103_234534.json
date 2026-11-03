@@ -1,0 +1,47 @@
+{
+  "csv_samples": 1424,
+  "csv_rate_hz": 47.45,
+  "last_health_hz": 188.84,
+  "peak_health_hz": 188.84,
+  "last_health": {
+    "profile": "200",
+    "measured_fresh_hz": "188.84",
+    "fresh": "14730",
+    "not_ready": "21888",
+    "overflow": "0",
+    "status_fail": "5",
+    "xyz_fail": "0",
+    "verify_fail": "0",
+    "identical": "41",
+    "regs_ok": "1",
+    "writes_ack": "1",
+    "csv_every": "4",
+    "last_status": "0x18",
+    "xyz": "-1346,-1653,-2497",
+    "age_sec": "0.001"
+  },
+  "verify_lines": [
+    "VERIFY reason=PERIODIC_READ_ONLY id=0x80 C1=0x3D C2=0x08 this_read=1 confirmed_ever_and_not_contradicted=1",
+    "VERIFY reason=PERIODIC_READ_ONLY id=0x80 C1=0x3D C2=0x08 this_read=1 confirmed_ever_and_not_contradicted=1",
+    "VERIFY reason=PERIODIC_READ_ONLY id=0x80 C1=0x3D C2=0x08 this_read=1 confirmed_ever_and_not_contradicted=1",
+    "VERIFY reason=PERIODIC_READ_ONLY id=0x80 C1=0x3D C2=0x08 this_read=1 confirmed_ever_and_not_contradicted=1",
+    "VERIFY reason=PERIODIC_READ_ONLY id=0x80 C1=0x3D C2=0x08 this_read=1 confirmed_ever_and_not_contradicted=1",
+    "VERIFY reason=PERIODIC_READ_ONLY id=0x80 C1=0x3D C2=0x08 this_read=1 confirmed_ever_and_not_contradicted=1"
+  ],
+  "errors": [],
+  "boot_profiles": [],
+  "v13_boot_confirmed": true,
+  "first_non_rom_line": "CSV,50077853,-1331,-1687,-2348,0x19,1",
+  "first_sample": [
+    50077853,
+    -1331,
+    -1687,
+    -2348
+  ],
+  "last_sample": [
+    80069853,
+    -1372,
+    -1695,
+    -2445
+  ]
+}

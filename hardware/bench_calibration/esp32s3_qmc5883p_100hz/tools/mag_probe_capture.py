@@ -111,15 +111,16 @@ def run(port, seconds, baud, profile_tag):
             print('First non-ROM line:', summary['first_non_rom_line'][:180])
         print('No conclusion about QMC conversion can be drawn from this capture.')
         return 7
-    if summary['csv_samples'] == 0:
+    health = summary['last_health'] or {}
+    fresh_total = int(health.get('fresh', '0'))
+    if summary['csv_samples'] == 0 and fresh_total == 0:
         print('FAIL: The v13 probe booted, but produced no fresh magnetic samples.')
         print('Check QMC 3.3V, soldering, shared I2C, MPU bypass and a full board power reset.')
         return 2
-    target_rate = 100 if profile_tag == '100hz' else (200 if profile_tag == '200hz' else 900)
+    target_rate = 100 if profile_tag == '100hz' else (200 if profile_tag == '200hz' else 500)
     if summary['last_health_hz'] is None:
         print('FAIL: No HEALTH sensor-rate measurements were captured; cannot verify the profile.')
         return 4
-    health = summary['last_health'] or {}
     profile_id = {'100hz': '100', '200hz': '200',
                   'continuous': '0', 'continuous-fast': '0'}[profile_tag]
     sustained = (summary['last_health_hz'] >= target_rate * 0.75
