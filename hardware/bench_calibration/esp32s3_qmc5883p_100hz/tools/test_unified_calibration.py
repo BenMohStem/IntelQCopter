@@ -15,7 +15,7 @@ def run():
        mag_tumble_samples=5000,bmp_samples=300,skip_bmp=False,skip_lidar=False,
        lidar_samples=40,mag_only=False)
     q=stages(a)
-    assert len(q)==16 and q[-1].sensor=='lidar' and sum(s.sensor=='lidar' for s in q)==4
+    assert len(q)==12 and all(s.sensor!='lidar' for s in q)
     a.skip_lidar=True
     assert len(stages(a))==12
     a.mag_only=True
@@ -60,6 +60,6 @@ def run():
         report=json.loads((Path(td)/'result_calibration.json').read_text())
         assert 'lidar' in report and 'temperature_analysis' in report
     assert not (Path(__file__).resolve().parent/'start_gui.ps1').exists()
-    print('PASS: guided optional LiDAR stages, nonblocking UART decoder, CSV/attempts, auto calibration and single launcher')
+    print('PASS: 12-stage GUI without LiDAR, nonblocking UART decoder, legacy LiDAR analysis, CSV/attempts and auto calibration')
 
 if __name__=='__main__':run()

@@ -45,6 +45,7 @@ def run(port,seconds):
     last_mag=None
     invalid=0
     lost=0
+    bytes_total=0
     buf=bytearray()
     ser=serial.Serial(port=port,baudrate=BAUD,timeout=0.05,rtscts=False,dsrdtr=False)
     try:
@@ -57,6 +58,7 @@ def run(port,seconds):
             last_report=begin
             while time.monotonic()-begin<seconds:
                 data=ser.read(max(1,ser.in_waiting or 128))
+                bytes_total+=len(data)
                 buf.extend(data)
                 if len(buf)>100000: del buf[:-100]
                 while True:
@@ -93,14 +95,20 @@ def run(port,seconds):
                 now=time.monotonic()
                 if now-last_report>=2:
                     hz=(valid-1)*1e6/((last-first)&0xFFFFFFFF) if valid>1 and last!=first else 0
-                    print(f'frames={valid} imu={flagsum["imu"]} mag_valid={flagsum["mag"]} mag_fresh={flagsum["mag_fresh"]} bmp_fresh={flagsum["bmp_fresh"]} link_hz={hz:.1f} invalid={invalid} lost={lost}')
+                    print(f'bytes={bytes_total} frames={valid} imu={flagsum["imu"]} mag_valid={flagsum["mag"]} mag_fresh={flagsum["mag_fresh"]} bmp_fresh={flagsum["bmp_fresh"]} link_hz={hz:.1f} invalid={invalid} lost={lost}')
                     last_report=now
     finally:
         ser.close()
     secs=((last-first)&0xFFFFFFFF)/1e6 if valid>1 else 0
     frame_rate=(valid-1)/secs if secs else 0
     mag_rate=flagsum['mag_fresh']/secs if secs else 0
-    print(f'FINAL frames={valid}, packet_hz={frame_rate:.1f}, mag_valid={flagsum["mag"]}, mag_fresh_hz={mag_rate:.1f}, first_mag={first_mag}, last_mag={last_mag}, crc_bad={invalid}, seq_lost={lost}, output={path}')
+    print(f'FINAL bytes={bytes_total}, frames={valid}, packet_hz={frame_rate:.1f}, mag_valid={flagsum["mag"]}, mag_fresh_hz={mag_rate:.1f}, bmp_fresh={flagsum["bmp_fresh"]}, first_mag={first_mag}, last_mag={last_mag}, crc_bad={invalid}, seq_lost={lost}, output={path}')
+    if bytes_total==0:
+        print(f'FAIL: No UART bytes received at {BAUD} baud. Confirm the full calibration firmware is running; text diagnostics at 115200 are not GUI packets.')
+        return 5
+    if not valid:
+        print(f'FAIL: Received {bytes_total} bytes but no CRC-valid v3 frames. Check baud, protocol and firmware image.')
+        return 6
     if not valid or not flagsum['imu'] or not flagsum['mag_fresh']:
         print('FAIL: Required MPU or MAG data not observed. This is not flight-ready.')
         print('Next: .\\tools\\start_calibration.ps1 -MagProbe -Seconds 20')

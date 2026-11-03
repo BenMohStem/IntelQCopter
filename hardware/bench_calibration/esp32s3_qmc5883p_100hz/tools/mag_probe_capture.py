@@ -18,7 +18,12 @@ def extract_summary(lines):
     verifies = []
     errors = []
     profiles = []
+    first_non_rom_line = None
     for line in lines:
+        if first_non_rom_line is None and not line.startswith((
+                'ESP-ROM:', 'Build:', 'rst:', 'boot:', 'SPIWP:', 'mode:',
+                'load:', 'entry ', 'E (')):
+            first_non_rom_line = line
         match = CSV.match(line)
         if match:
             samples.append([int(match.group(i)) for i in range(1, 5)])
@@ -41,6 +46,8 @@ def extract_summary(lines):
         'last_health_hz': health_rates[-1] if health_rates else None,
         'verify_lines': verifies, 'errors': errors,
         'boot_profiles': profiles,
+        'v13_boot_confirmed': bool(profiles),
+        'first_non_rom_line': first_non_rom_line,
         'first_sample': samples[0] if samples else None,
         'last_sample': samples[-1] if samples else None,
     }
@@ -93,9 +100,15 @@ def run(port, seconds, baud):
           f"measured_csv_hz={summary['csv_rate_hz']}",
           f"last_health_hz={summary['last_health_hz']}")
     print('Log:', raw_path, 'Summary:', json_path)
+    if not summary['v13_boot_confirmed']:
+        print('FAIL: Expected v13 BOOT_PROFILE marker was not received; this port is running a different firmware or no compatible text stream.')
+        if summary['first_non_rom_line']:
+            print('First non-ROM line:', summary['first_non_rom_line'][:180])
+        print('No conclusion about QMC conversion can be drawn from this capture.')
+        return 7
     if summary['csv_samples'] == 0:
-        print('FAIL: Even the historically working v13 MAG-only source produced zero samples.')
-        print('Check a TRUE cold power cycle, QMC 3.3V, soldering, shared I2C, and MPU bypass.')
+        print('FAIL: The v13 probe booted, but produced no fresh magnetic samples.')
+        print('Check QMC 3.3V, soldering, shared I2C, MPU bypass and a full board power reset.')
         return 2
     if summary['csv_rate_hz'] < 60:
         print('WARN: Sensor produced samples but did not sustain a useful rate.')

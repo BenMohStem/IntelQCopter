@@ -1,0 +1,27 @@
+{
+  "csv_samples": 615,
+  "csv_rate_hz": 90.63,
+  "last_health_hz": 90.96,
+  "verify_lines": [
+    "VERIFY reason=IMMEDIATE id=0x80 C1=0xC9 C2=0x08 this_read=1 confirmed_ever_and_not_contradicted=1",
+    "VERIFY reason=PERIODIC_READ_ONLY id=0x80 C1=0xC9 C2=0x08 this_read=1 confirmed_ever_and_not_contradicted=1"
+  ],
+  "errors": [
+    "FIRST_BUS_READ_FAILURE stage=STATUS_09 t_us=1167985 reg_phase=0 returned_bytes=0 SDA=1 SCL=1"
+  ],
+  "boot_profiles": [
+    "BOOT_PROFILE requested=100 ctrl1=0xC9 ctrl2=0x08 I2C=100000Hz csv_every=1"
+  ],
+  "first_sample": [
+    1226698,
+    -3071,
+    -2520,
+    -6055
+  ],
+  "last_sample": [
+    8001689,
+    -1246,
+    -1716,
+    -2455
+  ]
+}

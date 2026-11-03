@@ -13,5 +13,8 @@ lines=['BOOT_PROFILE requested=100 ctrl1=0xC9 ctrl2=0x08',
 s=probe.extract_summary(lines)
 assert s['csv_samples']==3 and abs(s['csv_rate_hz']-100)<.01 and s['last_health_hz']==97.5
 assert s['verify_lines'] and s['boot_profiles']
-assert probe.extract_summary(['HEALTH profile=100 measured_fresh_hz=0 fresh=0'])['csv_samples']==0
+assert s['v13_boot_confirmed']
+wrong_firmware=probe.extract_summary(['MAG ACK=1 ID=1:0x80 C1=1:0x00'])
+assert not wrong_firmware['v13_boot_confirmed'] and wrong_firmware['csv_samples']==0
+assert not probe.extract_summary(['HEALTH profile=100 measured_fresh_hz=0 fresh=0'])['v13_boot_confirmed']
 print('mag probe parser tests passed')

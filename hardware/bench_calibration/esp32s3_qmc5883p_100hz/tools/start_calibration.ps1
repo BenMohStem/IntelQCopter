@@ -115,7 +115,7 @@ try {
     Write-Host "  Barometer: $BmpSamples samples"
     Write-Host "  Preparation: $SettleSeconds seconds per stage"
     Write-Host '  Motor output DISABLED; remove propellers.' -ForegroundColor Yellow
-    $a=@((Join-Path $Root 'tools\live_calibration_gui.py'),
+    $a=@((Join-Path $Root 'tools\launch_calibration_gui.py'),
         '--port',$selectedPort,'--gyro-samples',"$GyroSamples",
         '--accel-samples',"$AccelSamples",'--mag-turn-samples',"$MagTurnSamples",
         '--mag-tumble-samples',"$MagTumbleSamples",'--bmp-samples',"$BmpSamples",

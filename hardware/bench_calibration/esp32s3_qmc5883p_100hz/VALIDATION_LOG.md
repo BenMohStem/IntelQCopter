@@ -69,3 +69,46 @@ in the integrated preflight. The isolated probe did not boot, so it cannot
 classify the QMC, power, bus, or bypass. The calibration GUI is available but
 must not be used to capture a magnetic calibration until the current firmware
 is known and the integrated preflight reports fresh magnetic samples.
+
+## 2026-11-03 follow-up hardware diagnosis
+
+Engine: same physical ESP32-S3 DevKitC-1, silicon revision 0.2, on CH343 COM3.
+The board revision and QMC supply/wiring remain assumed; observed I2C address is
+0x2C and chip ID is 0x80. Motor GPIOs stayed INPUT; no motor test occurred.
+
+- Before reflashing, COM3 emitted **zero bytes at 921600 baud**. At 115200 it
+  emitted `MAG ACK=...` text from a different diagnostic image, with C1=0x00,
+  C2=0x00, status 0x18 (DRDY clear), and XYZ=0,0,0. The expected v13 probe
+  `BOOT_PROFILE` marker was absent. The earlier zero-sample probe capture
+  `captures/mag_probe_v13_100hz_20261103_222554.log` was therefore a
+  wrong-firmware capture, not evidence that v13 had failed.
+- Reflashed the project calibration firmware. MPU and BMP worked immediately:
+  ~490 Hz packet stream, fresh BMP near 10 Hz, zero CRC/sequence errors; MAG
+  initially remained at zero.
+- Reflashed the isolated v13 QMC probe. At requested ODR 100 Hz it read back
+  C1=0xC9/C2=0x08 and recorded 615 fresh samples in 8 s (90.63 Hz). It had one
+  transient initial status-read failure and one overflow; later samples were
+  valid. Evidence: `captures/mag_probe_v13_100hz_20261103_223107.log` and JSON.
+- Tried a temporary 500 Hz MAG-status polling interval in the combined image.
+  That build emitted no valid packets, so the experiment was reverted. Do not
+  use that interval; the source remains at 200 Hz status polling.
+- Restored the normal combined image and reran preflight. **PASS:** 3,008 v3
+  packets at 471.3 Hz; MPU valid on all packets; MAG fresh 96.2 Hz; BMP fresh
+  near 10 Hz; CRC errors 0 and sequence loss 0. Evidence:
+  `captures/usb_preflight_20261103_223853.csv`. A later 4 s confirmation yielded
+  1,887 frames at 471.3 Hz, MAG fresh 96.0 Hz, BMP fresh 40, CRC errors 0,
+  sequence loss 0 (`captures/usb_preflight_20261103_224928.csv`).
+- The GUI had previously been launched while the incompatible text image was
+  installed. The launcher now uses `launch_calibration_gui.py`, which supplies
+  missing Tcl/Tk script libraries from the installed Python archives in the OS
+  temp directory; Python 3.15's Tcl/Tk initialization was incomplete. The GUI
+  decoder self-test and the 12-stage pipeline tests pass.
+- A header-only GUI capture while idle is expected: sensor rows are written
+  only after a phase starts. Use the binary preflight for hardware acceptance
+  before starting any phase.
+
+The zero-packet issue was caused by the board running a 115200-baud text
+diagnostic rather than the GUI's 921600-baud v3 binary firmware. The board is
+currently restored to the normal calibration image; the latest combined
+preflight passes MPU, MAG and BMP. These checks demonstrate operation in this
+bench setup, not flight validation or validation of unobserved board wiring.
