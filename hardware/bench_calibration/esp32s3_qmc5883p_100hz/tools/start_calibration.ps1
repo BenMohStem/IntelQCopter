@@ -84,8 +84,11 @@ try {
 
     if ($UploadFirmware) {
         $configText=[System.IO.File]::ReadAllText((Join-Path $Root 'platformio.ini'))
-        # Check ONLY the full-calibration env, not the separate MAG probe env.
-        $fullConfig = ($configText -split '(?m)^\[env:esp32-s3-mag-probe\]')[0]
+        # Inspect only the full-calibration section. The MAG-only common env is
+        # intentionally text-based and appears before the probe-specific env.
+        $fullSection = [regex]::Match($configText,'(?ms)^\[env:esp32-s3-calibration-500hz\]\s*(.*?)(?=^\[|\z)')
+        if (-not $fullSection.Success) { throw 'Full calibration environment is missing from platformio.ini.' }
+        $fullConfig = $fullSection.Groups[1].Value
         if ($fullConfig -match '(?m)^\s*-DIQ_MAG_TEXT_DIAGNOSTIC=1\s*$' -or
             $fullConfig -match '(?m)^\s*-DIQ_WIFI_ENABLED=1\s*$') {
             throw 'This project must have IQ_MAG_TEXT_DIAGNOSTIC=0 and IQ_WIFI_ENABLED=0.'

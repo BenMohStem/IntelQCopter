@@ -11,7 +11,7 @@
  *
  * Architecture:
  *   Arduino loop():  500 Hz target, absolute 2,000 us deadlines.
- *   Sensor reads:    MPU every cycle, QMC nominal 100 Hz, BMP ~10 Hz.
+ *   Sensor reads:    MPU every cycle, QMC 200 Hz low-OSR, BMP ~10 Hz.
  *   Transport:       identical 52-byte CRC-protected v3 packets over
  *                    USB serial and optionally Wi-Fi UDP.
  *   Wi-Fi task:      runs on core 0, owns all UDP calls, NEVER touches I2C.
@@ -40,6 +40,9 @@
 #ifndef IQ_I2C_HZ
 #define IQ_I2C_HZ 100000
 #endif
+#ifndef IQ_MAG_CONTROL1
+#define IQ_MAG_CONTROL1 0x3D
+#endif
 
 #if IQ_WIFI_ENABLED
 #include <WiFi.h>
@@ -61,17 +64,17 @@ constexpr uint8_t BMP_ALTERNATE_ADDRESS = 0x77;
 constexpr uint8_t MAG_ADDRESS = 0x2C; // QMC5883P, not HMC5883L or QMC5883L
 constexpr uint32_t IMU_PERIOD_US = 2000; // 500 Hz scheduling target
 constexpr uint32_t BMP_PERIOD_US = 100000; // 10 Hz
-constexpr uint32_t MAG_PERIOD_US = 5000; // Poll internal 0x09 at 200 Hz; MAG ODR remains 100 Hz
+constexpr uint32_t MAG_PERIOD_US = 5000; // Poll internal DRDY at the selected 200 Hz ODR
 constexpr uint32_t MAG_STALE_MS = 1000;
 constexpr uint32_t SERIAL_BAUD = 921600; // CH343 UART, binary v3 packets
 constexpr size_t PACKET_SIZE = 52;
 
-// QMC5883P fixed normal-mode 100 Hz configuration, observed working in
-// the user's v13 MAG-ONLY capture (ID 0x80, C1 0xC9, C2 0x08).
-// C1 0xC9: normal continuous mode / ODR 100 Hz, OSR defaults from v13.
+// QMC5883P normal-mode 200 Hz low-OSR profile (ID 0x80, C1 0x3D, C2 0x08).
+// A 30 s MAG-only run measured 188.84 fresh samples/s; full-system rate is
+// not yet measured. C1 0x3D selects ODR 200 Hz / OSR1=1 / OSR2=1.
 // C2 0x08: +/-8 gauss + set/reset. 0x29 = 0x06 XYZ sign.
 // This is now the FULL sensor calibration application (not MAG-only).
-constexpr uint8_t MAG_CONTROL1 = 0xC9;
+constexpr uint8_t MAG_CONTROL1 = static_cast<uint8_t>(IQ_MAG_CONTROL1);
 constexpr uint8_t MAG_CONTROL2 = 0x08;
 constexpr uint8_t MAG_XYZ_SIGN = 0x06;
 

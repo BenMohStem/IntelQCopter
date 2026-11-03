@@ -314,3 +314,21 @@ No 200 Hz retest or ≥500 Hz continuous result is established by this session.
 The actual engine and hardware assumptions above remain unvalidated; do not
 attribute the post-start failure to a specific electrical cause until sensor
 VDD and bus signals are measured or a successful cold-power comparison is run.
+
+## Calibration GUI setup — 2026-11-04
+
+The user chose to calibrate with the previously stable 200 Hz normal-mode QMC
+profile and asked to stop further diagnosis. PlatformIO/Arduino full calibration
+firmware compiled and uploaded to ESP32-S3 CH343 COM3 with QMC `CTRL1=0x3D`
+(200 Hz ODR, OSR1=1, OSR2=1), 100 kHz I2C, 921600-baud binary telemetry, and
+500 Hz MPU target. Motor output remains disabled. The profile's 188.84 Hz result
+was measured only in the isolated MAG-only probe; the rate and packet health
+under the full sensor workload were not independently verified here.
+
+The GUI presents 12 steps (stationary gyro, six accelerometer faces, four
+magnetometer rotations, and barometer), with no LiDAR stages. Shortened prompts,
+reduced header height, larger plot-row separation, and the 200 Hz QMC label are
+in the saved GUI source. The GUI process was launched after upload. Windows
+Computer Use window capture timed out twice, so visual layout and live packet
+counts could not be confirmed from the agent view. Board/wiring and the BMP
+address remain assumptions; no new sensor diagnosis was performed.

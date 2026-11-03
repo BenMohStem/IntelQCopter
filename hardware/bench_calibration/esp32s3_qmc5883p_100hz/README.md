@@ -28,7 +28,7 @@ The same upload and preflight can be run directly:
 - Resolves the CH343 serial COM port automatically (or use `-Port COM3`).
 - Builds and flashes the complete sensor calibration firmware.
 - Reads the CRC-protected 52-byte binary UART stream at **921600 baud**.
-- Uses 500 Hz MPU target, 100 Hz QMC (`0xC9`) and BMP280 ~10 Hz, Wi-Fi off.
+- Uses 500 Hz MPU target, QMC normal-mode 200 Hz low-OSR (`CTRL1=0x3D`) and BMP280 ~10 Hz, Wi-Fi off.
 - Fails instead of claiming calibration when magnetometer freshness is zero.
 
 To start the GUI **without reflash**:
@@ -44,9 +44,21 @@ For the GUI after reflash:
 ```
 
 The calibration GUI contains 12 stages: stationary gyro, six accelerometer faces,
-four magnetometer rotations, and barometer. LiDAR capture is removed from this
-workflow. The live status line distinguishes no UART bytes from incompatible or
-corrupt packets and reports valid sensor counts.
+four magnetometer rotations, and barometer. There are no LiDAR stages. The live
+status line distinguishes no UART bytes from incompatible or corrupt packets
+and reports valid sensor counts. The selected 200 Hz QMC profile was measured
+at 188.84 fresh samples/s in MAG-only mode; its rate under full multi-sensor
+load has not yet been measured.
+
+To start calibration with the selected 200 Hz QMC profile, upload the full
+binary firmware and open the GUI:
+
+```powershell
+.\qcopter.ps1 calibration-gui -UploadFirmware
+```
+
+Without `-UploadFirmware`, the launcher does not flash and assumes compatible
+binary calibration firmware is already installed.
 
 ## If magnetometer is still missing: ONE direct comparison
 

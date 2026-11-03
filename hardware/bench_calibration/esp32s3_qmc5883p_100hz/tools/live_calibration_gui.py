@@ -259,26 +259,20 @@ class Stage:
 
 def stages(args):
     sequence = ([Stage('REST','STILL',args.gyro_samples,'mpu',
-                  'Leave the drone COMPLETELY STATIONARY, level or at any fixed orientation.\n'
-                  'Do not touch the drone during this stationary gyro calibration. Warm up electronics first.')]
+                  'Keep the drone completely still in one fixed orientation. Warm up electronics first.')]
         + [Stage(p,'STILL',args.accel_samples,'mpu',
-            f'Place the MPU6050 {p} SENSOR axis vertically UP.\n'
-            f'Hold this pose steady during sampling. No software pose gate; accurate orientation is your responsibility.')
+            f'Place the MPU6050 {p} axis vertically up and hold steady.')
            for p in ('+X','-X','+Y','-Y','+Z','-Z')]
         + [Stage('MAG','YAW',args.mag_turn_samples,'mag',
-                 'Keep drone approximately HORIZONTAL and slowly rotate it 360 degrees around vertical (yaw).\n'
-                 'Repeat at several small tilts. Press Enter, wait for countdown, then START rotating.'),
+                 'Hold roughly level; slowly turn 360° around vertical, adding gentle tilts.'),
            Stage('MAG','PITCH',args.mag_turn_samples,'mag',
-                 'Slowly PITCH entire assembled drone 360 degrees: nose up, inverted, nose down, return.\n'
-                 'Wait for the 3-second countdown, then perform the full turn. Use a clear open space; no motors or steel table.'),
+                 'Slowly pitch through a full 360°: nose up, inverted, nose down, return.'),
            Stage('MAG','ROLL',args.mag_turn_samples,'mag',
-                 'Wait for the 3-second countdown, then slowly ROLL entire drone 360 degrees through inverted poses.'),
+                 'Slowly roll through a full 360°, including inverted orientations.'),
            Stage('MAG','TUMBLE',args.mag_tumble_samples,'mag',
-                 'Wait for the 3-second countdown, then slow unrestricted 3D tumbling. Cover EVERY orientation and diagonals.\n'
-                 'This stage is essential for a well-conditioned ellipsoid fit.')]
+                 'Slowly tumble through all orientations, including diagonal poses.')]
         + ([] if args.skip_bmp else [Stage('BMP','STILL',args.bmp_samples,'bmp',
-                 'Keep drone still at one known reference height, with no propeller wash or moving air.\n'
-                 'A barometer does not provide a true altitude reference by itself.')])
+                 'Keep still at one reference height, away from drafts and propeller wash.')])
 )
     return ([x for x in sequence if x.sensor == 'mag']
             if getattr(args, 'mag_only', False) else sequence)
@@ -743,8 +737,9 @@ class Application:
         self.tk, self.ttk, self.msg = tk, ttk, messagebox
         self.args, self.stages, self.output = args, stage_list, output
         self.root=tk.Tk()
-        self.root.title('IntelQCopter | 500 Hz guided sensor calibration')
-        self.root.geometry('1240x890')
+        self.root.title('IntelQCopter | 500 Hz IMU / 200 Hz QMC calibration')
+        self.root.geometry('1240x800')
+        self.root.minsize(1024,680)
         self.events=queue.Queue()
         self.worker=None
         self.stage_index=0
@@ -771,15 +766,14 @@ class Application:
         self.paused_status=tk.StringVar(value='')
         self.health=tk.StringVar(value='Opening sensor stream…')
 
-        top=ttk.Frame(self.root,padding=12);top.pack(fill='x')
-        ttk.Label(top,text='IntelQCopter | 500 Hz sensor calibration',font=('Segoe UI',17,'bold')).pack(anchor='w')
-        ttk.Label(top,text=f'Output: {output}',font=('Segoe UI',9)).pack(anchor='w')
-        ttk.Label(top,text=f'MAG mapping: {axis_name}; det={determinant(axis_matrix):+.0f}. Raw chip axes remain unchanged in CSV.',foreground='#A35A00').pack(anchor='w')
-        ttk.Label(top,textvariable=self.info).pack(anchor='w',pady=(6,0))
+        top=ttk.Frame(self.root,padding=8);top.pack(fill='x')
+        ttk.Label(top,text='IntelQCopter | 500 Hz IMU · 200 Hz QMC calibration',font=('Segoe UI',15,'bold')).pack(anchor='w')
+        ttk.Label(top,text=f'Capture: {Path(output).name}  ·  MAG axes: {axis_name}',font=('Segoe UI',8)).pack(anchor='w')
+        ttk.Label(top,textvariable=self.info,font=('Segoe UI',8)).pack(anchor='w',pady=(3,0))
         ttk.Separator(self.root,orient='horizontal').pack(fill='x')
-        phase=ttk.Frame(self.root,padding=12);phase.pack(fill='x')
-        ttk.Label(phase,textvariable=self.headline,font=('Segoe UI',14,'bold')).pack(anchor='w')
-        ttk.Label(phase,textvariable=self.instruction,justify='left',wraplength=1100,font=('Segoe UI',9)).pack(anchor='w',pady=5)
+        phase=ttk.Frame(self.root,padding=8);phase.pack(fill='x')
+        ttk.Label(phase,textvariable=self.headline,font=('Segoe UI',12,'bold')).pack(anchor='w')
+        ttk.Label(phase,textvariable=self.instruction,justify='left',wraplength=1100,font=('Segoe UI',8)).pack(anchor='w',pady=3)
         self.bar=ttk.Progressbar(phase,orient='horizontal',mode='determinate',maximum=100,length=900)
         self.bar.pack(fill='x',pady=4)
         ttk.Label(phase,textvariable=self.progress,font=('Consolas',10)).pack(anchor='w')
@@ -824,7 +818,7 @@ class Application:
         notebook.add(self.tab_thermal,text='MPU6050 / BMP280 temperatures')
         self.notebook=notebook
         fig=Figure(figsize=(13,6.4),dpi=90,constrained_layout=False)
-        fig.subplots_adjust(left=0.07,right=0.98,bottom=0.11,top=0.93,wspace=0.34,hspace=0.88)
+        fig.subplots_adjust(left=0.075,right=0.98,bottom=0.13,top=0.93,wspace=0.36,hspace=1.22)
         ax_acc=fig.add_subplot(2,3,1)
         ax_gyro=fig.add_subplot(2,3,2)
         ax_3d=fig.add_subplot(2,3,3,projection='3d')
@@ -841,7 +835,7 @@ class Application:
         for ax,title,keys,unit in [
             (ax_acc,'Accel · 500 Hz',('ax','ay','az'),'m/s²'),
             (ax_gyro,'Gyro · 500 Hz',('gx','gy','gz'),'°/s'),
-            (ax_mag,'MAG · display axes',('mx','my','mz'),'µT'),
+            (ax_mag,'MAG · QMC 200 Hz ODR',('mx','my','mz'),'µT'),
             (ax_pressure,'BMP pressure',('pressure',),'Pa'),
             (ax_alt,'Relative height',('altitude',),'m')]:
             ax.set_title(title,fontsize=9,pad=3)
@@ -886,11 +880,7 @@ class Application:
         self.root.after(120,self.pump)
 
     def on_enter(self,event):
-        # Do not start an MPU/gyro phase while editing the LiDAR COM field.
-        if event.widget == self.lidar_port_combo:
-            self.connect_lidar_from_gui()
-        else:
-            self.begin_phase()
+        self.begin_phase()
 
     def _available_lidar_ports(self):
         try:
@@ -1090,14 +1080,6 @@ class Application:
         if self.finished or self.capture_active or not self.worker or not self.worker.started.is_set() or self.worker.error:
             return
         s=self.stages[self.stage_index]
-        if s.sensor == 'lidar':
-            if (not self.worker.lidar_reader or self.worker.lidar_reader.error
-                    or not self.worker.lidar_reader.connected.is_set()):
-                self.msg.showinfo('Optional LiDAR not connected',
-                   'To calibrate LiDAR, connect its SEPARATE USB-UART COM port above.\n'
-                   'Or click Skip ALL LiDAR ranges. No range data is invented.\n'
-                   'The ESP32 COM port cannot simultaneously be the raw LiDAR COM port.')
-                return
         # Always honor ENTER: start a countdown, then count only actual sensor
         # acquisitions. Never block because of attitude, stillness, or missing
         # sensor. Missing sensors remain zero-count (never manufacture data).
