@@ -92,7 +92,10 @@ ReadByteResult readRegister(uint8_t address, uint8_t reg) {
   ReadByteResult r;
   Wire.beginTransmission(address);
   if (Wire.write(reg) != 1) { (void)Wire.endTransmission(true); return r; }
-  r.phaseError = static_cast<uint8_t>(Wire.endTransmission(false));
+  // Match the integrated calibration firmware: STOP after setting the
+  // register pointer, then issue a separate read request. On this ESP32-S3
+  // the QMC repeated-START path was observed to fail intermittently.
+  r.phaseError = static_cast<uint8_t>(Wire.endTransmission(true));
   if (r.phaseError != 0) return r;
   int n = Wire.requestFrom(static_cast<int>(address), 1);
   r.received = n >= 0 && n < 256 ? static_cast<uint8_t>(n) : 0;
@@ -119,7 +122,7 @@ bool readXYZ(int16_t xyz[3]) {
   uint8_t bytes[6]{};
   Wire.beginTransmission(hw::mag);
   if (Wire.write(hw::xyzReg) != 1) { (void)Wire.endTransmission(true); return false; }
-  if (Wire.endTransmission(false) != 0) return false;
+  if (Wire.endTransmission(true) != 0) return false;
   if (Wire.requestFrom(static_cast<int>(hw::mag), 6) != 6) {
     while (Wire.available() > 0) (void)Wire.read();
     return false;

@@ -153,3 +153,25 @@ normal calibration firmware uses 921600 binary UART and 500 Hz IMU scheduling.
   without duplicate macro warnings. Full firmware uploaded successfully, but
   UART preflight failed (0 valid packets on post-retry captures). No rate claim
   is made beyond the previously preserved 100 Hz baseline captures above.
+
+## Follow-up: QMC read protocol retry — 2026-11-03
+
+Same engine and hardware assumptions as the previous section: ESP32-S3 DevKitC-1
+revision 0.2 / CH343 COM3; QMC ID/address, MPU/BMP identities as previously
+observed; GPIO9/8 wiring and rail quality assumed; motors input-only. Inspection
+found the standalone MAG probe still used repeated START for register reads,
+while the integrated calibration firmware had already moved to STOP+START
+because of observed ESP32 Wire read failures. Updated probe register and XYZ
+reads to use the integrated firmware's STOP+START sequence.
+
+- Parser regression passed; 200 Hz, continuous, and continuous-fast variants
+  compiled with PlatformIO. Continuous modes configure 400 kHz I2C and 2 kHz
+  status polling; continuous-fast uses CTRL1=0x33 (low OSR). No hardware speed
+  claim follows from compilation.
+- Reflashed 200 Hz probe successfully. The subsequent 12 s capture contains
+  only ESP-ROM `boot: DOWNLOAD(USB/UART0)` / `waiting for download`; no probe
+  banner, QMC scan, or rate data. Evidence:
+  `captures/mag_probe_v13_200hz_20261103_231122.log` and `.json`. This is an
+  invalid/no-boot trial, not another QMC failure. Requested a full board power
+  removal so the flashed probe can boot. Continuous-mode hardware trials remain
+  deferred until a valid 200 Hz baseline is obtained.
