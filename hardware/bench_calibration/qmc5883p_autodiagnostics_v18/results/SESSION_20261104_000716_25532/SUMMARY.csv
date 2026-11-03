@@ -1,0 +1,8 @@
+test,repeat,verdict,rate_med_hz,status_fail,verify_fail,csv_rows,power,run_dir
+T0,1,ERROR / TEST NOT COMPLETED,,,,,warm,runs\01_T0_rep1
+F1,1,ERROR / TEST NOT COMPLETED,,,,,warm,runs\02_F1_rep1
+H0,1,ERROR / TEST NOT COMPLETED,,,,,warm,runs\03_H0_rep1
+A0,1,ERROR / TEST NOT COMPLETED,,,,,warm,runs\04_A0_rep1
+G5,1,ERROR / TEST NOT COMPLETED,,,,,warm,runs\05_G5_rep1
+T1,1,ERROR / TEST NOT COMPLETED,,,,,warm,runs\06_T1_rep1
+A1,1,ERROR / TEST NOT COMPLETED,,,,,warm,runs\07_A1_rep1

@@ -1,0 +1,157 @@
+{
+  "test": "F1",
+  "label": "50Hz STOP+START instead of repeated START",
+  "repeat": 1,
+  "power_mode": "warm",
+  "run_dir": "runs\\02_F1_rep1",
+  "settings": {
+    "IQ_RUN_NONCE": 1074045753,
+    "IQ_MAG_BOOT_PROFILE": 50,
+    "IQ_MAG_OSR1": 8,
+    "IQ_MAG_CSV_DIVIDER": 1,
+    "IQ_I2C_HZ": 100000,
+    "IQ_SERIAL_BAUD": 115200,
+    "IQ_MAG_READ_STOP": 1,
+    "IQ_MAG_SOFT_RESET": 0,
+    "IQ_MAG_START_ENABLE": 1,
+    "IQ_MAG_CTRL1_OVERRIDE": 0,
+    "IQ_RECOVERY_ENABLE": 0,
+    "IQ_RECOVERY_MAX_ATTEMPTS": 2,
+    "IQ_ALLOW_100HZ_FALLBACK": 0,
+    "IQ_BUS_LOAD_ENABLE": 0,
+    "IQ_WIFI_STRESS_MODE": 0,
+    "IQ_WIFI_START_DELAY_MS": 15000,
+    "IQ_WIFI_SCAN_INTERVAL_MS": 10000
+  },
+  "nonce": 1074045753,
+  "port_before": "COM3",
+  "started": "2026-11-03T20:08:08.066181+00:00",
+  "summary": {
+    "verdict": "INCONCLUSIVE / TRANSPORT FAILURE",
+    "measurement_s": 7.0,
+    "stop_reason": "VERIFIED_PRESTART_ONLY",
+    "power_classification": "WARM_RESET_NOT_POWER_CYCLE",
+    "serial_disconnected": false,
+    "firmware_state": {
+      "fw": "18",
+      "run_nonce": "1074045753",
+      "rate": "50",
+      "osr1": "8",
+      "serial": "115200",
+      "I2C": "100000",
+      "read_stop": "1",
+      "start_enable": "1",
+      "ctrl1_override": "0",
+      "wifi_mode": "0",
+      "bus_load": "0",
+      "recover": "0",
+      "max_attempts": "2",
+      "csv_divider": "1",
+      "fallback_allowed": "0",
+      "soft_reset": "0",
+      "prestart_ok": "1"
+    },
+    "state_messages": 5,
+    "health_windows": 5,
+    "csv_rows": 214,
+    "median_last_8_health_hz": 43.0,
+    "selected_hz": 50,
+    "final_health": {
+      "selected": "50",
+      "measured_hz_window": "42.28",
+      "measured_hz_global": "43.75",
+      "fresh": "214",
+      "not_ready": "2050",
+      "overflow": "0",
+      "status_fail": "23",
+      "xyz_fail": "0",
+      "verify_fail": "1",
+      "reset_signature": "0",
+      "read_phase_fail": "26",
+      "read_zero_bytes": "0",
+      "recoveries": "0",
+      "regs_ok": "1",
+      "fallback": "0",
+      "soft_reset_attempted": "0",
+      "soft_reset_ok": "0",
+      "age_s": "0.021",
+      "wifi_mode": "0",
+      "wifi_active": "0",
+      "wifi_scan_ok": "0",
+      "wifi_scan_fail": "0",
+      "uptime_ms": "7188",
+      "imu_ok": "0",
+      "imu_fail": "0",
+      "bmp_ok": "0",
+      "bmp_fail": "0",
+      "imu_read_max_us": "0",
+      "bmp_read_max_us": "0"
+    },
+    "wifi_events": [],
+    "wifi_median_delta_hz": null,
+    "errors": [
+      "Insufficient HEALTH windows (5)",
+      "verify_fail = 1 (nonzero; inspect raw log)",
+      "status_fail = 23 (nonzero; inspect raw log)"
+    ],
+    "warnings": [
+      "First status-read failure timestamp available in raw log"
+    ],
+    "post_start_probes": [
+      {
+        "mag_ack": "2",
+        "mpu_ack": "0",
+        "bmp_ack": "0",
+        "mag_rs": "1,0x80,0,1",
+        "mag_stop": "1,0x80,0,1",
+        "mpu_rs": "1,0x68",
+        "mpu_stop": "1,0x68",
+        "bmp_stop": "1,0x58",
+        "SDA": "1",
+        "SCL": "1"
+      }
+    ],
+    "post_start_inference": "Both QMC register-read methods succeed in post-start probe; investigate polling/DRDY behavior",
+    "xyz_diagnostics": {
+      "count": 214,
+      "x_y_z_mean_counts": [
+        -1373.752,
+        -1737.154,
+        -2409.159
+      ],
+      "x_y_z_std_counts": [
+        269.361,
+        115.416,
+        104.64
+      ],
+      "xyz_covariance_counts2": [
+        [
+          72555.154,
+          31003.752,
+          -14523.688
+        ],
+        [
+          31003.752,
+          13320.816,
+          -6801.593
+        ],
+        [
+          -14523.688,
+          -6801.593,
+          10949.59
+        ]
+      ],
+      "magnitude_mean_counts": 3282.834,
+      "magnitude_std_counts": 168.679,
+      "median_csv_interval_ms": 21.0,
+      "largest_csv_interval_ms": 76.026,
+      "duplicate_xyz_pairs": 0,
+      "verified_csv_rows": 1,
+      "duration_s": 4.868,
+      "first_vs_last_quartile_magnitude_delta_counts": 1.704,
+      "caution": "Compare noise/magnitude only with the drone motionless; hard/soft-iron calibration needs orientations."
+    }
+  },
+  "port_after": "COM3",
+  "finished": "2026-11-03T20:08:39.891115+00:00"
+}

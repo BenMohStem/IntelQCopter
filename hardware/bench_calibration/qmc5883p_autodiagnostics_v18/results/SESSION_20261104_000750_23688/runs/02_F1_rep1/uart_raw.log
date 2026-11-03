@@ -1,0 +1,131 @@
+
+=== IQ v18 QMC5883P AUTOMATED SYSTEM DIAGNOSTIC ===
+SAFETY motor pins INPUT; no flight outputs
+BOOT reset_reason=1 t_ms=1942
+BUILD rate=50 osr1=8 serial=115200 I2C=100000 csv_divider=1 recover=0 max_attempts=2 fallback=0 soft_reset=0
+BUILD wifi_mode=0 wifi_start_delay_ms=15000 wifi_scan_interval_ms=10000
+BUILD bus_load=0 (MPU 500Hz, BMP 50Hz)
+BUILD start_enable=1 ctrl1_override=0x00
+I2C_SCAN 0x2C 0x68
+WRITE name=MPU_DISABLE_MASTER reg=0x6A value=0x00 tx_error=0 ack=1 t_ms=1990
+WRITE name=MPU_AUX_BYPASS reg=0x37 value=0x02 tx_error=0 ack=1 t_ms=1990
+MPU_BYPASS result=1 ctrl=0x00 cfg=0x02
+I2C_SCAN 0x2C 0x68
+MAG_SOFT_RESET stage=SKIPPED requested=0
+CONFIG_BEGIN reason=AUTOMATED_WARM_START requested=50 ctrl1=0xC5 OSR1=8 I2C=100000 serial=115200 read_stop=1
+MAG_ID ack=0 read=0x80 valid=1
+WRITE name=SUSPEND reg=0x0A value=0x00 tx_error=0 ack=1 t_ms=2048
+WRITE name=XYZ_SIGN reg=0x29 value=0x06 tx_error=0 ack=1 t_ms=2068
+WRITE name=SET_RESET_8G reg=0x0B value=0x08 tx_error=0 ack=1 t_ms=2078
+PRE_START_VERIFY c1=0x00 c2=0x08 ok=1
+WRITE name=START_PROFILE reg=0x0A value=0xC5 tx_error=0 ack=1 t_ms=2089
+VERIFY stage=AFTER_START_40MS id=ERR/0x00 C1=ERR/0x00 target=0xC5 C2=ERR/0x00 ok=0 phase=2,2,2 bytes=0,0,0
+POST_START_BUS mag_ack=2 mpu_ack=0 bmp_ack=2 mag_rs=1,0x80,0,1 mag_stop=1,0x80,0,1 mpu_rs=1,0x68 mpu_stop=1,0x68 bmp_stop=0,0x00 SDA=1 SCL=1
+CONFIG_DONE requested=50 writes_ack=1 readback=0
+CSV_HEADER CSV,t_us,x_counts,y_counts,z_counts,status,verified,selected_hz
+POWER CONTROL is host-managed: label WARM vs COLD; do not send runtime commands
+WIFI_TEST modes: 0=OFF, 1=AP, 2=periodic STA scans (not production WiFi stack)
+FIRST_STATUS_FAILURE t_us=2177270 phase=2 received=0 SDA=1 SCL=1
+CSV,2297752,-1283,-1681,-2406,0x19,0,50
+CSV,2318752,-1281,-1677,-2412,0x19,0,50
+CSV,2339752,-1292,-1683,-2419,0x19,0,50
+CSV,2358752,-1296,-1683,-2423,0x19,0,50
+CSV,2379752,-1299,-1684,-2418,0x19,0,50
+CSV,2398752,-1298,-1685,-2419,0x19,0,50
+CSV,2419752,-1290,-1686,-2412,0x19,0,50
+CSV,2440752,-1295,-1685,-2414,0x19,0,50
+CSV,2459752,-1294,-1682,-2419,0x19,0,50
+CSV,2480752,-1297,-1688,-2419,0x19,0,50
+CSV,2499752,-1301,-1683,-2418,0x19,0,50
+CSV,2520752,-1297,-1682,-2417,0x19,0,50
+CSV,2541752,-1297,-1682,-2427,0x19,0,50
+CSV,2560752,-1296,-1679,-2431,0x19,0,50
+CSV,2581752,-1304,-1681,-2431,0x19,0,50
+CSV,2600752,-1304,-1683,-2429,0x19,0,50
+CSV,2621752,-1300,-1684,-2419,0x19,0,50
+CSV,2642752,-1303,-1682,-2428,0x19,0,50
+CSV,2661752,-1298,-1684,-2434,0x19,0,50
+CSV,2682752,-1304,-1690,-2435,0x19,0,50
+CSV,2701752,-1307,-1693,-2430,0x19,0,50
+CSV,2722752,-1304,-1692,-2421,0x19,0,50
+CSV,2743752,-1303,-1687,-2429,0x19,0,50
+CSV,2762752,-1305,-1686,-2434,0x19,0,50
+CSV,2783752,-1311,-1687,-2439,0x19,0,50
+CSV,2802752,-1311,-1685,-2427,0x19,0,50
+CSV,2823752,-1306,-1684,-2422,0x19,0,50
+CSV,2864752,-1300,-1677,-2421,0x19,0,50
+CSV,2883752,-1305,-1678,-2428,0x19,0,50
+CSV,2904752,-1306,-1678,-2422,0x19,0,50
+CSV,2923752,-1305,-1681,-2421,0x19,0,50
+CSV,2944752,-1300,-1681,-2420,0x19,0,50
+CSV,2965752,-1298,-1680,-2425,0x19,0,50
+CSV,2984752,-1306,-1680,-2421,0x19,0,50
+CSV,3005752,-1306,-1681,-2416,0x19,0,50
+CSV,3024752,-1306,-1680,-2427,0x19,0,50
+CSV,3045752,-1303,-1682,-2422,0x19,0,50
+CSV,3066752,-1302,-1680,-2424,0x19,0,50
+CSV,3085752,-1300,-1679,-2421,0x19,0,50
+CSV,3106752,-1304,-1679,-2421,0x19,0,50
+CSV,3125752,-1301,-1682,-2424,0x19,0,50
+CSV,3146752,-1297,-1682,-2428,0x19,0,50
+STATE fw=18 run_nonce=31551175 rate=50 osr1=8 serial=115200 I2C=100000 read_stop=1 start_enable=1 ctrl1_override=0 wifi_mode=0 bus_load=0 recover=0 max_attempts=2 csv_divider=1 fallback_allowed=0 soft_reset=0 prestart_ok=1
+HEALTH selected=50 measured_hz_window=41.54 measured_hz_global=48.29 fresh=42 not_ready=420 overflow=0 status_fail=2 xyz_fail=0 verify_fail=1 reset_signature=0 read_phase_fail=6 read_zero_bytes=0 recoveries=0 regs_ok=0 fallback=0 soft_reset_attempted=0 soft_reset_ok=0 age_s=0.020 wifi_mode=0 wifi_active=0 wifi_scan_ok=0 wifi_scan_fail=0 uptime_ms=3167 imu_ok=0 imu_fail=0 bmp_ok=0 bmp_fail=0 imu_read_max_us=0 bmp_read_max_us=0
+CSV,3217788,-2106,-1847,-2809,0x19,0,50
+CSV,3232753,-2107,-1847,-2806,0x19,0,50
+CSV,3251752,-2105,-1846,-2807,0x19,0,50
+CSV,3272752,-2101,-1843,-2807,0x19,0,50
+CSV,3293752,-2102,-1844,-2804,0x19,0,50
+CSV,3312752,-2106,-1842,-2802,0x19,0,50
+CSV,3333752,-2106,-1843,-2794,0x19,0,50
+CSV,3352752,-2117,-1847,-2806,0x19,0,50
+CSV,3373752,-1302,-1676,-2411,0x19,0,50
+CSV,3394752,-1300,-1679,-2412,0x19,0,50
+CSV,3413752,-1304,-1681,-2412,0x19,0,50
+CSV,3434752,-1307,-1682,-2407,0x19,0,50
+CSV,3453752,-1307,-1683,-2409,0x19,0,50
+CSV,3474752,-1303,-1687,-2408,0x19,0,50
+CSV,3495752,-1301,-1690,-2412,0x19,0,50
+CSV,3514752,-1297,-1687,-2411,0x19,0,50
+CSV,3535752,-1298,-1694,-2420,0x19,0,50
+CSV,3554752,-1297,-1691,-2420,0x19,0,50
+CSV,3575752,-1290,-1691,-2414,0x19,0,50
+CSV,3596752,-1288,-1692,-2422,0x19,0,50
+CSV,3615752,-1289,-1690,-2420,0x19,0,50
+CSV,3636752,-1296,-1687,-2418,0x19,0,50
+CSV,3655752,-1297,-1686,-2421,0x19,0,50
+CSV,3676752,-1295,-1687,-2416,0x19,0,50
+CSV,3697752,-1292,-1680,-2413,0x19,0,50
+CSV,3716752,-1292,-1682,-2421,0x19,0,50
+CSV,3737752,-1292,-1683,-2426,0x19,0,50
+CSV,3756752,-1294,-1683,-2429,0x19,0,50
+CSV,3777752,-1289,-1684,-2426,0x19,0,50
+CSV,3798752,-1284,-1682,-2433,0x19,0,50
+CSV,3817752,-1288,-1679,-2434,0x19,0,50
+CSV,3838752,-1292,-1678,-2432,0x19,0,50
+CSV,3857752,-1297,-1681,-2435,0x19,0,50
+CSV,3878752,-1294,-1679,-2422,0x19,0,50
+CSV,3899752,-1298,-1676,-2425,0x19,0,50
+CSV,3918752,-1298,-1672,-2419,0x19,0,50
+CSV,3939752,-1305,-1674,-2415,0x19,0,50
+CSV,3958752,-1309,-1679,-2414,0x19,0,50
+CSV,3979752,-1307,-1678,-2405,0x19,0,50
+CSV,4000752,-1299,-1678,-2414,0x19,0,50
+CSV,4019752,-1299,-1677,-2409,0x19,0,50
+CSV,4040752,-1303,-1680,-2414,0x19,0,50
+CSV,4059752,-1303,-1683,-2414,0x19,0,50
+CSV,4080752,-1300,-1686,-2416,0x19,0,50
+CSV,4101752,-1298,-1683,-2421,0x19,0,50
+CSV,4120752,-1296,-1681,-2427,0x19,0,50
+CSV,4141752,-1298,-1686,-2428,0x19,0,50
+STATE fw=18 run_nonce=31551175 rate=50 osr1=8 serial=115200 I2C=100000 read_stop=1 start_enable=1 ctrl1_override=0 wifi_mode=0 bus_load=0 recover=0 max_attempts=2 csv_divider=1 fallback_allowed=0 soft_reset=0 prestart_ok=1
+HEALTH selected=50 measured_hz_window=46.95 measured_hz_global=47.72 fresh=89 not_ready=821 overflow=0 status_fail=7 xyz_fail=0 verify_fail=1 reset_signature=0 read_phase_fail=11 read_zero_bytes=0 recoveries=0 regs_ok=0 fallback=0 soft_reset_attempted=0 soft_reset_ok=0 age_s=0.026 wifi_mode=0 wifi_active=0 wifi_scan_ok=0 wifi_scan_fail=0 uptime_ms=4168 imu_ok=0 imu_fail=0 bmp_ok=0 bmp_fail=0 imu_read_max_us=0 bmp_read_max_us=0
+STATE fw=18 run_nonce=31551175 rate=50 osr1=8 serial=115200 I2C=100000 read_stop=1 start_enable=1 ctrl1_override=0 wifi_mode=0 bus_load=0 recover=0 max_attempts=2 csv_divider=1 fallback_allowed=0 soft_reset=0 prestart_ok=1
+HEALTH selected=50 measured_hz_window=0.00 measured_hz_global=47.72 fresh=89 not_ready=821 overflow=0 status_fail=12 xyz_fail=0 verify_fail=1 reset_signature=0 read_phase_fail=16 read_zero_bytes=0 recoveries=0 regs_ok=0 fallback=0 soft_reset_attempted=0 soft_reset_ok=0 age_s=1.085 wifi_mode=0 wifi_active=0 wifi_scan_ok=0 wifi_scan_fail=0 uptime_ms=5226 imu_ok=0 imu_fail=0 bmp_ok=0 bmp_fail=0 imu_read_max_us=0 bmp_read_max_us=0
+STATE fw=18 run_nonce=31551175 rate=50 osr1=8 serial=115200 I2C=100000 read_stop=1 start_enable=1 ctrl1_override=0 wifi_mode=0 bus_load=0 recover=0 max_attempts=2 csv_divider=1 fallback_allowed=0 soft_reset=0 prestart_ok=1
+HEALTH selected=50 measured_hz_window=0.00 measured_hz_global=47.72 fresh=89 not_ready=1287 overflow=0 status_fail=28 xyz_fail=0 verify_fail=1 reset_signature=0 read_phase_fail=32 read_zero_bytes=0 recoveries=0 regs_ok=0 fallback=0 soft_reset_attempted=0 soft_reset_ok=0 age_s=2.085 wifi_mode=0 wifi_active=0 wifi_scan_ok=0 wifi_scan_fail=0 uptime_ms=6227 imu_ok=0 imu_fail=0 bmp_ok=0 bmp_fail=0 imu_read_max_us=0 bmp_read_max_us=0
+FRESH_MISSING: no recent valid XYZ conversion
+RESET_SIGNATURE: ID valid but C1=C2=0; suspect POR/soft reset (NOT confirmed)
+VERIFY stage=PERIODIC id=0x80 C1=0x00 target=0xC5 C2=0x00 ok=0 phase=0,0,0 bytes=1,1,1
+STATE fw=18 run_nonce=31551175 rate=50 osr1=8 serial=115200 I2C=100000 read_stop=1 start_enable=1 ctrl1_override=0 wifi_mode=0 bus_load=0 recover=0 max_attempts=2 csv_divider=1 fallback_allowed=0 soft_reset=0 prestart_ok=1
+HEALTH selected=50 measured_hz_window=0.00 measured_hz_global=47.72 fresh=89 not_ready=1754 overflow=0 status_fail=28 xyz_fail=0 verify_fail=2 reset_signature=1 read_phase_fail=32 read_zero_bytes=0 recoveries=0 regs_ok=0 fallback=0 soft_reset_attempted=0 soft_reset_ok=0 age_s=3.086 wifi_mode=0 wifi_active=0 wifi_scan_ok=0 wifi_scan_fail=0 uptime_ms=7228 imu_ok=0 imu_fail=0 bmp_ok=0 bmp_fail=0 imu_read_max_us=0 bmp_read_max_us=0
+FRESH_MISSING: no recent valid XYZ conversion

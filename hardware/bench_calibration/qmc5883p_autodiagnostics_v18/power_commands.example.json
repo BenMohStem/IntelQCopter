@@ -1,0 +1,4 @@
+{
+  "off": ["C:\\YOUR_TOOL\\power_switch.exe", "off", "1"],
+  "on": ["C:\\YOUR_TOOL\\power_switch.exe", "on", "1"]
+}

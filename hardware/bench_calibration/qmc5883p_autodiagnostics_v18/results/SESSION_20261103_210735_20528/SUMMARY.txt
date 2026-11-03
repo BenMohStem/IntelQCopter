@@ -1,0 +1,17 @@
+IntelQCopter v18 — unattended diagnostic summary
+Session: SESSION_20261103_210735_20528
+
+IMPORTANT: only external switching may remove sensor power; measure 3.3V for proof.
+WARM-BOOT success is not a valid cold-power-up comparison.
+
+ID   | Verdict                              | Median Hz | I2C status failures | Power
+-----|--------------------------------------|-----------|---------------------|------
+T0   | PRESTART_ONLY PASS / NO ODR TEST     | None      | 0                   | warm
+F1   | INCONCLUSIVE / TRANSPORT FAILURE     | 43.0      | 23                  | warm
+H0   | INCONCLUSIVE / TRANSPORT FAILURE     | 0.0       | 0                   | warm
+A0   | INCONCLUSIVE / TRANSPORT FAILURE     | 0.0       | 72                  | warm
+G5   | FAIL / NEEDS INVESTIGATION           | 0.0       | 0                   | warm
+T1   | INCONCLUSIVE / TRANSPORT FAILURE     | 0.0       | 0                   | warm
+A1   | INCONCLUSIVE / TRANSPORT FAILURE     | 0.0       | 72                  | warm
+
+Full UART raw logs, firmware upload logs, settings, timestamps and errors are in the runs/ subdirectory.

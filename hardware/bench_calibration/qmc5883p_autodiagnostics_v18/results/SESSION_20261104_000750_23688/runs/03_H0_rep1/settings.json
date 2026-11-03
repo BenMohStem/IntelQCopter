@@ -1,0 +1,29 @@
+{
+  "test": "H0",
+  "label": "Historical 0x87 continuous mode / STOP+START (ODR not applicable)",
+  "repeat": 1,
+  "power_mode": "warm",
+  "run_dir": "runs\\03_H0_rep1",
+  "settings": {
+    "IQ_RUN_NONCE": 872316072,
+    "IQ_MAG_BOOT_PROFILE": 50,
+    "IQ_MAG_OSR1": 8,
+    "IQ_MAG_CSV_DIVIDER": 1,
+    "IQ_I2C_HZ": 100000,
+    "IQ_SERIAL_BAUD": 115200,
+    "IQ_MAG_READ_STOP": 1,
+    "IQ_MAG_SOFT_RESET": 0,
+    "IQ_MAG_START_ENABLE": 1,
+    "IQ_MAG_CTRL1_OVERRIDE": 135,
+    "IQ_RECOVERY_ENABLE": 0,
+    "IQ_RECOVERY_MAX_ATTEMPTS": 2,
+    "IQ_ALLOW_100HZ_FALLBACK": 0,
+    "IQ_BUS_LOAD_ENABLE": 0,
+    "IQ_WIFI_STRESS_MODE": 0,
+    "IQ_WIFI_START_DELAY_MS": 15000,
+    "IQ_WIFI_SCAN_INTERVAL_MS": 10000
+  },
+  "nonce": 872316072,
+  "port_before": "COM3",
+  "started": "2026-11-03T23:08:59.273750+00:00"
+}

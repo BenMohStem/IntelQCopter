@@ -1,0 +1,17 @@
+IntelQCopter v18 — unattended diagnostic summary
+Session: SESSION_20261104_000716_25532
+
+IMPORTANT: only external switching may remove sensor power; measure 3.3V for proof.
+WARM-BOOT success is not a valid cold-power-up comparison.
+
+ID   | Verdict                              | Median Hz | I2C status failures | Power
+-----|--------------------------------------|-----------|---------------------|------
+T0   | ERROR / TEST NOT COMPLETED           | -         | -                   | warm
+F1   | ERROR / TEST NOT COMPLETED           | -         | -                   | warm
+H0   | ERROR / TEST NOT COMPLETED           | -         | -                   | warm
+A0   | ERROR / TEST NOT COMPLETED           | -         | -                   | warm
+G5   | ERROR / TEST NOT COMPLETED           | -         | -                   | warm
+T1   | ERROR / TEST NOT COMPLETED           | -         | -                   | warm
+A1   | ERROR / TEST NOT COMPLETED           | -         | -                   | warm
+
+Full UART raw logs, firmware upload logs, settings, timestamps and errors are in the runs/ subdirectory.

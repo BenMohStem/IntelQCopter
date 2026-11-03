@@ -1,0 +1,121 @@
+
+=== IQ v18 QMC5883P AUTOMATED SYSTEM DIAGNOSTIC ===
+SAFETY motor pins INPUT; no flight outputs
+BOOT reset_reason=1 t_ms=1942
+BUILD rate=50 osr1=8 serial=115200 I2C=100000 csv_divider=1 recover=0 max_attempts=2 fallback=0 soft_reset=0
+BUILD wifi_mode=0 wifi_start_delay_ms=15000 wifi_scan_interval_ms=10000
+BUILD bus_load=0 (MPU 500Hz, BMP 50Hz)
+BUILD start_enable=1 ctrl1_override=0x00
+I2C_SCAN 0x2C 0x68
+WRITE name=MPU_DISABLE_MASTER reg=0x6A value=0x00 tx_error=0 ack=1 t_ms=1990
+WRITE name=MPU_AUX_BYPASS reg=0x37 value=0x02 tx_error=0 ack=1 t_ms=1990
+MPU_BYPASS result=1 ctrl=0x00 cfg=0x02
+I2C_SCAN 0x2C 0x68
+MAG_SOFT_RESET stage=SKIPPED requested=0
+CONFIG_BEGIN reason=AUTOMATED_WARM_START requested=50 ctrl1=0xC5 OSR1=8 I2C=100000 serial=115200 read_stop=0
+MAG_ID ack=0 read=0x80 valid=1
+WRITE name=SUSPEND reg=0x0A value=0x00 tx_error=0 ack=1 t_ms=2048
+WRITE name=XYZ_SIGN reg=0x29 value=0x06 tx_error=0 ack=1 t_ms=2068
+WRITE name=SET_RESET_8G reg=0x0B value=0x08 tx_error=0 ack=1 t_ms=2078
+PRE_START_VERIFY c1=0x00 c2=0x08 ok=1
+WRITE name=START_PROFILE reg=0x0A value=0xC5 tx_error=0 ack=1 t_ms=2089
+[  2129][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2138][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2147][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+VERIFY stage=AFTER_START_40MS id=ERR/0x00 C1=ERR/0x00 target=0xC5 C2=ERR/0x00 ok=0 phase=0,0,0 bytes=0,0,0
+POST_START_BUS mag_ack=2 mpu_ack=0 bmp_ack=2 mag_rs=1,0x80,0,1 mag_stop=1,0x80,0,1 mpu_rs=1,0x68 mpu_stop=1,0x68 bmp_stop=0,0x00 SDA=1 SCL=1
+CONFIG_DONE requested=50 writes_ack=1 readback=0
+CSV_HEADER CSV,t_us,x_counts,y_counts,z_counts,status,verified,selected_hz
+POWER CONTROL is host-managed: label WARM vs COLD; do not send runtime commands
+WIFI_TEST modes: 0=OFF, 1=AP, 2=periodic STA scans (not production WiFi stack)
+[  2198][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+FIRST_STATUS_FAILURE t_us=2207850 phase=0 received=0 SDA=1 SCL=1
+[  2209][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2221][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2229][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2237][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2245][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2253][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2261][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2269][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2277][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2285][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2293][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2301][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2309][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2317][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2325][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2333][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2341][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2349][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2357][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2365][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2373][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2381][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2389][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2397][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2498][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2598][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2698][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2798][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2898][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  2998][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  3098][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+STATE fw=18 run_nonce=209843752 rate=50 osr1=8 serial=115200 I2C=100000 read_stop=0 start_enable=1 ctrl1_override=0 wifi_mode=0 bus_load=0 recover=0 max_attempts=2 csv_divider=1 fallback_allowed=0 soft_reset=0 prestart_ok=1
+HEALTH selected=50 measured_hz_window=0.00 measured_hz_global=0.00 fresh=0 not_ready=0 overflow=0 status_fail=32 xyz_fail=0 verify_fail=1 reset_signature=0 read_phase_fail=1 read_zero_bytes=35 recoveries=0 regs_ok=0 fallback=0 soft_reset_attempted=0 soft_reset_ok=0 age_s=-1.000 wifi_mode=0 wifi_active=0 wifi_scan_ok=0 wifi_scan_fail=0 uptime_ms=3187 imu_ok=0 imu_fail=0 bmp_ok=0 bmp_fail=0 imu_read_max_us=0 bmp_read_max_us=0
+[  3230][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  3331][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  3431][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  3531][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  3631][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  3731][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  3831][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  3931][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  4031][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  4131][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+STATE fw=18 run_nonce=209843752 rate=50 osr1=8 serial=115200 I2C=100000 read_stop=0 start_enable=1 ctrl1_override=0 wifi_mode=0 bus_load=0 recover=0 max_attempts=2 csv_divider=1 fallback_allowed=0 soft_reset=0 prestart_ok=1
+HEALTH selected=50 measured_hz_window=0.00 measured_hz_global=0.00 fresh=0 not_ready=0 overflow=0 status_fail=42 xyz_fail=0 verify_fail=1 reset_signature=0 read_phase_fail=1 read_zero_bytes=45 recoveries=0 regs_ok=0 fallback=0 soft_reset_attempted=0 soft_reset_ok=0 age_s=-1.000 wifi_mode=0 wifi_active=0 wifi_scan_ok=0 wifi_scan_fail=0 uptime_ms=4187 imu_ok=0 imu_fail=0 bmp_ok=0 bmp_fail=0 imu_read_max_us=0 bmp_read_max_us=0
+FRESH_MISSING: no recent valid XYZ conversion
+[  4231][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  4332][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  4432][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  4532][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  4632][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  4732][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  4832][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  4932][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  5032][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  5132][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+STATE fw=18 run_nonce=209843752 rate=50 osr1=8 serial=115200 I2C=100000 read_stop=0 start_enable=1 ctrl1_override=0 wifi_mode=0 bus_load=0 recover=0 max_attempts=2 csv_divider=1 fallback_allowed=0 soft_reset=0 prestart_ok=1
+HEALTH selected=50 measured_hz_window=0.00 measured_hz_global=0.00 fresh=0 not_ready=0 overflow=0 status_fail=52 xyz_fail=0 verify_fail=1 reset_signature=0 read_phase_fail=1 read_zero_bytes=55 recoveries=0 regs_ok=0 fallback=0 soft_reset_attempted=0 soft_reset_ok=0 age_s=-1.000 wifi_mode=0 wifi_active=0 wifi_scan_ok=0 wifi_scan_fail=0 uptime_ms=5187 imu_ok=0 imu_fail=0 bmp_ok=0 bmp_fail=0 imu_read_max_us=0 bmp_read_max_us=0
+FRESH_MISSING: no recent valid XYZ conversion
+[  5232][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  5332][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  5432][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  5532][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  5632][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  5732][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  5832][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  5932][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  6032][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  6132][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+STATE fw=18 run_nonce=209843752 rate=50 osr1=8 serial=115200 I2C=100000 read_stop=0 start_enable=1 ctrl1_override=0 wifi_mode=0 bus_load=0 recover=0 max_attempts=2 csv_divider=1 fallback_allowed=0 soft_reset=0 prestart_ok=1
+HEALTH selected=50 measured_hz_window=0.00 measured_hz_global=0.00 fresh=0 not_ready=0 overflow=0 status_fail=62 xyz_fail=0 verify_fail=1 reset_signature=0 read_phase_fail=1 read_zero_bytes=65 recoveries=0 regs_ok=0 fallback=0 soft_reset_attempted=0 soft_reset_ok=0 age_s=-1.000 wifi_mode=0 wifi_active=0 wifi_scan_ok=0 wifi_scan_fail=0 uptime_ms=6187 imu_ok=0 imu_fail=0 bmp_ok=0 bmp_fail=0 imu_read_max_us=0 bmp_read_max_us=0
+FRESH_MISSING: no recent valid XYZ conversion
+[  6232][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  6332][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  6432][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  6532][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  6632][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  6732][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  6832][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  6932][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  7032][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  7132][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  7177][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  7186][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+[  7195][E][Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+VERIFY stage=PERIODIC id=ERR/0x00 C1=ERR/0x00 target=0xC5 C2=ERR/0x00 ok=0 phase=0,0,0 bytes=0,0,0
+STATE fw=18 run_nonce=209843752 rate=50 osr1=8 serial=115200 I2C=100000 read_stop=0 start_enable=1 ctrl1_override=0 wifi_mode=0 bus_load=0 recover=0 max_attempts=2 csv_divider=1 fallback_allowed=0 soft_reset=0 prestart_ok=1
+HEALTH selected=50 measured_hz_window=0.00 measured_hz_global=0.00 fresh=0 not_ready=0 overflow=0 status_fail=72 xyz_fail=0 verify_fail=2 reset_signature=0 read_phase_fail=1 read_zero_bytes=78 recoveries=0 regs_ok=0 fallback=0 soft_reset_attempted=0 soft_reset_ok=0 age_s=-1.000 wifi_mode=0 wifi_active=0 wifi_scan_ok=0 wifi_scan_fail=0 uptime_ms=7223 imu_ok=0 imu_fail=0 bmp_ok=0 bmp_fail=0 imu_read_max_us=0 bmp_read_max_us=0
+FRESH_MISSING: no

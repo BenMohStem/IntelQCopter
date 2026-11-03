@@ -1,0 +1,37 @@
+{
+  "test": "A0",
+  "label": "50Hz clean baseline",
+  "repeat": 1,
+  "power_mode": "warm",
+  "run_dir": "runs\\04_A0_rep1",
+  "settings": {
+    "IQ_RUN_NONCE": 67511173,
+    "IQ_MAG_BOOT_PROFILE": 50,
+    "IQ_MAG_OSR1": 8,
+    "IQ_MAG_CSV_DIVIDER": 1,
+    "IQ_I2C_HZ": 100000,
+    "IQ_SERIAL_BAUD": 115200,
+    "IQ_MAG_READ_STOP": 0,
+    "IQ_MAG_SOFT_RESET": 0,
+    "IQ_MAG_START_ENABLE": 1,
+    "IQ_MAG_CTRL1_OVERRIDE": 0,
+    "IQ_RECOVERY_ENABLE": 0,
+    "IQ_RECOVERY_MAX_ATTEMPTS": 2,
+    "IQ_ALLOW_100HZ_FALLBACK": 0,
+    "IQ_BUS_LOAD_ENABLE": 0,
+    "IQ_WIFI_STRESS_MODE": 0,
+    "IQ_WIFI_START_DELAY_MS": 15000,
+    "IQ_WIFI_SCAN_INTERVAL_MS": 10000
+  },
+  "nonce": 67511173,
+  "port_before": "COM3",
+  "started": "2026-11-03T23:07:19.381706+00:00",
+  "summary": {
+    "verdict": "ERROR / TEST NOT COMPLETED",
+    "errors": [
+      "PlatformIO build/upload failed (non-port error):\n============================================================\n\nAn unexpected error occurred. Further steps:\n\n* Verify that you have the latest version of PlatformIO using\n  `python -m pip install -U platformio` command\n\n* Try to find answer in FAQ Troubleshooting section\n  https://docs.platformio.org/page/faq/index.html\n\n* Report this problem to the developers\n  https://github.com/platformio/platformio-core/issues\n\n============================================================\n\nException ignored in atexit callback: <function _finalize at 0x000002B38DDD8720>\nTraceback (most recent call last):\n  File \"C:\\Users\\Mohamed\\.platformio\\penv\\Lib\\site-packages\\platformio\\telemetry.py\", line 323, in _finalize\n    postpone_events(telemetry.get_unsent_events())\n  File \"C:\\Users\\Mohamed\\.platformio\\penv\\Lib\\site-packages\\platformio\\telemetry.py\", line 361, in postpone_events\n    save_postponed_events(postponed_events[KEEP_MAX_REPORTS * -1 :])\n  File \"C:\\Users\\Mohamed\\.platformio\\penv\\Lib\\site-packages\\platformio\\telemetry.py\", line 346, in save_postponed_events\n    with app.State(state_path, lock=True) as state:\n  File \"C:\\Users\\Mohamed\\.platformio\\penv\\Lib\\site-packages\\platformio\\app.py\", line 102, in __enter__\n    self._lock_state_file()\n  File \"C:\\Users\\Mohamed\\.platformio\\penv\\Lib\\site-packages\\platformio\\app.py\", line 133, in _lock_state_file\n    raise exception.HomeDirPermissionsError(os.path.dirname(self.path)) from exc\nplatformio.exception.HomeDirPermissionsError: The directory `C:\\Users\\Mohamed\\.platformio\\.cache` or its parent directory is not owned by the current user and PlatformIO can not store configuration data.\nPlease check the permissions and owner of that directory.\nOtherwise, please remove manually `C:\\Users\\Mohamed\\.platformio\\.cache` directory and PlatformIO will create new from the current user."
+    ],
+    "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\Mohamed\\Desktop\\Work\\QCopter\\hardware\\bench_calibration\\qmc5883p_autodiagnostics_v18\\tools\\auto_tests.py\", line 763, in main\n    execute_pio(pio,active_port,rundir/\"platformio_build_upload.log\",log)\n  File \"C:\\Users\\Mohamed\\Desktop\\Work\\QCopter\\hardware\\bench_calibration\\qmc5883p_autodiagnostics_v18\\tools\\auto_tests.py\", line 613, in execute_pio\n    raise RuntimeError(f\"PlatformIO build/upload failed (non-port error):\\n{tail}\")\nRuntimeError: PlatformIO build/upload failed (non-port error):\n============================================================\n\nAn unexpected error occurred. Further steps:\n\n* Verify that you have the latest version of PlatformIO using\n  `python -m pip install -U platformio` command\n\n* Try to find answer in FAQ Troubleshooting section\n  https://docs.platformio.org/page/faq/index.html\n\n* Report this problem to the developers\n  https://github.com/platformio/platformio-core/issues\n\n============================================================\n\nException ignored in atexit callback: <function _finalize at 0x000002B38DDD8720>\nTraceback (most recent call last):\n  File \"C:\\Users\\Mohamed\\.platformio\\penv\\Lib\\site-packages\\platformio\\telemetry.py\", line 323, in _finalize\n    postpone_events(telemetry.get_unsent_events())\n  File \"C:\\Users\\Mohamed\\.platformio\\penv\\Lib\\site-packages\\platformio\\telemetry.py\", line 361, in postpone_events\n    save_postponed_events(postponed_events[KEEP_MAX_REPORTS * -1 :])\n  File \"C:\\Users\\Mohamed\\.platformio\\penv\\Lib\\site-packages\\platformio\\telemetry.py\", line 346, in save_postponed_events\n    with app.State(state_path, lock=True) as state:\n  File \"C:\\Users\\Mohamed\\.platformio\\penv\\Lib\\site-packages\\platformio\\app.py\", line 102, in __enter__\n    self._lock_state_file()\n  File \"C:\\Users\\Mohamed\\.platformio\\penv\\Lib\\site-packages\\platformio\\app.py\", line 133, in _lock_state_file\n    raise exception.HomeDirPermissionsError(os.path.dirname(self.path)) from exc\nplatformio.exception.HomeDirPermissionsError: The directory `C:\\Users\\Mohamed\\.platformio\\.cache` or its parent directory is not owned by the current user and PlatformIO can not store configuration data.\nPlease check the permissions and owner of that directory.\nOtherwise, please remove manually `C:\\Users\\Mohamed\\.platformio\\.cache` directory and PlatformIO will create new from the current user.\n"
+  },
+  "finished": "2026-11-03T23:07:20.404116+00:00"
+}

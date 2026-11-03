@@ -270,3 +270,47 @@ firmware UART 115200, I2C 100 kHz unless stated, Wi-Fi off, no ESC output.
   reduced OSR/current is beneficial, but current was not measured and causation
   is not established. Continuous mode is not yet working. No ≥500 Hz result;
   the user's target remains unverified.
+
+## DeepSeek v18 triage and comparison — 2026-11-04
+
+Engine/hardware assumptions: DeepSeek v18 no-purchase diagnostic firmware, built
+with PlatformIO / Arduino for ESP32-S3 DevKitC-1 N8 and uploaded to CH343 COM3.
+The board was identified by USB as VID 0x1A86/PID 0x55D3; serial number
+5B8E062789. I2C is assumed 100 kHz, SDA GPIO9/SCL GPIO8, QMC5883P at 0x2C,
+MPU6050 at 0x68, and expected BMP280 at 0x76. No oscilloscope, rail voltage,
+pull-up, or wiring measurement was made. Motor pins remained INPUT; no motor
+test occurred. Warm ESP resets do not remove sensor VDD.
+
+- Copied the supplied v18 diagnostic harness into
+  `hardware/bench_calibration/qmc5883p_autodiagnostics_v18`. Its dry-run
+  sequence was `T0 F1 H0 A0 G5 T1 A1`; it uses warm resets and does not perform
+  a physical sensor power cycle. The offline run could not start under the
+  sandbox because PlatformIO's global lock is outside the workspace; the
+  elevated run succeeded.
+- T0 found QMC 0x2C and MPU 0x68, verified QMC ID 0x80 and parked C1=0/C2=0x08.
+  The bus scan did not find 0x76, so BMP280 availability on this wiring is not
+  established by this session.
+- F1's 50 Hz `CTRL1=0xC5` start write ACKed. It briefly yielded 89 unverified
+  CSV rows at 47.72 Hz global; the first two seconds were about 46.95 Hz. The
+  stream then stalled: final age 3.086 s, 28 status failures, and periodic
+  register reads showed ID 0x80 with C1=0/C2=0. The immediate post-start probe
+  could read QMC ID 0x80 through both STOP+START and repeated-START, and MPU
+  WHO_AM_I 0x68 through both methods, while QMC register-address ACK and BMP
+  reads failed. SDA/SCL sampled high. This is evidence of a post-start sensor
+  state or bus-access problem, not proof of a power brownout.
+- A0 repeated-START 50 Hz, A1 repeated-START 100 Hz and T1 QST C3 continuous
+  all had zero fresh samples. G5's identity-guarded QMC reset was ACKed but
+  reset/default readback was not confirmed. Therefore neither read transaction
+  style nor QMC soft reset fixed this setup. Full details are in the v18
+  session `SESSION_20261104_000750_23688` and its original UART/upload logs.
+- Flashed the previously stable project MAG-only low-OSR 200 Hz comparison
+  profile (`CTRL1=0x3D`) after triage. Its 30-second capture opened COM3 while
+  the ESP was in ROM `waiting for download`; it recorded no v13 marker or
+  sensor samples and is not a QMC result. Stop here and request the user's
+  power cycle before another serial capture. Evidence:
+  `captures/mag_probe_v13_200hz_20261104_001422.log` and `.json`.
+
+No 200 Hz retest or ≥500 Hz continuous result is established by this session.
+The actual engine and hardware assumptions above remain unvalidated; do not
+attribute the post-start failure to a specific electrical cause until sensor
+VDD and bus signals are measured or a successful cold-power comparison is run.
