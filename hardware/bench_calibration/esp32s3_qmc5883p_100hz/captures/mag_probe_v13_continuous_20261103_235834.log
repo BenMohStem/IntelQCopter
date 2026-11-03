@@ -1,0 +1,47 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x2b (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce3808,len:0x4bc
+load:0x403c9700,len:0xbd8
+load:0x403cc700,len:0x2a0c
+entry 0x403c98d0
+E (98) esp_core_dump_flash: Core dump data check failed:
+Calculated checksum='24f3506e'
+Image checksum='ffffffff'
+=== IQ v13 QMC5883P FIXED-BOOT MAG-ONLY ===
+NO runtime commands / NO Wifi / NO motor output / NO mode switching
+I2C_SCAN 0x2C 0x68
+WRITE name=MPU_DISABLE_MASTER reg=0x6A value=0x00 endTx=0 ack=1
+WRITE name=MPU_AUX_BYPASS reg=0x37 value=0x02 endTx=0 ack=1
+MPU_BYPASS after USER_CTRL=0x00 PIN_CFG=0x02
+I2C_SCAN 0x2C 0x68
+BOOT_PROFILE requested=0 ctrl1=0xC3 ctrl2=0x08 I2C=100000Hz poll_us=500 stop_start=1 csv_every=16
+MAG_ID ack=0 read=0x80 expected=0x80 valid=1
+WRITE name=SUSPEND reg=0x0A value=0x00 endTx=0 ack=1
+WRITE name=XYZ_SIGN reg=0x29 value=0x06 endTx=0 ack=1
+WRITE name=RANGE_8G_SETRESET reg=0x0B value=0x08 endTx=0 ack=1
+WRITE name=START_SELECTED_PROFILE reg=0x0A value=0xC3 endTx=0 ack=1
+VERIFY reason=IMMEDIATE id=ERR/0x00 C1=ERR/0x00 C2=ERR/0x00 this_read=0 confirmed_ever_and_not_contradicted=0
+BOOT_CONFIG_DONE writes_ack=1 confirmed=0; NO RUNTIME RECONFIGURATION
+CSV_HEADER CSV,t_us,x_counts,y_counts,z_counts,status,verified
+EXPERIMENT: do not send serial commands; change profile in platformio.ini, flash, FULL POWER CYCLE
+FIRST_BUS_READ_FAILURE stage=STATUS_09 t_us=1177596 reg_phase=2 returned_bytes=0 SDA=1 SCL=1
+HEALTH profile=0 measured_fresh_hz=0.00 fresh=0 not_ready=0 overflow=0 status_fail=1 xyz_fail=0 verify_fail=1 identical=0 regs_ok=0 writes_ack=1 csv_every=16 last_status=0x00 xyz=0,0,0 age_sec=-1.000
+HEALTH profile=0 measured_fresh_hz=0.00 fresh=0 not_ready=1750 overflow=0 status_fail=13 xyz_fail=0 verify_fail=1 identical=0 regs_ok=0 writes_ack=1 csv_every=16 last_status=0x18 xyz=0,0,0 age_sec=-1.000
+FRESH_MISSING: no new magnetic conversion for >=1.5s; no automatic register rewrite; check supply/C1 and I2C
+HEALTH profile=0 measured_fresh_hz=0.00 fresh=0 not_ready=3512 overflow=0 status_fail=13 xyz_fail=0 verify_fail=1 identical=0 regs_ok=0 writes_ack=1 csv_every=16 last_status=0x18 xyz=0,0,0 age_sec=-1.000
+HEALTH profile=0 measured_fresh_hz=0.00 fresh=0 not_ready=5293 overflow=0 status_fail=13 xyz_fail=0 verify_fail=1 identical=0 regs_ok=0 writes_ack=1 csv_every=16 last_status=0x18 xyz=0,0,0 age_sec=-1.000
+VERIFY reason=PERIODIC_READ_ONLY id=0x80 C1=0x00 C2=0x00 this_read=0 confirmed_ever_and_not_contradicted=0
+HEALTH profile=0 measured_fresh_hz=0.00 fresh=0 not_ready=7072 overflow=0 status_fail=13 xyz_fail=0 verify_fail=2 identical=0 regs_ok=0 writes_ack=1 csv_every=16 last_status=0x18 xyz=0,0,0 age_sec=-1.000
+HEALTH profile=0 measured_fresh_hz=0.00 fresh=0 not_ready=8853 overflow=0 status_fail=13 xyz_fail=0 verify_fail=2 identical=0 regs_ok=0 writes_ack=1 csv_every=16 last_status=0x18 xyz=0,0,0 age_sec=-1.000
+HEALTH profile=0 measured_fresh_hz=0.00 fresh=0 not_ready=10634 overflow=0 status_fail=13 xyz_fail=0 verify_fail=2 identical=0 regs_ok=0 writes_ack=1 csv_every=16 last_status=0x18 xyz=0,0,0 age_sec=-1.000
+HEALTH profile=0 measured_fresh_hz=0.00 fresh=0 not_ready=12415 overflow=0 status_fail=13 xyz_fail=0 verify_fail=2 identical=0 regs_ok=0 writes_ack=1 csv_every=16 last_status=0x18 xyz=0,0,0 age_sec=-1.000
+HEALTH profile=0 measured_fresh_hz=0.00 fresh=0 not_ready=14196 overflow=0 status_fail=13 xyz_fail=0 verify_fail=2 identical=0 regs_ok=0 writes_ack=1 csv_every=16 last_status=0x18 xyz=0,0,0 age_sec=-1.000
+VERIFY reason=PERIODIC_READ_ONLY id=0x80 C1=0x00 C2=0x00 this_read=0 confirmed_ever_and_not_contradicted=0
+HEALTH profile=0 measured_fresh_hz=0.00 fresh=0 not_ready=15975 overflow=0 status_fail=13 xyz_fail=0 verify_fail=3 identical=0 regs_ok=0 writes_ack=1 csv_every=16 last_status=0x18 xyz=0,0,0 age_sec=-1.000
+HEALTH profile=0 measured_fresh_hz=0.00 fresh=0 not_ready=17756 overflow=0 status_fail=13 xyz_fail=0 verify_fail=3 identical=0 regs_ok=0 writes_ack=1 csv_every=16 last_status=0x18 xyz=0,0,0 age_sec=-1.000
+HEALTH profile=0 measured_fresh_hz=0.00 fresh=0 not_ready=19537 overflow=0 status_fail=13 xyz_fail=0 verify_fail=3 identical=0 regs_ok=0 writes_ack=1 csv_every=16 last_status=0x18 xyz=0,0,0 age_sec=-1.000
+HEALTH profile=0 measured_fresh_hz=0.00 fresh=0 not_ready=21318 overflow=0 status_fail=13 xyz_fail=0 verify_fail=3 identical=0 regs_ok=0 writes_ack=1 csv_every=16 last_status=0x18 xyz=0,0,0 age_sec=-1.000
+HEALTH profile=0 measured_fresh_hz=0.00 fresh=0 not_ready=23099 overflow=0 status_fail=13 xyz_fail=0 verify_fail=3 identical=0 regs_ok=0 writes_ack=1 csv_every=16 last_status=0x18 xyz=0,0,0 age_sec=-1.000

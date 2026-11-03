@@ -1,0 +1,14 @@
+{
+  "csv_samples": 0,
+  "csv_rate_hz": 0.0,
+  "last_health_hz": null,
+  "peak_health_hz": null,
+  "last_health": null,
+  "verify_lines": [],
+  "errors": [],
+  "boot_profiles": [],
+  "v13_boot_confirmed": false,
+  "first_non_rom_line": "waiting for download",
+  "first_sample": null,
+  "last_sample": null
+}

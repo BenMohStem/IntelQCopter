@@ -1,0 +1,39 @@
+{
+  "csv_samples": 0,
+  "csv_rate_hz": 0.0,
+  "last_health_hz": 0.0,
+  "peak_health_hz": 0.0,
+  "last_health": {
+    "profile": "0",
+    "measured_fresh_hz": "0.00",
+    "fresh": "0",
+    "not_ready": "23099",
+    "overflow": "0",
+    "status_fail": "13",
+    "xyz_fail": "0",
+    "verify_fail": "3",
+    "identical": "0",
+    "regs_ok": "0",
+    "writes_ack": "1",
+    "csv_every": "16",
+    "last_status": "0x18",
+    "xyz": "0,0,0",
+    "age_sec": "-1.000"
+  },
+  "verify_lines": [
+    "VERIFY reason=IMMEDIATE id=ERR/0x00 C1=ERR/0x00 C2=ERR/0x00 this_read=0 confirmed_ever_and_not_contradicted=0",
+    "VERIFY reason=PERIODIC_READ_ONLY id=0x80 C1=0x00 C2=0x00 this_read=0 confirmed_ever_and_not_contradicted=0",
+    "VERIFY reason=PERIODIC_READ_ONLY id=0x80 C1=0x00 C2=0x00 this_read=0 confirmed_ever_and_not_contradicted=0"
+  ],
+  "errors": [
+    "FIRST_BUS_READ_FAILURE stage=STATUS_09 t_us=1177596 reg_phase=2 returned_bytes=0 SDA=1 SCL=1",
+    "FRESH_MISSING: no new magnetic conversion for >=1.5s; no automatic register rewrite; check supply/C1 and I2C"
+  ],
+  "boot_profiles": [
+    "BOOT_PROFILE requested=0 ctrl1=0xC3 ctrl2=0x08 I2C=100000Hz poll_us=500 stop_start=1 csv_every=16"
+  ],
+  "v13_boot_confirmed": true,
+  "first_non_rom_line": "Calculated checksum='24f3506e'",
+  "first_sample": null,
+  "last_sample": null
+}

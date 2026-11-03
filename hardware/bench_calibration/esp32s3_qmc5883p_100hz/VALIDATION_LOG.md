@@ -240,6 +240,23 @@ firmware UART 115200, I2C 100 kHz unless stated, Wi-Fi off, no ESC output.
   schedule. It produced zero fresh samples; C1 read back 0 and DRDY stayed
   clear (`0x18`). Evidence: `captures/mag_probe_v13_continuous-fast_20261103_234703.log`
   and `.json`.
+- After the user rebooted the exact continuous example (`CTRL1=0xC3`) at
+  100 kHz, the 20 s capture showed 53,389 not-ready polls, zero fresh samples,
+  and later C1 readback 0/C2 readback 0. It is a valid probe run, but not a
+  valid continuous conversion result. Evidence:
+  `captures/mag_probe_v13_continuous_20261103_235625.log` and `.json`.
+- Added a 20 ms settling interval after the selected CTRL1 write and before
+  immediate register verification/polling, then will retry C3 once. This is a
+  startup-margin experiment; it does not change the selected register value.
+- Retried C3 with the 20 ms settle: after an image upload the capture hit ROM
+  `waiting for download` (`mag_probe_v13_continuous_20261103_235948.log`), then
+  after the user's power-cycle a 15 s run still had zero fresh data, 69,393
+  not-ready polls, and periodic C1/C2 readback 0 (`mag_probe_v13_continuous_20261104_000033.log` / `.json`).
+- Prepared a further `CTRL1=0x03` continuous comparison at 100 kHz. Upload
+  completed, but its capture also saw ROM `waiting for download` and yielded no
+  sensor result (`mag_probe_v13_continuous_20261104_000209.log` / `.json`).
+  User was prompted to reboot before the next capture. No continuous profile
+  has yet produced fresh magnetometer data; no ≥500 Hz result is claimed.
 - Then flashed QST's exact continuous example (`CTRL1=0xC3`) at 100 kHz. The
   capture saw ROM `waiting for download`, so the image had not started and no
   QMC result can be inferred. User was prompted to power-cycle again; await

@@ -48,6 +48,9 @@
 #ifndef IQ_MAG_200HZ_LOW_OSR
 #define IQ_MAG_200HZ_LOW_OSR 0
 #endif
+#ifndef IQ_MAG_CONTINUOUS_CTRL1
+#define IQ_MAG_CONTINUOUS_CTRL1 0xC3
+#endif
 #if IQ_MAG_TEXT_DIAGNOSTIC != 1 || IQ_WIFI_ENABLED != 0
 #error "v13 is isolated: IQ_MAG_TEXT_DIAGNOSTIC=1 and IQ_WIFI_ENABLED=0"
 #endif
@@ -80,6 +83,7 @@ constexpr uint32_t csvDivider =
 constexpr uint8_t ctrl1Value =
   IQ_MAG_BOOT_PROFILE == 200 && IQ_MAG_200HZ_LOW_OSR ? 0x3D :
   IQ_MAG_BOOT_PROFILE == 0 && IQ_MAG_CONTINUOUS_FAST ? 0x33 :
+  IQ_MAG_BOOT_PROFILE == 0 ? IQ_MAG_CONTINUOUS_CTRL1 :
   IQ_MAG_BOOT_PROFILE == 10  ? 0xC1 :
   IQ_MAG_BOOT_PROFILE == 50  ? 0xC5 :
   IQ_MAG_BOOT_PROFILE == 100 ? 0xC9 :
@@ -238,6 +242,9 @@ void configureOnceAtBoot() {
   const bool c = writeRegister(hw::mag, hw::ctrl2, hw::range8g, "RANGE_8G_SETRESET");
   const bool d = writeRegister(hw::mag, hw::ctrl1, hw::ctrl1Value, "START_SELECTED_PROFILE");
   health.allWritesAck = a && b && c && d;
+  // Allow mode startup before the first status/readback. Normal low-OSR was
+  // responsive immediately, but keep this margin for continuous-mode entry.
+  delay(20);
   // One immediate readback is valuable: v12 showed it can succeed while a
   // subsequent delayed read fails transiently. Leave the device alone after.
   verifyRegisters("IMMEDIATE");
