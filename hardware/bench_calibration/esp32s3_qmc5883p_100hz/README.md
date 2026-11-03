@@ -1,16 +1,25 @@
 # IntelQCopter v4 - complete UART calibration + QMC failure triage
 
 This copy is integrated at `hardware/bench_calibration/esp32s3_qmc5883p_100hz`
-in the QCopter repository. The root project launcher is
-`..\..\..\qcopter.ps1 calibration-gui`; from the repository root use
-`.\qcopter.ps1 calibration-gui` (or add `-UploadFirmware -Check -Seconds 20`
-to flash this bench firmware and verify it before opening the GUI).
+in the QCopter repository. From this directory, use the package-local launcher:
 
-This keeps **one launcher only**: `tools/start_calibration.ps1`. No root-level `START_*.ps1`.
+```powershell
+.\qcopter.ps1 calibration-gui
+.\qcopter.ps1 calibration-gui -UploadFirmware
+.\qcopter.ps1 calibration-gui -UploadFirmware -Check -Seconds 20
+```
+
+Without `-UploadFirmware`, it uses the installed firmware and starts the GUI.
+With `-UploadFirmware`, it flashes this bench firmware before starting the GUI.
+Add `-Check -Seconds 20` to run the UART preflight and stop without opening the
+GUI. From the repository root, `.\qcopter.ps1 calibration-gui` dispatches to
+the same calibration launcher.
+
+The package launcher delegates to `tools/start_calibration.ps1`.
 
 ## Fast workflow (Windows PowerShell)
 
-From this directory:
+The same upload and preflight can be run directly:
 
 ```powershell
 .\tools\start_calibration.ps1 -UploadFirmware -Check -Seconds 20
@@ -22,7 +31,7 @@ From this directory:
 - Uses 500 Hz MPU target, 100 Hz QMC (`0xC9`) and BMP280 ~10 Hz, Wi-Fi off.
 - Fails instead of claiming calibration when magnetometer freshness is zero.
 
-For the GUI **without reflash**:
+To start the GUI **without reflash**:
 
 ```powershell
 .\tools\start_calibration.ps1
