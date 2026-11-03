@@ -376,6 +376,7 @@ class Recorder(threading.Thread):
         self.last_byte_at = 0.0
         self.mpu_total = self.mag_total = self.bmp_total = 0
         self.mag_valid_total = 0
+        self.pending_mag_plot = None
         self.last_frame = None
         self.last_seq = None
         self.last_mcu_timestamp = None
@@ -642,7 +643,9 @@ class Recorder(threading.Thread):
         mx = f.mag()
         mx_board = map_mag(self.axis_map, mx)
         if f.mag_new:
-            self.events.put(('mag_point', mx_board))
+            # Keep only the newest fresh conversion until the next bounded Tk
+            # plot snapshot. Do not enqueue hundreds of per-sample GUI events.
+            self.pending_mag_plot = mx_board
         with self.lock:
             stage = self.active
             counting = bool(stage and not self.paused and now >= self.phase_start)
@@ -725,7 +728,9 @@ class Recorder(threading.Thread):
                 'mpu_temp': f.temp/340.0+36.53 if f.mpu_ok else math.nan,
                 'bmp_temp': f.bmp_tc100/100.0 if f.bmp_ok else math.nan,
                 'bmp_new': f.bmp_new,
+                'mag_point': self.pending_mag_plot,
             }))
+                self.pending_mag_plot = None
         if capture and count != self.phase_last_progress and (count%25==0 or count==stage.target):
             self.phase_last_progress=count
             self.events.put(('progress', count))
@@ -753,6 +758,7 @@ class Application:
         self.lines=[]
         self.times=deque(maxlen=500)
         self.mag_points=deque(maxlen=8000)
+        self.mag_plot_total=0
         self.series={key:deque(maxlen=500) for key in ('ax','ay','az','gx','gy','gz','mx','my','mz','pressure','altitude','mpu_temp','bmp_temp')}
         self.last_plot=0
         self.live_plot_enabled=True
@@ -1163,8 +1169,6 @@ class Application:
                 else:self.msg.showerror('Calibration failed',report[-5000:])
             elif kind=='plot':
                 self.add_point(payload)
-            elif kind=='mag_point':
-                self.mag_points.append(payload)
         now=time.monotonic()
         if (self.mag_popup is not None and self.mag_popup.winfo_exists() and
                 now-self.mag_popup_last_draw >= 2.0 and self.mag_points):
@@ -1186,12 +1190,16 @@ class Application:
                 elif w.bytes_total and not w.frames_total:
                     self.health.set(f'UART bytes={w.bytes_total:,}, valid packets=0 | sync={w.decoder.bad_sync:,} CRC={w.decoder.bad_crc:,} version={w.decoder.bad_version:,}. Wrong baud/protocol or incompatible firmware.')
                 elif frame:
-                    self.health.set(f'{w.frames_total:,} packets | MPU {w.mpu_total:,} | MAG ok {w.mag_valid_total:,} / fresh {w.mag_total:,} | BMP {w.bmp_total:,} | flags 0x{frame.flags:02X} | CRC {w.decoder.bad_crc:,} | gaps {w.seq_gaps:,}')
+                    self.health.set(f'{w.frames_total:,} packets | MPU {w.mpu_total:,} | MAG ok {w.mag_valid_total:,} / fresh {w.mag_total:,} / plotted {self.mag_plot_total:,} | BMP {w.bmp_total:,} | flags 0x{frame.flags:02X} | CRC {w.decoder.bad_crc:,} | gaps {w.seq_gaps:,}')
                 elif w.bytes_total:
                     self.health.set(f'UART receiving {w.bytes_total:,} bytes; waiting for a complete valid packet…')
         self.root.after(120,self.pump)
 
     def add_point(self,p):
+        mag_point=p.get('mag_point')
+        if mag_point is not None:
+            self.mag_points.append(mag_point)
+            self.mag_plot_total+=1
         # An ESP32 can send valid packets containing all-invalid sensors.
         # Do not advance blank axes when there are no measurements.
         if not any((p['mpu'],p['mag'],p['bmp'])):

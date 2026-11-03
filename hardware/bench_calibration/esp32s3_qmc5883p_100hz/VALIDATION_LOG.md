@@ -352,3 +352,21 @@ fresh BMP packets, 0 CRC errors, and 0 lost sequence numbers. Raw capture:
 on this firmware. Motor outputs remain disabled. The register ODR is configured
 for 200 Hz; the measured full-system fresh rate is lower at 166.8 Hz. I2C
 pull-up values, bus rise time and actual sensor rail voltage remain unmeasured.
+
+## GUI MAG plot path follow-up — 2026-11-04
+
+Engine: Python 3.15 / Tkinter / Matplotlib GUI receiving v3 binary frames from
+the PlatformIO 7.1.3 Arduino firmware on ESP32-S3 CH343 COM3 at 921600 baud.
+The assumed sensor setup remains QMC5883P 0x2C, 200 Hz ODR (`0x3D`), shared
+400 kHz I2C, MPU6050 500 Hz. Wiring rise time and sensor voltage remain
+unmeasured.
+
+The raw UART preflight previously showed 1,002 fresh MAG readings in 8 seconds,
+but that alone did not prove the GUI rendered them. The GUI now sends the latest
+fresh magnetic vector with its regular bounded plot snapshot instead of queuing
+one GUI event per magnetic sample. Its health line separately reports MAG
+valid, fresh and plotted counts. Python syntax/self-check passed, and a focused
+in-memory v3 QMC packet check passed through decoder → Tk plot snapshot → 3D
+cloud append. The actual live window has not been visually confirmed by the
+agent; do not claim rendered live MAG until the plotted counter rises and the
+cloud is visible.
