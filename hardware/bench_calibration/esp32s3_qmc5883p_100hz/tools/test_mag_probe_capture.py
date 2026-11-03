@@ -14,6 +14,10 @@ s=probe.extract_summary(lines)
 assert s['csv_samples']==3 and abs(s['csv_rate_hz']-100)<.01 and s['last_health_hz']==97.5
 assert s['verify_lines'] and s['boot_profiles']
 assert s['v13_boot_confirmed']
+decimated=probe.extract_summary(['BOOT_PROFILE requested=200 ctrl1=0xCD',
+    'CSV,1000000,1,2,3,0x19,1', 'CSV,1020000,1,2,3,0x19,1',
+    'HEALTH profile=200 measured_fresh_hz=199.7 fresh=800 csv_every=4'])
+assert decimated['csv_rate_hz']==50 and decimated['last_health_hz']==199.7
 wrong_firmware=probe.extract_summary(['MAG ACK=1 ID=1:0x80 C1=1:0x00'])
 assert not wrong_firmware['v13_boot_confirmed'] and wrong_firmware['csv_samples']==0
 assert not probe.extract_summary(['HEALTH profile=100 measured_fresh_hz=0 fresh=0'])['v13_boot_confirmed']

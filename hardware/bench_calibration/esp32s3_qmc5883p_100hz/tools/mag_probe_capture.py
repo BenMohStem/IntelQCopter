@@ -53,7 +53,7 @@ def extract_summary(lines):
     }
 
 
-def run(port, seconds, baud):
+def run(port, seconds, baud, profile_tag):
     try:
         import serial
     except ImportError:
@@ -61,7 +61,7 @@ def run(port, seconds, baud):
         return 6
     capture_dir = Path('captures')
     capture_dir.mkdir(parents=True, exist_ok=True)
-    stem = 'mag_probe_v13_100hz_' + datetime.now().strftime('%Y%m%d_%H%M%S')
+    stem = 'mag_probe_v13_' + profile_tag + '_' + datetime.now().strftime('%Y%m%d_%H%M%S')
     raw_path = capture_dir / (stem + '.log')
     json_path = capture_dir / (stem + '.json')
     lines = []
@@ -110,7 +110,11 @@ def run(port, seconds, baud):
         print('FAIL: The v13 probe booted, but produced no fresh magnetic samples.')
         print('Check QMC 3.3V, soldering, shared I2C, MPU bypass and a full board power reset.')
         return 2
-    if summary['csv_rate_hz'] < 60:
+    target_rate = 100 if profile_tag == '100hz' else (200 if profile_tag == '200hz' else 900)
+    if summary['last_health_hz'] is None:
+        print('FAIL: No HEALTH sensor-rate measurements were captured; cannot verify the profile.')
+        return 4
+    if summary['last_health_hz'] < target_rate * 0.75:
         print('WARN: Sensor produced samples but did not sustain a useful rate.')
         return 3
     print('PASS MAG-ONLY: This does NOT prove full calibration MAG works.')
@@ -123,5 +127,6 @@ if __name__ == '__main__':
     parser.add_argument('--port', required=True)
     parser.add_argument('--seconds', type=float, default=20)
     parser.add_argument('--baud', type=int, default=115200)
+    parser.add_argument('--profile-tag', default='100hz', choices=('100hz','200hz','continuous','continuous-fast'))
     a = parser.parse_args()
-    raise SystemExit(run(a.port, a.seconds, a.baud))
+    raise SystemExit(run(a.port, a.seconds, a.baud, a.profile_tag))

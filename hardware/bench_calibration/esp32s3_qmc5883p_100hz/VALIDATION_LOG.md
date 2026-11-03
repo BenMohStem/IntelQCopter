@@ -112,3 +112,44 @@ diagnostic rather than the GUI's 921600-baud v3 binary firmware. The board is
 currently restored to the normal calibration image; the latest combined
 preflight passes MPU, MAG and BMP. These checks demonstrate operation in this
 bench setup, not flight validation or validation of unobserved board wiring.
+
+## QMC ODR and maximum-rate follow-up — 2026-11-03
+
+Engine: PlatformIO 7.1.3 / Arduino framework on physical ESP32-S3 DevKitC-1
+revision 0.2, CH343 COM3. QMC5883P at 0x2C / ID 0x80, MPU6050 0x68 and BMP280
+0x76 are the observed identities. SDA9/SCL8 and sensor rail/wiring are assumed;
+pull-up values, signal rise times, breakout revision and QMC supply waveform
+were not measured. The QMC data sheet Rev. E lists normal ODR through 200 Hz,
+continuous mode up to 1500 Hz and I2C standard/fast mode (100/400 kHz).
+Probe-only firmware uses text UART 115200, no Wi-Fi and ESC pins INPUT; the
+normal calibration firmware uses 921600 binary UART and 500 Hz IMU scheduling.
+
+- Added explicit isolated 200 Hz (`CTRL1=0xCD`), continuous (`0xC3`, 400 kHz)
+  and continuous low-OSR (`0x33`, 400 kHz) profiles. Continuous polling is
+  configured at 2 kHz. Added repeated-identical-vector telemetry and made
+  acceptance use sensor HEALTH rate rather than decimated CSV rate.
+- 200 Hz trial: boot scan saw QMC 0x2C and ID 0x80; MPU bypass and all four
+  writes acknowledged. However subsequent readback and STATUS reads failed,
+  with no fresh XYZ sample in 10 s. Mid-trial status sometimes read 0x18 but
+  DRDY remained clear. Evidence: `captures/mag_probe_v13_200hz_20261103_230337`
+  (`.log` and `.json`). **No 200 Hz rate result.**
+- Datasheet continuous trial at 400 kHz: scan did not detect QMC; no QMC writes
+  or samples occurred. The scan intermittently saw only MPU/BMP, then address
+  0x3C, indicating unstable/changed bus visibility. Evidence:
+  `captures/mag_probe_v13_continuous_20261103_230424.log` and `.json`.
+  Continuous low-OSR `0x33` was not flashed because the bus was already failing.
+- Restored full calibration firmware to COM3 (successful flash/hash verify).
+  Subsequent two preflights received boot bytes once and then zero bytes / zero
+  packets at 921600 baud. Thus this task did not restore verified GUI streaming;
+  the board should be fully disconnected from all power for 10 seconds and
+  restarted before further troubleshooting. Do not treat the prior 100 Hz
+  historical passes as current-state verification.
+- The 200 Hz experiment is inconclusive: the sensor was seen at boot but bus
+  reads dropped out. The 400 kHz experiment confirms that fast-mode I2C is not
+  working on the current physical wiring. Physical cause (power, bus integrity,
+  pull-ups, board reset state, or electrical interference) remains unisolated.
+  No motor/ESC output was enabled.
+- Verification: `test_mag_probe_capture.py` passed; the 200 Hz profile compiled
+  without duplicate macro warnings. Full firmware uploaded successfully, but
+  UART preflight failed (0 valid packets on post-retry captures). No rate claim
+  is made beyond the previously preserved 100 Hz baseline captures above.

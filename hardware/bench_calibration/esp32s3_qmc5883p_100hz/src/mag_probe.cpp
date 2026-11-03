@@ -36,6 +36,9 @@
 #ifndef IQ_I2C_HZ
 #define IQ_I2C_HZ 100000
 #endif
+#ifndef IQ_MAG_CONTINUOUS_FAST
+#define IQ_MAG_CONTINUOUS_FAST 0
+#endif
 #if IQ_MAG_TEXT_DIAGNOSTIC != 1 || IQ_WIFI_ENABLED != 0
 #error "v13 is isolated: IQ_MAG_TEXT_DIAGNOSTIC=1 and IQ_WIFI_ENABLED=0"
 #endif
@@ -55,7 +58,7 @@ constexpr uint8_t magId = 0x80;
 constexpr uint8_t idReg = 0x00, xyzReg = 0x01, statusReg = 0x09;
 constexpr uint8_t ctrl1 = 0x0A, ctrl2 = 0x0B, signReg = 0x29;
 constexpr uint8_t motorPins[] = {12, 11, 14, 13};
-constexpr uint32_t pollIntervalUs = 2000; // Poll at 500 Hz, count only fresh data.
+constexpr uint32_t pollIntervalUs = IQ_MAG_BOOT_PROFILE == 0 ? 500 : 2000;
 constexpr uint32_t healthIntervalMs = 1000;
 constexpr uint32_t verifyIntervalMs = 5000;
 constexpr uint8_t range8g = 0x08;
@@ -66,6 +69,7 @@ constexpr uint32_t csvDivider =
   IQ_MAG_BOOT_PROFILE == 200 && IQ_MAG_CSV_DIVIDER < 4 ? 4 :
   IQ_MAG_CSV_DIVIDER;
 constexpr uint8_t ctrl1Value =
+  IQ_MAG_BOOT_PROFILE == 0 && IQ_MAG_CONTINUOUS_FAST ? 0x33 :
   IQ_MAG_BOOT_PROFILE == 10  ? 0xC1 :
   IQ_MAG_BOOT_PROFILE == 50  ? 0xC5 :
   IQ_MAG_BOOT_PROFILE == 100 ? 0xC9 :
@@ -165,10 +169,13 @@ struct Health {
   bool missingFreshAlert = false;
   uint32_t fresh = 0, notReady = 0, overflows = 0;
   uint32_t statusFailures = 0, xyzFailures = 0, verifyFailures = 0;
+  uint32_t identicalReads = 0;
   uint64_t firstFreshUs = 0, lastFreshUs = 0;
   uint64_t totalFreshIntervalsUs = 0;
   uint32_t intervalCount = 0;
   int16_t lastXYZ[3] = {};
+  int16_t previousXYZ[3] = {};
+  bool havePreviousXYZ = false;
   uint8_t lastStatus = 0;
   uint8_t latestVerify1 = 0, latestVerify2 = 0;
   uint64_t firstFailureUs = 0;
@@ -259,7 +266,14 @@ void poll() {
   } else health.firstFreshUs = t;
   health.sawFresh = true;
   health.lastFreshUs = t;
-  for (int i=0; i<3; ++i) health.lastXYZ[i] = xyz[i];
+  if (health.havePreviousXYZ && xyz[0] == health.previousXYZ[0]
+      && xyz[1] == health.previousXYZ[1] && xyz[2] == health.previousXYZ[2])
+    ++health.identicalReads;
+  for (int i=0; i<3; ++i) {
+    health.lastXYZ[i] = xyz[i];
+    health.previousXYZ[i] = xyz[i];
+  }
+  health.havePreviousXYZ = true;
   ++health.fresh;
   if (health.missingFreshAlert) {
     Serial.printf("FRESH_RECOVERED t_us=%llu after missing sample interval\n",
@@ -284,7 +298,7 @@ void report() {
   const double age = health.sawFresh ? (nowUs - health.lastFreshUs) * 1e-6 : -1.0;
   Serial.printf("HEALTH profile=%d measured_fresh_hz=%.2f fresh=%lu "
                 "not_ready=%lu overflow=%lu status_fail=%lu xyz_fail=%lu "
-                "verify_fail=%lu regs_ok=%d writes_ack=%d csv_every=%d last_status=0x%02X "
+                "verify_fail=%lu identical=%lu regs_ok=%d writes_ack=%d csv_every=%d last_status=0x%02X "
                 "xyz=%d,%d,%d age_sec=%.3f\n",
                 IQ_MAG_BOOT_PROFILE, rate,
                 static_cast<unsigned long>(health.fresh),
@@ -293,6 +307,7 @@ void report() {
                 static_cast<unsigned long>(health.statusFailures),
                 static_cast<unsigned long>(health.xyzFailures),
                 static_cast<unsigned long>(health.verifyFailures),
+                static_cast<unsigned long>(health.identicalReads),
                 health.readbackConfirmed, health.allWritesAck, int(hw::csvDivider),
                 health.lastStatus, health.lastXYZ[0], health.lastXYZ[1],
                 health.lastXYZ[2], age);
@@ -342,7 +357,8 @@ void loop() {
     previousVerifyMs = nowMs;
     if (health.firstIdentityOK) verifyRegisters("PERIODIC_READ_ONLY");
   }
-  delay(1);
+  if (IQ_MAG_BOOT_PROFILE == 0) delayMicroseconds(50);
+  else delay(1);
 }
 
 } // namespace iq

@@ -1,0 +1,14 @@
+{
+  "csv_samples": 0,
+  "csv_rate_hz": 0.0,
+  "last_health_hz": 0.0,
+  "verify_lines": [],
+  "errors": [],
+  "boot_profiles": [
+    "BOOT_PROFILE requested=0 ctrl1=0xC3 ctrl2=0x08 I2C=400000Hz csv_every=16"
+  ],
+  "v13_boot_confirmed": true,
+  "first_non_rom_line": "Calculated checksum='24f3506e'",
+  "first_sample": null,
+  "last_sample": null
+}
