@@ -193,6 +193,11 @@ GPIOs held INPUT.
   then stopped updating; status failures accumulated and readback could not
   be maintained. `age_sec` reached >6 s by capture end. It is not a sustained
   pass. Capture: `mag_probe_v13_200hz_20261103_232926.log` and `.json`.
+- A later 200 Hz repeated-START A/B run did boot after the preceding manual
+  reset, briefly reached 192.06 Hz for 30 fresh readings, then remained stale
+  (final age >26 s, registers not confirmed). This matches the high-OSR
+  transient seen with STOP+START, so the transaction style was not the primary
+  cause. Capture: `mag_probe_v13_200hz_20261103_234347.log` and `.json`.
 - Reducing status polling to 250 Hz (`poll_us=4000`) yielded zero fresh samples
   and repeated STATUS NACKs at 100 kHz. Capture:
   `mag_probe_v13_200hz_20261103_233131.log` and `.json`.

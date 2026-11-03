@@ -1,0 +1,14 @@
+HEALTH profile=200 measured_fresh_hz=192.06 fresh=30 not_ready=3005 overflow=1 status_fail=6245 xyz_fail=0 verify_fail=5 identical=0 regs_ok=0 writes_ack=1 csv_every=4 last_status=0x18 xyz=-1291,-1695,-2429 age_sec=15.843
+HEALTH profile=200 measured_fresh_hz=192.06 fresh=30 not_ready=3500 overflow=1 status_fail=6245 xyz_fail=0 verify_fail=5 identical=0 regs_ok=0 writes_ack=1 csv_every=4 last_status=0x18 xyz=-1291,-1695,-2429 age_sec=16.843
+HEALTH profile=200 measured_fresh_hz=192.06 fresh=30 not_ready=3994 overflow=1 status_fail=6245 xyz_fail=0 verify_fail=5 identical=0 regs_ok=0 writes_ack=1 csv_every=4 last_status=0x18 xyz=-1291,-1695,-2429 age_sec=17.843
+HEALTH profile=200 measured_fresh_hz=192.06 fresh=30 not_ready=4489 overflow=1 status_fail=6245 xyz_fail=0 verify_fail=5 identical=0 regs_ok=0 writes_ack=1 csv_every=4 last_status=0x18 xyz=-1291,-1695,-2429 age_sec=18.843
+VERIFY reason=PERIODIC_READ_ONLY id=0x80 C1=0x00 C2=0x00 this_read=0 confirmed_ever_and_not_contradicted=0
+HEALTH profile=200 measured_fresh_hz=192.06 fresh=30 not_ready=4983 overflow=1 status_fail=6245 xyz_fail=0 verify_fail=6 identical=0 regs_ok=0 writes_ack=1 csv_every=4 last_status=0x18 xyz=-1291,-1695,-2429 age_sec=19.843
+HEALTH profile=200 measured_fresh_hz=192.06 fresh=30 not_ready=5472 overflow=1 status_fail=6245 xyz_fail=0 verify_fail=6 identical=0 regs_ok=0 writes_ack=1 csv_every=4 last_status=0x18 xyz=-1291,-1695,-2429 age_sec=20.843
+HEALTH profile=200 measured_fresh_hz=192.06 fresh=30 not_ready=5967 overflow=1 status_fail=6245 xyz_fail=0 verify_fail=6 identical=0 regs_ok=0 writes_ack=1 csv_every=4 last_status=0x18 xyz=-1291,-1695,-2429 age_sec=21.843
+HEALTH profile=200 measured_fresh_hz=192.06 fresh=30 not_ready=6461 overflow=1 status_fail=6245 xyz_fail=0 verify_fail=6 identical=0 regs_ok=0 writes_ack=1 csv_every=4 last_status=0x18 xyz=-1291,-1695,-2429 age_sec=22.843
+HEALTH profile=200 measured_fresh_hz=192.06 fresh=30 not_ready=6956 overflow=1 status_fail=6245 xyz_fail=0 verify_fail=6 identical=0 regs_ok=0 writes_ack=1 csv_every=4 last_status=0x18 xyz=-1291,-1695,-2429 age_sec=23.843
+VERIFY reason=PERIODIC_READ_ONLY id=0x80 C1=0x00 C2=0x00 this_read=0 confirmed_ever_and_not_contradicted=0
+HEALTH profile=200 measured_fresh_hz=192.06 fresh=30 not_ready=7450 overflow=1 status_fail=6245 xyz_fail=0 verify_fail=7 identical=0 regs_ok=0 writes_ack=1 csv_every=4 last_status=0x18 xyz=-1291,-1695,-2429 age_sec=24.843
+HEALTH profile=200 measured_fresh_hz=192.06 fresh=30 not_ready=7939 overflow=1 status_fail=6245 xyz_fail=0 verify_fail=7 identical=0 regs_ok=0 writes_ack=1 csv_every=4 last_status=0x18 xyz=-1291,-1695,-2429 age_sec=25.843
+HEALTH profile=200 measured_fresh_hz=192.06 fresh=30 not_ready=8434 overflow=1 status_fail=6245 xyz_fail=0 verify_fail=7 identical=0 regs_ok=0 writes_ack=1 csv_every=4 last_status=0x18 xyz=-1291,-1695,-2429 age_sec=26.843

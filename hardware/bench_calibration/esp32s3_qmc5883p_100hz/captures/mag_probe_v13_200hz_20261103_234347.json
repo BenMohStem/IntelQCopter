@@ -1,0 +1,33 @@
+{
+  "csv_samples": 0,
+  "csv_rate_hz": 0.0,
+  "last_health_hz": 192.06,
+  "peak_health_hz": 192.06,
+  "last_health": {
+    "profile": "200",
+    "measured_fresh_hz": "192.06",
+    "fresh": "30",
+    "not_ready": "8434",
+    "overflow": "1",
+    "status_fail": "6245",
+    "xyz_fail": "0",
+    "verify_fail": "7",
+    "identical": "0",
+    "regs_ok": "0",
+    "writes_ack": "1",
+    "csv_every": "4",
+    "last_status": "0x18",
+    "xyz": "-1291,-1695,-2429",
+    "age_sec": "26.843"
+  },
+  "verify_lines": [
+    "VERIFY reason=PERIODIC_READ_ONLY id=0x80 C1=0x00 C2=0x00 this_read=0 confirmed_ever_and_not_contradicted=0",
+    "VERIFY reason=PERIODIC_READ_ONLY id=0x80 C1=0x00 C2=0x00 this_read=0 confirmed_ever_and_not_contradicted=0"
+  ],
+  "errors": [],
+  "boot_profiles": [],
+  "v13_boot_confirmed": true,
+  "first_non_rom_line": "HEALTH profile=200 measured_fresh_hz=192.06 fresh=30 not_ready=3005 overflow=1 status_fail=6245 xyz_fail=0 verify_fail=5 identical=0 regs_ok=0 writes_ack=1 csv_every=4 last_status=0x18 xyz=-1291,-1695,-2429 age_sec=15.843",
+  "first_sample": null,
+  "last_sample": null
+}
