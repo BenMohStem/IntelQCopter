@@ -81,17 +81,24 @@ register conventions.
 
 ## Source material and evidence
 
-The source handoff and the relevant capture review are preserved under
-[`../artifacts/handoffs`](../artifacts/handoffs). The handoff archive contains
-the v13 isolated profile, v18 no-purchase diagnostic, v17 failure evidence,
-full-calibration v3 package, and motor-disabled 500 Hz bench package. Original
-Downloads and `GPT_TMP` contents remain untouched. The top-level Downloads
-folder also contains unrelated material and was not copied wholesale.
+The original source handoff and v4 calibration package are preserved in the
+repository. The newer v4 source is under
+[`../hardware/bench_calibration/esp32s3_qmc5883p_100hz`](../hardware/bench_calibration/esp32s3_qmc5883p_100hz/README.md).
+Its earlier full-system capture and the new preflight are retained in that
+package's `captures/` folder; the older v13/v17/v18 bundle remains under
+[`../artifacts/handoffs`](../artifacts/handoffs/README.md).
 
-No board was flashed, no serial port was opened, and no physical motor test was
-performed during this setup. Engine/hardware identity for this report: physical
-ESP32-S3 + QMC5883P was user-reported in the supplied handoff; the engine is real
-hardware but all status values here are inherited reports, not newly observed
-measurements. Assumed parameters are the pin map and register profile in the
-table above. The actual sensor bus wiring, board revision, power integrity,
-adapter behavior, and achieved rates remain unvalidated in this session.
+The v4 bench firmware was compiled and flashed to the ESP32-S3 identified on
+COM3. A subsequent 20-second preflight yielded 9,023 frames at 490.2 Hz, 161
+fresh BMP samples, but zero MAG-valid and MAG-fresh samples; CRC errors and
+sequence loss were both zero. The STOP+START QMC read change therefore did not
+fix the live sensor. No GUI capture or motor test was run. Engine identity is
+the physical ESP32-S3, identified by esptool; QMC5883P and sensor wiring are
+user-reported. Assumed settings remain SDA GPIO9, SCL GPIO8, QMC `0x2C` / ID
+`0x80`, control `0xC9`, I²C 100 kHz, and UART 921600. Board revision, wiring,
+power integrity, sensor response and full-power reset remain unverified. The
+isolated v13 MAG-only probe was uploaded but never started; its log shows the
+ESP32 ROM waiting in `DOWNLOAD(USB/UART0)` mode. This is invalid sensor evidence.
+Rerun that probe after the user's other firmware test is finished, confirm
+normal probe startup, and record fresh XYZ after a true 10-second all-power
+removal.

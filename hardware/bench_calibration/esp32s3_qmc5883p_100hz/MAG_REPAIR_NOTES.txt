@@ -1,0 +1,22 @@
+IntelQCopter full calibration: 100 Hz magnetometer restore
+
+Changes versus previous LiDAR GUI v2 package:
+ - Same GUI, optional LiDAR, 921600 UART, Wi-Fi OFF and 52-byte binary protocol.
+ - Same QMC register control values (C1=0xC9, C2=0x08, sign=0x06).
+ - Restore the successful v13 sensor transaction order: read 0x09 status and
+   read 0x01-0x06 XYZ only when bit0 reports new data.
+ - No external INT or DRDY wire. Status is an INTERNAL I2C register.
+ - New conversions with identical XYZ values remain accepted.
+ - Remove periodic QMC suspend/reinitialize after a missing sample.
+ - Eliminate alternative STOP-mode QMC read fallback to match v13.
+ - Extend the UART preflight report with MAG valid/fresh and XYZ values.
+
+Run from this folder:
+ .\tools\start_calibration.ps1 -UploadFirmware -Check -Seconds 20
+ If it passes:
+ .\tools\start_calibration.ps1
+
+This firmware is calibration/bench only, not a flight controller.
+If no valid mag flags after flashing, capture the terminal error and the
+latest captures/usb_preflight_*.csv file; do not count missing data as a
+successful calibration. Hardware diagnosis may still be necessary.

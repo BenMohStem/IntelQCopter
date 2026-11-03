@@ -7,6 +7,7 @@
 - [ROS C++ companion](../companion/README.md) — common planner, ROS interfaces and YOLO ONNX node; implementation and test boundaries.
 
 - [Sensor calibration](sensor-calibration.md) — implemented fits, capture procedure, uncertainty, and hardware gaps.
+- [ESP32-S3 calibration GUI](esp32-calibration-gui.md) — guided full-sensor setup, QMC read-method fix, preflight and hardware evidence limits.
 - [Controller code walkthrough](reading-the-code.md) — explanation of the RP2350 flight scaffold, RP2040 input scanner, shared radio packet format, and current hardware gaps.
 - [Hand-controller input map](controller-inputs.md) — proposed pin map, Mode 2 stick semantics, buttons, and protocol details.
 - [Uncertainty visualizations](../artifacts/visualizations/uncertainty-dashboard.html) — interactive replay and static SVG/PNG plots generated from the saved Monte Carlo CSVs.

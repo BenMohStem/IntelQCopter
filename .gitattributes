@@ -1,5 +1,8 @@
 # Preserve original evidence bytes, including binary PPM captures and raw logs.
 artifacts/** -text
+# Keep imported raw sensor captures byte-for-byte, including their original
+# Windows line endings; these are bench evidence rather than normalized CSV.
+hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/** -text
 # Freeze retired implementations and their original line endings.
 archive/** -text
 *.png binary

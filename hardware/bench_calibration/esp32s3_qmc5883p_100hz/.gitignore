@@ -1,0 +1,9 @@
+.pio/
+.vscode/
+__pycache__/
+*.pyc
+captures/*.csv
+captures/*_calibration.json
+captures/*_calibration.h
+captures/*_mag_quality.json
+captures/*_mag_quality.png

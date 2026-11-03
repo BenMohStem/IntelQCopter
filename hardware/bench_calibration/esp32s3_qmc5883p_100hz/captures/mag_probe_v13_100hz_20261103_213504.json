@@ -1,0 +1,30 @@
+{
+  "csv_samples": 1683,
+  "csv_rate_hz": 89.64,
+  "last_health_hz": 89.61,
+  "verify_lines": [
+    "VERIFY reason=IMMEDIATE id=0x80 C1=0xC9 C2=0x08 this_read=1 confirmed_ever_and_not_contradicted=1",
+    "VERIFY reason=PERIODIC_READ_ONLY id=0x80 C1=0xC9 C2=0x08 this_read=1 confirmed_ever_and_not_contradicted=1",
+    "VERIFY reason=PERIODIC_READ_ONLY id=0x80 C1=0xC9 C2=0x08 this_read=1 confirmed_ever_and_not_contradicted=1",
+    "VERIFY reason=PERIODIC_READ_ONLY id=0x80 C1=0xC9 C2=0x08 this_read=1 confirmed_ever_and_not_contradicted=1",
+    "VERIFY reason=PERIODIC_READ_ONLY id=0x80 C1=0xC9 C2=0x08 this_read=1 confirmed_ever_and_not_contradicted=1"
+  ],
+  "errors": [
+    "FIRST_BUS_READ_FAILURE stage=STATUS_09 t_us=1168072 reg_phase=0 returned_bytes=0 SDA=1 SCL=1"
+  ],
+  "boot_profiles": [
+    "BOOT_PROFILE requested=100 ctrl1=0xC9 ctrl2=0x08 I2C=100000Hz csv_every=1"
+  ],
+  "first_sample": [
+    1226784,
+    -2609,
+    -1790,
+    -6356
+  ],
+  "last_sample": [
+    19989776,
+    -1274,
+    -1713,
+    -2435
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "csv_samples": 0,
+  "csv_rate_hz": 0.0,
+  "last_health_hz": null,
+  "verify_lines": [],
+  "errors": [],
+  "boot_profiles": [],
+  "first_sample": null,
+  "last_sample": null
+}

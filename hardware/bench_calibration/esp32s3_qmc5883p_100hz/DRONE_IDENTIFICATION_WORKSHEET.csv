@@ -1,0 +1,51 @@
+category,parameter,symbol,value,SI_unit,uncertainty,measurement_method,notes
+structure,fully_assembled_mass,m,,kg,,digital_scale,Weigh as configured to test with battery/payload
+structure,cg_from_geometry_origin_x,x_cg,,m,,balance_or_CAD,Declare body frame forward/right/up
+structure,cg_from_geometry_origin_y,y_cg,,m,,balance_or_CAD,Declare sign conventions
+structure,cg_from_geometry_origin_z,z_cg,,m,,balance_or_CAD,Measured with battery installed
+structure,inertia_about_CG_xx,J_xx,,kg*m^2,,CAD_or_pendulum,Do not use historical simulation value
+structure,inertia_about_CG_yy,J_yy,,kg*m^2,,CAD_or_pendulum,
+structure,inertia_about_CG_zz,J_zz,,kg*m^2,,CAD_or_pendulum,
+structure,inertia_cross_xy,J_xy,,kg*m^2,,CAD,If axes not principal
+geometry,motor_FL_x,x_FL,,m,,caliper,From CG in chosen body frame
+geometry,motor_FL_y,y_FL,,m,,caliper,From CG in chosen body frame
+geometry,motor_FR_x,x_FR,,m,,caliper,
+geometry,motor_FR_y,y_FR,,m,,caliper,
+geometry,motor_RR_x,x_RR,,m,,caliper,
+geometry,motor_RR_y,y_RR,,m,,caliper,
+geometry,motor_RL_x,x_RL,,m,,caliper,
+geometry,motor_RL_y,y_RL,,m,,caliper,
+propulsion,motor_model_or_reference,model,,,,datasheet,Exact manufacturer/pn; current nominal 1400KV is not enough
+propulsion,motor_KV_nominal,KV,,rpm/V,,datasheet,Do not infer load RPM from KV alone
+propulsion,motor_winding_resistance,R_m,,ohm,,milliohm_meter,Optional
+propulsion,motor_prop_inertia,J_r,,kg*m^2,,manufacturer_or_CAD,Motor+prop rotating group
+propulsion,propeller_make_and_part_number,prop_id,,,,product_label,Include diameter/pitch and blade count
+propulsion,propeller_diameter,D,,m,,caliper,
+propulsion,propeller_pitch,pitch,,m,,manufacturer,
+propulsion,propeller_blade_count,n_blades,,count,,visual,
+propulsion,esc_make_model,esc_id,,,,manufacturer,40A rating is NOT measured thrust
+propulsion,esc_protocol,protocol,,,,firmware_setting,PWM/OneShot/DShot etc not yet tested
+propulsion,motor_spin_FL,sign_FL,,+-1,,visual_bench,Safe props-off spin direction check later
+propulsion,motor_spin_FR,sign_FR,,+-1,,visual_bench,
+propulsion,motor_spin_RR,sign_RR,,+-1,,visual_bench,
+propulsion,motor_spin_RL,sign_RL,,+-1,,visual_bench,
+propulsion,thrust_vs_command_near_hover,k_dT_du,,N/normalized_command,,guarded_thrust_stand,Measured per rotor and voltage/air-density
+propulsion,rotor_thrust_coefficient,k_T,,N*s^2/rad^2,,guarded_thrust_stand,Use consistent angular-speed units
+propulsion,rotor_reaction_coefficient,k_Q,,N*m*s^2/rad^2,,guarded_test_rig,Measured or estimated with uncertainty
+propulsion,rotor_response_time_constant,tau_m,,s,,guarded_step_test,Voltage/load dependent
+battery,pack_cell_count,Ns,3,count,,pack_label,Historical 3S; confirm
+battery,pack_capacity,C,4.2,Ah,,pack_label,Historical 4200mAh; confirm
+battery,actual_pack_mass,m_batt,,kg,,digital_scale,Include strap and wires
+battery,voltage_at_test,V_b,,V,,meter,Supply voltage influences motor model
+battery,current_measurement_shunt_reference,current_sensor_id,,,,datasheet,For validation not motor control
+sensors,MPU6050_position_from_CG_x,r_imu_x,,m,,caliper/CAD,Lever arm creates acceleration during rotations
+sensors,MPU6050_position_from_CG_y,r_imu_y,,m,,caliper/CAD,
+sensors,MPU6050_position_from_CG_z,r_imu_z,,m,,caliper/CAD,
+sensors,MPU6050_axis_to_body_rotation,R_imu_body,,,,survey,3x3 proper rotation; determinant +1
+sensors,BMP280_mounting_position,r_bmp,,,,CAD,Note vents/downwash shield
+sensors,QMC5883P_mounting_rotation,R_mag_body,,,,survey,Chip X/Y apparent swap needs proper handed mapping
+sensors,ToF_mounted_beam_direction,tof_axis,,,,survey,Future; keep untested
+identification,vertical_drag_coefficient,d_z,,N*s/m,,safe_measured_identification,Can be nonlinear; hover-local only
+identification,roll_damping_coefficient,c_phi,,N*m*s/rad,,safe_measured_identification,Not identifiable from stationary sensor calibration alone
+identification,pitch_damping_coefficient,c_theta,,N*m*s/rad,,safe_measured_identification,
+identification,yaw_damping_coefficient,c_psi,,N*m*s/rad,,safe_measured_identification,

@@ -1,0 +1,14 @@
+IntelQCopter UART 100 Hz calibration - optional LiDAR GUI restore
+
+- No firmware source, ESP32 100 Hz magnetometer, UART baud, Wi-Fi or calibration sample defaults changed.
+- LiDAR stages are now offered in the main GUI by default.
+- Use the LiDAR COM dropdown and Connect LiDAR. This is a DIFFERENT serial adapter from the ESP32.
+- Use Skip ALL LiDAR ranges in the GUI when it is not available.
+- Original Skip phase on LiDAR still skips the remaining range stages.
+- The GUI records skipped phases in <capture>.skipped.json.
+- Full 500Hz FC BENCH is not modified by this patch.
+- To run without firmware upload: .\tools\start_calibration.ps1
+- To flash (if you actually need a reflash): .\tools\start_calibration.ps1 -UploadFirmware
+
+Hardware limitation: LiDAR wired only to ESP32 UART is not forwarded by the 52-byte ESP32 packet.
+That case needs separate ESP32 firmware UART multiplexing, not just a GUI checkbox.

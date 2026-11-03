@@ -13,6 +13,7 @@ CPU/emulator and simulation evidence; physical sensors, radio and flight are unv
 .\qcopter.ps1 build-flight
 .\qcopter.ps1 build-handler
 .\qcopter.ps1 build-sitl
+.\qcopter.ps1 calibration-gui
 .\qcopter.ps1 view-model
 .\qcopter.ps1 garden -RunPrefix my-next-test
 ```
@@ -28,7 +29,7 @@ See [architecture and migration map](docs/architecture.md) before using an older
 | RP2350 / RP2040 C runtimes | [firmware/](firmware/README.md) |
 | ROS2 C++ packages and perception | companion/ |
 | Gazebo, host SITL, RP2350 emulator and plant parameters | sim/ |
-| PCB draft and wiring | hardware/ |
+| PCB draft, wiring and ESP32-S3 bench calibration | hardware/ |
 | Guides and mathematical source | [docs/](docs/README.md) |
 | Measurement procedures and blank worksheets | [measurements/](measurements/README.md) |
 | Original logs, recordings and failed trials | artifacts/ |
@@ -58,6 +59,7 @@ with up to two optional CC1101 channels. TOFSense F2 mini placement remains unde
 - [Formatted model/integration guide](docs/current-model-and-fc-integration.html)
 - [Detailed mathematical paper](docs/reports/IntelQcopter-model-guide.pdf)
 - [Calibration and persistent storage](docs/calibration-flash.md)
+- [ESP32-S3 guided calibration GUI and QMC triage](docs/esp32-calibration-gui.md)
 - [Controller input design](docs/controller-inputs.md)
 - [Current missing information](docs/missing-information-and-problems.md)
 - [Recorded native Gazebo video](artifacts/simulation/2026-10-20-engines/jazzy-migration-v4-gazebo.mp4)

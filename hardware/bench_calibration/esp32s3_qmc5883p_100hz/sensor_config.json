@@ -1,0 +1,9 @@
+{
+  "magnetic_axis_mapping_name": "swap_chip_X_and_Y_for_display_only__VERIFY_HANDEDNESS",
+  "mag_sensor_to_board_display_matrix": [
+    [0, 1, 0],
+    [1, 0, 0],
+    [0, 0, 1]
+  ],
+  "description": "Requested X/Y exchange for live display. Determinant=-1: not a physical 3-D rotation. Raw mx_uT/my_uT/mz_uT remain sensor-frame values and the ellipsoid calibration is fitted to those raw channels. For a physical +90 degree Z rotation, use rows [[0,-1,0],[1,0,0],[0,0,1]] (det=+1), after verifying board axes."
+}

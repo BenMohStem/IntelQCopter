@@ -1,0 +1,9 @@
+{
+  "sessions": [
+    {
+      "csv": "captures/example_room.csv",
+      "reference_pressure_pa": 101325.0,
+      "note": "EXAMPLE ONLY; replace with a calibrated independent pressure instrument reading obtained during this session"
+    }
+  ]
+}
