@@ -1,0 +1,32 @@
+{
+  "csv_samples": 8,
+  "csv_rate_hz": 47.95,
+  "last_health_hz": 192.56,
+  "verify_lines": [
+    "VERIFY reason=IMMEDIATE id=ERR/0x00 C1=0xCD C2=0x08 this_read=0 confirmed_ever_and_not_contradicted=0",
+    "VERIFY reason=PERIODIC_READ_ONLY id=ERR/0x00 C1=ERR/0x00 C2=0x08 this_read=0 confirmed_ever_and_not_contradicted=0",
+    "VERIFY reason=PERIODIC_READ_ONLY id=ERR/0x00 C1=ERR/0x00 C2=ERR/0x00 this_read=0 confirmed_ever_and_not_contradicted=0"
+  ],
+  "errors": [
+    "FIRST_BUS_READ_FAILURE stage=STATUS_09 t_us=1168882 reg_phase=2 returned_bytes=0 SDA=1 SCL=1",
+    "FRESH_MISSING: no new magnetic conversion for >=1.5s; no automatic register rewrite; check supply/C1 and I2C",
+    "FRESH_MISSING: no new magnetic conversion for >=1.5s; no automatic register rewrite; check supply/C1 and I2C"
+  ],
+  "boot_profiles": [
+    "BOOT_PROFILE requested=200 ctrl1=0xCD ctrl2=0x08 I2C=100000Hz csv_every=4"
+  ],
+  "v13_boot_confirmed": true,
+  "first_non_rom_line": "Calculated checksum='24f3506e'",
+  "first_sample": [
+    5023853,
+    -822,
+    -1025,
+    -2448
+  ],
+  "last_sample": [
+    5169853,
+    -1314,
+    -1701,
+    -2420
+  ]
+}

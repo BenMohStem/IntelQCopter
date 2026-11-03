@@ -10,11 +10,13 @@ import time
 
 CSV = re.compile(r'^CSV,(\d+),(-?\d+),(-?\d+),(-?\d+),0x([0-9A-Fa-f]{2}),([01])$')
 RATE = re.compile(r'measured_fresh_hz=([\d.]+)')
+HEALTH_FIELD = re.compile(r'([a-z_]+)=([^\s]+)')
 
 
 def extract_summary(lines):
     samples = []
     health_rates = []
+    health_records = []
     verifies = []
     errors = []
     profiles = []
@@ -31,6 +33,7 @@ def extract_summary(lines):
             m = RATE.search(line)
             if m:
                 health_rates.append(float(m.group(1)))
+                health_records.append(dict(HEALTH_FIELD.findall(line)))
         if line.startswith('VERIFY '):
             verifies.append(line)
         if 'FIRST_BUS_READ_FAILURE' in line or 'FRESH_MISSING' in line:
@@ -44,9 +47,11 @@ def extract_summary(lines):
     return {
         'csv_samples': len(samples), 'csv_rate_hz': round(hz, 2),
         'last_health_hz': health_rates[-1] if health_rates else None,
+        'peak_health_hz': max(health_rates) if health_rates else None,
+        'last_health': health_records[-1] if health_records else None,
         'verify_lines': verifies, 'errors': errors,
         'boot_profiles': profiles,
-        'v13_boot_confirmed': bool(profiles),
+        'v13_boot_confirmed': bool(profiles or health_records),
         'first_non_rom_line': first_non_rom_line,
         'first_sample': samples[0] if samples else None,
         'last_sample': samples[-1] if samples else None,
@@ -114,8 +119,16 @@ def run(port, seconds, baud, profile_tag):
     if summary['last_health_hz'] is None:
         print('FAIL: No HEALTH sensor-rate measurements were captured; cannot verify the profile.')
         return 4
-    if summary['last_health_hz'] < target_rate * 0.75:
-        print('WARN: Sensor produced samples but did not sustain a useful rate.')
+    health = summary['last_health'] or {}
+    profile_id = {'100hz': '100', '200hz': '200',
+                  'continuous': '0', 'continuous-fast': '0'}[profile_tag]
+    sustained = (summary['last_health_hz'] >= target_rate * 0.75
+                 and health.get('profile') == profile_id
+                 and health.get('regs_ok') == '1'
+                 and float(health.get('age_sec', '999')) < 1.5)
+    if not sustained:
+        print('WARN: Profile had samples, but the final health report does not show sustained fresh data and confirmed registers.')
+        print(f"Peak measured rate={summary['peak_health_hz']} Hz; final health={health}")
         return 3
     print('PASS MAG-ONLY: This does NOT prove full calibration MAG works.')
     print('Next: reflash full firmware and compare with -Check.')

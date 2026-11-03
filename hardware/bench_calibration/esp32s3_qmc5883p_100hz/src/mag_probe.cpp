@@ -39,6 +39,12 @@
 #ifndef IQ_MAG_CONTINUOUS_FAST
 #define IQ_MAG_CONTINUOUS_FAST 0
 #endif
+#ifndef IQ_MAG_POLL_INTERVAL_US
+#define IQ_MAG_POLL_INTERVAL_US (IQ_MAG_BOOT_PROFILE == 0 ? 500 : 2000)
+#endif
+#ifndef IQ_MAG_STOP_START_READ
+#define IQ_MAG_STOP_START_READ 1
+#endif
 #if IQ_MAG_TEXT_DIAGNOSTIC != 1 || IQ_WIFI_ENABLED != 0
 #error "v13 is isolated: IQ_MAG_TEXT_DIAGNOSTIC=1 and IQ_WIFI_ENABLED=0"
 #endif
@@ -58,7 +64,7 @@ constexpr uint8_t magId = 0x80;
 constexpr uint8_t idReg = 0x00, xyzReg = 0x01, statusReg = 0x09;
 constexpr uint8_t ctrl1 = 0x0A, ctrl2 = 0x0B, signReg = 0x29;
 constexpr uint8_t motorPins[] = {12, 11, 14, 13};
-constexpr uint32_t pollIntervalUs = IQ_MAG_BOOT_PROFILE == 0 ? 500 : 2000;
+constexpr uint32_t pollIntervalUs = IQ_MAG_POLL_INTERVAL_US;
 constexpr uint32_t healthIntervalMs = 1000;
 constexpr uint32_t verifyIntervalMs = 5000;
 constexpr uint8_t range8g = 0x08;
@@ -95,7 +101,7 @@ ReadByteResult readRegister(uint8_t address, uint8_t reg) {
   // Match the integrated calibration firmware: STOP after setting the
   // register pointer, then issue a separate read request. On this ESP32-S3
   // the QMC repeated-START path was observed to fail intermittently.
-  r.phaseError = static_cast<uint8_t>(Wire.endTransmission(true));
+  r.phaseError = static_cast<uint8_t>(Wire.endTransmission(IQ_MAG_STOP_START_READ));
   if (r.phaseError != 0) return r;
   int n = Wire.requestFrom(static_cast<int>(address), 1);
   r.received = n >= 0 && n < 256 ? static_cast<uint8_t>(n) : 0;
@@ -122,7 +128,7 @@ bool readXYZ(int16_t xyz[3]) {
   uint8_t bytes[6]{};
   Wire.beginTransmission(hw::mag);
   if (Wire.write(hw::xyzReg) != 1) { (void)Wire.endTransmission(true); return false; }
-  if (Wire.endTransmission(true) != 0) return false;
+  if (Wire.endTransmission(IQ_MAG_STOP_START_READ) != 0) return false;
   if (Wire.requestFrom(static_cast<int>(hw::mag), 6) != 6) {
     while (Wire.available() > 0) (void)Wire.read();
     return false;
@@ -209,8 +215,9 @@ void verifyRegisters(const char *reason) {
 }
 
 void configureOnceAtBoot() {
-  Serial.printf("BOOT_PROFILE requested=%d ctrl1=0x%02X ctrl2=0x08 I2C=%dHz csv_every=%d\n",
-    IQ_MAG_BOOT_PROFILE, hw::ctrl1Value, IQ_I2C_HZ, int(hw::csvDivider));
+  Serial.printf("BOOT_PROFILE requested=%d ctrl1=0x%02X ctrl2=0x08 I2C=%dHz poll_us=%lu stop_start=%d csv_every=%d\n",
+    IQ_MAG_BOOT_PROFILE, hw::ctrl1Value, IQ_I2C_HZ,
+    static_cast<unsigned long>(hw::pollIntervalUs), IQ_MAG_STOP_START_READ, int(hw::csvDivider));
   const uint8_t ack = addressProbe(hw::mag);
   const ReadByteResult id = readRegister(hw::mag, hw::idReg);
   health.firstIdentityOK = ack == 0 && id.ok && id.value == hw::magId;

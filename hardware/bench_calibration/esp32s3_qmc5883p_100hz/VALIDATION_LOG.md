@@ -175,3 +175,39 @@ reads to use the integrated firmware's STOP+START sequence.
   invalid/no-boot trial, not another QMC failure. Requested a full board power
   removal so the flashed probe can boot. Continuous-mode hardware trials remain
   deferred until a valid 200 Hz baseline is obtained.
+
+## Follow-up: intermittent 200 Hz operation — 2026-11-03
+
+Engine/hardware assumptions unchanged: PlatformIO 7.1.3 / Arduino, ESP32-S3
+DevKitC-1 revision 0.2 / CH343 COM3, QMC5883P 0x2C ID 0x80, MPU6050 0x68,
+BMP280 0x76; SDA9/SCL8, sensor supply, wiring, pull-ups and board revision
+assumed. MAG-only diagnostic UART 115200, I2C 100 kHz, Wi-Fi disabled, ESC
+GPIOs held INPUT.
+
+- A 100 Hz control using STOP+START register reads reached 89.74 Hz for about
+  3 seconds with verified C1=0xC9/C2=0x08, then status reads began failing and
+  data went stale. This demonstrates the read/power/bus issue is not unique to
+  the 200 Hz ODR. Capture: `mag_probe_v13_100hz_20261103_232852.log` and `.json`.
+- A 200 Hz (`CTRL1=0xCD`) STOP+START run produced a real brief burst at
+  **192.56 Hz** (32 fresh readings, one overflow, no identical vectors), but
+  then stopped updating; status failures accumulated and readback could not
+  be maintained. `age_sec` reached >6 s by capture end. It is not a sustained
+  pass. Capture: `mag_probe_v13_200hz_20261103_232926.log` and `.json`.
+- Reducing status polling to 250 Hz (`poll_us=4000`) yielded zero fresh samples
+  and repeated STATUS NACKs at 100 kHz. Capture:
+  `mag_probe_v13_200hz_20261103_233131.log` and `.json`.
+- The repeated-START A/B firmware uploaded, but the 12 s serial capture again
+  saw only ROM `DOWNLOAD(USB/UART0) waiting for download`; it is an invalid
+  no-boot test, not a sensor-rate result. Capture:
+  `mag_probe_v13_200hz_20261103_233402.log` and `.json`. User was prompted to
+  power-cycle before the next capture. Do not continue COM3 reads until user
+  confirms reboot and port is available.
+- Capture reporting now records peak and final HEALTH separately and rejects
+  a profile unless the final report shows matching profile, confirmed register
+  readback, recent data (`age_sec < 1.5`), and sufficient rate. A short 192.56
+  Hz burst can no longer be called a pass just because it crossed a rate limit.
+- The 200 Hz register selection matches QST Rev. E example `CTRL1=0xCD`. Its
+  table describes normal mode as continuous measurement with periodic output;
+  the brief burst and later NACK/DRDY loss indicate unresolved implementation
+  or physical bus/power behavior. No continuous-mode test has yet met the
+  prerequisite of a sustained 200 Hz baseline.
