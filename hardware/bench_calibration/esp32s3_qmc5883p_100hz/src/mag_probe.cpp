@@ -45,6 +45,9 @@
 #ifndef IQ_MAG_STOP_START_READ
 #define IQ_MAG_STOP_START_READ 1
 #endif
+#ifndef IQ_MAG_200HZ_LOW_OSR
+#define IQ_MAG_200HZ_LOW_OSR 0
+#endif
 #if IQ_MAG_TEXT_DIAGNOSTIC != 1 || IQ_WIFI_ENABLED != 0
 #error "v13 is isolated: IQ_MAG_TEXT_DIAGNOSTIC=1 and IQ_WIFI_ENABLED=0"
 #endif
@@ -75,6 +78,7 @@ constexpr uint32_t csvDivider =
   IQ_MAG_BOOT_PROFILE == 200 && IQ_MAG_CSV_DIVIDER < 4 ? 4 :
   IQ_MAG_CSV_DIVIDER;
 constexpr uint8_t ctrl1Value =
+  IQ_MAG_BOOT_PROFILE == 200 && IQ_MAG_200HZ_LOW_OSR ? 0x3D :
   IQ_MAG_BOOT_PROFILE == 0 && IQ_MAG_CONTINUOUS_FAST ? 0x33 :
   IQ_MAG_BOOT_PROFILE == 10  ? 0xC1 :
   IQ_MAG_BOOT_PROFILE == 50  ? 0xC5 :

@@ -211,3 +211,8 @@ GPIOs held INPUT.
   the brief burst and later NACK/DRDY loss indicate unresolved implementation
   or physical bus/power behavior. No continuous-mode test has yet met the
   prerequisite of a sustained 200 Hz baseline.
+- Prepared a compile-verified 200 Hz low-OSR variant `CTRL1=0x3D` (ODR 200,
+  OSR1=1, OSR2=1) at 100 kHz I2C. QST's Rev. E current table gives typical
+  normal-mode current 280/1180 µA at 200 Hz for OSR1=1/8 respectively. This
+  variant is intended to check whether the high-OSR profile's greater sensor
+  load is related to intermittent operation. No hardware trial has been run.
