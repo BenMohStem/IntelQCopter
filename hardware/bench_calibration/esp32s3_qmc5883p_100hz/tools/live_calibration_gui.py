@@ -279,11 +279,7 @@ def stages(args):
         + ([] if args.skip_bmp else [Stage('BMP','STILL',args.bmp_samples,'bmp',
                  'Keep drone still at one known reference height, with no propeller wash or moving air.\n'
                  'A barometer does not provide a true altitude reference by itself.')])
-        + ([] if args.skip_lidar else [Stage('LIDAR',f'R{round(d*1000):04d}',args.lidar_samples,'lidar',
-                  f'OPTIONAL TOFSense F2 Mini. Place a FLAT MATTE target {d:.3f} m from its optical reference plane.\n'
-                  'Use a measured reference and keep it perpendicular to the beam. Press Enter for countdown.\n'
-                  'If not soldered or no independent USB-UART is connected, use Skip phase ONCE to skip all LiDAR references.')
-                 for d in (0.25,0.50,1.00,2.00)]))
+)
     return ([x for x in sequence if x.sensor == 'mag']
             if getattr(args, 'mag_only', False) else sequence)
 
@@ -382,6 +378,8 @@ class Recorder(threading.Thread):
         self.started = threading.Event()
         self.decoder = BinaryDecoder()
         self.frames_total = 0
+        self.bytes_total = 0
+        self.last_byte_at = 0.0
         self.mpu_total = self.mag_total = self.bmp_total = 0
         self.last_frame = None
         self.last_seq = None
@@ -540,6 +538,8 @@ class Recorder(threading.Thread):
                         self._handle_lidar(sample,received,csvw)
                     if not data:
                         continue
+                    self.bytes_total += len(data)
+                    self.last_byte_at = time.monotonic()
                     frames = self.decoder.feed(data)
                     for frame in frames:
                         self._handle_frame(frame, csvw)
@@ -769,10 +769,7 @@ class Application:
         self.instruction=tk.StringVar(value='')
         self.progress=tk.StringVar(value='')
         self.paused_status=tk.StringVar(value='')
-        self.health=tk.StringVar(value='Waiting for sensor packets')
-        self.lidar_port_var=tk.StringVar(value=args.lidar_port)
-        self.lidar_status_var=tk.StringVar(value='Optional LiDAR: not connected. Choose its own COM port or skip the LiDAR stages.')
-        self._lidar_last_status=None
+        self.health=tk.StringVar(value='Opening sensor stream…')
 
         top=ttk.Frame(self.root,padding=12);top.pack(fill='x')
         ttk.Label(top,text='IntelQCopter | 500 Hz sensor calibration',font=('Segoe UI',17,'bold')).pack(anchor='w')
@@ -782,7 +779,7 @@ class Application:
         ttk.Separator(self.root,orient='horizontal').pack(fill='x')
         phase=ttk.Frame(self.root,padding=12);phase.pack(fill='x')
         ttk.Label(phase,textvariable=self.headline,font=('Segoe UI',14,'bold')).pack(anchor='w')
-        ttk.Label(phase,textvariable=self.instruction,justify='left',wraplength=1100,font=('Segoe UI',10)).pack(anchor='w',pady=5)
+        ttk.Label(phase,textvariable=self.instruction,justify='left',wraplength=1100,font=('Segoe UI',9)).pack(anchor='w',pady=5)
         self.bar=ttk.Progressbar(phase,orient='horizontal',mode='determinate',maximum=100,length=900)
         self.bar.pack(fill='x',pady=4)
         ttk.Label(phase,textvariable=self.progress,font=('Consolas',10)).pack(anchor='w')
@@ -814,18 +811,6 @@ class Application:
         self.combine_button.pack(side='left',padx=(0,8))
         ttk.Label(extra,text='Withheld-data fit, 3D coverage and bootstrap; superseded redo attempts are excluded.',
                   foreground='#5A6470').pack(side='left')
-        # LiDAR remains in the calibration sequence by default. The operator
-        # may attach an independent F2 Mini serial port or skip LiDAR in GUI.
-        lidar_bar=ttk.Frame(phase);lidar_bar.pack(fill='x',pady=(3,4))
-        ttk.Label(lidar_bar,text='Optional LiDAR COM:').pack(side='left',padx=(0,5))
-        self.lidar_port_combo=ttk.Combobox(lidar_bar,textvariable=self.lidar_port_var,
-                                          width=12,state='normal')
-        self.lidar_port_combo.pack(side='left',padx=(0,5))
-        self.lidar_port_combo['values']=self._available_lidar_ports()
-        ttk.Button(lidar_bar,text='Refresh ports',command=self.refresh_lidar_ports).pack(side='left',padx=3)
-        ttk.Button(lidar_bar,text='Connect LiDAR',command=self.connect_lidar_from_gui).pack(side='left',padx=3)
-        ttk.Button(lidar_bar,text='Skip ALL LiDAR ranges',command=self.skip_all_lidar_from_gui).pack(side='left',padx=3)
-        ttk.Label(phase,textvariable=self.lidar_status_var,foreground='#285884').pack(anchor='w')
         ttk.Label(phase,textvariable=self.health,foreground='#285884').pack(anchor='w')
         ttk.Label(phase,textvariable=self.saved_info,foreground='#186A58').pack(anchor='w')
 
@@ -839,7 +824,7 @@ class Application:
         notebook.add(self.tab_thermal,text='MPU6050 / BMP280 temperatures')
         self.notebook=notebook
         fig=Figure(figsize=(13,6.4),dpi=90,constrained_layout=False)
-        fig.subplots_adjust(left=0.065,right=0.97,bottom=0.10,top=0.92,wspace=0.30,hspace=0.56)
+        fig.subplots_adjust(left=0.07,right=0.98,bottom=0.11,top=0.93,wspace=0.34,hspace=0.88)
         ax_acc=fig.add_subplot(2,3,1)
         ax_gyro=fig.add_subplot(2,3,2)
         ax_3d=fig.add_subplot(2,3,3,projection='3d')
@@ -847,21 +832,22 @@ class Application:
         ax_pressure=fig.add_subplot(2,3,5)
         ax_alt=fig.add_subplot(2,3,6)
         self.mag_3d=ax_3d
-        ax_3d.set_title('3D magnetic cloud · scaled µT grid',fontsize=9)
+        ax_3d.set_title('3D MAG cloud',fontsize=9,pad=3)
         for axis in ('X','Y','Z'):
             getattr(ax_3d,'set_'+axis.lower()+'label')(axis+' µT',fontsize=8)
         self.mag_scatter=ax_3d.scatter([],[],[],s=4,alpha=.43,c='#6243B7',depthshade=False)
         self._mag_triads=configure_magnetic_axes(ax_3d,[],enlarged=False)
         self.charts=[]
         for ax,title,keys,unit in [
-            (ax_acc,'Accelerometer — 500 Hz sampling',('ax','ay','az'),'m/s²'),
-            (ax_gyro,'Gyroscope — 500 Hz sampling',('gx','gy','gz'),'°/s'),
-            (ax_mag,'Magnetometer — swapped display axes',('mx','my','mz'),'µT'),
-            (ax_pressure,'BMP280 pressure — ≈10 Hz',('pressure',),'Pa'),
-            (ax_alt,'Relative barometric height (not fused)',('altitude',),'m')]:
-            ax.set_title(title,fontsize=10)
-            ax.set_ylabel(unit)
-            ax.set_xlabel('Time since GUI start (s)')
+            (ax_acc,'Accel · 500 Hz',('ax','ay','az'),'m/s²'),
+            (ax_gyro,'Gyro · 500 Hz',('gx','gy','gz'),'°/s'),
+            (ax_mag,'MAG · display axes',('mx','my','mz'),'µT'),
+            (ax_pressure,'BMP pressure',('pressure',),'Pa'),
+            (ax_alt,'Relative height',('altitude',),'m')]:
+            ax.set_title(title,fontsize=9,pad=3)
+            ax.set_ylabel(unit,fontsize=8,labelpad=2)
+            ax.set_xlabel('' if ax in (ax_acc,ax_gyro) else 'Time (s)',fontsize=8,labelpad=1)
+            ax.tick_params(labelsize=7,pad=1)
             ax.grid(alpha=0.25)
             lines=[]
             for key in keys:
@@ -1027,7 +1013,7 @@ class Application:
             return
         s=self.stages[self.stage_index]
         self.headline.set(f'{self.stage_index+1}/{len(self.stages)}  ·  {s.pose} / {s.mag_stage}   ·   {s.target:,} valid {s.sensor.upper()} readings')
-        self.instruction.set(s.prompt+'\n\nMPU6050 and BMP280 die temperatures are always logged automatically; multiple stable-temperature sessions are needed to estimate drift.'+'\n\nPosition the board first and press ENTER. After a '+ f'{self.args.settle_seconds:g}'+'-second countdown, recording starts automatically.\nThere are NO position/stillness gates: correct positioning and holding still are your responsibility.')
+        self.instruction.set(s.prompt+'\nSet position, press ENTER, then hold steady after the '+f'{self.args.settle_seconds:g}'+' s countdown.')
         self.progress.set('0 / {:,} — WAITING FOR ENTER'.format(s.target))
         self.bar['value']=0
         self.begin.config(state='normal' if self.worker and self.worker.started.is_set() and not self.worker.error else 'disabled')
@@ -1210,15 +1196,15 @@ class Application:
             if self.worker:
                 w=self.worker
                 frame=w.last_frame
-                if frame:
-                    self.health.set(f'Decoded={w.frames_total:,} | MPU valid={w.mpu_total:,} | '
-                        f'MAG fresh={w.mag_total:,} [{frame.mag_sensor_type if frame.mag_sensor_type != "HMC5883L" or frame.mag_ok or w.mag_total else "NO MAG SENSOR DATA"}] | BMP fresh={w.bmp_total:,} | '
-                        f'last flags=0x{frame.flags:02X} | CRC errors={w.decoder.bad_crc:,} | '
-                        f'sequence gaps={w.seq_gaps:,} | '
-                        f'MPU T={frame.temp/340+36.53:.2f}°C | '
-                        f'BMP T={frame.bmp_tc100/100:.2f}°C' +
-                        (' | I2C DIAGNOSTIC NEEDED: no valid sensors'
-                         if w.frames_total>100 and w.mpu_total==w.mag_total==w.bmp_total==0 else ''))
+                age=(time.monotonic()-w.last_byte_at) if w.last_byte_at else time.monotonic()-self.start_time
+                if not w.bytes_total and age>3:
+                    self.health.set(f'NO UART DATA on {w.port} at {BAUD} baud. Close other serial apps; confirm ESP firmware streams 52-byte v2/v3 packets.')
+                elif w.bytes_total and not w.frames_total:
+                    self.health.set(f'UART bytes={w.bytes_total:,}, valid packets=0 | sync={w.decoder.bad_sync:,} CRC={w.decoder.bad_crc:,} version={w.decoder.bad_version:,}. Wrong baud/protocol or incompatible firmware.')
+                elif frame:
+                    self.health.set(f'{w.frames_total:,} packets | MPU {w.mpu_total:,} | MAG {w.mag_total:,} | BMP {w.bmp_total:,} | flags 0x{frame.flags:02X} | CRC {w.decoder.bad_crc:,} | gaps {w.seq_gaps:,}')
+                elif w.bytes_total:
+                    self.health.set(f'UART receiving {w.bytes_total:,} bytes; waiting for a complete valid packet…')
         self.root.after(120,self.pump)
 
     def add_point(self,p):

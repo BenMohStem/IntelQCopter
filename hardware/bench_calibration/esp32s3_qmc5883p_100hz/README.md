@@ -43,8 +43,10 @@ For the GUI after reflash:
 .\tools\start_calibration.ps1 -UploadFirmware
 ```
 
-LiDAR stages are available in the GUI and can be skipped there. The separate
-USB-UART LiDAR COM port is configurable in the GUI.
+The calibration GUI contains 12 stages: stationary gyro, six accelerometer faces,
+four magnetometer rotations, and barometer. LiDAR capture is removed from this
+workflow. The live status line distinguishes no UART bytes from incompatible or
+corrupt packets and reports valid sensor counts.
 
 ## If magnetometer is still missing: ONE direct comparison
 
