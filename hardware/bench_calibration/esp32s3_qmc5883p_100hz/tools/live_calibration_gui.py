@@ -375,6 +375,7 @@ class Recorder(threading.Thread):
         self.bytes_total = 0
         self.last_byte_at = 0.0
         self.mpu_total = self.mag_total = self.bmp_total = 0
+        self.mag_valid_total = 0
         self.last_frame = None
         self.last_seq = None
         self.last_mcu_timestamp = None
@@ -615,6 +616,7 @@ class Recorder(threading.Thread):
         now = time.monotonic()
         self.frames_total += 1
         self.mpu_total += int(f.mpu_ok)
+        self.mag_valid_total += int(f.mag_ok)
         self.mag_total += int(f.mag_new)
         self.bmp_total += int(f.bmp_new)
         seq_gap_before = 0
@@ -1184,7 +1186,7 @@ class Application:
                 elif w.bytes_total and not w.frames_total:
                     self.health.set(f'UART bytes={w.bytes_total:,}, valid packets=0 | sync={w.decoder.bad_sync:,} CRC={w.decoder.bad_crc:,} version={w.decoder.bad_version:,}. Wrong baud/protocol or incompatible firmware.')
                 elif frame:
-                    self.health.set(f'{w.frames_total:,} packets | MPU {w.mpu_total:,} | MAG {w.mag_total:,} | BMP {w.bmp_total:,} | flags 0x{frame.flags:02X} | CRC {w.decoder.bad_crc:,} | gaps {w.seq_gaps:,}')
+                    self.health.set(f'{w.frames_total:,} packets | MPU {w.mpu_total:,} | MAG ok {w.mag_valid_total:,} / fresh {w.mag_total:,} | BMP {w.bmp_total:,} | flags 0x{frame.flags:02X} | CRC {w.decoder.bad_crc:,} | gaps {w.seq_gaps:,}')
                 elif w.bytes_total:
                     self.health.set(f'UART receiving {w.bytes_total:,} bytes; waiting for a complete valid packet…')
         self.root.after(120,self.pump)

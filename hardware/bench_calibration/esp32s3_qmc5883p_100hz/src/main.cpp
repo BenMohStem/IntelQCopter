@@ -368,7 +368,7 @@ bool configureQmc5883p() {
 void updateMagnetometer(uint32_t nowUs) {
   currentMagnetic.fresh = false;
   if (!magneticConfigured) { currentMagnetic.valid = false; return; }
-  // On complete MAG I2C loss, stop saturating the shared 100kHz bus.
+// On complete MAG I2C loss, stop saturating the shared sensor bus.
   // Normal operation still polls 0x09 at 200Hz for a 100Hz conversion rate.
   const uint32_t pollUs = magHealth.consecutiveStatusFailures >= 8 ? 100000U :
                           config::MAG_PERIOD_US;

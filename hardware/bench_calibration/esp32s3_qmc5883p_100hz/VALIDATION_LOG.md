@@ -332,3 +332,23 @@ in the saved GUI source. The GUI process was launched after upload. Windows
 Computer Use window capture timed out twice, so visual layout and live packet
 counts could not be confirmed from the agent view. Board/wiring and the BMP
 address remain assumptions; no new sensor diagnosis was performed.
+
+## Restore MAG data in the calibration GUI — 2026-11-04
+
+The user reported an empty MAG plot in the full calibration GUI. The installed
+profile was QMC `CTRL1=0x3D` (normal 200 Hz, low OSR) with a 100 kHz I2C bus.
+The shared bus also carries 500 Hz MPU bursts and BMP reads. Raised the full
+calibration bus to 400 kHz, supported by the selected sensors, leaving the QMC
+profile and telemetry format unchanged. More shared-bus timing margin is a
+likely reason MAG data returned; only one before/after run was made, so treat
+causation as supported but not repeatedly confirmed.
+
+PlatformIO 7.1.3 / Arduino full calibration firmware built and uploaded to the
+ESP32-S3 DevKitC-1 N8 on CH343 COM3. An 8 s UART preflight at 921600 baud then
+decoded 4,001 v3 packets at 500.0 packets/s, with 4,001 MAG-valid packets, 1,002
+fresh MAG samples (166.8 fresh/s in the preflight's MCU-time calculation), 79
+fresh BMP packets, 0 CRC errors, and 0 lost sequence numbers. Raw capture:
+`captures/usb_preflight_20261104_003805.csv`. The calibration GUI was reopened
+on this firmware. Motor outputs remain disabled. The register ODR is configured
+for 200 Hz; the measured full-system fresh rate is lower at 166.8 Hz. I2C
+pull-up values, bus rise time and actual sensor rail voltage remain unmeasured.
