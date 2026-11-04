@@ -370,3 +370,20 @@ in-memory v3 QMC packet check passed through decoder → Tk plot snapshot → 3D
 cloud append. The actual live window has not been visually confirmed by the
 agent; do not claim rendered live MAG until the plotted counter rises and the
 cloud is visible.
+
+## Repeated full-firmware MAG loss — 2026-11-04
+
+Current full-stream capture on PlatformIO 7.1.3 / Arduino / ESP32-S3 CH343
+COM3, 921600 baud, 500 Hz MPU and 200 Hz QMC profile: 4,001 valid v3 packets
+at 500 Hz, 80 fresh BMP readings, but **0 MAG-valid and 0 MAG-fresh packets**.
+Captured data is preserved in `captures/usb_preflight_20261104_005802.csv`.
+This confirms the current failure is upstream of the GUI plot.
+
+Prepared a controlled standalone comparison environment for the known-good
+low-OSR QMC `0x3D` profile at 400 kHz (`esp32-s3-mag-probe-200hz-lowosr-400k`).
+The upload succeeded, but the following capture saw ESP32-S3 ROM
+`DOWNLOAD(USB/UART0) waiting for download` and no probe marker or samples.
+This run has no QMC conclusion. Evidence:
+`captures/mag_probe_v13_200hz_20261104_010037.log` and `.json`. The user needs
+to physically power-cycle the board before any further COM3 capture. Do not
+claim the standalone comparison succeeded.
