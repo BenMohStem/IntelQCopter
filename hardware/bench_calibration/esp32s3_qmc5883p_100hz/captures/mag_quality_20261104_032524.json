@@ -1,0 +1,144 @@
+{
+  "schema": "IQ_MAG_QUALITY_RESEARCH_V1",
+  "sensor_types": [
+    "QMC5883P"
+  ],
+  "fresh_magnetic_rows": 14000,
+  "stage_counts": {
+    "YAW": 2000,
+    "PITCH": 2000,
+    "ROLL": 2000,
+    "TUMBLE": 8000
+  },
+  "independent_sessions": 1,
+  "train_holdout_method": "Last 20% of each motion stage withheld chronologically; temporal adjacency remains, so this is not independent heading truth.",
+  "training_radial_error": {
+    "count": 11200,
+    "rms_fraction": 0.028890885524120412,
+    "p95_absolute_fraction": 0.056996516199476766,
+    "p99_absolute_fraction": 0.07855109278183771,
+    "median_fraction": -0.0008728366927672759
+  },
+  "heldout_radial_error": {
+    "count": 2800,
+    "rms_fraction": 0.03019693716842916,
+    "p95_absolute_fraction": 0.06025994697476569,
+    "p99_absolute_fraction": 0.08160597468957628,
+    "median_fraction": -0.0009635517887265355
+  },
+  "leave_one_session_out": {},
+  "full_fit": {
+    "hard_iron_offset_uT": [
+      -29.452502557445488,
+      -18.556001733853783,
+      -35.37434205126596
+    ],
+    "symmetric_correction_matrix": [
+      [
+        0.9770958458580741,
+        -0.005862752635891612,
+        0.037532243649618
+      ],
+      [
+        -0.005862752635891612,
+        0.9759200899970462,
+        -0.01839939362512823
+      ],
+      [
+        0.037532243649618,
+        -0.01839939362512823,
+        1.0656132731881334
+      ]
+    ],
+    "shape_condition_number": 1.1241779197268431,
+    "radial_error": {
+      "count": 14000,
+      "rms_fraction": 0.029101127575409325,
+      "p95_absolute_fraction": 0.05779600936101419,
+      "p99_absolute_fraction": 0.07934837481350354,
+      "median_fraction": -0.0007955834536057527
+    }
+  },
+  "coverage": {
+    "directions_tested": 128,
+    "coverage_angle_deg": 18,
+    "coverage_fraction": 1.0,
+    "direction_bins_occupied": 123,
+    "direction_entropy_normalized": 0.9013692415819143,
+    "least_covered_grid_direction_ids": [
+      11,
+      31,
+      92,
+      82,
+      95,
+      19,
+      13,
+      3
+    ],
+    "sampling_imbalance_note": "Repeated samples in one orientation do not increase coverage."
+  },
+  "bootstrap": {
+    "attempted": 12,
+    "successful": 12,
+    "bias_uT_p2_5": [
+      -29.601828939933803,
+      -18.68080041254996,
+      -35.455087900754116
+    ],
+    "bias_uT_p97_5": [
+      -29.34557940007402,
+      -18.442901240631958,
+      -35.16183739291382
+    ],
+    "soft_matrix_p2_5": [
+      [
+        0.971691011539849,
+        -0.00631936059825691,
+        0.03458240109842579
+      ],
+      [
+        -0.00631936059825691,
+        0.9673748177763228,
+        -0.02239747162129233
+      ],
+      [
+        0.03458240109842579,
+        -0.02239747162129233,
+        1.05712234597872
+      ]
+    ],
+    "soft_matrix_p97_5": [
+      [
+        0.9818138317444449,
+        -0.0019651672838273417,
+        0.03998121086781766
+      ],
+      [
+        -0.0019651672838273417,
+        0.979099391143034,
+        -0.015329728346094038
+      ],
+      [
+        0.03998121086781766,
+        -0.015329728346094038,
+        1.0716126615718224
+      ]
+    ],
+    "interpretation": "Empirical block-bootstrap sensitivity intervals, not metrology-grade confidence or heading accuracy bounds."
+  },
+  "warnings": [
+    "Only one independent session: no truly independent holdout. Repeat full 3D rotations as a NEW recording."
+  ],
+  "limits": [
+    "No magnetic heading accuracy without external orientation/field reference.",
+    "Spatial translation is harmless only when the external magnetic field is uniform.",
+    "A connected USB cable, current, steel screws, and motors can alter the field.",
+    "A low ellipsoid radial residual does not establish calibration axis alignment or full heading accuracy."
+  ],
+  "input_files": [
+    "C:\\Users\\Mohamed\\Desktop\\Work\\QCopter\\hardware\\bench_calibration\\esp32s3_qmc5883p_100hz\\captures\\iq_500hz_20261104_025733.csv"
+  ],
+  "fresh_rows_by_file": {
+    "C:\\Users\\Mohamed\\Desktop\\Work\\QCopter\\hardware\\bench_calibration\\esp32s3_qmc5883p_100hz\\captures\\iq_500hz_20261104_025733.csv": 14000
+  }
+}

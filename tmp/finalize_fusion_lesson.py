@@ -1,0 +1,21 @@
+from pathlib import Path
+import json,re
+r=Path(r'C:\Users\Mohamed\Desktop\Work\QCopter-Stepwise');t=Path(r'C:\Users\Mohamed\Desktop\Work\IntelQCopter-USTHB')
+p=r/'docs/learning/quaternion-fusion/report.html';s=p.read_text(encoding='utf-8')
+extra='''<h2>How the two cores share the next target</h2><div class="flow"><span>Core0 Xbox task → timestamped TargetPacket</span><span>One-slot FreeRTOS queue</span><span>Core0 telemetry task → T record</span><span>Core1 → IMU + quaternion only</span></div><p>TargetPacket is a struct (a named group of fields). &amp;target takes the packet's address for xQueueOverwrite; the queue copies the value, rather than retaining a pointer to the worker's stack. Its capacity is1 so only the newest target matters. xQueueReceive copies the latest packet into the serial task without waiting. Queue synchronization is preferable to unsafely sharing several independent float variables between tasks. timestamp is a32bit millisecond value; the receiving task independently rejects a packet older than300ms even if the Xbox worker is stuck trying to connect. The two tasks share core0; pinning does not eliminate interrupt or memory contention. No target is sent to an actuator. pdMS_TO_TICKS converts milliseconds into scheduler ticks; vTaskDelay yields the Xbox worker for5ms. The IMU acquisition loop does not call the Xbox library.</p>'''
+s=s.replace('</main>',extra+'</main>');p.write_text(s,encoding='utf-8')
+for p in [r/'docs/learning/index.html',t/'learning/index.html']:
+    s=p.read_text(encoding='utf-8');seen=set()
+    def unique(m):
+        key=m.group(0)
+        if key in seen:return ''
+        seen.add(key);return key
+    s=re.sub(r'<li>.*?</li>',unique,s);p.write_text(s,encoding='utf-8')
+p=r/'measurements/software/2026-10-31-xbox-targets/README.md';s=p.read_text();s=s.replace('Xbox connection attempts can block its worker: telemetry queue overflow stops acquisition rather than hiding loss; integration timing must be measured on ESP32.','Xbox connection attempts run in their own core0 task; timestamped targets pass through a one-slot queue to the separate serial task. Serial independently rejects old packets. Queue overflow in the acquisition path still stops capture; integration timing must be measured on ESP32.');p.write_text(s)
+event={'schema':2,'id':'2026-10-31-fusion-lesson-targets','date':'2026-10-31','domains':['reporting'],'summary':'User reports good quaternion preview, clarifies jitter was intentional shaking, requests visual explanation of code/math and next step.','outcome':'Analyzed1055actual quaternion diagnostics; generated developer deep-dive and teacher project summary. Added next motor-disabled Xbox target feature with bounded mapping/neutral/stale guards and separate BLE/serial tasks. New feature has no physical acceptance.'}
+for root in [r,t]:
+    (root/'knowledge/events/2026-10-31-fusion-lesson-targets.json').write_text(json.dumps(event,indent=2)+'\n')
+    p=root/'knowledge/domains/reporting.json';d=json.loads(p.read_text());d['entries'].append({'id':'reporting.fusion-lesson','status':'verified_artifact','summary':'Actual shaking-test quaternion lesson; numerical normalization observed, not true-attitude accuracy. Code/math explanation in developer copy; teacher summary project-focused.','sources':[{'kind':'file','path':'docs/learning/quaternion-fusion/report.html' if root==r else 'learning/quaternion-fusion/report.html'}]});p.write_text(json.dumps(d,indent=2)+'\n')
+p=r/'knowledge/state.json';d=json.loads(p.read_text());d['current_stage']='Operator reports good V2 quaternion preview during deliberate shaking;1055diagnostics retain unit norm. Xbox setpoint-only feature implemented next, software checks pass; combined hardware timing/physical input signs pending. No PID/motor outputs or calibration changes.';p.write_text(json.dumps(d,indent=2)+'\n')
+with (r/'important_sources/README.md').open('a',encoding='utf-8') as f:f.write('\n[Quaternion fusion visual code/math lesson](../docs/learning/quaternion-fusion/report.html), [next Xbox setpoint-only stage](../measurements/software/2026-10-31-xbox-targets/README.md). Actual fusion evidence precedes target integration.\n')
+print('Finalized project-focused teacher summary and detailed developer appendix.')

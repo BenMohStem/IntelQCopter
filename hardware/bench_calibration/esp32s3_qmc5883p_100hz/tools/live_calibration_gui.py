@@ -274,8 +274,10 @@ def stages(args):
         + ([] if args.skip_bmp else [Stage('BMP','STILL',args.bmp_samples,'bmp',
                  'Keep still at one reference height, away from drafts and propeller wash.')])
 )
-    return ([x for x in sequence if x.sensor == 'mag']
-            if getattr(args, 'mag_only', False) else sequence)
+    # The MAG-only / isolated MAG-probe option is deprecated per user request.
+    # The full integrated calibration path (gyro + accel + mag + bmp) is the only
+    # validated mode. Ignore any --mag-only argument.
+    return sequence
 
 
 class WifiPacketStream:
@@ -794,7 +796,7 @@ class Application:
         self.redo.pack(side='left',padx=5)
         self.skip=ttk.Button(buttons,text='Skip phase (incomplete)',command=self.skip_phase)
         self.skip.pack(side='left',padx=8)
-        self.save_now=ttk.Button(buttons,text='Save CSV segment / continue',command=self.save_current)
+        self.save_now=ttk.Button(buttons,text='Save CSV / Restart calibration',command=self.save_current)
         self.save_now.pack(side='left',padx=5)
         self.stop=ttk.Button(buttons,text='Stop / close',command=self.close)
         self.stop.pack(side='left',padx=8)
@@ -805,10 +807,9 @@ class Application:
         self.large_3d_button=ttk.Button(buttons,text='Enlarge 3D magnetometer',command=self.open_3d)
         self.large_3d_button.pack(side='left',padx=5)
         extra=ttk.Frame(phase);extra.pack(fill='x',pady=(0,4))
-        self.mag_quality_button=ttk.Button(extra,
-            text='Assess MAG precision / coverage from CSVs...',
-            command=self.assess_mag_quality)
-        self.mag_quality_button.pack(side='left',padx=(0,8))
+        # Magnetometer quality assessment (previously separate button) is now
+        # handled through the full integrated calibration; the isolated MAG-only
+        # probe is deprecated per user direction.
         self.combine_button=ttk.Button(extra,text='Combine CSV + calibration JSON...',command=self.combine_calibrations)
         self.combine_button.pack(side='left',padx=(0,8))
         ttk.Label(extra,text='Withheld-data fit, 3D coverage and bootstrap; superseded redo attempts are excluded.',
@@ -825,8 +826,8 @@ class Application:
         notebook.add(self.tab_live,text='Live motion, magnetic field & altitude')
         notebook.add(self.tab_thermal,text='MPU6050 / BMP280 temperatures')
         self.notebook=notebook
-        fig=Figure(figsize=(13,6.4),dpi=90,constrained_layout=False)
-        fig.subplots_adjust(left=0.075,right=0.98,bottom=0.13,top=0.93,wspace=0.36,hspace=1.22)
+        fig=Figure(figsize=(14,8.0),dpi=95,constrained_layout=False)
+        fig.subplots_adjust(left=0.07,right=0.97,bottom=0.15,top=0.90,wspace=0.32,hspace=1.35)
         ax_acc=fig.add_subplot(2,3,1)
         ax_gyro=fig.add_subplot(2,3,2)
         ax_3d=fig.add_subplot(2,3,3,projection='3d')
@@ -834,10 +835,10 @@ class Application:
         ax_pressure=fig.add_subplot(2,3,5)
         ax_alt=fig.add_subplot(2,3,6)
         self.mag_3d=ax_3d
-        ax_3d.set_title('3D MAG cloud',fontsize=9,pad=3)
+        ax_3d.set_title('3D MAG cloud',fontsize=10,pad=4)
         for axis in ('X','Y','Z'):
-            getattr(ax_3d,'set_'+axis.lower()+'label')(axis+' µT',fontsize=8)
-        self.mag_scatter=ax_3d.scatter([],[],[],s=4,alpha=.43,c='#6243B7',depthshade=False)
+            getattr(ax_3d,'set_'+axis.lower()+'label')(axis+' µT',fontsize=9)
+        self.mag_scatter=ax_3d.scatter([],[],[],s=6,alpha=.48,c='#6243B7',depthshade=False,edgecolors='w',linewidth=.3)
         self._mag_triads=configure_magnetic_axes(ax_3d,[],enlarged=False)
         self.charts=[]
         for ax,title,keys,unit in [
@@ -996,8 +997,42 @@ class Application:
         if not self.worker or not self.worker.started.is_set() or self.worker.error:
             self.msg.showwarning('Recorder unavailable','Connect the serial recorder first.')
             return
+        # Save the current segment; preserve all completed calibrations in captures/.
+        # The user can run another full calibration (restart) without losing previous results.
         self.worker.save_checkpoint()
-        self.saved_info.set('Saving completed CSV segment; continuing in a new file…')
+        self.saved_info.set('Calibration saved: previous results preserved in captures/. You can calibrate again.')
+        choice = self.msg.askyesnocancel('Run another calibration?',
+            'This session completed the calibration stages.\n'
+            'Previous completed calibration files are preserved in captures/.\n'
+            'Choose YES to restart the full calibration from stage 1, NO to save current segment and continue, CANCEL to skip.')
+        if choice is False:  # user selected NO (restart full calibration from stage 1)
+            # Restart: reset stage index to 0, clear all series, and reset attempt
+            # Preserve previous completed files; start a new session
+            self.stage_index = 0
+            self.skipped_stages.clear()
+            self.finished = False
+            self.capture_active = False
+            self.attempt_counter = 0
+            self.current_attempt = 0
+            self.mag_points.clear()
+            self.times.clear()
+            for d in self.series.values():
+                d.clear()
+            self.thermal_pressure_t.clear()
+            self.thermal_pressure_p.clear()
+            self.saved_info.set('Calibration restarted from beginning — new attempt starting.')
+            self.info.set('RESTARTED: calibration run restarted from stage 1. Previous completed files preserved in captures/.')
+            self.mag_plot_total = 0
+            # Ensure the worker creates a new file name on the next checkpoint
+            # (already handled by save_checkpoint setting current_file to a new part file)
+            self.update_stage()
+            self.begin.config(state='normal' if (self.worker and self.worker.started.is_set() and not self.worker.error) else 'disabled')
+        elif choice is None:
+            # CANCEL — just saved, do not restart
+            self.saved_info.set('Segment saved; calibration continues with no restart.')
+        else:
+            # YES — save and continue (default existing behavior)
+            self.info.set('Segment saved; calibration continues.')
 
     def update_stage(self):
         if self.stage_index>=len(self.stages):
@@ -1300,10 +1335,22 @@ class Application:
             self.msg.showinfo('Analysis running','Finish the current analysis first.')
             return
         names=filedialog.askopenfilenames(parent=self.root,
-            title='Choose completed CSV and/or *_calibration.json files (Ctrl+click)',
+            title='Select calibration CSV files (Ctrl+click for multiple). '
+                  'Results .json files are optional. '
+                  'Example: captures/iq_500hz_YYYYMMDD_HHMMSS.csv',
             initialdir=str(ROOT/'captures'),
-            filetypes=[('Calibration data and results','*.csv *.json'),('CSV recordings','*.csv'),('Saved calibration reports','*.json')])
-        if not names:return
+            filetypes=[('Calibration data','*.csv *.json'),('CSV recordings','*.csv'),('Saved reports','*.json')])
+        if not names:
+            # Show a help dialog explaining which files to select
+            self.msg.showinfo('How to combine calibration data',
+                'To combine CSV calibration results:\n\n'
+                '1. Click "Save CSV segment / continue" during or after a phase, '
+                'or use the completed CSV files in captures/.\n'
+                '2. Select the .csv file(s) from the calibration run.\n'
+                '3. Optionally include saved *_calibration.json result files.\n'
+                '4. Click OK; the combined output is saved as merged_YYYYMMDD_HHMMSS.csv/json.\n\n'
+                'Example file: captures/iq_500hz_YYYYMMDD_HHMMSS.csv')
+            return
         paths=[Path(n).resolve() for n in names]
         if self.worker and self.worker.is_alive() and self.worker.current_file.resolve() in paths:
             self.msg.showwarning('Active CSV','Click Save CSV segment / continue, and choose closed CSV files.')

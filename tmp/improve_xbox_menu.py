@@ -1,0 +1,27 @@
+from pathlib import Path
+r=Path(r'C:\Users\Mohamed\Desktop\Work\QCopter-Stepwise')
+p=r/'lessons/xbox-test-menu/main.cpp'
+s=p.read_text().replace('rgbLedWrite(', 'neopixelWrite(')
+s=s.replace('Menu=OPEN_OR_NEXT,A=RUN,B=CANCEL,Y=INFO','Menu=SHOW_OR_NEXT,Dpad=SELECT,A=RUN_SELECTED,B=CANCEL,Y=INFO')
+s=s.replace('    bool menu_open = false;', '    bool menu_open = true;')
+s=s.replace('        connection_led(now, connected, fresh);', '        bool input_ready = connected && !xbox.isWaitingForFirstNotification();\n        connection_led(now, connected, input_ready);')
+s=s.replace('        if (fresh)\n', '        if (input_ready)\n')
+s=s.replace('        else\n        {\n            released = false;\n            menu_open = false;\n        }', '        else\n        {\n            released = false;\n            menu_open = true;\n        }')
+s=s.replace('                | (xbox.xboxNotif.btnY ? 8 : 0);', '                | (xbox.xboxNotif.btnY ? 8 : 0)\n                | (xbox.xboxNotif.btnDirRight ? 16 : 0)\n                | (xbox.xboxNotif.btnDirLeft ? 32 : 0);')
+s=s.replace('        if (pressed & 1)', '        if (pressed & (1 | 16 | 32))')
+s=s.replace('            if (menu_open)\n            {\n                selected = (selected + 1) % 4;\n            }', '            if (pressed & 32)\n            {\n                selected = (selected + 3) % 4;\n            }\n            else\n            {\n                selected = (selected + 1) % 4;\n            }')
+s=s.replace('        if ((pressed & 2) && menu_open)', '        if (pressed & 2)')
+s=s.replace('            menu_open = false;\n        }\n        if (pressed & 4)', '            menu_open = true;\n        }\n        if (pressed & 4)')
+s=s.replace('        if (pressed & 8)\n        {\n            report();\n        }', '        if (pressed & 8)\n        {\n            report();\n            Serial.printf("MENU,SELECTED=%s,COMMAND=%c,A=RUN\\n", names[selected], modes[selected]);\n        }')
+s=s.replace('    xbox.begin();', '    Serial.printf("MENU,SELECTED=DIRECT_NORMAL,COMMAND=d,A=RUN,DpadLeftRight=SELECT,B=CANCEL\\n");\n    xbox.begin();')
+s=s.replace('>= 1000)', '>= 5000)')
+s=s.replace('FRESH=%u,CORE=', 'RECENT_INPUT=%u,CORE=')
+p.write_text(s,encoding='utf-8',newline='\n')
+# Surface choices immediately in the recorder, rather than making the operator guess.
+p=r/'tools/validation/record_xbox_menu.py'
+s=p.read_text().replace("        print('Automatic recording folder:',output,flush=True)", """        print('Automatic recording folder:',output,flush=True)
+        print('D-pad LEFT/RIGHT selects; A starts; B cancels; Y shows selection.',flush=True)
+        print('1 DIRECT_NORMAL | 2 FIFO_NORMAL | 3 DIRECT_PAUSES | 4 FIFO_PAUSES',flush=True)
+        print('Initial selection: DIRECT_NORMAL. Each capture is 4 seconds, then automatic saving.',flush=True)
+        print('RECENT_INPUT=0 means no report in 300 ms; it does not mean disconnected.',flush=True)""")
+p.write_text(s,encoding='utf-8',newline='\n')
