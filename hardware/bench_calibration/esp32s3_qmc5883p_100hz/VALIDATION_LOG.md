@@ -387,3 +387,27 @@ This run has no QMC conclusion. Evidence:
 `captures/mag_probe_v13_200hz_20261104_010037.log` and `.json`. The user needs
 to physically power-cycle the board before any further COM3 capture. Do not
 claim the standalone comparison succeeded.
+
+## 200 Hz MAG isolation and full-bus retest — 2026-11-04
+
+Engine: PlatformIO 7.1.3 / Arduino framework on ESP32-S3 DevKitC-1 N8, CH343
+COM3. Assumed wiring remains MPU6050 at 0x68 and BMP280 at 0x76 on SDA GPIO9 /
+SCL GPIO8, with QMC5883P at 0x2C behind MPU bypass. Actual QMC rail voltage,
+continuity, pull-up values, and bus rise time are not measured. Motor output is
+not implemented in this bench firmware; Wi-Fi is disabled.
+
+After the user power-cycled the board, the isolated 200 Hz low-OSR probe at
+100 kHz I2C confirmed QMC ID 0x80, CTRL1=0x3D, CTRL2=0x08 and sustained
+188.16 fresh conversions/s over 15 seconds (7,148 total fresh conversions,
+7 status-read failures, no XYZ read failures). Evidence is preserved in
+`captures/mag_probe_v13_200hz_20261104_023306.log` and `.json`. Earlier full
+firmware at 400 kHz emitted 9,110 CRC-valid packets at 500 Hz but had zero
+MAG-valid/fresh packets (`captures/usb_preflight_20261104_011021.csv`). This
+isolated success plus full-stream failure motivated switching the full
+calibration build to 100 kHz in `platformio.ini`.
+
+The 100 kHz full build compiled and flashed successfully, with esptool hash
+verification. Its first preflight received 361 boot-console bytes and zero
+binary packets (`captures/usb_preflight_20261104_023413.csv`); it did not yet
+verify the combined sensor stream. A clean post-flash startup/power-cycle and
+new full-stream capture are required before claiming MAG fixed in the GUI.
