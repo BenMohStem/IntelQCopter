@@ -66,6 +66,8 @@ constexpr uint32_t IMU_PERIOD_US = 2000; // 500 Hz scheduling target
 constexpr uint32_t BMP_PERIOD_US = 100000; // 10 Hz
 constexpr uint32_t MAG_PERIOD_US = 5000; // Poll internal DRDY at the selected 200 Hz ODR
 constexpr uint32_t MAG_STALE_MS = 1000;
+constexpr uint32_t MAG_CONFIG_RETRY_MS = 1000;
+constexpr uint8_t MAG_MAX_CONFIG_ATTEMPTS = 5;
 constexpr uint32_t SERIAL_BAUD = 921600; // CH343 UART, binary v3 packets
 constexpr size_t PACKET_SIZE = 52;
 
@@ -195,6 +197,7 @@ struct MagnetometerHealth {
   uint32_t attempts = 0;
   uint32_t failures = 0;
   uint32_t successfulConfigurations = 0;
+  uint32_t recoveryConfigurations = 0;
   uint32_t i2cFailures = 0;
   uint32_t noFreshData = 0;
   uint32_t statusReadFails = 0;
@@ -204,7 +207,9 @@ struct MagnetometerHealth {
   uint32_t freshConversions = 0;
   uint8_t lastControl1 = 0;
   uint8_t lastControl2 = 0;
-  uint32_t lastGoodMs = 0;
+  // These timestamps have distinct meanings: a successful register setup is
+  // not a magnetic conversion and must never make the sample appear fresh.
+  uint32_t lastFreshSampleMs = 0;
   uint32_t lastAttemptMs = 0;
   uint32_t identicalReads = 0;
   uint32_t rawReadSuccess = 0;
@@ -359,7 +364,6 @@ bool configureQmc5883p() {
   }
   if (!(idOK && c1OK && c2OK)) ++magHealth.i2cFailures;
   magneticConfigured = true;
-  magHealth.lastGoodMs = millis();
   ++magHealth.successfulConfigurations;
   lastMagneticPollUs = micros();
   return true;
@@ -367,8 +371,20 @@ bool configureQmc5883p() {
 
 void updateMagnetometer(uint32_t nowUs) {
   currentMagnetic.fresh = false;
+  const uint32_t nowMs = millis();
+  const bool noRecentSample = magHealth.freshConversions == 0 ||
+      uint32_t(nowMs - magHealth.lastFreshSampleMs) >= config::MAG_STALE_MS;
+  if ((!magneticConfigured || noRecentSample) &&
+      magHealth.attempts < config::MAG_MAX_CONFIG_ATTEMPTS &&
+      uint32_t(nowMs - magHealth.lastAttemptMs) >= config::MAG_CONFIG_RETRY_MS) {
+    // Startup can race a marginal sensor rail, and the QMC can lose its mode
+    // while the ESP32 remains alive. Retry configuration at a bounded rate;
+    // never hammer the shared bus on each 500 Hz scheduler tick.
+    if (magneticConfigured) ++magHealth.recoveryConfigurations;
+    (void)configureQmc5883p();
+  }
   if (!magneticConfigured) { currentMagnetic.valid = false; return; }
-// On complete MAG I2C loss, stop saturating the shared sensor bus.
+  // On complete MAG I2C loss, stop saturating the shared sensor bus.
   // Normal operation still polls 0x09 at 200Hz for a 100Hz conversion rate.
   const uint32_t pollUs = magHealth.consecutiveStatusFailures >= 8 ? 100000U :
                           config::MAG_PERIOD_US;
@@ -412,13 +428,14 @@ void updateMagnetometer(uint32_t nowUs) {
         ++magHealth.rawReadSuccess;
         ++magHealth.freshConversions;
         if (identical) ++magHealth.identicalReads; // Still a fresh ADC result.
-        magHealth.lastGoodMs = millis();
+        magHealth.lastFreshSampleMs = millis();
       } else ++magHealth.noFreshData;
     }
   }
-  // Staleness invalidates cached samples but does not repeatedly rewrite
-  // registers. Fixed-boot v13 worked without automatic runtime reconfiguration.
-  if (uint32_t(millis() - magHealth.lastGoodMs) >= config::MAG_STALE_MS)
+  // Staleness invalidates cached samples. The bounded retry above attempts
+  // recovery at most five times, one second apart.
+  if (magHealth.freshConversions == 0 ||
+      uint32_t(millis() - magHealth.lastFreshSampleMs) >= config::MAG_STALE_MS)
     currentMagnetic.valid = false;
 }
 
