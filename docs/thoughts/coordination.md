@@ -58,6 +58,10 @@ relevant subsystem README and `VALIDATION_LOG.md`.
 
 ## Calibration data gate
 
+The canonical ESP32 bench chronology and failed-trial record is
+[`VALIDATION_LOG.md`](../../hardware/bench_calibration/esp32s3_qmc5883p_100hz/VALIDATION_LOG.md).
+Read it before making calibration claims or changing bench procedures.
+
 The November 4 guided session
 `captures/calibration_package_20261104/iq_500hz_20261104_100907.csv` has evidence
 for all 12 target phases, no skipped stages, and a matching result JSON. Raw

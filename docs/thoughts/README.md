@@ -23,8 +23,10 @@ is a compatibility pointer; its original contents are preserved in
 
 ## Rules for any model joining this work
 
-1. **Read first:** `coordination.md`, then `thought-database.md`,
-   then `QCopter/AGENTS.md`, then `QCopter/docs/VALIDATION_LOG.md` (live lab notebook).
+1. **Read first:** [`coordination.md`](coordination.md), then
+   [`thought-database.md`](thought-database.md), then the repository
+   [`AGENTS.md`](../../AGENTS.md), then the live bench log
+   [`VALIDATION_LOG.md`](../../hardware/bench_calibration/esp32s3_qmc5883p_100hz/VALIDATION_LOG.md).
 2. **Check git state:** `git log --oneline -10` and `git status` before acting.
 3. **Do not overwrite history:** Append a dated revision at the bottom of the thought
    database rather than editing earlier revisions in place.

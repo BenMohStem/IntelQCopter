@@ -672,3 +672,16 @@ High:
   but mixed-use. No build contents, source behavior, or calibration evidence were
   modified. `docs/` had no exact duplicate Markdown, text or JSON files in the
   scoped duplicate scan.
+
+## 25. Revision 10 — 2026-11-05: correct the active lab-log handoff
+
+- The thought-base index pointed at nonexistent `docs/VALIDATION_LOG.md`. The
+  actual live ESP32 bench chronology is
+  `hardware/bench_calibration/esp32s3_qmc5883p_100hz/VALIDATION_LOG.md`.
+- Fixed the active AI reading order to link the repository `AGENTS.md` and that
+  real validation log. The coordination page now points to the same record before
+  calibration or bench changes.
+- Checked local links in the root README, docs index, project plan, architecture,
+  thought-base index/current handoff and archive index/manifest. All local links
+  in that active-navigation scope resolve. No historical thought-base revisions
+  or preserved source documents were rewritten.
