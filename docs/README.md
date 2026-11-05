@@ -1,29 +1,67 @@
 # Documentation index
 
-- [Current model, gain calculations and FC integration](current-model-and-fc-integration.md) — stationary gyro averaging, nonlinear equations, transfer functions, full-order stability, periodic Kalman gains, actual DDS/Gazebo path and future wired bridge.
-- [Every flight-controller C line explained](flight-controller-line-by-line.md) — exact source with units, equations and unfinished hardware connections.
-- [Detailed mathematical PDF](modelisation/main.pdf) and [LaTeX source](modelisation/main.tex) — modelling, six PID gains, Kalman derivations and recorded simulation results.
-- [Simulation video, graphs and original data](../artifacts/simulation/2026-10-20-missions/index.html) — CPU flight model and ROS DDS route; Isaac startup failure recorded separately.
-- [ROS C++ companion](../companion/README.md) — common planner, ROS interfaces and YOLO ONNX node; implementation and test boundaries.
+Start with the current system map and project plan, then open the subsystem guide
+for the work in hand. Original measurements and failures are indexed separately
+under [test evidence](../artifacts/test-runs/README.md).
 
-- [Sensor calibration](sensor-calibration.md) — implemented fits, capture procedure, uncertainty, and hardware gaps.
-- [ESP32-S3 calibration GUI](esp32-calibration-gui.md) — guided full-sensor setup, QMC read-method fix, preflight and hardware evidence limits.
-- [Controller code walkthrough](reading-the-code.md) — explanation of the RP2350 flight scaffold, RP2040 input scanner, shared radio packet format, and current hardware gaps.
-- [Hand-controller input map](controller-inputs.md) — proposed pin map, Mode 2 stick semantics, buttons, and protocol details.
-- [Uncertainty visualizations](../artifacts/visualizations/uncertainty-dashboard.html) — interactive replay and static SVG/PNG plots generated from the saved Monte Carlo CSVs.
-- [Mass and Kalman uncertainty report](model-uncertainty.md) — assumptions, distributions, metrics, and limitations.
-- [PCB notes](../hardware/flight_controller_pcb/README.md) — draft board state and unrouted nets.
-- [Current Gazebo workflow](../sim/gazebo/README.md) — native engine setup and current launch instructions.
-- [Historical Isaac integration](../archive/isaac/README.md) — retained after Isaac was removed.
-- [Evidence index](../artifacts/test-runs/README.md) — logs, data, rerun instructions, and proof limits.
+## System and flight control
 
-- [Missing information and current problems](missing-information-and-problems.md) — priorities and hardware/autonomy limits.
+- [Current model, gain calculations and flight-controller integration](current-model-and-fc-integration.md)
+  — equations, transfer functions, stability, Kalman gains, and the actual DDS/Gazebo path.
+- [Flight-controller C walkthrough](flight-controller-line-by-line.md) — source, units,
+  equations, and unfinished hardware connections.
+- [RP2350/RP2040 code walkthrough](reading-the-code.md) — flight scaffold, input scanner,
+  radio packet, and hardware gaps.
+- [Controller input map](controller-inputs.md) — proposed pin map, Mode 2 stick semantics,
+  buttons, and protocol.
+- [ROS 2 companion setup](companion-computer-setup.md) and
+  [companion package overview](../companion/README.md) — ROS interfaces, planner, and
+  YOLO ONNX node.
+- [Mass and Kalman uncertainty](model-uncertainty.md) — assumptions, distributions,
+  metrics, and limits.
+- [F450 model sources](f450-model-sources.md) — source and assumptions behind the aircraft
+  model.
 
-## Repository organization
+## Sensors, calibration, and hardware
 
-[Architecture, cache lifecycle and migration map](architecture.md). Run `qcopter.ps1 help` from the root.
+- [Sensor calibration](sensor-calibration.md) — implemented fits, capture procedure,
+  uncertainty, and hardware gaps.
+- [ESP32-S3 calibration GUI](esp32-calibration-gui.md) — guided capture procedure and
+  QMC evidence limits.
+- [ESP32 bench validation log](../hardware/bench_calibration/esp32s3_qmc5883p_100hz/VALIDATION_LOG.md)
+  — chronological preflights, failed trials, and bench evidence.
+- [Calibration flash storage](calibration-flash.md) — saved records and firmware
+  integration.
+- [Magnetometer triage](magnetometer-triage-2026-11-03.md) — QMC/HMC identity and
+  read-path investigation.
+- [Motor limits](motor-limits-2026-10-28.md) — current command caps and arming policy.
+- [Flight-controller PCB notes](../hardware/flight_controller_pcb/README.md) — draft board
+  state and unrouted nets.
+- [Missing information and current problems](missing-information-and-problems.md) —
+  hardware, autonomy, and measurement priorities.
 
-[Local `build/` inventory and cleanup boundaries](build-directory-inventory-2026-11-05.md)
-— ignored local contents classified by type; no bulk deletion.
-[Shared AI thought base and handoff](thoughts/README.md) — canonical working memory
-and current coordination state.
+## Simulation and reports
+
+- [Current native Gazebo workflow](../sim/gazebo/README.md) — engine setup and launch
+  instructions.
+- [Recorded simulation, graphs, and data](../artifacts/simulation/2026-10-20-missions/index.html)
+  — CPU plant and ROS DDS route; Isaac startup failure is recorded separately.
+- [Uncertainty visualizations](../artifacts/visualizations/uncertainty-dashboard.html) —
+  replay and plots from saved Monte Carlo data.
+- [Mathematical model report (PDF)](reports/IntelQcopter-model-guide.pdf) and
+  [LaTeX source](modelisation/main.tex) — model, PID gains, Kalman derivations, and
+  simulation results.
+- [Historical Isaac integration](../archive/isaac/README.md) — retired engine work
+  retained for provenance.
+- [Windows ROS 2 Jazzy setup](windows-jazzy-setup.md) — machine setup notes and current
+  constraints.
+
+## Project organization and shared notes
+
+- [Architecture and migration map](architecture.md) — repository layout and file lifecycle.
+- [Current project plan](project-plan.md) — cleanup, calibration, readability, and review phases.
+- [Local build inventory](build-directory-inventory-2026-11-05.md) — ignored mixed workspace
+  contents; do not bulk-delete.
+- [Shared AI thought base](thoughts/README.md) — current handoff, canonical database, and
+  collaboration rules.
+- Run `qcopter.ps1 help` from the repository root for current project commands.

@@ -685,3 +685,13 @@ High:
   thought-base index/current handoff and archive index/manifest. All local links
   in that active-navigation scope resolve. No historical thought-base revisions
   or preserved source documents were rewritten.
+
+## 26. Revision 11 — 2026-11-05: organize the documentation index
+
+- Regrouped `docs/README.md` into system/flight control, sensors/calibration/hardware,
+  simulation/reports, and project organization/shared notes.
+- Added the live ESP32 validation log, motor-limit policy, F450 model sources,
+  current plan, and current shared thought-base entry to the navigation structure.
+- Wrapped descriptions across lines for easier scanning without changing source
+  code, measurement records, or archived documents. Rechecked local links in the
+  active navigation files; all resolve.
