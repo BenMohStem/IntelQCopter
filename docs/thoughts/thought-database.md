@@ -695,3 +695,28 @@ High:
 - Wrapped descriptions across lines for easier scanning without changing source
   code, measurement records, or archived documents. Rechecked local links in the
   active navigation files; all resolve.
+
+## 27. Revision 12 — 2026-11-06: competition specification translated into gates
+
+- Reviewed the user-supplied `Pasted text.txt` specification (SHA-256
+  `B446DDC4278E9C41A563EE1E56410D16E769C15D1EA0E8774636CF99664B7EC9`). Its
+  detailed, staged interpretation is `docs/esp32-competition-readiness-plan-2026-11-06.md`;
+  the pasted text is a design request, not evidence of operation or validation.
+- Kept ESP32-S3 competition work on isolated `feature/esp32s3-competition-fc`;
+  leave Pico/RP2350 worktrees separate. The estimated competition date is not
+  independently confirmed. The repaired-PCB, no-flash, no-motor-output gates in
+  `AGENTS.md` remain in force.
+- Cross-checked QMC history: the isolated 200 Hz normal profile (`0x3D/0x08`)
+  measured 188.16 fresh samples/s at 100 kHz. A 400 kHz integrated preflight
+  measured 166.8 fresh/s, but a later full-stream capture had zero fresh MAG
+  packets. Keep 400 kHz as a comparison target until repeated full-load evidence
+  and the completed capture's exact build lineage are reconciled.
+- The latest specification requests optional LiDAR GUI validation and a revised
+  Xbox mapping. The current 12-phase GUI remains the fallback; LiDAR calibration
+  must be optional and use measured distances. The revised stick/trigger mapping
+  is planned, not implemented or validated.
+- During this review, uncommitted `platformio.ini` and `src/main.cpp` edits were
+  present; `main.cpp` changed SHA-256 while being read. Preserve the changing
+  candidate, re-pin its hash before a complete audit, and do not stage it with
+  documentation. No firmware tests, build, flash, hardware test or motor test
+  were performed in this plan update.

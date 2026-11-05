@@ -1,13 +1,22 @@
 # QCopter AI coordination
 
-Updated: 2026-11-05 (Africa/Lagos)
+Updated: 2026-11-06 (Africa/Lagos)
 
 Read in this order: `AGENTS.md`, this summary, `thought-database.md`, then the
 relevant subsystem README and `VALIDATION_LOG.md`.
 
 ## Current state
 
-- Branch: `codex/qmc-200hz-continuous-diagnosis`.
+- Branch: `feature/esp32s3-competition-fc` (isolated ESP32-S3 candidate).
+- The user-supplied competition specification is translated into
+  `docs/esp32-competition-readiness-plan-2026-11-06.md`. It is a design request,
+  not validation evidence; current motor and hardware restrictions still apply.
+- A new uncommitted edit to the calibration `src/main.cpp` and `platformio.ini`
+  appeared in this branch. During review, `main.cpp` changed hash between reads;
+  preserve it, recheck `git status` and SHA before further review, and do not
+  include those source changes in documentation commits. At the observed snapshot,
+  the PlatformIO diff changed the I2C build define from 100 kHz to 400 kHz; this
+  remains unvalidated against mixed prior full-stream results.
 - DeepSeek stopped. Its uncommitted calibration `src/main.cpp` candidate is
   preserved for review at
   `archive/review-candidates/2026-11-05/qmc5883p-main-dsh-working-tree.cpp`;

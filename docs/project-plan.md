@@ -1,6 +1,6 @@
 # QCopter project organization and engineering plan
 
-Updated: 2026-11-05 (Africa/Lagos)
+Updated: 2026-11-06 (Africa/Lagos)
 
 Convenience copy: `C:\Users\Mohamed\Desktop\Work\PLAN.md`.
 
@@ -15,6 +15,25 @@ Convenience copy: `C:\Users\Mohamed\Desktop\Work\PLAN.md`.
 - Motor arming remains disabled. Xbox PC-to-USB tests are not flight receivers.
 - Drone is disconnected for PCB repair. No COM3, upload, or physical validation.
 - Keep local SDKs/environments and unrelated personal files out of GitHub.
+
+## ESP32-S3 engineering scope added 2026-11-06
+
+The user supplied a short-horizon ESP32-S3 flight-controller specification. The
+isolated [competition-readiness plan](esp32-competition-readiness-plan-2026-11-06.md)
+turns it into sensor, calibration, GUI, estimation, Xbox, control and validation
+gates. Its performance values are targets until measured. Preserve the stable
+fallback, the current safety lock, and the distinction between calibration/bench
+work and flight validation. The aircraft remains disconnected for PCB repair.
+
+The new specification requests an optional LiDAR calibration path and a revised
+Xbox mapping; these are planning updates only. The current 12-step GUI remains
+available, LiDAR stays optional, and no behavior is adopted in firmware until the
+source audit and required hardware/transport evidence pass.
+
+The competition window is described as approximately two days away in the
+supplied text, but its date is unconfirmed. Keep the release scope conservative;
+defer continuous QMC, advanced estimator/filter research and RP2350 migration to
+separate post-window work.
 
 ## Cleanup phases
 

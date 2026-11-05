@@ -6,6 +6,8 @@ under [test evidence](../artifacts/test-runs/README.md).
 
 ## System and flight control
 
+- [ESP32-S3 competition-readiness plan](esp32-competition-readiness-plan-2026-11-06.md)
+  — near-term scope, current evidence, conflict resolutions, and validation gates.
 - [Current model, gain calculations and flight-controller integration](current-model-and-fc-integration.md)
   — equations, transfer functions, stability, Kalman gains, and the actual DDS/Gazebo path.
 - [Flight-controller C walkthrough](flight-controller-line-by-line.md) — source, units,
