@@ -429,3 +429,90 @@ High:
 - **rev 1 — 2026-11-03 23:08.** Initial database.
 - **rev 2 — 2026-11-03 23:55.** Integrated firmware passes; ODR table; wrong-firmware rule; collaboration protocol.
 - **rev 3 — 2026-11-04 01:10.** Downloads evidence (§13), sibling/repo structure (§14), current integrated firmware state (§15), consolidated open issues (§16). Registered in coordination sqlite3. *End of rev 3 — next model appends rev 4.*
+
+## 19. Revision 4 — 2026-11-05: DSH coordination, cloud GPT v2, and cleanup plan
+
+### Current coordination state
+- The user says DSH is actively working on project cleanup/source changes. At
+  last read-only inspection on this branch, modified files were
+  `firmware/flight_controller/flight_controller.c` and
+  `hardware/bench_calibration/esp32s3_qmc5883p_100hz/src/main.cpp`; untracked
+  files were `firmware/flight_controller/flight_controller.c.tmp` and
+  `hardware/bench_calibration/esp32s3_qmc5883p_100hz.zip` (59,451,892 bytes).
+- Latest observed HEAD and origin were both `7833cf8` (“Add QMC5883P/MPU6050
+  sensor calibration + PID flight control config”). Do not overwrite or
+  reformat the two modified sources while DSH is active. Inspect its finished
+  diff and status before taking over. Do not delete the `.tmp` or ZIP without
+  determining whether either is DSH's source/evidence.
+- A top-level plan was created at `C:\Users\Mohamed\Desktop\Work\PLAN.md`.
+  It defines inventory → preserve/archive → formatting-only readability pass →
+  calibration analysis → Xbox/FC review → scoped commits/push. Share this plan
+  with DSH before broad renames, deletes, or moves.
+- Drone is disconnected for PCB repair. No COM3 sessions, flashing, or physical
+  validation should be attempted until the user confirms repair and connection.
+
+### Review of cloud GPT artifact (read-only)
+- User supplied `Downloads/IntelQCopter_500Hz_Fast_Calibrated_FC_v2.zip`
+  (1,958,455 bytes; 44 files). Its manifest says source + host tests only; no
+  actual ESP32 PlatformIO build or physical validation. It is a separate bench
+  ESP32-S3 candidate, not the RP2350 flight runtime.
+- Safety lock is explicit: `IQ_MOTOR_OUTPUTS_ENABLE=0`, GPIOs are inputs, and
+  there is no physical arming path. Xbox is a Windows PC pygame → CH343 UART
+  bridge (~50 Hz), not direct onboard pairing or a flight receiver. Its D-pad
+  chord is barometer re-zero, not arm/disarm. Keep these distinctions.
+- `data/20261104_raw_calibration_candidate_UNVERIFIED.json` is marked
+  provisional and automatic flight application is false. It reports gyro bias
+  `[0.161969,-0.304950,-0.877433] dps`; accel bias `[1.264656,-0.059103,-0.678745]
+  m/s²` and a full 3x3 matrix; MAG hard-iron `[-29.482301,-18.397984,-35.474273]
+  µT` plus det-1 relative soft-iron matrix. It derives from a single November 4
+  capture, with MAG holdout magnitude RMS 3.464%, and explicitly requires axis
+  and powered-motor checks. Do not use as final FC calibration.
+- ZIP's seven PID values and Monte Carlo standard deviations are candidate
+  simulation values based on an assumption-based F450 inertia/thrust model, not
+  measured flight gains. No thrust curve, motor response, axis convention, or
+  physical failsafe is established. Do not convert these into actuator commands.
+- The ZIP's own notes say actual firmware build and hardware remain unverified.
+  Its copied sensor code records 400 kHz with 100 kHz fallback; this conflicts
+  with the latest integrated 400 kHz MAG-zero capture and 100 kHz isolated probe
+  success. Resolve only with a repaired-board combined capture.
+
+### DSH diff review guidance (not a verdict on its uncommitted work)
+- Last seen DSH diff introduces MPU ±500 dps / ±8 g ranges, FIFO configuration,
+  and gyro offset constants while editing the bench calibration `main.cpp`.
+- Before accepting it, check that host engineering-unit conversion and all
+  calibration calculations use the matching sensitivities (65.5 LSB/dps and
+  4096 LSB/g), verify FIFO frame byte layout and reset/overflow behavior, and
+  ensure the 52-byte protocol remains compatible with the GUI.
+- Keep hardware offset-register writes disabled until the factor is confirmed;
+  DSH's new macro defaults off, which is the safe choice. Confirm comments do not
+  claim unmeasured performance.
+- Current working diff visibly contains UTF-8 mojibake (`â€”`, BOM) and comments
+  duplicating old and new register settings. Clean encoding/comment duplication
+  only after DSH says the edit is ready; preserve behavior and isolate formatting
+  changes from register/algorithm changes.
+
+### Calibration dataset admission rule
+- Analyze only a session with explicit completion evidence showing 100% for all
+  required phases. A large CSV, a passing UART preflight, a 100% sensor coverage
+  score, or an output JSON alone does not prove the guided calibration session
+  completed. Preserve partial and skipped sessions, but exclude them from fits.
+- `captures/calibration_package_20261104/iq_500hz_20261104_100907.csv` exists;
+  its completion metadata still needs verification before it is admitted.
+- After admission: calculate and plot gyro bias/noise, six-face accel offset
+  and full 3x3 correction, MAG hard/soft-iron ellipsoid fit with held-out error,
+  coverage, covariance/std deviations, and barometer reference. State units,
+  frames, fit limitations, and keep all results provisional until board/axis
+  applicability is verified.
+
+### Project cleanup execution order
+- Use `C:\Users\Mohamed\Desktop\Work\PLAN.md` as the canonical project plan.
+- First read-only inventory and classify files; then record keep/archive/delete
+  manifest. Do not delete merely “old” evidence or source snapshots. Archives
+  retain provenance and original bytes. Keep generated SDK/build/cache and
+  personal files out of version control.
+- Consolidate multiple thought bases into one indexed `docs/thoughts/` source
+  only after DSH has stopped editing them; preserve dated revisions rather than
+  overwriting conclusions. The current file is still the active handoff.
+- User requests readable code without behavior changes. Perform formatting-only
+  edits after DSH's source work is complete, with a diff check proving only
+  whitespace/comments changed.
