@@ -37,3 +37,6 @@ compile_commands.json
 # Local caches and machine-specific configuration
 /.cache/
 /.local/
+
+# Local bundled calibration package contains generated PlatformIO build outputs.
+/archive/local-packages/esp32s3_qmc5883p_100hz-with-pio-build.zip
