@@ -22,3 +22,8 @@
 ## Repository organization
 
 [Architecture, cache lifecycle and migration map](architecture.md). Run `qcopter.ps1 help` from the root.
+
+[Local `build/` inventory and cleanup boundaries](build-directory-inventory-2026-11-05.md)
+— ignored local contents classified by type; no bulk deletion.
+[Shared AI thought base and handoff](thoughts/README.md) — canonical working memory
+and current coordination state.

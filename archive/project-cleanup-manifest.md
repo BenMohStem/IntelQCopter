@@ -20,6 +20,21 @@ calibration captures, simulation logs, failed trials, and hardware evidence.
 | 2026-11-05 | Owner-supplied `IntelQCopter_A_to_Z_Markdown_Documentation_2026-11-05.zip` (outside repository) | Extracted all 91 Markdown files unchanged after verifying all 90 listed file hashes and sizes | `archive/imported-documents/cloud-gpt-a-to-z-2026-11-05/`; source ZIP SHA-256 `839C1B5605BE5325C58E0F99F52E8FEA4DFAB122A7BEB4D26452F7D380D99E6A`; the original ZIP remains at its supplied path |
 | 2026-11-05 | `Downloads/GPT_TMP/IntelQCopter_Independent_Raw_Calibration_Audit_20261104.zip` | Verified all 40 internal checksums and raw CSV identities; imported selected report/results/plots without duplicate raw captures | `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/independent_audit_20261104/`; ZIP SHA-256 `7C55BA598286AA67B2BFA5BDB8E70560E952B2FC521470F40E59D2749BF6C4BC`; full source ZIP remains local in `Downloads/GPT_TMP` |
 
+## Reviewed but not moved
+
+| Date | Path | Findings | Disposition |
+|---|---|---|---|
+| 2026-11-05 | `build/stepwise-seed/` | 19-file ESP32-S3 bench-project snapshot (plan, validation tools, hardware assumptions, board-diagnostic firmware); no `.git` directory; not a generated cache. A separate `QCopter-Stepwise` worktree exists. | Copy-and-verify relocation to `archive/source-snapshots/` was rejected by the command safety policy before execution. No copy or deletion occurred. Keep the source intact; do not retry via another command. |
+
+## Local build inventory
+
+`docs/build-directory-inventory-2026-11-05.md` records 24,580 files (~1,311.9 MiB)
+under ignored `build/`. It includes source/evidence, reports, datasets, local ROS
+workspaces, installed dependencies, generated outputs, and caches. It is not safe
+to bulk-delete or publish. The command safety policy previously rejected removal
+of `build/zig-cache` and `build/tectonic-cache`; leave both untouched and do not
+retry those removals through another route.
+
 ## Classified and retained
 
 | Path | Classification | Decision |

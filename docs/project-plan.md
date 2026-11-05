@@ -43,6 +43,16 @@ Convenience copy: `C:\Users\Mohamed\Desktop\Work\PLAN.md`.
    archive paths only after recording hash, provenance, and whether they stay
    local-only.
 
+Inventory update (2026-11-05): the ignored `build/` tree has 24,580 files and is
+about 1,311.9 MiB. It mixes dependency environments and caches with local ROS
+workspaces, reports, datasets, scripts, CAD trials, and source/evidence snapshots.
+See the [local build inventory](build-directory-inventory-2026-11-05.md).
+The 19-file `build/stepwise-seed/` snapshot is a complete small bench-project
+copy, not a disposable build product. A copy-verify-relocate operation into
+`archive/source-snapshots/` was rejected by the command safety policy before
+execution; the source remains untouched in `build/`. Do not retry through another
+command. Continue with documentation and non-destructive classification.
+
 ### C. Readability — pending
 
 - Review project source formatting subsystem by subsystem.

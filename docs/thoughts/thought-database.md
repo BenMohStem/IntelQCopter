@@ -650,3 +650,25 @@ High:
 - Clarified the audit's gyro saturation rates: 13.26% across all MAG stage rows,
   versus 21.99% in TUMBLE and 4.83% in ROLL. The latter values are stage-specific
   and do not conflict with the combined rate.
+
+## 24. Revision 9 — 2026-11-05: local build tree classified further
+
+- Inventory of ignored `build/` counted 24,580 files (~1,311.9 MiB). It is not a
+  disposable build-output folder: it mixes dependency environments, local ROS
+  workspaces, scripts, reports, datasets, CAD trials, and source/evidence snapshots.
+  Detailed path classes and largest areas are recorded in
+  `docs/build-directory-inventory-2026-11-05.md`.
+- Found `build/stepwise-seed/`, a 19-file ESP32-S3 board-diagnostics project
+  snapshot with a plan, hardware assumptions, source and validation tools. It has
+  no `.git` directory and is not equivalent to a regenerable cache. The separate
+  `QCopter-Stepwise` worktree remains intact; do not overwrite its live changes.
+- A copy-and-verify relocation of that snapshot to `archive/source-snapshots/`
+  was rejected by the command safety policy before execution. No files were
+  copied or removed. Leave the snapshot untouched; do not retry by another command.
+- Earlier removal attempts for `build/zig-cache/` and `build/tectonic-cache/` were
+  also rejected. Do not bypass or retry those removals. The inventory and failed
+  operation are recorded in the project plan and cleanup manifest.
+- Corrected the README and architecture map so `build/` is described as ignored
+  but mixed-use. No build contents, source behavior, or calibration evidence were
+  modified. `docs/` had no exact duplicate Markdown, text or JSON files in the
+  scoped duplicate scan.

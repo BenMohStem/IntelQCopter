@@ -34,7 +34,7 @@ See [architecture and migration map](docs/architecture.md) before using an older
 | Measurement procedures and blank worksheets | [measurements/](measurements/README.md) |
 | Original logs, recordings and failed trials | artifacts/ |
 | Retired Isaac and one-off setup/report scripts | [archive/](archive/README.md) |
-| Build products / regenerable data | build/ (ignored) |
+| Local build workspace (reports, dependencies and mixed outputs) | [Inventory and cleanup boundaries](docs/build-directory-inventory-2026-11-05.md) (`build/` is ignored) |
 | Download/snapshot caches / machine settings | .cache/ / .local/ (ignored) |
 
 Tools are grouped into build, simulation, model, docs, reports, ROS2, setup and validation.

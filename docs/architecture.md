@@ -25,7 +25,7 @@ flowchart TD
   F --> E[artifacts: original evidence]
   C --> E
   S --> E
-  T --> B[build: generated binaries and indexes]
+  T --> B[build: ignored local workspace; mixed contents]
   T --> K[.cache: recoverable downloads and old snapshots]
 ```
 
@@ -42,15 +42,18 @@ retain their standard workspace structure. Each firmware runtime remains one C f
 | Human explanation/model source | docs/, measurements/ | Versioned |
 | Original logs, failures, recordings, result manifests | artifacts/ | Versioned evidence; preserve bytes |
 | Historical source needed for context | archive/ or immutable Git snapshot reference | Preserve/recover explicitly |
-| Compiled products, search DBs, render dependencies | build/ | Ignored and regenerable |
+| Local workspaces, compiled products, installed dependencies, reports, datasets, and source/evidence snapshots | build/ | Ignored mixed contents; inspect before moving or removing; see the dated inventory |
 | Recoverable old snapshot payloads | .cache/archive/ | Ignored; verified inventory and restore command |
 | Machine paths/preferences | .local/ | Ignored |
 | Python/SDK environments | Existing environment/tool installation | Keep separate from source; recreate rather than casually move |
 
-Never treat original evidence as a disposable cache. A build folder must not contain
-a source checkout. Cache recovery must be documented before removing the last local
-payload. Existing virtual environments keep their paths because their launchers and
-installed packages may embed them.
+Never treat original evidence as a disposable cache. Keep active source checkouts
+outside `build/`; the current local tree still contains a historical project snapshot
+and other source/evidence-bearing directories that need individual review. Cache
+recovery must be documented before removing the last local payload. Existing virtual
+environments keep their paths because their launchers and installed packages may
+embed them. The 2026-11-05 [build inventory](build-directory-inventory-2026-11-05.md)
+records current classifications and cleanup limits.
 
 ## Main migration map
 

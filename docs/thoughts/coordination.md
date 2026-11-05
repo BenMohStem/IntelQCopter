@@ -47,6 +47,11 @@ relevant subsystem README and `VALIDATION_LOG.md`.
 - `tmp/` is tracked project content despite its name. Do not delete it wholesale.
 - `build/` contains both useful scripts/source/evidence and generated caches;
   classify individually. Preserve custom ROS/Gazebo workspaces and local configs.
+- The dated `build/` inventory is `docs/build-directory-inventory-2026-11-05.md`.
+  It records 24,580 files (~1,311.9 MiB), including the 19-file historical
+  `build/stepwise-seed/` project snapshot. Relocation was rejected before execution
+  by the command safety policy; leave it in place and do not retry via another
+  command.
 - Keep the cloud GPT v2 ZIP candidate as bench-only and unvalidated. Its own
   manifest says host tests only; controller path is a Windows PC bridge; motors
   are compile-time locked off.
