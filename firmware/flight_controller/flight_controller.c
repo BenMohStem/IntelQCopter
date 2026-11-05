@@ -1,4 +1,4 @@
-﻿/*
+/*
  * QCopter flight-controller foundation.
  *
  * This file contains hardware-independent estimation and control logic so the
@@ -993,6 +993,9 @@ static pid_t altitude_pid = {
     .integrator_limit = 2.0f, .output_limit = 0.35f
 };
 static float altitude_hold_reference_m;
+static float baro_zero_offset_m = 0.0f;   /* Zeroed at boot disarm + Y button press */
+static bool baro_armed = false;            /* Armed once disarmed, ready to zero on next Y press */
+static float lt_reduce_state = 0.0f;       /* LT negative boost state */
 static float hover_collective = FC_HOVER_THROTTLE_PLACEHOLDER;
 /* User policy, 2026-10-28: normalized ESC command fractions, not measured RPM. */
 #define FC_ARMED_IDLE_FRACTION 0.10f
@@ -1062,7 +1065,15 @@ static bool apply_imu_calibration(sensor_sample_t *s) {
     return true;
 }
 
-static float clampf(float value, float low, float high) {
+static bool baro_zero_all(sensor_sample_t *s) {
+    /* Zero the barometer pressure offset at current reading.
+       Called at boot disarm and on Y button press. */
+    if (!s || !s->barometer_valid || !isfinite(s->barometer_height_m)) return false;
+    baro_zero_offset_m = s->barometer_height_m;
+    baro_armed = false;
+    return true;
+}
+
 static float clampf(float value, float low, float high) {
     if (value < low) return low;
     if (value > high) return high;
@@ -1077,6 +1088,8 @@ static void pid_reset(pid_t *pid) {
 
 static void reset_control_state(void) {
     boost_state=0;
+    lt_reduce_state=0;
+    baro_armed=false;
     pid_reset(&roll_angle_pid);
     pid_reset(&pitch_angle_pid);
     pid_reset(&roll_rate_pid);
@@ -1225,8 +1238,14 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
         && isfinite(s->vertical_acceleration_mps2)) {
         altitude_kf_predict(&altitude_estimator,
                             s->vertical_acceleration_mps2, dt);
-        if (s->barometer_updated)
-            altitude_kf_baro_update(&altitude_estimator, s->barometer_height_m);
+        if (s->barometer_updated) {
+            float baro_h = s->barometer_height_m - baro_zero_offset_m;
+            altitude_kf_baro_update(&altitude_estimator, baro_h);
+        }
+        /* Y button press zeroes barometer when disarmed */
+        if ((cmd->buttons & QCOPTER_BUTTON_NORTH) != 0u && !out.armed) {
+            baro_zero_all(s);
+        }
     }
 
     if (cmd == NULL || !cmd->valid || !isfinite(cmd->roll_deg) || !isfinite(cmd->pitch_deg)
@@ -1248,6 +1267,10 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
     const float pitch_setpoint = clampf(cmd->pitch_deg, -35.0f, 35.0f);
     const float yaw_rate_setpoint = clampf(cmd->yaw_rate_dps, -180.0f, 180.0f);
     const float throttle = clampf(cmd->throttle, 0.0f, 1.0f);
+    /* LT negative boost: reduce throttle when LT trigger is pressed */
+    const float lt_reduce_target = clampf(cmd->lt, 0.0f, 1.0f);
+    lt_reduce_state += clampf(lt_reduce_target - lt_reduce_state, -10*dt, 4*dt);
+    const float lt_reduce = lt_reduce_state;
     const float boost_target=clampf(cmd->boost,0,1);
     boost_state+=clampf(boost_target-boost_state,-10*dt,4*dt);
     const float boost=boost_state;
@@ -1267,7 +1290,7 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
         pid_reset(&altitude_pid);
         altitude_reference_initialized = true;
     }
-    const float pilot_vertical_speed = (throttle - 0.5f)
+    const float pilot_vertical_speed = (throttle - lt_reduce - 0.5f)
                                      * 2.0f * (FC_MAX_VERTICAL_SPEED_MPS+boost);
     altitude_hold_reference_m += pilot_vertical_speed * dt;
     altitude_hold_reference_m=clampf(altitude_hold_reference_m,
@@ -1732,6 +1755,12 @@ int main(void) {
     }
 }
 #endif
+
+
+
+
+
+
 
 
 
