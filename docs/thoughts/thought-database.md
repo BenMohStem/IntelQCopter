@@ -597,3 +597,56 @@ High:
 - No caches, source, captures, simulations, or other evidence were deleted.
   `tmp/` and mixed-content `build/` remain classified for a later path-by-path
   review; no physical or device validation was performed.
+
+## 22. Revision 7 — 2026-11-05: Cloud GPT A-to-Z review and raw cross-check
+
+- Preserved the owner-supplied A-to-Z Markdown snapshot under
+  `archive/imported-documents/cloud-gpt-a-to-z-2026-11-05/`. Its internal
+  SHA-256 manifest verified 90 of 90 listed source files; 91 Markdown files
+  totaling 418,911 uncompressed bytes were extracted without content edits.
+  The embedded AI handoff text is archived reference material, not active
+  instructions. The review is `docs/thoughts/cloud-gpt-a-to-z-review.md`.
+- Independently parsed the complete November 4 10:09 capture. It has 98,868
+  rows; all twelve phase attempts reached their accepted sample targets and the
+  skipped-stage list is empty. MAG `mag_new=1` count is 38,652. Each active phase
+  has ~500 Hz packet rows and ~195 Hz fresh MAG; the full-file duration includes
+  operator gaps. `mag_ok=1` alone is not a freshness count.
+- Recomputed REST gyro means/SDs match the A-to-Z snapshot. Applying its MAG
+  candidate correction to the 14,000 fresh MAG calibration rows reproduces
+  corrected norm mean 40.7434 µT and SD 1.2504 µT. This checks in-session
+  arithmetic, not independent heading truth or cross-session generalization.
+- Confirmed the A-to-Z accel correction matrix is the inverse of the saved
+  forward scale matrix (product differs from identity by at most about
+  `5e-10`), consistent with the original fitter's `measured = S * true + b`
+  model. Firmware must use the direct-correction convention once, not apply both.
+- The A-to-Z claim of 3.46% error on separate prior sessions is not matched by a
+  corresponding multi-session result/input in this checkout. The local MAG
+  quality JSON is for a different capture and explicitly says there was only
+  one independent session. Keep external-session performance unverified.
+- The software capture identifies QMC5883P, but PCB design files indicate an
+  HMC5883L footprint. Physical part/routing remains unresolved until PCB repair.
+  The A-to-Z Xbox mapping differs from the user's requested layout, and its
+  future LiDAR material must not restore the removed calibration GUI stage.
+- Static review of the separate Downloads FC v2 archive confirms compile-time
+  motor lock and a QMC 400 kHz attempt with 100 kHz fallback in source. No build,
+  upload, COM3, or physical test was run; these source settings are not hardware
+  validation. The v2 archive remains separate from the active Git source.
+
+## 23. Revision 8 — 2026-11-05: independent audit source found and archived
+
+- Follow-up located `Downloads/GPT_TMP/IntelQCopter_Independent_Raw_Calibration_Audit_20261104.zip`.
+  Its SHA-256 is `7C55BA598286AA67B2BFA5BDB8E70560E952B2FC521470F40E59D2749BF6C4BC`;
+  all 40 entries in its internal SHA manifest verify. The 10:09, 02:57, 03:17,
+  and 04:08 raw CSVs inside match the repository files byte-for-byte.
+- Imported the audit report, machine-readable results, unverified calibration
+  candidate, corrected CSV derivative, model comparison, and seven plots under
+  `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/independent_audit_20261104/`.
+  The 31 MB ZIP, duplicated raw inputs and full scripts remain in
+  `Downloads/GPT_TMP`; the scripts were not rerun in this cleanup pass.
+- The report provides cross-session MAG magnitude checks (3.794% on the 02:57
+  session and 3.456% on 03:17) with matching input identities. This is sourced
+  from the audit outputs, not a new execution; all candidate parameters remain
+  provisional.
+- Clarified the audit's gyro saturation rates: 13.26% across all MAG stage rows,
+  versus 21.99% in TUMBLE and 4.83% in ROLL. The latter values are stage-specific
+  and do not conflict with the combined rate.

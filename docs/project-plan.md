@@ -26,6 +26,10 @@ Convenience copy: `C:\Users\Mohamed\Desktop\Work\PLAN.md`.
   `archive/thought-bases/2026-11-05/`; old path is a compatibility pointer.
 - Added current plan, calibration admission evidence, cloud ZIP limits, and DSH
   work review notes to the canonical knowledge base.
+- Imported and reviewed the Cloud GPT A-to-Z documentation snapshot. Its source
+  is archived verbatim with its hash manifest; supported capture facts were
+  checked against the raw CSV and unsupported/contradictory claims are labeled
+  in `docs/thoughts/cloud-gpt-a-to-z-review.md`.
 
 ### B. Inventory and safe cleanup — active
 
@@ -49,17 +53,27 @@ Convenience copy: `C:\Users\Mohamed\Desktop\Work\PLAN.md`.
   keep behavior changes separate and review the archived DSH candidate before
   adopting its sensor register/configuration edits.
 
-### D. Calibration analysis — pending offline analysis
+### D. Calibration analysis — candidate audit imported; independent rerun pending
 
-- Current candidate complete session is the November 4 10:09 capture. Evidence:
-  12 phase attempts; target accepted counts (30,000 stationary, six × 5,000
-  accelerometer, three × 2,000 magnetic turns, 8,000 MAG tumble, 1,000 BMP);
-  empty skipped-stage list and matching calibration JSON.
-- Recompute from raw CSV: offsets, full scale/misalignment, per-axis standard
-  deviations/covariance, residuals, coverage, radial field statistics, held-out
-  evaluation, and plots. Record methods, versions, axes, units and limitations.
+- Current candidate complete session is the November 4 10:09 capture. Raw
+  evidence: 12 phase attempts; target accepted counts (30,000 stationary, six ×
+  5,000 accelerometer, three × 2,000 magnetic turns, 8,000 MAG tumble, 1,000
+  BMP); empty skipped-stage list; matching calibration JSON; 38,652 fresh MAG
+  rows across the capture and ~195 Hz within active phase windows.
+- The independent audit report, candidate JSON/header, corrected CSV derivative,
+  model comparison and plots are organized beside the captures at
+  `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/independent_audit_20261104/`.
+  It reports gyro bias/noise, six-face accel correction, full SPD MAG fit,
+  bootstrap, session holdouts, barometer variance and limitations.
+- Reproduce or independently review the audit computations from the verified
+  raw CSVs before approving calibration constants. Record methods, versions,
+  axes, units and limitations; check the fresh-sample gate and matrix direction.
 - Keep fits provisional. Existing MAG fit fell back to diagonal after full
   ellipsoid degeneracy; PCB identity and physical axis mapping need resolution.
+- A-to-Z reports independent-session MAG errors. Its audit ZIP was found in
+  `Downloads\GPT_TMP`; four raw CSVs hash-match the repository captures and
+  selected report/results/plots are imported. The audit scripts were not rerun
+  in this pass. Keep all outputs provisional.
 
 ### E. Xbox/FC review — pending
 

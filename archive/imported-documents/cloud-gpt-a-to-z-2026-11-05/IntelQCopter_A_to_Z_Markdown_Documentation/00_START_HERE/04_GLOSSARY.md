@@ -1,0 +1,23 @@
+# Glossary — hardware, estimation and controls
+
+- **Accelerometer specific force:** proper acceleration excluding gravity in the inertial frame; at rest an upright calibrated sensor often measures about +1 g along its body-up axis.
+- **ACK:** I²C address acknowledged; not proof that correct sensor data can be read.
+- **Body FLU:** X forward, Y left, Z up; right-handed coordinate frame used in v2 mathematical assumptions.
+- **CH343:** USB-to-serial converter visible as a Windows COM port; physical UART baud is distinct from I²C clock.
+- **CoM / CG:** center of mass / gravity, important for mixer geometry and inertia.
+- **DRDY:** data-ready bit/status or physical pin. QMC register `0x09` is read over I²C; a separate DRDY wire is not required in this project.
+- **DLPF:** low-pass filter inside IMU; bandwidth affects both noise and phase delay.
+- **ESC:** electronic speed controller for brushless motor; no physical outputs in safe v2 firmware.
+- **FIFO:** hardware buffer of timestamp-adjacent IMU measurements; decouples sampling from MCU servicing but can overflow.
+- **FLU / NED / ENU:** coordinate conventions; conversions must use proper det+1 rotations, not arbitrary reflected axis swaps.
+- **Fresh:** one *new physical sensor conversion*; not merely a repeated frame or same cached register bytes.
+- **Hard iron:** additive magnetic offset, typically due to remanent magnetic material.
+- **Soft iron:** linear transformation of magnetic field due to material or sensor anisotropy; corrected using full 3×3 matrix.
+- **I²C bypass:** MPU6050 register setting giving host access to sensors wired to XDA/XCL, not an external INT signal.
+- **Innovation/NIS:** KF measurement minus prediction / normalized squared surprise used for outlier gating.
+- **N150:** optional stripped Samsung companion computer in an assumed second aircraft mass profile; hardware integration uncertain.
+- **PI/PID:** proportional-integral (plus derivative) control; a gain value is meaningless without units, sampling and actuator mapping.
+- **QMC5883P:** actual magnetometer, at `0x2C` and ID `0x80`, distinct from HMC5883L or QMC5883L.
+- **Quaternion:** unit 4-vector used for nonsingular 3D orientation propagation.
+- **R² / RMS / SD:** explained variance / root mean squared error / standard deviation; fit residuals are not equivalent to absolute physical accuracy.
+- **X-mixer:** translates total thrust and roll/pitch/yaw torques into four actuator requests; motor order and yaw polarity must be verified.

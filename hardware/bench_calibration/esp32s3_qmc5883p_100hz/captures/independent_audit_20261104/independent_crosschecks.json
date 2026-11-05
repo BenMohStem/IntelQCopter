@@ -1,0 +1,18 @@
+{
+  "accelerometer_raw_to_mps2_max_abs_deviation": 5.00000000069889e-07,
+  "gyroscope_raw_to_dps_max_abs_deviation": 4.961832118510756e-07,
+  "QMC5883P_raw_to_microtesla_max_abs_deviation": 3.333333467026023e-07,
+  "raw_csv_sha256": "e1628158c5d5f8bd99519b75d306e8a548c91654b21be21076eb190e4aecad0a",
+  "firmware_effective_qmc_control1": "0x3D",
+  "firmware_compiled_register_mode": {
+    "mode": "normal",
+    "odr_hz": 200,
+    "OSR1": 1,
+    "OSR2": 1
+  },
+  "sample_count": 98868,
+  "byte_identical_csv_in_uploaded_firmware_archive": true,
+  "accelerometer_pair_method_vs_ordinary_least_squares_max_abs_diff": 4.440892098500626e-16,
+  "mag_full_SPD_vs_independent_algebraic_hardiron_max_abs_delta_uT": 0.045863825393283264,
+  "mag_full_SPD_vs_independent_algebraic_matrix_max_abs_delta": 0.001207744918124365
+}

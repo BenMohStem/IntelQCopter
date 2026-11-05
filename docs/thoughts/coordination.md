@@ -13,6 +13,13 @@ relevant subsystem README and `VALIDATION_LOG.md`.
   `archive/review-candidates/2026-11-05/qmc5883p-main-dsh-working-tree.cpp`;
   the working-tree source was restored to the current commit during cleanup.
   Review the archived candidate before adopting its register/configuration edits.
+- The Cloud GPT A-to-Z Markdown snapshot is preserved under
+  `archive/imported-documents/cloud-gpt-a-to-z-2026-11-05/`; its review is
+  `cloud-gpt-a-to-z-review.md`. It is reference material, not active policy.
+- The separate independent calibration audit's selected report, JSON and plots
+  are at `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/independent_audit_20261104/`.
+  Its source ZIP and scripts remain in `C:\Users\Mohamed\Downloads\GPT_TMP\`;
+  the four raw CSVs were hash-checked against repository captures.
 - Drone is disconnected for PCB repair. Do not use COM3 or claim hardware
   validation until the user says the board is repaired and connected.
 - Main board design evidence identifies HMC5883L footprint, while recent sensor
@@ -46,12 +53,17 @@ relevant subsystem README and `VALIDATION_LOG.md`.
 
 ## Calibration data gate
 
-The November 4 guided session `captures/calibration_package_20261104/iq_500hz_20261104_100907.csv`
-has evidence for all 12 target phases, no skipped stages, and a matching result
-JSON. It is currently the only identified fully completed session. Recompute
-from raw rows, inspect per-row validity/freshness and fit coverage, and preserve
-provisional status because the MAG fit is diagonal after a degenerate ellipsoid
-fit and PCB/axis validation is pending.
+The November 4 guided session
+`captures/calibration_package_20261104/iq_500hz_20261104_100907.csv` has evidence
+for all 12 target phases, no skipped stages, and a matching result JSON. Raw
+review confirms 38,652 fresh MAG samples at about 195 Hz during active phases;
+`mag_ok` alone includes cached, non-fresh rows. It is the only identified fully
+completed session. Keep candidate fits provisional: the saved MAG fit is
+diagonal after a degenerate ellipsoid fit. The independent audit reports 3.794%
+and 3.456% MAG magnitude RMS on separate 02:57 and 03:17 sessions (raw hashes
+matched locally; the analysis was not rerun in this cleanup pass). PCB/axis and
+physical heading validation remain pending. See `cloud-gpt-a-to-z-review.md`
+and the imported audit report for details.
 
 ## Rules for the next AI
 

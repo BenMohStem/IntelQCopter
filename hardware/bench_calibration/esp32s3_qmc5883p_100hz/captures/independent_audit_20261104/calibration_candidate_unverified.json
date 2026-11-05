@@ -1,0 +1,115 @@
+{
+  "metadata": {
+    "source": "November 4 10:09 raw CSV only; derived independently",
+    "apply_to_flight_controller_automatically": false,
+    "sensor_axes": "Raw sensor XYZ, not display/board axes",
+    "QMC_control1_measured": "0x3D (200 Hz, not 100 Hz)",
+    "mag_calibration_status": "Provisional: norm/coverage tested, heading-axis and powered-motor checks required",
+    "accel_calibration_status": "Provisional cross-axis terms: face placement not independently surveyed"
+  },
+  "gyroscope": {
+    "units": "degrees_per_second",
+    "bias_dps": [
+      0.16196897356666667,
+      -0.3049501508,
+      -0.8774330736
+    ],
+    "equation": "gyro_corrected_dps = gyro_measured_dps - bias_dps",
+    "within_run_sd_dps": [
+      0.04772725142685075,
+      0.04485529330151235,
+      0.04319990168287998
+    ],
+    "stationary_60s_block_CI_dps": [
+      [
+        0.16093949423999998,
+        -0.3060824047291668,
+        -0.8786534951975005
+      ],
+      [
+        0.16296959944333336,
+        -0.3038264244316668,
+        -0.8763177598683336
+      ]
+    ]
+  },
+  "accelerometer": {
+    "units": "meters_per_second_squared",
+    "bias_mps2": [
+      1.2646555723333333,
+      -0.059103429400000025,
+      -0.6787448388333334
+    ],
+    "correction_3x3": [
+      [
+        0.9992843134233362,
+        -0.03875076244808497,
+        -0.032967877313909
+      ],
+      [
+        0.04135138733768706,
+        0.9927939748291699,
+        0.04044912143261898
+      ],
+      [
+        0.04248118326354303,
+        -0.04086696857173544,
+        0.9872048833187967
+      ]
+    ],
+    "equation": "a_corrected_mps2 = correction_3x3 @ (a_measured_mps2 - bias_mps2)",
+    "fit_component_RMS_mps2": 0.05330807205296759,
+    "within_pose_heldout_component_RMS_mps2": 0.05334488420823661
+  },
+  "magnetometer": {
+    "units": "microtesla",
+    "hard_iron_bias_uT": [
+      -29.48230100622598,
+      -18.39798373842624,
+      -35.474272846116065
+    ],
+    "relative_soft_iron_3x3_det1": [
+      [
+        0.9733669854810925,
+        0.005036971079346401,
+        0.03827793436596966
+      ],
+      [
+        0.0050369710793465115,
+        0.964534609692338,
+        -0.01791174111461434
+      ],
+      [
+        0.03827793436596966,
+        -0.017911741114614334,
+        1.06701135771229
+      ]
+    ],
+    "equation": "m_corrected_uT = relative_soft_iron_3x3_det1 @ (m_raw_sensor_uT - hard_iron_bias_uT)",
+    "field_magnitude_after_relative_correction_uT": 40.74339387134749,
+    "field_magnitude_SD_uT": 1.2503638637714416,
+    "normalized_magnitude_CV_pct": 3.068875086154154,
+    "holdout_magnitude_RMS_fraction": 0.0346421160038857,
+    "geometric_scale_note": "A constant field magnitude cannot be independently established from rotations alone. Matrix is volume-normalized (determinant 1).",
+    "bootstrap_95_CI_bias_uT": [
+      [
+        -29.72098645493377,
+        -18.55621146918621,
+        -35.64591655480806
+      ],
+      [
+        -29.456699952473162,
+        -18.236851930125763,
+        -35.254533239234675
+      ]
+    ]
+  },
+  "barometer": {
+    "no_absolute_altitude_offset_fitted": true,
+    "stationary_pressure_pa_sd": 0.6396468100450989,
+    "stationary_relative_altitude_m_sd": 0.054843081564678695
+  },
+  "lidar": {
+    "status": "not calibrated, no raw measurements"
+  }
+}

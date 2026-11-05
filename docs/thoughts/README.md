@@ -16,6 +16,7 @@ is a compatibility pointer; its original contents are preserved in
 |------|------|-------|-------|--------|
 | `thought-database.md` | 2026-11-05 | shared | Full project history, current status, evidence references, and handoffs | Active — append revisions |
 | `coordination.md` | 2026-11-05 | shared | One-page current-state summary for any model joining the work | Active |
+| `cloud-gpt-a-to-z-review.md` | 2026-11-05 | shared | Evidence review and discrepancy list for the imported A-to-Z reference package | Active reference |
 
 ---
 
