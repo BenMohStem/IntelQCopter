@@ -153,8 +153,10 @@ command. Continue with documentation and non-destructive classification.
 
 - Compare the Xbox worktree and cloud GPT v2 bench package. Keep virtual PC
   bridge separate from an actual flight receiver.
-- Maintain current 10% armed idle / 45% normal cap / 65% boost cap policy and
-  physical arming lock. No D-pad arming, flash, or motor test.
+- For the ESP32-S3 competition candidate, use 10% armed idle / 35% final
+  per-motor normal cap / 50% final per-motor boost cap. Keep physical motor
+  output disabled until its adapter and safety gates are verified. No D-pad
+  arming, flash, or motor test.
 
 ### F. Milestone validation and publication
 

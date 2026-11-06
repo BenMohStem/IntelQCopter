@@ -1,6 +1,6 @@
 # Motor limits and system tools - 2026-10-28
 
-User request supersedes the prior blanket arming restriction: armed idle 10%, normal final per-motor maximum 45%, full-boost final per-motor maximum 65%. Disarm/fault/stale-input paths remain zero. These percentages describe normalized ESC command range, not measured RPM, thrust or power.
+Historical 2026-10-28 policy: armed idle 10%, normal final per-motor maximum 45%, full-boost final per-motor maximum 65%. A later user revision sets the ESP32-S3 competition candidate to 10% / 35% / 50%; see the dated override below. These percentages describe normalized ESC command range, not measured RPM, thrust or power.
 
 ## Implemented scope
 
@@ -13,6 +13,16 @@ User request supersedes the prior blanket arming restriction: armed idle 10%, no
 - Main ESP32 scaffold: physical ESC/arming adapter still absent; preserve current calibration/barometer/companion gates and implement hardware arming only against its selected verified hardware. Its reduced limits are already applied to the mathematical mixer.
 - Stepwise ESP32: active firmware is a calibrated 1kHz FIFO/sensor lesson with pending physical gyro-frame checks, not an implemented flight/PID/motor runtime. Keep source/user edits/calibration evidence untouched; carry this 10/45/65 policy into the future actuator lesson. Historical snapshots and original Drone source remain unchanged.
 - First hardware validation must measure pulse endpoints, motor order/directions, stop behavior and real idle response with propellers removed. Software tests do not establish safe physical RPM or flight acceptance.
+
+## ESP32-S3 candidate override — 2026-11-06
+
+The current user-directed limits for `hardware/experimental_esp32s3_fc_dsh_candidate/`
+are 10% armed idle, 35% final per-motor normal ceiling and 50% final per-motor
+boost ceiling. The mixer interpolates its ceiling from 35% to 50% using the
+boost command and bounds each final motor demand. This is still an experimental,
+unbuilt candidate with motor GPIOs configured as inputs; it does not drive or
+measure a physical motor. The separate RP2350 core and historical ESP32 motor
+output work were not modified by this S3-specific request.
 
 ## Verification and assumptions
 

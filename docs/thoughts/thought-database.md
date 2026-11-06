@@ -887,3 +887,14 @@ High:
   `computeControl()` required both estimators initialized and disarmed. Removed
   only those estimator resets; PID and mixer states still reset on arm. The
   candidate remains unbuilt and all physical outputs remain disabled.
+
+## 32. Revision 17 — 2026-11-06: ESP32-S3 motor command ceiling update
+
+- The user changed the ESP32-S3 competition candidate's final per-motor command
+  ceilings from 45% normal / 65% boost to 35% normal / 50% boost. The 10% armed
+  idle floor remains. Updated only the isolated S3 candidate and its current
+  plan/readme; the separate RP2350/Pico core and historical actuator examples
+  remain unchanged.
+- These values are normalized software command fractions, not propeller RPM,
+  motor current, thrust or mechanical stress limits. The S3 candidate still has
+  no physical motor output path and has not been built or hardware-tested.

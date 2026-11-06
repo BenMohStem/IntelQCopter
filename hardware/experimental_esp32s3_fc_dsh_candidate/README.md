@@ -19,6 +19,9 @@ calibration firmware at
   conversion completion. Actual fresh rate and pressure-read age are unknown.
 - LiDAR remains disabled and is not read or fused for the current competition
   calibration/control phase.
+- Motor-command policy in this candidate: 10% armed-idle floor, 35% final
+  per-motor normal ceiling, and 50% final per-motor boost ceiling. These are
+  normalized software command fractions, not measured RPM or thrust limits.
 - Telemetry remains the calibration-compatible 52-byte version-3 frame. It
   contains no per-sensor sample-age or service-time fields, so it cannot support
   the requested per-sensor latency plots or a verified `<2 ms` claim.

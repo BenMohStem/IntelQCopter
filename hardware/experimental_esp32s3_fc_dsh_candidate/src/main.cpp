@@ -163,8 +163,8 @@ constexpr uint8_t COMMAND_VERSION = 1;
 
 // Motor policy (ESC command fractions, not RPM)
 constexpr float FC_ARMED_IDLE_FRACTION = 0.10f;
-constexpr float FC_NORMAL_MOTOR_CEILING = 0.45f;
-constexpr float FC_BOOST_MOTOR_CEILING = 0.65f;
+constexpr float FC_NORMAL_MOTOR_CEILING = 0.35f;
+constexpr float FC_BOOST_MOTOR_CEILING = 0.50f;
 constexpr float FC_MAX_VERTICAL_SPEED_MPS = 2.0f;
 constexpr float FC_MAX_CLIMB_MPS = 1.5f;
 constexpr float FC_MAX_DESCENT_MPS = 1.0f;
