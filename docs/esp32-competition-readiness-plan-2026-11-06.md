@@ -688,3 +688,49 @@ motor/thrust/ESC characterization, inertia measurement, pressure disturbance,
 advanced Kalman fusion, battery sensing, and eventual RP2350 migration.
 Autonomous flight remains deferred. No higher-rate or higher-order design is
 accepted merely because it is theoretically faster or more complex.
+
+## DSH candidate static review and completed-capture handoff — 2026-11-06
+
+- The user confirmed calibration completion and selected the three latest fully
+  completed 12-phase sessions. The raw-only handoff is
+  `C:\Users\Mohamed\Desktop\Work\IntelQCopter_Calibration_Handoff_Latest3_2026-11-06.zip`.
+  It includes captures starting 20:22, 20:50 and 20:59 (Africa/Lagos), metadata,
+  source/config context, and SHA-256 manifest. It is about 32 MB compressed and
+  contains about 187 MB of original CSV bytes. Older and partial sessions were
+  excluded. The 20:59 capture preserves its redo attempts; the newest complete
+  attempt is the one to use for fitting that phase. No calibration fit or PID
+  gain is claimed by this raw-data package.
+- Reviewed the isolated source at
+  `hardware/experimental_esp32s3_fc_dsh_candidate/src/main.cpp`. Static fixes
+  cover repeated integration of cached MPU frames, body-frame gravity
+  subtraction, automatic barometer re-zeroing, stale BMP compensation, BMP
+  initialization dependency on the MPU, uninitialized MAG calibration output,
+  command-frame synchronization/CRC declaration, and failure-to-disarm logic.
+  The candidate keeps the 400 kHz shared-bus target, QMC 200 Hz profile, MPU
+  ±8 g/±500 °/s FIFO/DLPF1/divider1, and excludes LiDAR.
+- This remains source-only and unverified: no build, test, flash, register
+  readback, timing capture, sensor validation, motor output, or flight test was
+  performed. It has no calibration import, all PID/hover values are unset, its
+  Xbox/command receiver stays disabled, and motor pins remain inputs. The 400
+  kHz target, 500 Hz loop, BMP fresh rate, and `<2 ms` sensor service goal are
+  not proof of operation. See the candidate README for the full blockers.
+- Separately reviewed the DSH-staged `firmware/flight_controller/flight_controller.c`.
+  The root CMake target and `project.json` identify that source as the RP2350
+  Pico 2 control core; its old banner incorrectly described an ESP32-S3 board
+  and sensor UART/I²C drivers. Fixed the banner, compile-time name/member
+  errors, in-place accelerometer matrix application, use of uncalibrated sensor
+  fields after computing calibrated values, missing sample/calibration/hover
+  gates, finite/matrix validation, and stale-command fail-safe timing. Removed
+  its include of an untracked generated calibration header whose values have
+  not been independently checked. Sensor inputs are in g while the calibration
+  fit is in m/s², so the implementation now converts to fit units, applies the
+  matrix once, and converts back for the attitude estimator. It still has no
+  physical sensor transport, command receiver, or ESC driver, and internal
+  arming remains unreachable by design. Root CMake still declares an
+  executable, but this source has no `main()` entry point; it remains a control
+  core rather than a complete RP2350 firmware image. No build/test was run;
+  external hardware interfaces remain unverified.
+- Preserved the pre-review DSH working-tree snapshot under
+  `archive/review-candidates/2026-11-06/`; the active calibration source and all
+  capture/skip manifests remain separate. Unrelated untracked capture manifests
+  and generated calibration artifacts were left outside this review commit.
