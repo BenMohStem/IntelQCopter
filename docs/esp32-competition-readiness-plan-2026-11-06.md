@@ -13,6 +13,246 @@ law works on the aircraft. The attachment estimates the competition is about two
 days away; the event date has not been independently confirmed, so keep the scope
 small until its schedule is known.
 
+## User-directed sensor and calibration revision — 2026-11-06
+
+This revision supersedes earlier forward-looking decisions in this document
+that kept the QMC on 100 kHz, kept the calibration GUI LiDAR-free, or selected
+the 42/44 Hz MPU profile as the next capture profile. The targets below still
+require implementation and measurement on a pinned source build. The separate
+desktop GUI edit adds a completion chime; it does not validate or alter DSH
+firmware.
+
+### Shared I²C: fixed 400 kHz target
+
+- Configure one shared bus at **400 kHz** for the MPU6050 (`0x68`), QMC5883P
+  (`0x2C`), and BMP280 (`0x76`/`0x77`, confirm the fitted address). Do not switch
+  the bus to 100 kHz around QMC transactions and do not silently fall back to a
+  slower clock while reporting the run as 400 kHz.
+- The QMC5883P datasheet supports I²C Fast-mode up to 400 kHz. That makes this
+  a valid target, not a guarantee about the repaired PCB, wiring, pull-ups,
+  capacitance, controller driver, or this sensor population. Check bus rise
+  time, pull-up values, total capacitance, grounding, transaction framing,
+  timeout recovery, NACKs, short reads, and register readback. QST's Fast-mode
+  limits include 300 ns maximum rise time and 200 pF bus capacitance.
+- Run the MPU, QMC, and BMP together at 400 kHz and measure each sensor's error
+  counters and transfer time. Keep the old 100 kHz QMC capture and isolated
+  profile as preserved comparison evidence, not as the new operating target.
+  If 400 kHz fails, diagnose and correct the cause before proposing a fallback;
+  document any fallback as a separate, explicit profile.
+
+### 500 Hz loop: use the latest data without waiting
+
+- The control schedule remains 500 Hz (2 ms period). **No control iteration
+  waits for QMC DRDY, a data-ready interrupt, BMP conversion, or a LiDAR frame.**
+  Every iteration obtains a coherent snapshot of the latest available
+  measurement from every sensor and continues on schedule.
+- Keep acquisition nonblocking and track for every sensor: sample sequence or
+  conversion counter where available, sample timestamp, last-success time,
+  `new_sample`/`reused_sample`, age at the control iteration, and errors. Reusing
+  a held sample is allowed; counting it as a newly converted observation is
+  not. Mark stale data explicitly and let the estimator apply its documented
+  age/degradation policy.
+- QMC target remains normal low-OSR 200 Hz (`CTRL1=0x3D`, `CTRL2=0x08`,
+  `XYZ_SIGN=0x06`) pending measured results. Poll/read the latest valid XYZ
+  without blocking on DRDY. Use DRDY to identify/log conversion freshness and
+  overflow, not as a gate that skips or stalls a 500 Hz PID iteration. A 200 Hz
+  conversion naturally supplies new data on only about two of every five
+  500 Hz iterations; the intervening iterations use the last valid sample with
+  its unchanged timestamp and increasing age.
+- MPU acquisition should use the FIFO at the 500 Hz sample rate. Poll FIFO
+  count without waiting for an interrupt; consume complete, frame-aligned
+  records, maintain sample-time reconstruction and bounded backlog, and report
+  overflow, partial-frame, stale-frame, and reset counts. Never present a
+  repeated register value as a fresh sample merely to fill the loop rate.
+- BMP and LiDAR are asynchronous sources. Continue the 500 Hz loop using their
+  latest values and age; do not fabricate 500 Hz conversion rates. Sensor
+  callbacks/tasks must not hold the PID task in blocking I²C/UART calls.
+
+### MPU6050: bandwidth sequence, range and FIFO
+
+Keep the historical calibration-capture profile and its data provenance
+unchanged. For the next bench/control candidate use:
+
+| Profile | `CONFIG.DLPF_CFG` | `SMPLRT_DIV` | Nominal output | Use |
+|---|---:|---:|---|---|
+| FAST188 first | `1` (`CONFIG=0x01`) | `1` | 500 Hz from the 1 kHz gyro output; gyro BW 188 Hz, accel BW 184 Hz | First candidate, with measured causal software filtering |
+| ULTRA256 trial | `0` (`CONFIG=0x00`) | `15` | 500 Hz from the 8 kHz gyro output; gyro BW 256 Hz, accel BW 260 Hz | Try only after FAST188 works; compare vibration/noise, aliasing, latency and control timing |
+| BALANCED98 fallback | `2` (`CONFIG=0x02`) | `1` | 500 Hz from the 1 kHz gyro output; gyro BW 98 Hz, accel BW 94 Hz | Use if FAST188 cannot meet measured quality/timing requirements |
+
+Do not use the previous 42/44 Hz `DLPF_CFG=3` capture setting as the routine
+fallback. The divider differs at `DLPF_CFG=0`: InvenSense specifies an 8 kHz
+gyro output with DLPF disabled, so `SMPLRT_DIV=15` is required for a 500 Hz
+sample rate. Using divider `1` there would request 4 kHz and is not the 500 Hz
+candidate.
+
+For all three profiles, use gyro ±500 °/s (`GYRO_CONFIG=0x08`, 65.5 LSB/(°/s)),
+accelerometer ±8 g (`ACCEL_CONFIG=0x10`, 4096 LSB/g), and enable FIFO for
+temperature, three gyro axes, and accelerometer (`FIFO_EN=0xF8`, nominally
+14 bytes per complete record). Verify every written register by readback and
+confirm actual sample cadence, FIFO ordering/frame length, scale factors,
+overflow handling, and timestamp alignment. Existing calibration constants
+must be rechecked against the new range and filter profile.
+
+Apply causal software low-pass filtering to gyro/accel only after measuring
+bench noise and vibration. Compare FAST188 first, then ULTRA256; return to
+FAST188 if 256 Hz increases noise, aliasing, missed deadlines, or estimator
+instability. Use BALANCED98 only if 188 Hz also fails. Measure filter attenuation
+and phase/group delay; do not hide extra software-filter delay behind the MPU's
+internal DLPF. Add a motor-frequency notch only if a measured spectrum supports
+it. No filter coefficients or control gains are considered proven before
+logged, repeatable bench evidence.
+
+### BMP280 at the fastest useful rate with noise control
+
+- Start from verified BMP280 settings for the highest useful fresh conversion
+  rate: normal mode, pressure ×1 and temperature ×1, `tstandby=0.5 ms` (the
+  Bosch data sheet's nominal normal-mode ODR is about 166.7 Hz for this
+  oversampling/standby combination). Confirm actual registers and observe
+  measuring/data-ready behavior; do not count each 500 Hz host poll as a new
+  conversion. Use a coherent burst read of pressure and temperature.
+- At 500 Hz, reuse each new BMP observation for the intervening loop iterations
+  while its age grows. Tune the BMP internal IIR setting and, if useful, a
+  causal software pressure filter using stationary noise and controlled
+  pressure/airflow disturbances. Report variance reduction and response delay;
+  reject stale, inconsistent, or pressure-disturbed observations instead of
+  smoothing them into plausible altitude.
+- If the requested conversion rate cannot be reached with valid data, keep the
+  highest verified rate, report its actual interval, and optimize filtering
+  separately. Do not trade data integrity or block the 500 Hz loop to force a
+  nominal rate.
+
+### Add LiDAR to calibration and add sensor-latency views
+
+- Add the reported TOFSense-F2 Mini to the calibration GUI as an explicit
+  LiDAR calibration/validation stage. First identify the connected module,
+  electrical interface, frame format, configured update rate, units, status
+  fields, range and timestamp capability from its actual datasheet/configuration
+  and board wiring. Do not assume it shares the I²C bus; keep its interface
+  isolated from the 400 kHz sensor bus unless the verified hardware design says
+  otherwise.
+- The GUI stage records raw and corrected range against multiple independently
+  measured target distances, invalid-return rate, repeatability/noise, update
+  interval and orientation/alignment. Record the measured sensor-to-COM offset
+  as a configurable parameter. The current `(0,0,-0.026658) m` estimate remains
+  preliminary until physically measured. Preserve raw samples and calibration
+  metadata. If LiDAR is missing, display a clear unavailable/incomplete state
+  while allowing the other calibration stages to continue.
+- Add a dedicated **Sensor Latency** GUI tab, separate from the temperature tab.
+  Show a separate plot for MPU, QMC, BMP280, and LiDAR; expose sample/transfer
+  latency, sample age at each 500 Hz tick, new-versus-reused state, fresh rate,
+  and P50/P95/P99/max plus error/deadline counts. Keep plots and labels
+  readable.
+- Play an audible GUI cue when the countdown ends and recording starts, and a
+  cue when each phase reaches its full valid-sample target. A skipped or
+  incomplete phase must not sound like a successful completion.
+- Target under 2 ms for each sensor's nonblocking acquisition/service time and
+  for sensor I/O contribution to the 2 ms control-loop budget wherever the
+  hardware permits. Distinguish that from conversion period, sensor-internal
+  filter delay, source-to-host age, and GUI display latency. BMP and LiDAR
+  conversions are inherently slower than 2 ms; do not label their natural
+  sample interval as transaction latency, and do not claim end-to-end latency
+  below 2 ms without source/host timing evidence. Report all measured
+  distributions, including results that miss the target.
+
+### Cable-free calibration over Wi-Fi
+
+- Provide a calibration-only ESP32-S3 Wi-Fi AP/UDP transport so the operator can
+  tumble the aircraft without a USB cable attached. Keep USB serial as a
+  fallback and, when flashing is required, use USB only for that operation; the
+  calibration capture itself should not require a cable.
+- Audit the existing Wi-Fi attempt before replacing it. Confirm AP startup,
+  PC association steps, local UDP bind/handshake, receiver discovery, packet
+  cadence, CRC, sequence/timestamp preservation, bounded queue behavior, and
+  reconnect/timeout messages. Do not log Wi-Fi passwords or commit new secrets.
+- Keep Wi-Fi transmission off the 500 Hz acquisition/control path. Expose queue
+  drops, send errors, sequence gaps, CRC errors and receive jitter to the GUI;
+  never silently treat UDP loss/reordering as a complete dataset. Count only
+  valid received sensor samples toward each calibration stage.
+- Compare QMC raw field magnitude/noise and MAG-fresh rate with Wi-Fi disabled
+  and enabled while stationary and during equivalent rotation. Wi-Fi telemetry
+  is accepted for calibration only if it does not create unacceptable magnetic
+  bias/noise or deadline loss; preserve both captures and state the measured
+  difference.
+- The desktop GUI/launcher already contains a Wi-Fi UDP path (`--wifi`, AP
+  address and local receive port) and PowerShell `-Wifi` option. This is
+  implementation evidence only; do not call the end-to-end path working until
+  the pinned firmware and GUI complete a cable-free capture. **Codex owns the
+  desktop GUI/launcher; DSH owns ESP32 firmware and sensor telemetry.** DSH must
+  not edit `tools/live_calibration_gui.py` or the PowerShell launcher while
+  Codex is updating them.
+
+### Acceptance gates for DSH implementation
+
+1. Pin and report the exact branch/commit/source hash and preserve the currently
+   staged and unstaged DSH work. Do not reset, restore, or overwrite concurrent
+   edits.
+2. Implement the fixed 400 kHz shared I²C setting and demonstrate all three
+   sensors working together without clock switching. Record register readbacks,
+   bus errors, read durations, QMC fresh conversion rate, and bus electrical
+   measurements. Keep all previous failures and comparison captures.
+3. Demonstrate a nonblocking 500 Hz loop that advances every 2 ms independent
+   of DRDY/interrupts/conversion completions; include per-sensor timestamps,
+   age, freshness/reuse, and bounded stale-data behavior.
+4. Measure FAST188 with software filtering before trying ULTRA256; use
+   BALANCED98 only if FAST188 fails the documented quality/timing gates. Verify
+   ±500 °/s, ±8 g, FIFO framing/overflow and actual 500 Hz cadence by readback
+   and capture.
+5. Measure the BMP280's independent conversion interval and filtering noise vs
+   delay. Supply the verified LiDAR stream/interface and timing needed by the
+   desktop calibration stage and latency tab.
+6. Demonstrate a cable-free Wi-Fi calibration capture with valid CRC/sequence,
+   bounded loss reporting and a QMC Wi-Fi-on/off interference comparison.
+7. Report compile/host-test/bench-capture evidence separately. A compile is not
+   a hardware pass. Do not enable motor outputs or physical arming; do not call
+   this flight validated. If a bench flash/power cycle enters ROM download mode,
+   stop and prompt the user for the required reboot.
+8. Document exact test conditions, failed trials, limits and rollback. Commit
+   and push the completed milestone under the repository working agreement;
+   never claim publication unless the push succeeds.
+
+### Datasheet references used for this revision
+
+- [QST QMC5883P product page and current datasheet](https://www.qstcorp.com/comp_prod/QMC5883P): QMC Fast-mode target and device capabilities.
+- [TDK InvenSense MPU-6050 register map](https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Register-Map1.pdf): DLPF bandwidth/delay, sample-rate divider, ranges and FIFO fields.
+- [Bosch BMP280 datasheet](https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp280-ds001.pdf): normal-mode ODR, conversion timing, filtering and burst readout.
+- [Nooploop TOFSense downloads](https://support.nooploop.com/cn/tofsense/download/): F2 Mini datasheet listing; verify the exact hardware revision and interface before implementation.
+
+### Ready-to-send DSH prompt
+
+> Continue from the current DSH ESP32-S3 source without discarding any staged
+> or unstaged work. First report branch, HEAD, source hash, `git status`, and
+> what your current edit changes; then use this plan revision as the work
+> order. Implement the fixed 400 kHz shared I²C bus for MPU6050, QMC5883P, and
+> BMP280, diagnosing the actual failure causes instead of switching QMC back to
+> 100 kHz. QMC supports Fast-mode 400 kHz; verify bus/electrical conditions,
+> sensor IDs, register readbacks, transaction framing, timeouts and counters.
+> Keep the 500 Hz loop nonblocking: never wait for DRDY/INT, BMP conversion or
+> LiDAR; every tick must use the latest available coherent sample from each
+> sensor, marking held data reused and preserving true sample timestamps/age.
+> Use MPU ±500 °/s, ±8 g and FIFO (`FIFO_EN=0xF8`): start DLPF_CFG=1,
+> SMPLRT_DIV=1 (188/184 Hz), add measured causal software filtering, then test
+> DLPF_CFG=0 with SMPLRT_DIV=15 (256/260 Hz) and return to CFG=1 on regression;
+> use CFG=2 (98/94 Hz) only if CFG=1 fails. Do not use the 42/44 Hz profile as
+> the routine fallback. Verify FIFO record order, alignment, age and overflow.
+> Run BMP280 at its fastest verified useful conversion profile (nominally
+> ~166.7 Hz at ×1/×1 and 0.5 ms standby), determine actual fresh intervals,
+> and tune on-chip/software filtering without blocking or fabricating samples.
+> Add TOFSense-F2 Mini range/geometry calibration to the GUI after verifying
+> its actual interface and rates. Add a dedicated Sensor Latency tab with
+> separate MPU/QMC/BMP/LiDAR plots, sample age, acquisition latency, reused vs
+> new state, P50/P95/P99/max and deadline/error counters. Aim for <2 ms
+> acquisition/control-budget cost where possible, but report conversion and
+> display latency separately and never mislabel them. The GUI countdown cue
+> and per-phase completion chime are owned by Codex; do not edit Python GUI or
+> PowerShell launcher files. Audit and complete the ESP32's existing AP/UDP
+> telemetry path so calibration can run without a USB cable attached. Preserve
+> packet CRC, sequence and sensor timestamps, count/report drops and reconnects,
+> and compare MAG noise with Wi-Fi on/off. Build and run safe checks; perform a
+> sensor-only bench capture if available. Keep motor outputs/arming disabled.
+> Preserve all failed logs, document exact firmware/test evidence, and
+> commit/push only your intended firmware milestone. If hardware enters download
+> mode or requires a power cycle, ask me to reboot.
+
 ## Current boundaries
 
 - Work on the isolated `feature/esp32s3-competition-fc` branch. Keep the current
@@ -70,7 +310,7 @@ newer source edits are not proof until tied to a build hash and capture.
 |---|---|---|
 | MCU / board | ESP32-S3 DevKitC-1 N8, Arduino framework, PlatformIO Espressif32 7.1.3 | Used by the calibration project and handoff. No new DSH firmware build is recorded in this plan update. |
 | Sensor bus | SDA GPIO9, SCL GPIO8. MPU6050 expected at `0x68`; QMC5883P at `0x2C`; BMP280 at `0x76` through MPU bypass. Keep Wi-Fi disabled. | IDs and sensor data were observed in the November 4 capture. The board drawing still labels an HMC5883L footprint; the physical part and repaired routing need confirmation. |
-| I²C speed | Selected strategy: initialize/default at 100 kHz; use 100 kHz for all QMC reads/writes; switch to 400 kHz only around MPU/BMP transactions, then return to 100 kHz before QMC access. Do not run QMC at a global 400 kHz without a separately accepted test. | The captured calibration source uses this split-speed pattern; the isolated 100 kHz QMC probe sustained fresh data. Integrated global-400 kHz results conflict. Bus waveform and rise time are unmeasured. |
+| I²C speed | Historical November 4 capture profile: initialize/default at 100 kHz; use 100 kHz for QMC reads/writes; switch to 400 kHz around MPU/BMP transactions. This is evidence lineage, not the next target. | The isolated 100 kHz QMC probe sustained fresh data. Integrated global-400 kHz results conflict. Bus waveform and rise time are unmeasured. The user-directed next target is fixed 400 kHz for all three sensors. |
 | QMC identity / range | QMC5883P, address `0x2C`, ID register `0x00 = 0x80`; `CTRL2 0x0B = 0x08` (±8 G); raw conversion `µT = counts / 37.5`. | Identity and raw conversions agree with the capture audit. Calibration values remain sensor-frame candidates; board-to-body orientation is unresolved. |
 | QMC chosen ODR | Normal mode, low-OSR `CTRL1 0x0A = 0x3D` (nominal 200 Hz). Boot sequence: suspend with `CTRL1=0x00`, wait 20 ms, write `XYZ_SIGN 0x29=0x06`, write `CTRL2=0x08`, then write `CTRL1=0x3D`. | Isolated 100 kHz probe measured 188.84 fresh/s sustained (a second run measured 186.82/s). The complete November 4 session used `CTRL1=0x3D` and recorded 38,652 fresh flags at about 195.47/s in active stages; its exact bus/config lineage must be retained with that capture. |
 | QMC read / freshness | Use a STOP after the register-pointer write, then a separate read START. Read status `0x09`; count fresh only when DRDY bit 0 is set and the six XYZ bytes at `0x01–0x06` are read successfully. Reject overflow bit 1. Decode XYZ little-endian. Polling may run at 500 Hz; that is not the MAG conversion rate. | The isolated 200 Hz probe used STOP+START and reported zero XYZ failures and zero overflow in its sustained run. Do not infer that this alone fixed every later integrated failure. |
@@ -136,19 +376,24 @@ newer source edits are not proof until tied to a build hash and capture.
   stream. These are separate probe trials, not evidence for the current DSH code.
 
 The user reported the drone connected on 2026-11-06. This update did not access
-the port or interact with the hardware. At the time of writing, DSH had an
-uncommitted edit in the active ESP32 calibration `src/main.cpp`; keep that
-source out of this plan-only change and re-audit it after DSH pins a revision.
+the port or interact with the hardware. At the time of writing, DSH had staged
+and unstaged edits in the active ESP32 calibration
+  `src/main.cpp` (observed SHA-256
+  `EAF5769052F7FA91ABB609CAED128B91147FAE8EE364A1275046DD0E2048E269`); keep
+  that source out of this plan/GUI change and re-audit it after DSH pins a
+  revision.
 
 ## Decisions applied from the new specification
 
 | Topic | Plan decision |
 |---|---|
-| I2C 400 kHz | Keep as a comparison target, not a production requirement yet. Compare against the 100 kHz isolated QMC baseline under identical full-sensor load, with register readback, fresh-data counts and repeated captures. Preserve the known fallback. |
-| QMC 200 Hz | Start with normal mode `CTRL1=0x3D`, `CTRL2=0x08`; verify the actual write/readback and independent fresh conversions. Defer continuous mode and higher-rate experiments until after the near-term release window. |
-| MPU profiles | Audit current register writes and sample source first. Proposed FAST188 is the initial candidate; BALANCED98 is a fallback; ULTRA256 is experimental. No automatic profile switching. Require FIFO overflow, frame alignment, age and timing evidence. |
+| I2C 400 kHz | **Superseded by the user-directed revision above:** fixed shared 400 kHz is now the next target for QMC, MPU and BMP. Keep the verified 100 kHz capture as historical comparison/fallback evidence, and diagnose any integrated 400 kHz failure. |
+| QMC 200 Hz | Start normal mode `CTRL1=0x3D`, `CTRL2=0x08` on the fixed 400 kHz bus. Never wait for DRDY/INT in the 500 Hz loop; use the latest valid sample every iteration with original timestamp and explicit reuse/age. |
+| MPU profiles | Start FAST188 (`DLPF_CFG=1`, divider 1) with ±500 °/s, ±8 g, FIFO and measured software filtering; then try ULTRA256 (`DLPF_CFG=0`, divider 15), reverting to FAST188 on regression. BALANCED98 (`DLPF_CFG=2`) is the fallback only if 188 fails. |
 | BMP280 | Measure the actual configured conversion rate and age. The spec's approximately 166.7 Hz example is a calculation for its stated oversampling/standby settings, not a measured rate for this board. Use timestamped reuse at the control rate. |
-| LiDAR geometry | The user reports a central underside TOFSense-F2 Mini on the F450, beam along body −Z, with preliminary sensor-to-COM offset `(0,0,-0.026658) m`. Follow the separate geometry/altitude-fusion note; measure the assembled offset and verify interface/timestamps before use. Do not restore a LiDAR stage to the existing 12-phase GUI. |
+| LiDAR geometry | The user reports a central underside TOFSense-F2 Mini on the F450, beam along body −Z, with preliminary sensor-to-COM offset `(0,0,-0.026658) m`. Add a GUI range/geometry stage after verifying the fitted module, interface, status, rate and timestamp capability. Measure the assembled offset and keep it configurable. |
+| GUI ownership and sound | Codex owns the desktop GUI/launcher: add a completion cue at the end of the countdown and another on every fully completed phase; add the LiDAR calibration and sensor-latency views. DSH owns ESP32 firmware and the data needed by those views. |
+| Cable-free calibration | Complete and validate the existing AP/UDP firmware path. Preserve packet CRC, sequence/timestamps and visible loss/error counts. Compare QMC noise with Wi-Fi enabled and disabled before accepting Wi-Fi capture as calibration evidence. |
 | Xbox mapping | Use the new proposal as the planned mapping: right-stick deflection slews bounded roll/pitch angle targets; left-stick X changes yaw heading when reliable; left-stick Y commands vertical rate in altitude mode; RT/LT have mode-specific bounded trim or manual-throttle behavior. Verify transport and document the mapping before implementation. This supersedes the earlier draft for planning, not as a claim about a working receiver. |
 | Arming | Retain the repository lock. The spec's long-press/combination idea may be analyzed in software, but it does not authorize physical arming, motor output or a flight test. |
 | RP2350 | Keep as a later migration after the ESP32 reference source and its validation evidence are preserved. Do not migrate the competition candidate now. |
@@ -180,10 +425,11 @@ source out of this plan-only change and re-audit it after DSH pins a revision.
 - Do not alter or commit those firmware edits as part of this plan update. Do not
   claim a build result until a safe, reproducible build is run on a pinned source
   snapshot and recorded.
-- At this plan-only revision, `HEAD` is `b0697a6` and DSH has an additional
-  uncommitted change to `hardware/bench_calibration/esp32s3_qmc5883p_100hz/src/main.cpp`.
-  Preserve it; do not include it in the plan commit. Re-pin and review after DSH
-  says the source is ready.
+- At this plan/GUI revision, `HEAD` is `638d876`; DSH has staged and unstaged
+  changes to `hardware/bench_calibration/esp32s3_qmc5883p_100hz/src/main.cpp`.
+  The working file hash observed during this update is recorded above. Preserve
+  it; do not include it in the plan/GUI commit. Re-pin and review after DSH says
+  the source is ready.
 
 ### 1. Establish a stable sensor and telemetry baseline
 
@@ -191,9 +437,10 @@ source out of this plan-only change and re-audit it after DSH pins a revision.
   JSON, raw CSV, and source hashes. Preserve the 200 Hz isolated QMC profile as
   a candidate fallback, while distinguishing isolated from integrated results.
 - On repaired, identified hardware, measure MPU fresh sample rate/FIFO behavior,
-  QMC fresh rate and age, BMP conversion cadence, shared-bus occupancy, UART
-  throughput, errors and missed deadlines. Compare 100 kHz and 400 kHz without
-  changing other variables. Keep motors locked out.
+  QMC fresh rate and age, BMP conversion cadence, shared-bus occupancy, UART or
+  Wi-Fi throughput, errors and missed deadlines. Target a fixed shared 400 kHz
+  bus; use 100 kHz only as a controlled diagnostic comparison. Keep motors
+  locked out.
 - Verify MPU range/DLPF/FIFO by register readback. Avoid calling an acquisition
   profile validated from compile-time constants alone.
 - Use a binary telemetry frame with sync, sequence, timestamp, firmware/config
@@ -202,12 +449,20 @@ source out of this plan-only change and re-audit it after DSH pins a revision.
 
 ### 2. Preserve and extend calibration
 
-- Keep the existing GUI and its 12-step gyro/accelerometer/MAG/barometer path.
-  Keep automatic diagnostics usable without the GUI; do not add a LiDAR stage.
-- Keep standalone LiDAR distance/offset checks outside that GUI. Plan them only
-  after the reported F2 Mini identity, electrical interface, body alignment, and
-  independently measured target distances are verified. See
+- Preserve the existing gyro/accelerometer/MAG/barometer phases and add an
+  explicit TOFSense-F2 Mini range/geometry calibration stage to the GUI. Keep
+  automatic diagnostics usable without the GUI. A missing LiDAR must be shown
+  as unavailable/incomplete without preventing unrelated sensor stages from
+  running.
+- Verify the F2 Mini identity, electrical interface, frame/status fields, range,
+  sample timing, body alignment, and independently measured target distances
+  before accepting its calibration. Record sensor-to-COM offset as a measured,
+  configurable parameter. See
   `lidar-geometry-and-altitude-fusion-2026-11-06.md`.
+- Keep the dedicated Sensor Latency GUI tab separate from the temperature tab.
+- The calibration capture must support cable-free Wi-Fi operation over the
+  ESP32 AP/UDP path as well as USB serial. The transport must retain packet
+  sequence, timestamp, CRC validation, and explicit loss accounting.
 - Load versioned/checksummed calibration at boot. Validate sensor identity,
   register configuration and CRC. Keep raw measurements; apply hard/soft-iron
   and accelerometer matrices exactly once. Never replace saved calibration with

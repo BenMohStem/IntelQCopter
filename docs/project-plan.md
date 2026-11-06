@@ -29,15 +29,29 @@ work and flight validation. The detailed selected bench profile and evidence
 ledger are in [the ESP32-S3 readiness plan](esp32-competition-readiness-plan-2026-11-06.md).
 The aircraft is reported connected, but no new hardware data were collected.
 
-The current 12-step calibration GUI remains LiDAR-free. The user reports a
-central underside TOFSense-F2 Mini mount on the F450; its geometry and estimator
-requirements are recorded in
+The user has now requested a LiDAR calibration stage in the GUI, alongside a
+dedicated sensor-latency tab. This supersedes the earlier LiDAR-free GUI plan.
+The reported central underside TOFSense-F2 Mini mount on the F450 and its
+preliminary geometry are recorded in
 [the LiDAR geometry note](lidar-geometry-and-altitude-fusion-2026-11-06.md).
 The offline replay helper applies the preliminary, configurable COM lever arm
 and separates local vertical position, terrain height, and beam-hit clearance.
 It requires a confirmed pressure reference to label local altitude; no physical
 driver or flight estimator is implemented. The revised Xbox mapping remains a
 plan until source audit and transport evidence pass.
+
+The latest sensor plan targets one fixed 400 kHz I²C bus for MPU6050, QMC5883P,
+and BMP280; a nonblocking 500 Hz control iteration that consumes the latest
+available sample from each sensor; staged MPU DLPF/software-filter evaluation;
+and measured per-sensor timing. These are implementation targets, not claims
+that the current uncommitted DSH source or repaired board has passed them. See
+the dated revision and acceptance gates in the ESP32-S3 readiness plan.
+
+The user also requested a cable-free calibration session for easier 3D
+magnetometer tumbling. The desktop launcher and GUI contain a Wi-Fi/UDP option,
+but end-to-end capture and magnetic interference still require verification.
+Codex owns desktop GUI work (including an audible cue on completed phases);
+DSH owns ESP32 firmware and sensor telemetry. Motor outputs remain disabled.
 
 The competition window is described as approximately two days away in the
 supplied text, but its date is unconfirmed. Keep the release scope conservative;
@@ -110,8 +124,9 @@ command. Continue with documentation and non-destructive classification.
   MPU/BMP and back to 100 kHz for QMC; global 400 kHz remains unproven. Isolated
   tests measured about 188–189 fresh/s;
   the complete November 4 capture recorded about 195 fresh flags/s in active
-  phases, but integrated 400 kHz results conflict. See the readiness plan for
-  exact evidence and the distinct unverified FC sensor targets.
+  phases, but integrated 400 kHz results conflict. This remains historical
+  evidence and a diagnostic fallback only. The user's current target is a fixed
+  400 kHz shared bus; see the readiness plan's new revision and test gates.
 - Reproduce or independently review the audit computations from the verified
   raw CSVs before approving calibration constants. Record methods, versions,
   axes, units and limitations; check the fresh-sample gate and matrix direction.

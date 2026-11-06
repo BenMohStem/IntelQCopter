@@ -1180,6 +1180,10 @@ class Application:
                 # Ignore a queued completion after a user-initiated skip.
                 if self.finished or s != self.stages[self.stage_index]:
                     continue
+                # Match the existing countdown-finished cue: make each
+                # successfully completed calibration phase audible.
+                try: self.root.bell()
+                except Exception: pass
                 self.capture_active=False
                 self.pause.config(text='Pause',state='disabled')
                 self.stage_index+=1
