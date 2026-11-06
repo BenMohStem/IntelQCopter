@@ -425,11 +425,12 @@ and unstaged edits in the active ESP32 calibration
 - Do not alter or commit those firmware edits as part of this plan update. Do not
   claim a build result until a safe, reproducible build is run on a pinned source
   snapshot and recorded.
-- At this plan/GUI revision, `HEAD` is `638d876`; DSH has staged and unstaged
-  changes to `hardware/bench_calibration/esp32s3_qmc5883p_100hz/src/main.cpp`.
-  The working file hash observed during this update is recorded above. Preserve
-  it; do not include it in the plan/GUI commit. Re-pin and review after DSH says
-  the source is ready.
+- At the start of this plan/GUI work, the base `HEAD` was `638d876`; the plan
+  and GUI change was published in `24d44e1`. DSH has staged and unstaged changes
+  to `hardware/bench_calibration/esp32s3_qmc5883p_100hz/src/main.cpp`. The
+  working file hash observed during this update is recorded above. Preserve it;
+  do not include it in the plan/GUI commit. Re-pin and review after DSH says the
+  source is ready.
 
 ### 1. Establish a stable sensor and telemetry baseline
 
