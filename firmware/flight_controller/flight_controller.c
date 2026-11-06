@@ -518,17 +518,56 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
     }
 
     /* =========================================================================
-       STEP 1: Attitude estimation
+       STEP 1: Apply calibration to sensor readings
+       ========================================================================= */
+    float accel_x = s->accel_x_g;
+    float accel_y = s->accel_y_g;
+    float accel_z = s->accel_z_g;
+    float gyro_x = s->gyro_x_dps;
+    float gyro_y = s->gyro_y_dps;
+    float gyro_z = s->gyro_z_dps;
+    float mag_x = s->magnetometer_x_uT;
+    float mag_y = s->magnetometer_y_uT;
+    float mag_z = s->magnetometer_z_uT;
+
+    if (cal_loaded) {
+        /* Apply accelerometer calibration: calibrated = scale * (raw - bias) */
+        accel_x = cal_accel_scale[0][0]*(accel_x - cal_accel_bias[0])
+                + cal_accel_scale[0][1]*(accel_y - cal_accel_bias[1])
+                + cal_accel_scale[0][2]*(accel_z - cal_accel_bias[2]);
+        accel_y = cal_accel_scale[1][0]*(accel_x - cal_accel_bias[0])
+                + cal_accel_scale[1][1]*(accel_y - cal_accel_bias[1])
+                + cal_accel_scale[1][2]*(accel_z - cal_accel_bias[2]);
+        accel_z = cal_accel_scale[2][0]*(accel_x - cal_accel_bias[0])
+                + cal_accel_scale[2][1]*(accel_y - cal_accel_bias[1])
+                + cal_accel_scale[2][2]*(accel_z - cal_accel_bias[2]);
+
+        /* Apply gyro calibration: calibrated = raw - bias */
+        gyro_x -= cal_gyro_bias[0];
+        gyro_y -= cal_gyro_bias[1];
+        gyro_z -= cal_gyro_bias[2];
+
+        /* Apply magnetometer calibration: calibrated = soft_iron * (raw - hard_iron) */
+        float mx_c = mag_x - cal_mag_hard_iron[0];
+        float my_c = mag_y - cal_mag_hard_iron[1];
+        float mz_c = mag_z - cal_mag_hard_iron[2];
+        mag_x = cal_mag_soft_iron[0][0]*mx_c + cal_mag_soft_iron[0][1]*my_c + cal_mag_soft_iron[0][2]*mz_c;
+        mag_y = cal_mag_soft_iron[1][0]*mx_c + cal_mag_soft_iron[1][1]*my_c + cal_mag_soft_iron[1][2]*mz_c;
+        mag_z = cal_mag_soft_iron[2][0]*mx_c + cal_mag_soft_iron[2][1]*my_c + cal_mag_soft_iron[2][2]*mz_c;
+    }
+
+    /* =========================================================================
+       STEP 2: Attitude estimation
        ========================================================================= */
     if (!attitude.initialized) {
         attitude_init(&attitude, s->accel_x_g, s->accel_y_g, s->accel_z_g);
     }
     attitude_update(&attitude, s->gyro_x_dps, s->gyro_y_dps, s->gyro_z_dps,
-                    s->magnetometer_x_uT, s->magnetometer_y_uT, s->magnetometer_z_uT,
+                    s->magnetometer_x_uT, s->mag_y_uT, s->mag_z_uT,
                     s->magnetometer_valid && s->magnetometer_fresh, dt);
 
     /* =========================================================================
-       STEP 2: Vertical Kalman filter
+       STEP 3: Vertical Kalman filter
        ========================================================================= */
     if (!alt_kf_initialized) {
         kf_init(&alt_kf, s->barometer_height_m, 0.0f);
