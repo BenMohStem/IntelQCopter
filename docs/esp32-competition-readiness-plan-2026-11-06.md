@@ -123,28 +123,40 @@ logged, repeatable bench evidence.
 
 ### Add LiDAR to calibration and add sensor-latency views
 
-- Add the reported TOFSense-F2 Mini to the calibration GUI as an explicit
-  LiDAR calibration/validation stage. First identify the connected module,
-  electrical interface, frame format, configured update rate, units, status
-  fields, range and timestamp capability from its actual datasheet/configuration
-  and board wiring. Do not assume it shares the I²C bus; keep its interface
-  isolated from the 400 kHz sensor bus unless the verified hardware design says
-  otherwise.
-- The GUI stage records raw and corrected range against multiple independently
-  measured target distances, invalid-return rate, repeatability/noise, update
-  interval and orientation/alignment. Record the measured sensor-to-COM offset
-  as a configurable parameter. The current `(0,0,-0.026658) m` estimate remains
-  preliminary until physically measured. Preserve raw samples and calibration
-  metadata. If LiDAR is missing, display a clear unavailable/incomplete state
-  while allowing the other calibration stages to continue.
-- Add a dedicated **Sensor Latency** GUI tab, separate from the temperature tab.
-  Show a separate plot for MPU, QMC, BMP280, and LiDAR; expose sample/transfer
-  latency, sample age at each 500 Hz tick, new-versus-reused state, fresh rate,
-  and P50/P95/P99/max plus error/deadline counts. Keep plots and labels
-  readable.
-- Play an audible GUI cue when the countdown ends and recording starts, and a
-  cue when each phase reaches its full valid-sample target. A skipped or
-  incomplete phase must not sound like a successful completion.
+- The desktop GUI now schedules four LiDAR range-reference stages (steps 13–16)
+  after the existing 12 gyro/accelerometer/MAG/BMP stages: 0.25, 0.50, 1.00 and
+  2.00 m. Each requires 300 fresh valid readings by default. The target distance
+  is measured from the optical reference to a flat target; keep the beam square
+  to the target. Invalid returns are logged but do not count. The operator can
+  connect a separate 3.3 V UART adapter, or use firmware-forwarded LiDAR data in
+  the v4 telemetry; missing LiDAR can be skipped and is recorded as incomplete.
+  Do not assume it shares the I²C bus.
+- The LiDAR analysis action fits measured range against reference range only
+  when all four required distances meet the configured sample minimum. It keeps
+  the newest redo attempt per distance per capture, reports invalid counts,
+  bias, standard deviation, robust deviation and fit residuals, and preserves
+  raw CSV values. This is bench range calibration, not validation of the
+  aircraft terrain estimator.
+- The GUI's LiDAR Geometry tab exposes the configured sensor-to-COM vector,
+  roll/pitch/yaw and slant range. It evaluates the full vector geometry and
+  beam-hit footprint. The default `(0,0,-0.026658) m` lever arm is preliminary;
+  the configuration remains editable and physically unverified until measured.
+  Geometry results are an explanatory worksheet only, not an estimator.
+- A dedicated Sensor Latency tab plots separate MPU, QMC, BMP280 and LiDAR
+  sample-age and per-tick service-time traces. Rolling P50/P95/P99/max, the
+  `<2 ms` service target, freshness mask, per-sensor cumulative error counts and
+  control-deadline misses are shown. The GUI records v4 metrics in calibration
+  CSV rows. Legacy v2/v3 firmware has no per-sensor timing fields, so the tab
+  explicitly reports telemetry unavailable and plots no invented values.
+- To supply the GUI with physical timestamps and per-sensor metrics, firmware
+  must implement the versioned 92-byte v4 packet below on both USB and Wi-Fi.
+  Until then, the GUI retains v2/v3 decoding and external LiDAR UART support.
+- Keep all descriptions short and plot labels separated. The GUI completion
+  chime sounds at countdown end and only after a phase reaches its full valid
+  sample target; skips/incomplete stages do not sound as successes.
+- Distinguish measured sensor service time from conversion interval, packet-
+  arrival interval and GUI redraw time; none of these may be substituted for
+  another.
 - Target under 2 ms for each sensor's nonblocking acquisition/service time and
   for sensor I/O contribution to the 2 ms control-loop budget wherever the
   hardware permits. Distinguish that from conversion period, sensor-internal
@@ -153,6 +165,36 @@ logged, repeatable bench evidence.
   sample interval as transaction latency, and do not claim end-to-end latency
   below 2 ms without source/host timing evidence. Report all measured
   distributions, including results that miss the target.
+
+#### v4 timing and LiDAR wire format for DSH
+
+Keep the existing four-byte sync/version/flags prefix and 46-byte v2/v3 base
+payload unchanged. Set version byte 2 to `4`, extend the packet to 92 bytes, and
+append these 40 little-endian bytes at offsets 50–89; bytes 90–91 hold the
+existing CRC-16/CCITT (`poly=0x1021`, initial value `0xFFFF`) over bytes 0–89:
+
+| Extension offset | Type | Meaning |
+|---:|---|---|
+| 50–57 | 4 × `uint16` | sample age in µs at this 500 Hz tick: MPU, QMC, BMP, LiDAR |
+| 58–65 | 4 × `uint16` | sensor service time in µs charged to this tick, same order |
+| 66–69 | `int32` | latest F2 slant range in mm |
+| 70–73 | `uint32` | F2 module sample time in ms |
+| 74–75 | `uint16` | F2 signal strength |
+| 76 | `uint8` | F2 status |
+| 77 | `uint8` | valid-sample mask, bits 0–3 = MPU/QMC/BMP/LiDAR |
+| 78 | `uint8` | fresh-this-tick mask in the same bit order |
+| 79 | `uint8` | F2 module ID |
+| 80–87 | 4 × `uint16` | cumulative acquisition/error counters: MPU/QMC/BMP/LiDAR |
+| 88–89 | `uint16` | cumulative 500 Hz control deadline overruns |
+
+Use `0xFFFF` for unavailable age/service, and saturate cumulative counters at
+`0xFFFE`. Age is `control_tick_time - native_sample_time`; it increases while a
+held value is reused. The valid mask means the latest held sample is usable;
+fresh means a new conversion/sample arrived during this tick. Service time is
+the measured nonblocking sensor I/O/parse work charged to this 2 ms tick, not
+the sensor conversion period or GUI/network delay. Preserve the actual F2
+timestamp, status and raw slant range. Use identical framing and CRC over USB
+and UDP; the desktop must report Wi-Fi packet loss/reordering independently.
 
 ### Cable-free calibration over Wi-Fi
 
@@ -198,8 +240,9 @@ logged, repeatable bench evidence.
    ±500 °/s, ±8 g, FIFO framing/overflow and actual 500 Hz cadence by readback
    and capture.
 5. Measure the BMP280's independent conversion interval and filtering noise vs
-   delay. Supply the verified LiDAR stream/interface and timing needed by the
-   desktop calibration stage and latency tab.
+   delay. Verify the F2 interface, target-range stream, native timestamp/status,
+   and implement the v4 fields above so steps 13–16 and the latency tab receive
+   real LiDAR data over both USB and Wi-Fi.
 6. Demonstrate a cable-free Wi-Fi calibration capture with valid CRC/sequence,
    bounded loss reporting and a QMC Wi-Fi-on/off interference comparison.
 7. Report compile/host-test/bench-capture evidence separately. A compile is not
@@ -221,37 +264,82 @@ logged, repeatable bench evidence.
 
 > Continue from the current DSH ESP32-S3 source without discarding any staged
 > or unstaged work. First report branch, HEAD, source hash, `git status`, and
-> what your current edit changes; then use this plan revision as the work
-> order. Implement the fixed 400 kHz shared I²C bus for MPU6050, QMC5883P, and
-> BMP280, diagnosing the actual failure causes instead of switching QMC back to
-> 100 kHz. QMC supports Fast-mode 400 kHz; verify bus/electrical conditions,
-> sensor IDs, register readbacks, transaction framing, timeouts and counters.
-> Keep the 500 Hz loop nonblocking: never wait for DRDY/INT, BMP conversion or
-> LiDAR; every tick must use the latest available coherent sample from each
-> sensor, marking held data reused and preserving true sample timestamps/age.
-> Use MPU ±500 °/s, ±8 g and FIFO (`FIFO_EN=0xF8`): start DLPF_CFG=1,
-> SMPLRT_DIV=1 (188/184 Hz), add measured causal software filtering, then test
-> DLPF_CFG=0 with SMPLRT_DIV=15 (256/260 Hz) and return to CFG=1 on regression;
-> use CFG=2 (98/94 Hz) only if CFG=1 fails. Do not use the 42/44 Hz profile as
-> the routine fallback. Verify FIFO record order, alignment, age and overflow.
-> Run BMP280 at its fastest verified useful conversion profile (nominally
-> ~166.7 Hz at ×1/×1 and 0.5 ms standby), determine actual fresh intervals,
-> and tune on-chip/software filtering without blocking or fabricating samples.
-> Add TOFSense-F2 Mini range/geometry calibration to the GUI after verifying
-> its actual interface and rates. Add a dedicated Sensor Latency tab with
-> separate MPU/QMC/BMP/LiDAR plots, sample age, acquisition latency, reused vs
-> new state, P50/P95/P99/max and deadline/error counters. Aim for <2 ms
-> acquisition/control-budget cost where possible, but report conversion and
-> display latency separately and never mislabel them. The GUI countdown cue
-> and per-phase completion chime are owned by Codex; do not edit Python GUI or
-> PowerShell launcher files. Audit and complete the ESP32's existing AP/UDP
-> telemetry path so calibration can run without a USB cable attached. Preserve
-> packet CRC, sequence and sensor timestamps, count/report drops and reconnects,
-> and compare MAG noise with Wi-Fi on/off. Build and run safe checks; perform a
-> sensor-only bench capture if available. Keep motor outputs/arming disabled.
-> Preserve all failed logs, document exact firmware/test evidence, and
-> commit/push only your intended firmware milestone. If hardware enters download
-> mode or requires a power cycle, ask me to reboot.
+> summarize the current edits; preserve them exactly. Current desktop changes
+> are owned by Codex—do not edit `tools/live_calibration_gui.py`, its LiDAR
+> analyzer, or the PowerShell launcher. Use this plan as the firmware work
+> order. Keep one shared I²C bus at 400 kHz for MPU6050, QMC5883P and BMP280,
+> including all QMC reads. If QMC fails at 400 kHz, diagnose pull-ups, rise
+> time/capacitance, voltage, grounding, address, register sequence/readback,
+> transfer framing, bus ownership and timeout recovery; do not clock-switch or
+> silently fall back to 100 kHz. Measure the three devices together and retain
+> error/short-read/NACK and transaction-duration evidence.
+>
+> The PID schedule is 500 Hz (2 ms). Never wait on DRDY, INT, FIFO-full, BMP
+> conversion, or LiDAR reception. At every iteration use a coherent snapshot of
+> the latest available data, preserve each native timestamp, increment age for
+> reused samples, and set fresh/reused/valid bits correctly. Do not relabel held
+> data as a new conversion. Keep bounded stale-data behavior and count missed
+> deadlines, I²C errors, FIFO overflow/partial frames and per-sensor acquisition
+> failures.
+>
+> For MPU6050 use ±500 °/s, ±8 g and FIFO (`FIFO_EN=0xF8`, 14-byte frame).
+> Start with DLPF_CFG=1 and SMPLRT_DIV=1 (188/184 Hz) plus measured causal
+> software filtering. Only after that profile is measured, try DLPF_CFG=0 with
+> SMPLRT_DIV=15 (256/260 Hz). Return to 188 Hz if noise, aliasing, phase delay,
+> vibration or deadline performance regresses. Use DLPF_CFG=2 (98/94 Hz) only
+> if 188 Hz cannot meet the documented gates. Do not use the 42/44 Hz mode as a
+> routine fallback. Verify register readbacks, FIFO chronology, loss/overflow,
+> reconstructed sample time, units/scales, and actual cadence.
+>
+> Configure BMP280 for the highest useful verified conversion rate (nominal
+> approximately 166.7 Hz at pressure ×1, temperature ×1 and 0.5 ms standby).
+> Measure actual fresh conversions; do not call each 500 Hz poll a new sample.
+> Keep the PID nonblocking and filter pressure/altitude only after quantifying
+> variance reduction, disturbance rejection and delay. Preserve a slower rate
+> only if the faster configuration is genuinely invalid or unstable, and state
+> the measured reason.
+>
+> LiDAR is the user-reported TOFSense-F2 Mini at the centered underside of the
+> F450, +X forward/+Y left/+Z up, optical axis −Z. Verify its module, electrical
+> route, UART/I²C mode, frame/status semantics and native timestamp. The
+> preliminary optical-reference point is (0,0,−0.008) m from the lower PCB;
+> COM is (0,0,+0.018658) m from that datum, giving provisional
+> `r_s=(0,0,−0.026658) m` from COM. Keep this vector configurable and measure it
+> physically. For body-to-world `R=Rz(yaw)Ry(pitch)Rx(roll)`, beam `d_s=(0,0,−1)`
+> and slant range `D`, use
+> `H_COM=−(R r_s)_z−D(R d_s)_z`; the centered level-ground simplification is
+> `(D+0.026658)cos(roll)cos(pitch)`. Track the beam footprint, slope/obstacle
+> limitations, invalid range/status, tilt, timestamps, covariance and
+> innovation rejection. Keep barometric datum, local navigation height,
+> vertical velocity, terrain height and beam-hit clearance distinct. Only
+> confirmed stationary ground startup may initialize the datum; never re-zero
+> on a new range or suspected airborne reboot. Do not enable arming or motors.
+>
+> Implement the desktop's version-4 92-byte telemetry in both USB and Wi-Fi,
+> preserving the 52-byte v2/v3 decoder compatibility. After the 4-byte header
+> and existing 46-byte base payload, append 40 bytes at offsets 50–89:
+> `uint16 age_us[MPU,QMC,BMP,LIDAR]`, `uint16 service_us[same order]`,
+> `int32 lidar_range_mm`, `uint32 lidar_sensor_time_ms`, `uint16 lidar_signal`,
+> `uint8 lidar_status`, `uint8 valid_mask`, `uint8 fresh_mask`, `uint8 module_id`,
+> `uint16 cumulative_sensor_errors[MPU,QMC,BMP,LIDAR]`, and `uint16 cumulative
+> deadline_overruns`. CRC-16/CCITT remains at bytes 90–91 over bytes 0–89.
+> `0xFFFF` means an unavailable age/service; saturate cumulative counters at
+> `0xFFFE`. Define age from control-tick time to the native conversion time;
+> service is measured nonblocking I/O/parse cost charged to that 2 ms tick.
+> Fresh bits mean new native sample this tick; valid bits mean latest held sample
+> remains usable. Preserve LiDAR status, raw slant range and module timestamp.
+> Do not report packet inter-arrival or GUI redraw as sensor latency.
+>
+> The updated GUI schedules LiDAR references 0.25/0.50/1.00/2.00 m as steps
+> 13–16, each requiring 300 fresh valid samples by default, and has a separate
+> latency tab. Complete the firmware fields; do not edit the desktop code. Keep
+> USB as fallback, but finish AP/UDP Wi-Fi for cable-free tumbling. Keep all UDP
+> sends off the 500 Hz path; report queue drops, sequence gaps, CRC errors,
+> reconnects and receive jitter. Compare QMC field noise/fresh rate with Wi-Fi
+> off/on. No secrets in source or logs. Document current failed trials and
+> publish only your own intended firmware milestone after measured evidence.
+> Separate compile, host-level, bench and flight evidence; a compile is not a
+> hardware pass. If a power cycle or reboot is needed, ask me before proceeding.
 
 ## Current boundaries
 

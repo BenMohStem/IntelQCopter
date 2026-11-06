@@ -125,13 +125,16 @@ flight. This tool has no sensor acquisition and produces no flight-control outpu
 Its constant scalar range sigma and terrain process noise are assumed values;
 it does not yet propagate attitude, timestamp, or mounting-survey covariance.
 
-The calibration GUI remains the existing 12-step no-LiDAR workflow. This
-geometry note does not reintroduce a LiDAR calibration GUI stage. Standalone
-range calibration already has a separate optional bench script at
-`hardware/bench_calibration/esp32s3_qmc5883p_100hz/tools/lidar_calibration.py`;
-it is outside the main GUI and has not been validated for this physical mount.
-Audit it only after the actual module, interface, wiring, attitude frame, and
-measured reference distances are confirmed. A terrain-separated algorithm
+The guided calibration GUI now schedules four LiDAR reference stages (13–16)
+after the 12 IMU/MAG/BMP stages. It accepts either a separate F2 UART adapter or
+an ESP32 firmware-forwarded v4 LiDAR sample. It saves raw slant ranges/statuses
+and analyzes calibration only after all four configured references meet the
+sample minimum. GUI v2/v3 telemetry does not contain LiDAR or per-sensor latency
+metrics; the sensor latency tab correctly remains empty and reports this until
+firmware v4 is available. The GUI's LiDAR geometry tab is a configurable
+worksheet, not a flight estimator. The standalone range parser and analyzer are
+shared by the GUI but still need validation against the fitted module, wiring,
+frame/status behavior and physically surveyed ranges. A terrain-separated algorithm
 illustration is available at
 [`synthetic_terrain_separated_altitude.png`](../hardware/bench_calibration/esp32s3_qmc5883p_100hz/analysis/synthetic_terrain_separated_altitude.png);
 it is generated from synthetic inputs and is not aircraft performance data.

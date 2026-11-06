@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""IntelQCopter 500 Hz guided calibration GUI (binary v2/v3 / 52-byte packets).
+"""IntelQCopter guided calibration GUI (binary v2/v3 and timing/LiDAR v4).
 
 The firmware sends 500 packet/s; only fresh MAG/BMP packets count for slow
 sensor phases. All raw samples are saved to CSV; graphing is decimated.
@@ -22,10 +22,11 @@ import subprocess
 import sys
 import threading
 import time
+from types import SimpleNamespace
 from pathlib import Path
 
 MAGIC = b'\xA5\x5A'
-SIZE = 52
+PACKET_SIZES = {2: 52, 3: 52, 4: 92}
 BAUD = 921600
 G = 9.80665
 HMC_COUNTS_PER_UT = 1090.0 / 100.0
@@ -37,7 +38,8 @@ CSV_COLUMNS = ('kind,seq,t_us,pose,mpu_ok,bmp_ok,mag_ok,ax_raw,ay_raw,az_raw,gx_
     'mpu_temp_raw,ax_mps2,ay_mps2,az_mps2,gx_dps,gy_dps,gz_dps,mpu_temp_c,'
     'bmp_new,bmp_adc_p,bmp_adc_t,bmp_temp_c,pressure_pa,mag_new,mx_raw,my_raw,mz_raw,'
     'mx_uT,my_uT,mz_uT,host_utc_iso,mag_stage,late_us,missed_ticks,'
-    'mag_board_x_uT,mag_board_y_uT,mag_board_z_uT,relative_altitude_m,host_monotonic_s,phase_accepted,phase_elapsed_s,mag_sensor_type,observed_packet_dt_us,seq_gap_before,gap_gt_5ms,gap_gt_10ms,phase_attempt,lidar_reference_m,lidar_distance_m,lidar_status,lidar_signal,lidar_sensor_time_ms,lidar_module_id').split(',')
+    'mag_board_x_uT,mag_board_y_uT,mag_board_z_uT,relative_altitude_m,host_monotonic_s,phase_accepted,phase_elapsed_s,mag_sensor_type,observed_packet_dt_us,seq_gap_before,gap_gt_5ms,gap_gt_10ms,phase_attempt,lidar_reference_m,lidar_distance_m,lidar_status,lidar_signal,lidar_sensor_time_ms,lidar_module_id,'
+    'sensor_age_mpu_us,sensor_age_qmc_us,sensor_age_bmp_us,sensor_age_lidar_us,service_mpu_us,service_qmc_us,service_bmp_us,service_lidar_us,sensor_fresh_mask,mpu_errors_total,qmc_errors_total,bmp_errors_total,lidar_errors_total,deadline_overruns_total').split(',')
 
 
 @dataclass(slots=True)
@@ -62,6 +64,17 @@ class Frame:
     bmp_pa100: int
     missed_ticks: int
     version: int = 2
+    sensor_age_us: tuple[int, int, int, int] | None = None
+    service_us: tuple[int, int, int, int] | None = None
+    lidar_distance_mm: int | None = None
+    lidar_sensor_time_ms: int | None = None
+    lidar_signal_strength: int | None = None
+    lidar_status: int | None = None
+    sensor_valid_mask: int = 0
+    sensor_fresh_mask: int = 0
+    lidar_module_id: int | None = None
+    sensor_error_counts: tuple[int, int, int, int] | None = None
+    deadline_overruns: int | None = None
 
     @property
     def mag_sensor_type(self):
@@ -78,6 +91,13 @@ class Frame:
     def bmp_new(self): return bool(self.flags & 0x08) and self.bmp_ok
     @property
     def mag_new(self): return bool(self.flags & 0x10) and self.mag_ok
+    @property
+    def lidar_new(self): return self.version >= 4 and bool(self.sensor_fresh_mask & 0x08)
+    @property
+    def lidar_valid(self):
+        return (self.version >= 4 and bool(self.sensor_valid_mask & 0x08)
+                and self.lidar_status == 0 and self.lidar_distance_mm is not None
+                and 20 <= self.lidar_distance_mm <= 7800)
 
     def accel(self):
         return tuple(x * G / 16384.0 for x in (self.ax,self.ay,self.az))
@@ -106,7 +126,7 @@ class BinaryDecoder:
     def feed(self, data: bytes):
         self.buffer.extend(data)
         frames = []
-        while len(self.buffer) >= SIZE:
+        while len(self.buffer) >= 4:
             pos = self.buffer.find(MAGIC)
             if pos < 0:
                 self.bad_sync += len(self.buffer) - 1
@@ -115,25 +135,44 @@ class BinaryDecoder:
             if pos:
                 self.bad_sync += pos
                 del self.buffer[:pos]
-            if len(self.buffer) < SIZE:
-                break
-            if self.buffer[2] not in (2,3):
+            version = self.buffer[2]
+            size = PACKET_SIZES.get(version)
+            if size is None:
                 self.bad_version += 1
                 del self.buffer[0]
                 continue
-            pkt = bytes(self.buffer[:SIZE])
-            got = int.from_bytes(pkt[50:52], 'little')
-            if binascii.crc_hqx(pkt[:50], 0xFFFF) != got:
+            if len(self.buffer) < size:
+                break
+            pkt = bytes(self.buffer[:size])
+            crc_offset = size - 2
+            got = int.from_bytes(pkt[crc_offset:size], 'little')
+            if binascii.crc_hqx(pkt[:crc_offset], 0xFFFF) != got:
                 self.bad_crc += 1
                 del self.buffer[0]
                 continue
             fields = struct.unpack_from('<IIH7h3hIIhIH', pkt, 4)
-            frames.append(Frame(pkt[3], *fields, version=pkt[2]))
+            extension = {}
+            if version == 4:
+                values = struct.unpack_from('<8HiIH4B5H', pkt, 50)
+                extension = {
+                    'sensor_age_us': tuple(None if v == 0xFFFF else v for v in values[0:4]),
+                    'service_us': tuple(None if v == 0xFFFF else v for v in values[4:8]),
+                    'lidar_distance_mm': values[8],
+                    'lidar_sensor_time_ms': values[9],
+                    'lidar_signal_strength': values[10],
+                    'lidar_status': values[11],
+                    'sensor_valid_mask': values[12],
+                    'sensor_fresh_mask': values[13],
+                    'lidar_module_id': values[14],
+                    'sensor_error_counts': tuple(values[15:19]),
+                    'deadline_overruns': values[19],
+                }
+            frames.append(Frame(pkt[3], *fields, version=version, **extension))
             self.total += 1
-            del self.buffer[:SIZE]
+            del self.buffer[:size]
         # Prevent unbounded noise memory on malformed streams.
         if len(self.buffer) > 65536:
-            del self.buffer[:-SIZE]
+            del self.buffer[-91:]
         return frames
 
 
@@ -273,18 +312,21 @@ def stages(args):
                  'Slowly tumble through all orientations, including diagonal poses.')]
         + ([] if args.skip_bmp else [Stage('BMP','STILL',args.bmp_samples,'bmp',
                  'Keep still at one reference height, away from drafts and propeller wash.')])
+        + ([] if args.skip_lidar else [
+            Stage('LIDAR',f'D{int(round(distance_m*1000)):04d}',args.lidar_samples,'lidar',
+                  f'Point the sensor squarely at a flat, matte target. Measure {distance_m:.2f} m from the LiDAR optical reference to the target; keep the beam perpendicular and the airframe still.')
+            for distance_m in (0.25,0.50,1.00,2.00)])
 )
-    # The MAG-only / isolated MAG-probe option is deprecated per user request.
-    # The full integrated calibration path (gyro + accel + mag + bmp) is the only
-    # validated mode. Ignore any --mag-only argument.
+    # The LiDAR references are additional range-validation phases (13–16).
+    # They do not replace or claim completion of gyro, accel, MAG, or BMP work.
     return sequence
 
 
 class WifiPacketStream:
     """UDP client for the ESP32-S3 AP calibration stream.
 
-    Same 52-byte frames as USB. Receive and compute timestamps on the PC
-    WITHOUT substituting network-reception time for the device sample time.
+    Accept concatenated v2/v3/v4 frames. Never substitute packet reception
+    time for device sample timestamps or per-sensor ages.
     """
     HELLO = b'IQ_HELLO_V1'
     READY = b'IQ_READY_V1'
@@ -316,7 +358,7 @@ class WifiPacketStream:
         # Avoid accepting messages from unrelated devices on the LAN.
         if sender[0] != self.host or data == self.READY:
             return b''
-        if not data.startswith(MAGIC) or len(data) % SIZE != 0:
+        if not data.startswith(MAGIC):
             return b''
         self.telemetry_datagrams += 1
         return data
@@ -364,6 +406,7 @@ class Recorder(threading.Thread):
         self.lidar_queue = queue.Queue(maxsize=1024)
         self.lidar_reader = None
         self.lidar_total = 0
+        self.lidar_inband_seen = False
         self.axis_map = axis_map
         self.settle_seconds = float(settle_seconds)
         self.lock = threading.Lock()
@@ -373,6 +416,7 @@ class Recorder(threading.Thread):
         self.stop_event = threading.Event()
         self.started = threading.Event()
         self.decoder = BinaryDecoder()
+        self.latency_samples = queue.Queue(maxsize=2000)
         self.frames_total = 0
         self.bytes_total = 0
         self.last_byte_at = 0.0
@@ -555,11 +599,17 @@ class Recorder(threading.Thread):
             self.started.set()
             self.events.put(('stopped', None))
 
-    def _handle_lidar(self,sample,received,writer):
+    def _handle_lidar(self,sample,received,writer,*,source='serial',frame=None):
         self.lidar_total+=1
+        self.events.put(('lidar_sample',{
+            'distance_m':sample.distance_m,'valid':bool(sample.valid),
+            'status':sample.status,'signal':sample.signal_strength,
+        }))
         with self.lock:
             stage=self.active
             counting=bool(stage and stage.sensor=='lidar' and not self.paused and received>=self.phase_start)
+            if source == 'serial' and self.lidar_inband_seen:
+                counting=False
             attempt=self.current_attempt
             if not counting:return
             accepted=bool(sample.valid)
@@ -582,6 +632,8 @@ class Recorder(threading.Thread):
                    lidar_reference_m=f'{ref:.3f}',lidar_distance_m=f'{sample.distance_m:.6f}',
                    lidar_status=sample.status,lidar_signal=sample.signal_strength,
                    lidar_sensor_time_ms=sample.sensor_time_ms,lidar_module_id=sample.module_id)
+        if frame is not None:
+            self._write_latency_columns(row,frame)
         # Temperatures are the latest ESP32 observations, asynchronous to LiDAR;
         # they are *not* measurements of the LiDAR die temperature.
         if self.last_frame is not None:
@@ -635,6 +687,28 @@ class Recorder(threading.Thread):
         self.last_mcu_timestamp = f.t_us
         dt_valid = 0 < dt_us < 1000000
         self.last_frame = f
+        if f.version >= 4:
+            snapshot=(now,f.sensor_age_us,f.service_us,f.sensor_fresh_mask,
+                      f.sensor_error_counts,f.deadline_overruns)
+            try:
+                self.latency_samples.put_nowait(snapshot)
+            except queue.Full:
+                try:self.latency_samples.get_nowait()
+                except queue.Empty:pass
+                try:self.latency_samples.put_nowait(snapshot)
+                except queue.Full:pass
+
+        if f.lidar_new:
+            self.lidar_inband_seen=True
+            sample=SimpleNamespace(
+                valid=f.lidar_valid,
+                distance_m=(f.lidar_distance_mm or 0)/1000.0,
+                status=f.lidar_status if f.lidar_status is not None else 255,
+                signal_strength=f.lidar_signal_strength if f.lidar_signal_strength is not None else 0,
+                sensor_time_ms=f.lidar_sensor_time_ms if f.lidar_sensor_time_ms is not None else 0,
+                module_id=f.lidar_module_id if f.lidar_module_id is not None else 0,
+            )
+            self._handle_lidar(sample,now,writer,source='telemetry',frame=f)
 
         if f.bmp_new and f.bmp() > 10000:
             if self.p0 is None:
@@ -683,6 +757,16 @@ class Recorder(threading.Thread):
                 if count >= stage.target:
                     self.active = None
                     self.events.put(('stage_done', (stage, count)))
+            elif counting and stage.sensor == 'lidar':
+                if now >= self.next_hint_at and now-self.last_accepted_at > 5.0:
+                    self.events.put(('hint',
+                        'Waiting for fresh valid F2 readings. Connect the separate LiDAR UART or use firmware v4 forwarding; invalid ranges do not count.'))
+                    self.next_hint_at=now+8.0
+                slow_deadline=max(30.0,stage.target/50.0*3.0)
+                if not self.stage_warning_issued and now-self.stage_start_time>slow_deadline:
+                    self.stage_warning_issued=True
+                    self.events.put(('hint',
+                        f'LiDAR range stage is unusually slow: {self.sample_count}/{stage.target} accepted readings. Check port, status and target setup.'))
             else:
                 count = self.sample_count
             capture = counting and stage.sensor != 'lidar'
@@ -707,8 +791,21 @@ class Recorder(threading.Thread):
                 f'{altitude:.4f}', f'{now:.3f}', int(valid),
                 f'{now-self.stage_start_time:.3f}', f.mag_sensor_type,
                 dt_us if dt_valid else '', seq_gap_before, int(dt_valid and dt_us>5000), int(dt_valid and dt_us>10000), self.current_attempt,
-                '', '', '', '', '', '',
+                '',
+                f'{f.lidar_distance_mm/1000.0:.6f}' if f.version>=4 and f.lidar_distance_mm is not None else '',
+                f.lidar_status if f.version>=4 and f.lidar_status is not None else '',
+                f.lidar_signal_strength if f.version>=4 and f.lidar_signal_strength is not None else '',
+                f.lidar_sensor_time_ms if f.version>=4 and f.lidar_sensor_time_ms is not None else '',
+                f.lidar_module_id if f.version>=4 and f.lidar_module_id is not None else '',
+                *[str(value) for value in (f.sensor_age_us or (None,)*4)],
+                *[str(value) for value in (f.service_us or (None,)*4)],
+                str(f.sensor_fresh_mask) if f.version>=4 else '',
+                *[str(value) for value in (f.sensor_error_counts or (None,)*4)],
+                str(f.deadline_overruns) if f.deadline_overruns is not None else '',
             ]
+            # Empty optional v4 fields stay empty in CSV rather than becoming the
+            # text "None" in captures produced by legacy v2/v3 firmware.
+            row=[ '' if value=='None' else value for value in row ]
             assert len(row)==len(CSV_COLUMNS), (len(row),len(CSV_COLUMNS))
             writer.writerow(row)
 
@@ -731,8 +828,22 @@ class Recorder(threading.Thread):
                 'bmp_temp': f.bmp_tc100/100.0 if f.bmp_ok else math.nan,
                 'bmp_new': f.bmp_new,
                 'mag_point': self.pending_mag_plot,
+                'version':f.version,
             }))
                 self.pending_mag_plot = None
+
+    @staticmethod
+    def _write_latency_columns(row,frame):
+        if frame is None or frame.version < 4:
+            return
+        for name,value in zip(('mpu','qmc','bmp','lidar'),frame.sensor_age_us or ()):
+            row[f'sensor_age_{name}_us']=value
+        for name,value in zip(('mpu','qmc','bmp','lidar'),frame.service_us or ()):
+            row[f'service_{name}_us']=value
+        row['sensor_fresh_mask']=frame.sensor_fresh_mask
+        for name,value in zip(('mpu','qmc','bmp','lidar'),frame.sensor_error_counts or ()):
+            row[f'{name}_errors_total']=value
+        row['deadline_overruns_total']=frame.deadline_overruns
         if capture and count != self.phase_last_progress and (count%25==0 or count==stage.target):
             self.phase_last_progress=count
             self.events.put(('progress', count))
@@ -762,6 +873,10 @@ class Application:
         self.mag_points=deque(maxlen=8000)
         self.mag_plot_total=0
         self.series={key:deque(maxlen=500) for key in ('ax','ay','az','gx','gy','gz','mx','my','mz','pressure','altitude','mpu_temp','bmp_temp')}
+        self.latency_times=deque(maxlen=7500)
+        self.latency_series={f'{sensor}_{metric}':deque(maxlen=7500)
+                             for sensor in ('MPU','QMC','BMP','LiDAR')
+                             for metric in ('age','service')}
         self.last_plot=0
         self.live_plot_enabled=True
         self.last_3d_update=0.0
@@ -775,9 +890,24 @@ class Application:
         self.progress=tk.StringVar(value='')
         self.paused_status=tk.StringVar(value='')
         self.health=tk.StringVar(value='Opening sensor stream…')
+        self.latency_status=tk.StringVar(value='Waiting for sensor telemetry.')
+        self.latency_summary=tk.StringVar(value='Latency percentiles appear after firmware v4 timing data arrives.')
+        self._latency_status_last=''
+        self.lidar_port_var=tk.StringVar(value='')
+        self.lidar_status_var=tk.StringVar(value='LiDAR is optional until connected or forwarded in firmware v4.')
+        self._lidar_last_status=''
+        self.geometry_config_path=ROOT/'lidar_geometry_config.json'
+        self.geometry_vars={
+            'rx':tk.StringVar(value='0.000000'), 'ry':tk.StringVar(value='0.000000'),
+            'rz':tk.StringVar(value='-0.026658'), 'roll':tk.StringVar(value='0'),
+            'pitch':tk.StringVar(value='0'), 'yaw':tk.StringVar(value='0'),
+            'distance':tk.StringVar(value=''),
+        }
+        self.geometry_result=tk.StringVar(value='Enter a measured slant range and attitude, then calculate.')
+        self._load_geometry_config()
 
         top=ttk.Frame(self.root,padding=8);top.pack(fill='x')
-        ttk.Label(top,text='IntelQCopter | 500 Hz IMU · 200 Hz QMC calibration',font=('Segoe UI',15,'bold')).pack(anchor='w')
+        ttk.Label(top,text='IntelQCopter | 500 Hz IMU · 200 Hz QMC · F2 LiDAR calibration',font=('Segoe UI',15,'bold')).pack(anchor='w')
         ttk.Label(top,text=f'Capture: {Path(output).name}  ·  MAG axes: {axis_name}',font=('Segoe UI',8)).pack(anchor='w')
         ttk.Label(top,textvariable=self.info,font=('Segoe UI',8)).pack(anchor='w',pady=(3,0))
         ttk.Separator(self.root,orient='horizontal').pack(fill='x')
@@ -812,8 +942,20 @@ class Application:
         # probe is deprecated per user direction.
         self.combine_button=ttk.Button(extra,text='Combine CSV + calibration JSON...',command=self.combine_calibrations)
         self.combine_button.pack(side='left',padx=(0,8))
+        self.lidar_analysis_button=ttk.Button(extra,text='Analyze LiDAR range CSV...',command=self.analyze_lidar_csv)
+        self.lidar_analysis_button.pack(side='left',padx=(0,8))
         ttk.Label(extra,text='Withheld-data fit, 3D coverage and bootstrap; superseded redo attempts are excluded.',
                   foreground='#5A6470').pack(side='left')
+        lidar_row=ttk.Frame(phase);lidar_row.pack(fill='x',pady=(0,3))
+        ttk.Label(lidar_row,text='Optional F2 UART:').pack(side='left')
+        self.lidar_port_combo=ttk.Combobox(lidar_row,textvariable=self.lidar_port_var,
+                                           width=10,state='readonly')
+        self.lidar_port_combo.pack(side='left',padx=4)
+        ttk.Button(lidar_row,text='Refresh',command=self.refresh_lidar_ports).pack(side='left',padx=3)
+        ttk.Button(lidar_row,text='Connect LiDAR',command=self.connect_lidar_from_gui).pack(side='left',padx=3)
+        ttk.Button(lidar_row,text='Skip LiDAR ranges',command=self.skip_all_lidar_from_gui).pack(side='left',padx=3)
+        ttk.Label(lidar_row,textvariable=self.lidar_status_var,foreground='#285884',
+                  wraplength=620,justify='left').pack(side='left',padx=8)
         ttk.Label(phase,textvariable=self.health,foreground='#285884').pack(anchor='w')
         ttk.Label(phase,textvariable=self.saved_info,foreground='#186A58').pack(anchor='w')
 
@@ -823,11 +965,15 @@ class Application:
         notebook.pack(fill='both',expand=True,padx=10,pady=6)
         self.tab_live=ttk.Frame(notebook)
         self.tab_thermal=ttk.Frame(notebook)
+        self.tab_latency=ttk.Frame(notebook)
+        self.tab_geometry=ttk.Frame(notebook,padding=10)
         notebook.add(self.tab_live,text='Live motion, magnetic field & altitude')
         notebook.add(self.tab_thermal,text='MPU6050 / BMP280 temperatures')
+        notebook.add(self.tab_latency,text='Sensor latency')
+        notebook.add(self.tab_geometry,text='LiDAR geometry')
         self.notebook=notebook
         fig=Figure(figsize=(14,8.0),dpi=95,constrained_layout=False)
-        fig.subplots_adjust(left=0.07,right=0.97,bottom=0.15,top=0.90,wspace=0.32,hspace=1.35)
+        fig.subplots_adjust(left=0.07,right=0.97,bottom=0.12,top=0.91,wspace=0.30,hspace=0.48)
         ax_acc=fig.add_subplot(2,3,1)
         ax_gyro=fig.add_subplot(2,3,2)
         ax_3d=fig.add_subplot(2,3,3,projection='3d')
@@ -844,7 +990,7 @@ class Application:
         for ax,title,keys,unit in [
             (ax_acc,'Accel · 500 Hz',('ax','ay','az'),'m/s²'),
             (ax_gyro,'Gyro · 500 Hz',('gx','gy','gz'),'°/s'),
-            (ax_mag,'MAG · QMC 200 Hz ODR',('mx','my','mz'),'µT'),
+            (ax_mag,'MAG · raw axes',('mx','my','mz'),'µT'),
             (ax_pressure,'BMP pressure',('pressure',),'Pa'),
             (ax_alt,'Relative height',('altitude',),'m')]:
             ax.set_title(title,fontsize=9,pad=3)
@@ -883,9 +1029,35 @@ class Application:
         self.temperature_canvas=FigureCanvasTkAgg(ftemp,master=self.tab_thermal)
         self.temperature_canvas.draw()
         self.temperature_canvas.get_tk_widget().pack(fill='both',expand=True,padx=3,pady=3)
+        ttk.Label(self.tab_latency,textvariable=self.latency_status,justify='left',
+                  wraplength=1150,foreground='#285884').pack(fill='x',padx=8,pady=(8,2))
+        ttk.Label(self.tab_latency,textvariable=self.latency_summary,justify='left',
+                  wraplength=1150,font=('Consolas',8)).pack(fill='x',padx=8,pady=(0,3))
+        latency_fig=Figure(figsize=(12,7),dpi=90)
+        latency_fig.subplots_adjust(left=.08,right=.97,bottom=.09,top=.92,wspace=.30,hspace=.38)
+        self.latency_axes=[]
+        self.latency_lines={}
+        for index,sensor in enumerate(('MPU','QMC','BMP','LiDAR'),start=1):
+            ax=latency_fig.add_subplot(2,2,index)
+            ax.set_title(f'{sensor}: sample age and per-tick service',fontsize=10)
+            ax.set_xlabel('Elapsed time (s)',fontsize=8)
+            ax.set_ylabel('Microseconds (µs)',fontsize=8)
+            ax.tick_params(labelsize=8)
+            ax.grid(alpha=.25)
+            age,=ax.plot([],[],label='sample age',lw=1.1)
+            service,=ax.plot([],[],label='sensor service',lw=1.1)
+            ax.axhline(2000,color='#b44',linestyle='--',linewidth=.8,label='2 ms service target')
+            ax.legend(loc='upper right',fontsize=7)
+            self.latency_axes.append(ax)
+            self.latency_lines[sensor]=(age,service)
+        self.latency_canvas=FigureCanvasTkAgg(latency_fig,master=self.tab_latency)
+        self.latency_canvas.draw()
+        self.latency_canvas.get_tk_widget().pack(fill='both',expand=True,padx=5,pady=5)
+        self._build_geometry_tab()
         self.root.bind('<Return>',self.on_enter)
         self.root.protocol('WM_DELETE_WINDOW',self.close)
         self.update_stage()
+        self.refresh_lidar_ports()
         self.root.after(120,self.pump)
 
     def on_enter(self,event):
@@ -899,6 +1071,93 @@ class Application:
         except ImportError:
             return []
 
+    def _load_geometry_config(self):
+        if not self.geometry_config_path.exists():
+            return
+        try:
+            obj=json.loads(self.geometry_config_path.read_text(encoding='utf-8'))
+            vector=obj.get('sensor_position_from_com_body_m',{})
+            for key,axis in (('rx','x'),('ry','y'),('rz','z')):
+                value=float(vector[axis])
+                if math.isfinite(value):
+                    self.geometry_vars[key].set(f'{value:.6f}')
+        except (OSError,ValueError,KeyError,TypeError,json.JSONDecodeError):
+            self.geometry_result.set('Geometry config could not be read; using preliminary defaults.')
+
+    def _build_geometry_tab(self):
+        from tkinter import ttk
+        ttk.Label(self.tab_geometry,
+            text='Body axes: +X forward, +Y left, +Z up. LiDAR beam: body −Z.',
+            font=('Segoe UI',10,'bold')).pack(anchor='w')
+        ttk.Label(self.tab_geometry,
+            text='The default COM lever arm (0, 0, −0.026658) m is a preliminary estimate. Measure the assembled aircraft. Range D is slant distance from the optical reference; this worksheet is not an altitude estimator and assumes the entered attitude is body-to-world ZYX.',
+            wraplength=1100,justify='left').pack(anchor='w',pady=(3,10))
+        frame=ttk.Frame(self.tab_geometry);frame.pack(anchor='w',fill='x')
+        fields=(('Sensor x from COM (m)','rx'),('Sensor y from COM (m)','ry'),
+                ('Sensor z from COM (m)','rz'),('Roll (deg)','roll'),
+                ('Pitch (deg)','pitch'),('Yaw (deg)','yaw'),('Slant range D (m)','distance'))
+        for index,(label,key) in enumerate(fields):
+            row=index//4;col=(index%4)*2
+            ttk.Label(frame,text=label).grid(row=row,column=col,sticky='w',padx=(0,4),pady=5)
+            ttk.Entry(frame,textvariable=self.geometry_vars[key],width=12).grid(row=row,column=col+1,sticky='w',padx=(0,14),pady=5)
+        actions=ttk.Frame(self.tab_geometry);actions.pack(anchor='w',pady=8)
+        ttk.Button(actions,text='Calculate geometry',command=self.calculate_geometry).pack(side='left',padx=(0,8))
+        ttk.Button(actions,text='Save offset configuration',command=self.save_geometry_config).pack(side='left')
+        ttk.Label(self.tab_geometry,textvariable=self.geometry_result,justify='left',
+                  wraplength=1100,font=('Consolas',10)).pack(anchor='w',pady=8)
+        ttk.Label(self.tab_geometry,
+            text='Ground-plane, slope, obstacle, footprint, attitude uncertainty, timestamp and innovation checks remain estimator responsibilities. Do not zero navigation altitude from a new range or treat a beam hit as terrain under COM when tilted.',
+            wraplength=1100,justify='left',foreground='#7A4B00').pack(anchor='w',pady=(4,0))
+
+    def calculate_geometry(self):
+        try:
+            values={key:float(var.get()) for key,var in self.geometry_vars.items()}
+            if not all(math.isfinite(v) for v in values.values()):
+                raise ValueError('all entries must be finite')
+            if values['distance'] < 0:
+                raise ValueError('slant range must be non-negative')
+        except ValueError as exc:
+            self.geometry_result.set(f'Invalid geometry input: {exc}')
+            return
+        roll,pitch,yaw=(math.radians(values[key]) for key in ('roll','pitch','yaw'))
+        cr,sr=math.cos(roll),math.sin(roll)
+        cp,sp=math.cos(pitch),math.sin(pitch)
+        cy,sy=math.cos(yaw),math.sin(yaw)
+        rotation=((cy*cp,cy*sp*sr-sy*cr,cy*sp*cr+sy*sr),
+                  (sy*cp,sy*sp*sr+cy*cr,sy*sp*cr-cy*sr),
+                  (-sp,cp*sr,cp*cr))
+        def rotate(vector):
+            return tuple(sum(rotation[i][j]*vector[j] for j in range(3)) for i in range(3))
+        r_sensor=(values['rx'],values['ry'],values['rz'])
+        beam=(0.0,0.0,-1.0)
+        rotated_sensor=rotate(r_sensor)
+        rotated_beam=rotate(beam)
+        h_sensor=-values['distance']*rotated_beam[2]
+        h_com=-rotated_sensor[2]+h_sensor
+        footprint=rotate(tuple(r_sensor[i]+values['distance']*beam[i] for i in range(3)))
+        self.geometry_result.set(
+            f'H_sensor = {h_sensor:.6f} m\n'
+            f'H_COM above the beam-hit point = {h_com:.6f} m\n'
+            f'Beam-hit displacement from COM: x={footprint[0]:+.6f}, '
+            f'y={footprint[1]:+.6f}, z={footprint[2]:+.6f} m\n'
+            f'Formula: H_COM = −(R r_s)_z − D(R d_s)_z; D is slant range.')
+
+    def save_geometry_config(self):
+        try:
+            vector={axis:float(self.geometry_vars[key].get())
+                    for key,axis in (('rx','x'),('ry','y'),('rz','z'))}
+            if not all(math.isfinite(v) for v in vector.values()):
+                raise ValueError('offset values must be finite')
+            obj={'schema':'IntelQCopter LiDAR mounting geometry v1',
+                 'body_axes':{'x':'forward','y':'left','z':'up'},
+                 'sensor_position_from_com_body_m':vector,
+                 'measurement_state':'preliminary_unverified',
+                 'source':'user-provided preliminary F450 geometry; verify by physical measurement'}
+            self.geometry_config_path.write_text(json.dumps(obj,indent=2)+'\n',encoding='utf-8')
+            self.geometry_result.set(f'Saved configurable preliminary offset to {self.geometry_config_path.name}; verify the physical dimensions before estimator use.')
+        except (OSError,ValueError) as exc:
+            self.geometry_result.set(f'Could not save geometry configuration: {exc}')
+
     def refresh_lidar_ports(self):
         choices = self._available_lidar_ports()
         self.lidar_port_combo['values'] = choices
@@ -910,7 +1169,7 @@ class Application:
     def connect_lidar_from_gui(self):
         port = self.lidar_port_var.get().strip()
         if not self.worker or not self.worker.started.is_set() or self.worker.error:
-            self.lidar_status_var.set('ESP serial connection must start before connecting LiDAR.')
+            self.lidar_status_var.set('Start the ESP sensor stream first, then connect a separate LiDAR UART if needed.')
             return
         ok, note = self.worker.connect_lidar(port)
         self.lidar_status_var.set(note)
@@ -1016,7 +1275,10 @@ class Application:
             self.current_attempt = 0
             self.mag_points.clear()
             self.times.clear()
+            self.latency_times.clear()
             for d in self.series.values():
+                d.clear()
+            for d in self.latency_series.values():
                 d.clear()
             self.thermal_pressure_t.clear()
             self.thermal_pressure_p.clear()
@@ -1133,7 +1395,35 @@ class Application:
             self.info.set(f'PREPARE {s.pose} / {s.mag_stage}: {self.args.settle_seconds:g}-second countdown started. Record begins automatically.')
             self.progress.set(f'0 / {s.target:,} — PREPARING ({self.args.settle_seconds:g} s)')
 
+    def _set_latency_status(self,text):
+        if text != self._latency_status_last:
+            self._latency_status_last=text
+            self.latency_status.set(text)
+
     def pump(self):
+        if self.worker:
+            drained=0
+            while drained<2000:
+                try:sample_time,ages,service,fresh_mask,errors,deadline_count=self.worker.latency_samples.get_nowait()
+                except queue.Empty:break
+                drained+=1
+                self.latency_times.append(sample_time-self.start_time)
+                for index,sensor in enumerate(('MPU','QMC','BMP','LiDAR')):
+                    age=ages[index] if ages else None
+                    duration=service[index] if service else None
+                    self.latency_series[f'{sensor}_age'].append(float(age) if age is not None else math.nan)
+                    self.latency_series[f'{sensor}_service'].append(float(duration) if duration is not None else math.nan)
+                self._set_latency_status(
+                    'Firmware v4 reports per-control-tick age and sensor service time. '
+                    'Dashed line is the <2 ms service target; sample age, conversion period, '
+                    'filter delay, and GUI/network delay are distinct. '
+                    f'Fresh mask: 0x{fresh_mask:02X}; cumulative MPU/QMC/BMP/LiDAR errors '
+                    f'{errors}; deadline overruns {deadline_count}.')
+            frame=self.worker.last_frame
+            if frame is not None and frame.version < 4:
+                self._set_latency_status(
+                    f'Firmware v{frame.version} has no per-sensor timestamps/service metrics. '
+                    'Plots stay empty until v4 sends measured age and service time; packet interval is not sensor latency.')
         if self.worker and self.worker.lidar_reader is not None:
             reader=self.worker.lidar_reader
             state=('ERROR: '+reader.error if reader.error else
@@ -1193,7 +1483,11 @@ class Application:
                 else:
                     self.info.set(f'All {len(self.stages)} phases complete. Saved to {self.output}')
             elif kind=='lidar_status':
-                self.info.set(payload)
+                self.lidar_status_var.set(payload)
+            elif kind=='lidar_sample':
+                if payload.get('valid') and math.isfinite(payload.get('distance_m',math.nan)):
+                    self.geometry_vars['distance'].set(f"{payload['distance_m']:.6f}")
+                    self.calculate_geometry()
             elif kind=='saved_checkpoint':
                 saved, new_file=payload
                 self.saved_info.set(f'SAVED: {saved.name} | now recording {new_file.name}')
@@ -1204,6 +1498,7 @@ class Application:
                 self.calc.config(state='normal')
                 self.combine_button.config(state='normal')
                 self.mag_quality_button.config(state='normal')
+                self.lidar_analysis_button.config(state='normal')
                 if ok:self.msg.showinfo('Analysis finished',report[-5000:])
                 else:self.msg.showerror('Calibration failed',report[-5000:])
             elif kind=='plot':
@@ -1215,19 +1510,21 @@ class Application:
             self.redraw_big3d()
         if self.live_plot_enabled and now-self.last_plot>=0.90:
             self.last_plot=now
-            if self.times:
-                if self.notebook.index('current') == 0:
-                    self.redraw()
-                else:
-                    self.redraw_thermal()
+            selected=self.notebook.index('current')
+            if selected == 0 and self.times:
+                self.redraw()
+            elif selected == 1 and self.times:
+                self.redraw_thermal()
+            elif selected == 2:
+                self.redraw_latency()
             if self.worker:
                 w=self.worker
                 frame=w.last_frame
                 age=(time.monotonic()-w.last_byte_at) if w.last_byte_at else time.monotonic()-self.start_time
                 if not w.bytes_total and age>3:
-                    self.health.set(f'NO UART DATA on {w.port} at {BAUD} baud. Close other serial apps; confirm ESP firmware streams 52-byte v2/v3 packets.')
+                    self.health.set(f'NO SENSOR DATA on {w.port if not w.wifi else "Wi-Fi"}. Confirm the ESP firmware stream and transport.')
                 elif w.bytes_total and not w.frames_total:
-                    self.health.set(f'UART bytes={w.bytes_total:,}, valid packets=0 | sync={w.decoder.bad_sync:,} CRC={w.decoder.bad_crc:,} version={w.decoder.bad_version:,}. Wrong baud/protocol or incompatible firmware.')
+                    self.health.set(f'Bytes={w.bytes_total:,}, valid packets=0 | sync={w.decoder.bad_sync:,} CRC={w.decoder.bad_crc:,} version={w.decoder.bad_version:,}. Check transport, packet size/version, and CRC.')
                 elif frame:
                     self.health.set(f'{w.frames_total:,} packets | MPU {w.mpu_total:,} | MAG ok {w.mag_valid_total:,} / fresh {w.mag_total:,} / plotted {self.mag_plot_total:,} | BMP {w.bmp_total:,} | flags 0x{frame.flags:02X} | CRC {w.decoder.bad_crc:,} | gaps {w.seq_gaps:,}')
                 elif w.bytes_total:
@@ -1235,6 +1532,7 @@ class Application:
         self.root.after(120,self.pump)
 
     def add_point(self,p):
+        now=p['t']-self.start_time
         mag_point=p.get('mag_point')
         if mag_point is not None:
             self.mag_points.append(mag_point)
@@ -1299,6 +1597,31 @@ class Application:
             self.thermal_scatter.scatter(self.thermal_pressure_t[::3],self.thermal_pressure_p[::3],s=7,alpha=.45)
         self.temperature_canvas.draw_idle()
 
+    def redraw_latency(self):
+        ts=list(self.latency_times)
+        summary=[]
+        for index,sensor in enumerate(('MPU','QMC','BMP','LiDAR')):
+            ax=self.latency_axes[index]
+            age_line,service_line=self.latency_lines[sensor]
+            ages=list(self.latency_series[f'{sensor}_age'])
+            service=list(self.latency_series[f'{sensor}_service'])
+            age_line.set_data(ts,ages)
+            service_line.set_data(ts,service)
+            if ts:
+                ax.set_xlim(max(0,ts[-1]-30),max(30,ts[-1]+0.1))
+            finite=[value for value in (*ages,*service) if math.isfinite(value)]
+            if finite:
+                ax.set_ylim(0,max(2200,max(finite)*1.08))
+            def percentile_stats(values):
+                clean=sorted(value for value in values if math.isfinite(value))
+                if not clean:return 'n/a'
+                def at(q):return clean[round((len(clean)-1)*q)]
+                return '/'.join(str(round(at(q))) for q in (0.50,0.95,0.99,1.0))
+            summary.append(f'{sensor} age P50/P95/P99/max {percentile_stats(ages)} µs; '
+                           f'service {percentile_stats(service)} µs')
+        self.latency_summary.set('Rolling window (~15 s), P50/P95/P99/max: '+' | '.join(summary))
+        self.latency_canvas.draw_idle()
+
     def calculate(self):
         from tkinter import filedialog
         if self.analysis_running:
@@ -1328,6 +1651,34 @@ class Application:
                 result=subprocess.run(command,capture_output=True,text=True,timeout=360)
                 report=(result.stdout+'\n'+result.stderr).strip()
                 self.events.put(('analysis_done',(result.returncode==0,report)))
+            except Exception as exc:
+                self.events.put(('analysis_done',(False,str(exc))))
+        threading.Thread(target=job,daemon=True).start()
+
+    def analyze_lidar_csv(self):
+        from tkinter import filedialog
+        if self.analysis_running:
+            self.msg.showinfo('Analysis running','Finish the current analysis first.')
+            return
+        names=filedialog.askopenfilenames(parent=self.root,
+            title='Select completed calibration CSV file(s) containing the four LiDAR references',
+            initialdir=str(ROOT/'captures'),filetypes=[('Calibration CSV','*.csv')])
+        if not names:return
+        paths=[Path(name).resolve() for name in names]
+        if self.worker and self.worker.is_alive() and self.worker.current_file.resolve() in paths:
+            self.msg.showwarning('Active CSV','Save or close the current CSV segment before analyzing it.')
+            return
+        self.analysis_running=True
+        self.lidar_analysis_button.config(state='disabled')
+        self.calc.config(state='disabled')
+        self.info.set('LiDAR range calibration analysis running; incomplete references will be reported.')
+        def job():
+            try:
+                command=[sys.executable,str(ROOT/'tools/lidar_calibration.py'),
+                         '--analyze',*map(str,paths),'--min-samples',str(self.args.lidar_samples),
+                         '--required-distances','0.25','0.50','1.00','2.00']
+                result=subprocess.run(command,capture_output=True,text=True,timeout=180)
+                self.events.put(('analysis_done',(result.returncode==0,(result.stdout+'\n'+result.stderr).strip())))
             except Exception as exc:
                 self.events.put(('analysis_done',(False,str(exc))))
         threading.Thread(target=job,daemon=True).start()

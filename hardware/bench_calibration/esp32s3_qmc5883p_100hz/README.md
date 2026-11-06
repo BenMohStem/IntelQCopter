@@ -1,131 +1,119 @@
-# IntelQCopter v4 - complete UART calibration + QMC failure triage
+# ESP32-S3 sensor calibration bench
 
-This copy is integrated at `hardware/bench_calibration/esp32s3_qmc5883p_100hz`
-in the QCopter repository. From this directory, use the package-local launcher:
+Updated: 2026-11-06. This folder contains the desktop calibration tool and a
+separate ESP32-S3 bench firmware. It is not the Pico flight-controller runtime.
+ESC/motor output and physical arming remain disabled.
+
+## Launch
+
+From the QCopter repository root:
 
 ```powershell
 .\qcopter.ps1 calibration-gui
-.\qcopter.ps1 calibration-gui -UploadFirmware
+```
+
+This starts the GUI without flashing. Add `-UploadFirmware` only when you
+intend to build and flash the ESP32-S3 bench firmware. `-Check -Seconds 20`
+runs a serial preflight and exits without opening the GUI:
+
+```powershell
 .\qcopter.ps1 calibration-gui -UploadFirmware -Check -Seconds 20
 ```
 
-Without `-UploadFirmware`, it uses the installed firmware and starts the GUI.
-With `-UploadFirmware`, it flashes this bench firmware before starting the GUI.
-Add `-Check -Seconds 20` to run the UART preflight and stop without opening the
-GUI. From the repository root, `.\qcopter.ps1 calibration-gui` dispatches to
-the same calibration launcher.
+The GUI also supports `-Wifi` for the ESP32 AP/UDP path. Cable-free capture is
+not hardware-validated yet. Do not assume that selecting Wi-Fi proves the AP,
+telemetry, or LiDAR forwarding works.
 
-The package launcher delegates to `tools/start_calibration.ps1`.
+## Guided calibration stages
 
-## Fast workflow (Windows PowerShell)
+The default session has 16 stages. The established 12 gyro, six-face accel,
+magnetometer and barometer stages are followed by LiDAR range-reference stages
+13–16 at 0.25, 0.50, 1.00 and 2.00 m. Each LiDAR reference requires 300 fresh,
+valid readings by default. The user can skip all four when the module or its
+forwarded data is unavailable; skipped stages remain marked incomplete.
 
-The same upload and preflight can be run directly:
+Measure each target distance from the TOFSense-F2 Mini optical reference to a
+flat, matte target. Keep the beam square to the target and record the measured
+reference distance. A separate 3.3 V UART adapter may be selected in the GUI;
+firmware v4 may instead forward range/status/timestamp over USB or Wi-Fi. Do not
+connect LiDAR UART to the 400 kHz I²C bus.
 
-```powershell
-.\tools\start_calibration.ps1 -UploadFirmware -Check -Seconds 20
-```
-
-- Resolves the CH343 serial COM port automatically (or use `-Port COM3`).
-- Builds and flashes the complete sensor calibration firmware.
-- Reads the CRC-protected 52-byte binary UART stream at **921600 baud**.
-- Uses 500 Hz MPU target, QMC normal-mode 200 Hz low-OSR (`CTRL1=0x3D`), BMP280 ~10 Hz, and 100 kHz shared I2C; Wi-Fi off.
-- Fails instead of claiming calibration when magnetometer freshness is zero.
-
-To start the GUI **without reflash**:
+LiDAR analysis requires every requested reference to meet the configured sample
+minimum. Example for a complete four-range GUI CSV:
 
 ```powershell
-.\tools\start_calibration.ps1
+python .\hardware\bench_calibration\esp32s3_qmc5883p_100hz\tools\lidar_calibration.py `
+  --analyze .\hardware\bench_calibration\esp32s3_qmc5883p_100hz\captures\<capture>.csv `
+  --min-samples 300 --required-distances 0.25 0.50 1.00 2.00
 ```
 
-For the GUI after reflash:
+The LiDAR Geometry tab exposes the preliminary sensor-to-COM vector, attitude
+and slant range. Its result is a geometry worksheet, not fused altitude. Save a
+geometry configuration only after entering a physically measured lever arm.
 
-```powershell
-.\tools\start_calibration.ps1 -UploadFirmware
-```
+## Sensor profile targets (not validation claims)
 
-The calibration GUI contains 12 stages: stationary gyro, six accelerometer faces,
-four magnetometer rotations, and barometer. There are no LiDAR stages. The live
-status line distinguishes no UART bytes from incompatible or corrupt packets
-and reports valid sensor counts. The isolated 200 Hz QMC profile measured
-188.16 fresh samples/s at 100 kHz I2C. A later 400 kHz full-stream capture had
-zero MAG flags, so the full calibration profile has been switched to 100 kHz
-pending a confirming combined-stream capture. Bus rise time and pull-up
-suitability on the user's wiring are not measured.
+| Device | Requested starting point | Evidence needed |
+|---|---|---|
+| MPU6050 | 500 Hz loop; FIFO; ±500 °/s; ±8 g; DLPF 188/184 Hz first, then 256/260 Hz trial, 98/94 Hz only if 188 Hz fails | Register readback, 14-byte FIFO framing, real cadence, overflow/loss, noise, filter delay and deadline data |
+| QMC5883P | Shared 400 kHz I²C; normal 200 Hz low-OSR (`CTRL1=0x3D`, `CTRL2=0x08`, `XYZ_SIGN=0x06`); poll without waiting for DRDY | Fresh XYZ count/rate at 400 kHz with MPU and BMP operating concurrently; bus electrical measurements and error counters |
+| BMP280 | Fastest verified useful rate, nominally about 166.7 Hz at ×1/×1 and 0.5 ms standby | Actual fresh conversion intervals, filter noise/delay and pressure-disturbance rejection |
+| TOFSense-F2 Mini | Up to 50 Hz; preserve module timestamp, raw slant range and status | Confirm SKU, power/logic, connector/wiring, selected interface, frame semantics, accuracy on measured targets and installed noise |
 
-To start calibration with the selected 200 Hz QMC profile, upload the full
-binary firmware and open the GUI:
+Every 500 Hz iteration must proceed without waiting for sensor DRDY/INT,
+conversion completion or LiDAR. It should use the latest coherent sample from
+each device, preserve native timestamps and distinguish fresh from reused data.
+The <2 ms target applies to measured per-tick sensor service time; it does not
+mean BMP/LiDAR convert at 500 Hz or that end-to-end display delay is below 2 ms.
 
-```powershell
-.\qcopter.ps1 calibration-gui -UploadFirmware
-```
+The firmware worktree is being changed by DSH. A PlatformIO build flag or source
+comment is not proof that all three sensors work at 400 kHz. Do not call any
+requested rate verified until the pinned build, register readbacks, sensor
+freshness, transaction timing and capture evidence support it.
 
-Without `-UploadFirmware`, the launcher does not flash and assumes compatible
-binary calibration firmware is already installed.
+## Latency and telemetry
 
-## If magnetometer is still missing: ONE direct comparison
+The GUI has separate Live, Temperature, Sensor Latency and LiDAR Geometry tabs.
+The latency tab plots MPU, QMC, BMP and LiDAR age and service time, plus rolling
+P50/P95/P99/max and per-sensor error/deadline counters. Current v2/v3 packets
+are 52 bytes and do not carry these per-sensor metrics; the tab correctly stays
+empty and says so. Firmware v4 is specified as a 92-byte CRC-protected frame
+with per-tick ages/service times, LiDAR range/status/time, freshness and valid
+masks, error counters and control deadline overruns. See
+[`docs/esp32-competition-readiness-plan-2026-11-06.md`](../../../docs/esp32-competition-readiness-plan-2026-11-06.md).
 
-```powershell
-.\tools\start_calibration.ps1 -MagProbe -Seconds 20
-```
+The GUI keeps v2/v3 compatibility. A 500 Hz packet stream or GUI redraw rate is
+not a substitute for sensor-native timestamps or measured service durations.
+Wi-Fi packet loss, sequence gaps, CRC errors and reconnect behavior must be
+reported separately before a cable-free capture is considered complete.
 
-This **temporarily reflashes the exact isolated v13 MAG-only firmware** with
-100 Hz QMC, I2C at 100 kHz, Wi-Fi off and text logging at **115200**. Follow the
-script's true power-cycle instruction. It saves the complete raw log in `captures/`.
+## Geometry and safety
 
-A **PASS** in MAG-only probe and **FAIL** in complete firmware indicates a
-system-integration issue (bus utilization, BMP/MPU interference, transport/scheduling,
-sequence or power loading). A **FAIL** in both after a true power cycle means the
-QMC communication/hardware/power problem remains unresolved; repeating calibration
-cannot solve it. `0x80` ID or an ACK alone does not prove the sensor is converting.
+Use body axes +X forward, +Y left, +Z up; the LiDAR points along body −Z. The
+current estimated F450 sensor position is `(0,0,-0.026658) m` from COM, derived
+from the user-reported PCB datum. It is preliminary, editable and not measured.
+The full geometry is
+`H_COM = -(R r_s)_z - D (R d_s)_z`, with `d_s=(0,0,-1)` and body-to-world
+`R=Rz(yaw)Ry(pitch)Rx(roll)`. The centered level-ground simplification is
+`(D+0.026658) cos(roll) cos(pitch)`. The beam may hit a different terrain patch
+when tilted; distinguish that clearance from navigation height and terrain
+height. Never re-zero on a new range or a suspected airborne reboot.
 
-**Restore full firmware after MAG-only probe**:
+Before wiring the F2 Mini, verify its supply requirement (manufacturer-listed
+4.3–5.2 V) and 3.3 V TTL logic. Never connect 5 V logic to ESP32 RX. Remove
+propellers and isolate ESC power/signals for all bench work. Do not arm motors.
 
-```powershell
-.\tools\start_calibration.ps1 -UploadFirmware -Check -Seconds 20
-```
+## Existing evidence and limits
 
-## Changes from v3
+The November 3 integrated preflight captured MPU/BMP packets but zero MAG-valid
+and zero MAG-fresh values; that result remains a real failed trial. Earlier
+isolated QMC runs produced fresh readings, but do not prove that the present
+shared bus/wiring works. The current DSH source edits and the requested 400 kHz,
+188 Hz and BMP rates are not physical validation. No LiDAR interface or
+airframe lever arm has been independently surveyed in this work session.
 
-- Preserved original `tools/start_calibration.ps1` and COM auto-selection.
-- **Removed** root-level `START_*` and redundant cmd wrappers.
-- Added `src/mag_probe.cpp` from working v13 and isolated PlatformIO diagnostic env.
-- Full firmware configures QMC immediately after MPU bypass **before BMP280**.
-- QMC reads use STOP+START as the primary path after integrated logs reported
-  ESP32 repeated-START failures. MPU/BMP reads retain their prior transaction.
-  This targeted workaround is not hardware-confirmed until fresh XYZ appears in
-  the integrated preflight.
-- On eight successive QMC status failures, polling backs off to 10 Hz instead
-  of flooding the bus. No auto register reconfiguration and no fake samples.
-- Normal UART remains at 921600, 100 Hz QMC profile (`0xC9`, `0x08`, `0x06`),
-  500 Hz MPU target and CRC 52-byte packets.
-- Bench safety: ESC GPIOs INPUT ONLY. No motor actuation.
-
-## Calibration defaults
-
-| Stage | Default |
-|---|---|
-| gyro stationary | 30,000 samples |
-| accelerometer six faces | 5,000 samples each |
-| magnetic axis turns | 2,000 samples each |
-| magnetometer 3D tumble | 8,000 samples |
-| barometer | 1,000 samples |
-| settle | 3 seconds |
-
-## Safety and accuracy
-
-No firmware is flight-validated. Never attempt flight on sensor diagnostics or
-without working IMU estimation, motor mapping and independent failsafe checks.
-Remove propellers for all captures; do not arm motor outputs. This is a
-software-only change; the QMC defect cannot be claimed fixed until hardware logs
-show valid data in the **complete** firmware. If both modes fail, inspect 3.3V
-power while the QMC is started, I2C pull-ups, solder joints, MPU bypass and
-truly remove all power for a cold reset.
-
-## Serial notes
-
-- GUI/preflight calibration firmware: **921600** CH343 UART binary.
-- MAG-only v13 probe: **115200** CH343 UART text.
-- PlatformIO upload speed may be **460800** or other and is independent of the firmware UART baud.
-- Only one program may hold COM port at once.
-
-QMC datasheet: https://www.qstcorp.com/upload/pdf/202512/13-52-19%20QMC5883P%20Datasheet%20Rev.E.pdf
+The large November 6 capture has an empty skip manifest but no saved launch
+arguments, and its accepted rows include multiple attempts/counts that differ
+from the GUI's default targets. It is **not** classified as a 100% complete
+session and must not be included in calibration fitting until its intended
+targets and provenance are established. Preserve it as evidence.
