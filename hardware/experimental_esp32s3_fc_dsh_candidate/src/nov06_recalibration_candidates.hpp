@@ -1,9 +1,8 @@
 #pragma once
 
 // Independent Nov 6, 2026 three-session recalibration and PID audit.
-// This is a compiled-in research record, NOT an active firmware profile.
-// Do not copy these values into live sensor or PID state without completing
-// the hardware, axis, units, and motor-response validation listed below.
+// Values are loaded into the isolated ESP32-S3 software estimator/controller
+// candidate for review. This does not validate hardware or authorize outputs.
 
 namespace iq::nov06_recalibration {
 
@@ -23,11 +22,13 @@ struct PidGains {
   float kd;
 };
 
-// Runtime activation is intentionally forbidden for this candidate.
+// Software candidate values are active in the isolated S3 source. Physical
+// command input/output remain compile-time disabled in main.cpp.
 inline constexpr bool kResearchOnly = true;
 inline constexpr bool kHardwareValidated = false;
-inline constexpr bool kApplyCalibrationToRuntime = false;
-inline constexpr bool kApplySimulationPidToRuntime = false;
+inline constexpr bool kApplyCalibrationToRuntime = true;
+inline constexpr bool kApplySimulationPidToRuntime = true;
+inline constexpr bool kEnableMagHeadingFusion = false;
 inline constexpr bool kEnableMotorAccelerationPid = false;
 inline constexpr bool kHasMotorRpmTelemetry = false;
 
@@ -52,6 +53,7 @@ inline constexpr bool kPressureUnitConversionVerified = false;
 // was 0.3480 m/s^2. Verify axis signs with a fixture before use.
 inline constexpr Vector3f kAccelBiasMps2 = {
     0.24092418f, -0.07899307f, -0.88462110f};
+inline constexpr float kAccelCrossSessionMaxVectorErrorMps2 = 0.34802136f;
 inline constexpr Matrix3f kAccelCorrection = {{
     { 0.99455302f, -0.04276151f,  0.05176808f},
     { 0.04260636f,  0.99510499f,  0.02178648f},
@@ -65,6 +67,8 @@ inline constexpr Vector3f kGyroBiasDps = {
     -11.01505496f, 7.00116285f, -1.09212824f};
 inline constexpr Vector3f kGyroBiasBetweenSessionSdDps = {
     0.00671808f, 0.00262948f, 0.00838520f};
+inline constexpr Vector3f kGyroRestNoiseSdDps = {
+    0.07033f, 0.08091f, 0.07713f};
 
 // QMC5883P sphere/ellipsoid magnitude-fit candidate in native chip XYZ.
 // This is not a heading or sensor-to-body calibration. The body transform,
@@ -125,5 +129,11 @@ inline constexpr PidGains kOptionalYawHeadingPid = {0.70f, 0.010f, 0.006f};
 // IMU translational acceleration is not rotor angular acceleration.
 inline constexpr PidGains kMotorAccelerationPidResearchOnly = {
     0.0000100348765f, 0.0000100348765f, 0.0000000200698f};
+
+// Assumed maximum incremental torque authority for normalizing inner-loop
+// torque demands into the mixer's unitless differential-command inputs.
+inline constexpr float kRollPitchTorqueAuthorityNm = 0.74993305f;
+inline constexpr float kYawTorqueAuthorityNm = 0.07080835f;
+inline constexpr float kDerivativeFilterCutoffHz = 20.0f;
 
 } // namespace iq::nov06_recalibration

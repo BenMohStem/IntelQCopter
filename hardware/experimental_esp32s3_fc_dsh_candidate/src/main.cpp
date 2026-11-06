@@ -11,7 +11,7 @@
  *
  * Architecture:
  *   500 Hz control loop (IMU, MAG, Baro, LiDAR, estimation, PID, mixing)
- *   Motor GPIOs 12/11/14/13 = INPUT ONLY until explicit arming
+ *   Motor GPIOs 12/11/14/13 = INPUT ONLY; physical arming/output is absent
  *   No auto-arm on startup/reconnect
  *
  * Safety:
@@ -68,7 +68,7 @@ constexpr uint8_t BMP_PRIMARY_ADDRESS = 0x76;
 constexpr uint8_t BMP_ALTERNATE_ADDRESS = 0x77;
 constexpr uint8_t MAG_ADDRESS = 0x2C;   // QMC5883P
 
-// Motor pins: FL, FR, RR, RL — INPUT ONLY until armed
+// Motor pins: FL, FR, RR, RL — INPUT ONLY; no physical output in this build
 constexpr uint8_t MOTOR_PINS[4] = {12, 11, 14, 13};
 
 // LiDAR UART pins
@@ -89,6 +89,7 @@ constexpr uint32_t BMP_MAX_AGE_US = 20000;
 constexpr float GRAVITY_MPS2 = 9.80665f;
 // No verified Xbox/LoRa adapter is wired to this candidate's USB telemetry port.
 constexpr bool COMMAND_INPUT_ENABLED = false;
+constexpr bool MOTOR_OUTPUT_ENABLED = false;
 
 // UART telemetry
 constexpr uint32_t SERIAL_BAUD = 921600;
@@ -334,7 +335,7 @@ struct CalVector3 { float x, y, z; };
 struct CalMatrix3x3 { float m[3][3]; };
 
 struct AccelCalibration {
-  CalVector3 bias; CalMatrix3x3 scale; float rms_mps2; bool valid;
+  CalVector3 bias; CalMatrix3x3 scale; float max_vector_error_mps2; bool valid;
 };
 struct MagCalibration {
   CalVector3 hard_iron; CalMatrix3x3 soft_iron; float radius_mean_uT; bool valid;
@@ -401,15 +402,19 @@ struct MotorOutput {
 
 namespace iq {
 
-// Compile the audit values for traceability, but fail compilation if anyone
-// changes their research-only runtime gates without revisiting the evidence.
+// Keep the software research profile traceable and fail compilation if anyone
+// attempts to promote it to hardware-validated/input-enabled/output-enabled
+// without replacing these evidence gates deliberately.
 static_assert(nov06_recalibration::kResearchOnly
               && !nov06_recalibration::kHardwareValidated
-              && !nov06_recalibration::kApplyCalibrationToRuntime
-              && !nov06_recalibration::kApplySimulationPidToRuntime
+              && nov06_recalibration::kApplyCalibrationToRuntime
+              && nov06_recalibration::kApplySimulationPidToRuntime
+              && !nov06_recalibration::kEnableMagHeadingFusion
               && !nov06_recalibration::kEnableMotorAccelerationPid
-              && !nov06_recalibration::kHasMotorRpmTelemetry,
-              "Nov 6 audit candidates are not an active flight profile");
+              && !nov06_recalibration::kHasMotorRpmTelemetry
+              && !cfg::COMMAND_INPUT_ENABLED
+              && !cfg::MOTOR_OUTPUT_ENABLED,
+              "Research candidates require disabled input and motor output");
 
 uint16_t crcCcittFalse(const uint8_t*d,size_t s);
 
@@ -570,19 +575,24 @@ VerticalKf vert_kf;
 
 struct PidController {
   float kp=0,ki=0,kd=0,integrator=0,prev_meas=0,integrator_limit=0,output_limit=0;
-  bool initialized=false; float deriv_filt=0, deriv_alpha=0.7f;
+  bool initialized=false; float deriv_filt=0, derivative_cutoff_hz=20.0f;
   void reset(){integrator=0;prev_meas=0;initialized=false;deriv_filt=0;}
   float update(float sp,float meas,float dt){
     if(!isfinite(sp)||!isfinite(meas)||!isfinite(dt)||dt<=0.0f||dt>0.02f
         ||!isfinite(kp)||!isfinite(ki)||!isfinite(kd)
         ||!isfinite(integrator_limit)||integrator_limit<0.0f
         ||!isfinite(output_limit)||output_limit<0.0f
-        ||!isfinite(deriv_alpha)||deriv_alpha<0.0f||deriv_alpha>1.0f){
+        ||!isfinite(derivative_cutoff_hz)||derivative_cutoff_hz<=0.0f){
       reset();return 0.0f;
     }
     float err=sp-meas;
     float der=0;
-    if(initialized){der=(meas-prev_meas)/dt; deriv_filt=deriv_alpha*deriv_filt+(1-deriv_alpha)*der; der=deriv_filt;}
+    if(initialized){
+      der=(meas-prev_meas)/dt;
+      const float alpha=expf(-6.28318530718f*derivative_cutoff_hz*dt);
+      deriv_filt=alpha*deriv_filt+(1.0f-alpha)*der;
+      der=deriv_filt;
+    }
     float ci=integrator+err*dt; ci=fmaxf(-integrator_limit,fminf(integrator_limit,ci));
     float raw=kp*err+ki*ci-kd*der;
     if(!isfinite(raw)||!isfinite(ci)){reset();return 0.0f;}
@@ -598,8 +608,8 @@ bool pidReady(const PidController&p){
   return isfinite(p.kp)&&p.kp>0.0f&&isfinite(p.ki)&&p.ki>=0.0f
       &&isfinite(p.kd)&&p.kd>=0.0f&&isfinite(p.integrator_limit)
       &&p.integrator_limit>=0.0f&&isfinite(p.output_limit)
-      &&p.output_limit>0.0f&&isfinite(p.deriv_alpha)
-      &&p.deriv_alpha>=0.0f&&p.deriv_alpha<=1.0f;
+      &&p.output_limit>0.0f&&isfinite(p.derivative_cutoff_hz)
+      &&p.derivative_cutoff_hz>0.0f;
 }
 
 bool pidGainsConfigured(){
@@ -769,14 +779,57 @@ bool applyMagCal(const float raw[3],float out[3]){
   for(int i=0;i<3;i++) out[i]=cal_mag.soft_iron.m[i][0]*c[0]+cal_mag.soft_iron.m[i][1]*c[1]+cal_mag.soft_iron.m[i][2]*c[2];
   return true;}
 
-bool loadCalDefaults(){
-  cal_gyro.bias_dps={0,0,0}; cal_gyro.variance_dps2[0]=0.01f;cal_gyro.variance_dps2[1]=0.01f;cal_gyro.variance_dps2[2]=0.01f; cal_gyro.valid=false;
-  cal_accel.bias={0,0,0}; cal_accel.scale={{{1,0,0},{0,1,0},{0,0,1}}}; cal_accel.rms_mps2=0.05f; cal_accel.valid=false;
-  cal_mag.hard_iron={0,0,0}; cal_mag.soft_iron={{{1,0,0},{0,1,0},{0,0,1}}}; cal_mag.radius_mean_uT=40.0f; cal_mag.valid=false;
+void configurePid(PidController &pid, const nov06_recalibration::PidGains &g,
+                  float integrator_limit, float output_limit){
+  pid.kp=g.kp; pid.ki=g.ki; pid.kd=g.kd;
+  pid.integrator_limit=integrator_limit; pid.output_limit=output_limit;
+  pid.derivative_cutoff_hz=nov06_recalibration::kDerivativeFilterCutoffHz;
+  pid.reset();
+}
+
+bool loadNov06AnalysisProfile(){
+  using namespace nov06_recalibration;
+  cal_gyro.bias_dps={kGyroBiasDps.x,kGyroBiasDps.y,kGyroBiasDps.z};
+  for(int axis=0;axis<3;axis++){
+    const float sd=axis==0?kGyroRestNoiseSdDps.x
+                  :(axis==1?kGyroRestNoiseSdDps.y:kGyroRestNoiseSdDps.z);
+    cal_gyro.variance_dps2[axis]=sd*sd;
+  }
+  cal_gyro.valid=true;
+  cal_accel.bias={kAccelBiasMps2.x,kAccelBiasMps2.y,kAccelBiasMps2.z};
+  cal_accel.scale={{{kAccelCorrection.m[0][0],kAccelCorrection.m[0][1],kAccelCorrection.m[0][2]},
+                     {kAccelCorrection.m[1][0],kAccelCorrection.m[1][1],kAccelCorrection.m[1][2]},
+                     {kAccelCorrection.m[2][0],kAccelCorrection.m[2][1],kAccelCorrection.m[2][2]}}};
+  cal_accel.max_vector_error_mps2=kAccelCrossSessionMaxVectorErrorMps2;
+  cal_accel.valid=true;
+  cal_mag.hard_iron={kMagHardIronMicrotesla.x,kMagHardIronMicrotesla.y,kMagHardIronMicrotesla.z};
+  cal_mag.soft_iron={{{kMagSoftIronDet1.m[0][0],kMagSoftIronDet1.m[0][1],kMagSoftIronDet1.m[0][2]},
+                       {kMagSoftIronDet1.m[1][0],kMagSoftIronDet1.m[1][1],kMagSoftIronDet1.m[1][2]},
+                       {kMagSoftIronDet1.m[2][0],kMagSoftIronDet1.m[2][1],kMagSoftIronDet1.m[2][2]}}};
+  cal_mag.radius_mean_uT=kMagFieldRadiusMicrotesla;
+  cal_mag.valid=true;
   // A sea-level default is not a measured ground reference. Keep altitude hold
   // unavailable until a real, stationary ground-pressure calibration is loaded.
   cal_baro.ground_pressure_pa=101325.0f; cal_baro.reference_variance_pa2=0; cal_baro.measurement_variance_pa2=10.0f; cal_baro.valid=false;
-  calibration_loaded=false; return true;}
+  calibration_loaded=kApplyCalibrationToRuntime&&cal_accel.valid&&cal_gyro.valid&&cal_mag.valid;
+
+  // The analysis model uses radians/radians-per-second and returns torque for
+  // rate loops. Inner-loop output limits are the audit's assumed torque
+  // authority; computeControl() explicitly converts Nm to normalized mixer
+  // demand. These are software candidates, not measured actuator gains.
+  constexpr float I_LIMIT=0.5f;
+  constexpr float ANGLE_RATE_LIMIT_RAD_S=3.14159265359f;
+  constexpr float VERTICAL_ACCEL_LIMIT_MPS2=5.0f;
+  if(kApplySimulationPidToRuntime){
+    configurePid(pid_roll_rate,kRollRateTorquePid,I_LIMIT,kRollPitchTorqueAuthorityNm);
+    configurePid(pid_pitch_rate,kPitchRateTorquePid,I_LIMIT,kRollPitchTorqueAuthorityNm);
+    configurePid(pid_yaw_rate,kYawRateTorquePid,I_LIMIT,kYawTorqueAuthorityNm);
+    configurePid(pid_roll_angle,kRollAnglePid,I_LIMIT,ANGLE_RATE_LIMIT_RAD_S);
+    configurePid(pid_pitch_angle,kPitchAnglePid,I_LIMIT,ANGLE_RATE_LIMIT_RAD_S);
+    configurePid(pid_altitude,kAltitudePositionPid,I_LIMIT,cfg::FC_MAX_VERTICAL_SPEED_MPS);
+    configurePid(pid_vertical_speed,kVerticalSpeedPid,I_LIMIT,VERTICAL_ACCEL_LIMIT_MPS2);
+  }
+  return calibration_loaded&&pidGainsConfigured();}
 
 // ============================================================================
 // MPU6050 FIFO DRIVER
@@ -977,12 +1030,24 @@ void computeControl(const PilotCommand&cmd,const AttitudeEstimator&att,
   out.sensor_fault=false;
   out.failsafe=false;
   if(!out.armed){for(int i=0;i<4;i++)out.motor[i]=0.0f;return;}
-  float rs=cmd.roll*cfg::MAX_ROLL_DEG, ps=cmd.pitch*cfg::MAX_PITCH_DEG;
-  float rrs=pid_roll_angle.update(rs,att.roll_deg,dt);
-  float prs=pid_pitch_angle.update(ps,att.pitch_deg,dt);
-  float rtq=pid_roll_rate.update(rrs,att.roll_rate_dps,dt);
-  float ptq=pid_pitch_rate.update(prs,att.pitch_rate_dps,dt);
-  float ytq=pid_yaw_rate.update(cmd.yaw*cfg::MAX_YAW_RATE_DPS,att.yaw_rate_dps,dt);
+  constexpr float DEG_TO_RAD=0.0174532925199f;
+  float rs=cmd.roll*cfg::MAX_ROLL_DEG*DEG_TO_RAD;
+  float ps=cmd.pitch*cfg::MAX_PITCH_DEG*DEG_TO_RAD;
+  float rrs=pid_roll_angle.update(rs,att.roll_deg*DEG_TO_RAD,dt);
+  float prs=pid_pitch_angle.update(ps,att.pitch_deg*DEG_TO_RAD,dt);
+  float roll_torque_nm=pid_roll_rate.update(rrs,att.roll_rate_dps*DEG_TO_RAD,dt);
+  float pitch_torque_nm=pid_pitch_rate.update(prs,att.pitch_rate_dps*DEG_TO_RAD,dt);
+  float yaw_torque_nm=pid_yaw_rate.update(
+      cmd.yaw*cfg::MAX_YAW_RATE_DPS*DEG_TO_RAD,
+      att.yaw_rate_dps*DEG_TO_RAD,dt);
+  // The model PID outputs N·m. The mixer accepts normalized motor-command
+  // differentials, so normalize by the audit's assumed authority and clamp.
+  const float rtq=clampf(roll_torque_nm/
+      nov06_recalibration::kRollPitchTorqueAuthorityNm,-1.0f,1.0f);
+  const float ptq=clampf(pitch_torque_nm/
+      nov06_recalibration::kRollPitchTorqueAuthorityNm,-1.0f,1.0f);
+  const float ytq=clampf(yaw_torque_nm/
+      nov06_recalibration::kYawTorqueAuthorityNm,-1.0f,1.0f);
   float vs=cmd.throttle*cfg::FC_MAX_VERTICAL_SPEED_MPS;
   const float boost=clampf(control.boost_state,0.0f,1.0f);
   float tt=(boost-control.lt_reduce_state)*1.0f;
@@ -1005,7 +1070,7 @@ void computeControl(const PilotCommand&cmd,const AttitudeEstimator&att,
 
 void initHardware(){
   for(uint8_t p:cfg::MOTOR_PINS)pinMode(p,INPUT);
-  i2c_mgr.begin(); loadCalDefaults();
+  i2c_mgr.begin(); loadNov06AnalysisProfile();
   mpu_present=initMpu();
   if(mpu_present)delay(30);
   // Initialize the BMP independently; an MPU discovery failure must not hide
@@ -1092,7 +1157,8 @@ void loop(){
           : uint32_t(imu_sample.timestamp_us-previous_imu_us)/1000000.0f;
       previous_imu_us=imu_sample.timestamp_us;
       if(!attitude.initialized)attitude.init(imu_sample.accel);
-      const bool mag_usable=cal_mag.valid&&mag_sample.valid
+      const bool mag_usable=nov06_recalibration::kEnableMagHeadingFusion
+          &&cal_mag.valid&&mag_sample.valid
           &&timestampWithinUs(mag_sample.timestamp_us,cfg::MAG_STALE_MS*1000u);
       attitude.update(imu_sample.gyro,imu_sample.accel,
           mag_usable?mag_sample.calibrated:nullptr,mag_usable,imu_dt);

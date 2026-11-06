@@ -922,3 +922,25 @@ High:
   hover under that model, not an evidence-based reason to raise the cap. The
   audit reports repeated prop failures; no powered propeller tests, build, flash
   or motor-output enablement were performed.
+
+## 34. Revision 19 — 2026-11-06: Load the Nov 6 candidate into S3 software
+
+- The user explicitly requested implementation. The isolated ESP32-S3 review
+  candidate now loads the audit's accelerometer bias/matrix, gyro bias and MAG
+  hard/soft-iron fit into its software sample path. It configures the seven
+  simulation PID candidates, converts angle/rate signals to radians and
+  radians/second, applies the model's 20 Hz derivative low-pass, and converts
+  inner-loop torque to normalized mixer demand using the report's assumed
+  torque authority. This corrects the earlier statement in revision 18 that
+  the values remained entirely inert.
+- MAG chip-frame correction is available in the calibrated sample, while
+  heading fusion remains disabled because chip-to-body axes/handedness are
+  unverified. BMP calibration and hover collective remain invalid. The
+  command input is still disabled; motor GPIOs remain inputs and no ESC output
+  driver exists. Thus the controller remains blocked by failsafe prerequisites.
+- Calibration and PID values are now active as software candidates but are not
+  validated on hardware. The gyro fit may double-subtract undocumented MPU
+  hardware offsets; the accel fit may include pose/mounting error; and the PID
+  torque authority is assumed. Keep the 35% normal / 50% boost caps and 10%
+  idle policy unchanged. No build, test, flash, physical motor test or flight
+  test was run; the active bench-capture firmware was not modified.

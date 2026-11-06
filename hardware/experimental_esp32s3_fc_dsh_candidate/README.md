@@ -12,8 +12,8 @@ calibration firmware at
   `CONFIG.DLPF_CFG=1`, `SMPLRT_DIV=1` (nominal 500 Hz).
 - QMC5883P: address `0x2C`, 200 Hz `CTRL1=0x3D`, `CTRL2=0x08`,
   `XYZ_SIGN=0x06`; data are fresh only after DRDY and a successful read.
-  The last calibrated value is reused by the attitude update between new 200 Hz
-  conversions and rejected after 25 ms without a successful read.
+  Calibrated chip-frame values are retained for telemetry; heading fusion is
+  disabled until the chip-to-body rotation and handedness are verified.
 - BMP280: normal mode, pressure/temperature ×1, IIR ×2 and library standby
   enum `STANDBY_MS_1`; host polling is scheduled at 6 ms and does not wait for
   conversion completion. Actual fresh rate and pressure-read age are unknown.
@@ -65,10 +65,18 @@ results; this candidate does not establish that the shared bus is reliable.
 
 ## Remaining blockers
 
-- No calibration file is loaded by this candidate: accel, gyro, MAG and baro
-  calibration-valid flags remain false. PID gains and hover collective also
-  remain unset. The controller therefore remains in failsafe with zero mixer
-  output.
+- The Nov 6 accel, gyro and MAG candidate values are now loaded into the
+  isolated software estimator path, and all seven simulation PID candidates
+  are configured. This is source-level activation only; the candidate has not
+  been built or checked against live sensor axes/registers.
+- Barometer calibration remains invalid, hover collective remains unset, and
+  the command receiver is disabled. These gates keep `computeControl()` in
+  failsafe. All motor pins are inputs and there is no ESC output driver.
+- The gyro candidate may double-subtract an unknown MPU hardware offset. The
+  accel fit may contain manual pose/chip alignment error. MAG hard/soft-iron
+  correction is applied in chip coordinates, while MAG heading fusion remains
+  disabled until chip-to-body axes and handedness are verified. BMP pressure
+  units and a portable ground-pressure reference remain unresolved.
 - The Xbox packet parser is only a protocol parser, not a C++ Xbox controller
   library integration or verified receiver. A Windows USB/serial connection is
   not a flight receiver.
@@ -83,24 +91,38 @@ results; this candidate does not establish that the shared bus is reliable.
 
 The three-session analysis is represented in
 `src/nov06_recalibration_candidates.hpp` as typed, compiled-in research data.
-`main.cpp` has compile-time guards requiring the profile to remain inactive;
-the runtime calibration structs remain invalid and the live PID objects remain
-zero/unconfigured. The capture firmware was not changed.
+`main.cpp` loads the accel bias/matrix, gyro bias, MAG hard/soft-iron fit and all
+seven model PID candidates into the isolated software estimator/controller.
+The capture firmware was not changed.
 
 The analysis confirms the assumed raw scales already present here: 4096
-counts/g, 65.5 counts/(deg/s), and 37.5 counts/µT. Its fitted offsets/matrices
-remain candidates: the large gyro rest bias requires MPU hardware-offset
-readback; the accel fit is confounded with face placement and chip mounting;
-the MAG fit is in chip coordinates and does not establish body axes or heading;
-and the BMP CSV's hPa-to-Pa conversion is unconfirmed with no portable ground
-reference. Therefore none is loaded into live control.
+counts/g, 65.5 counts/(deg/s), and 37.5 counts/µT. The source applies these
+candidate fits to the software samples, with the assumptions still attached:
+the large gyro rest bias may conflict with MPU hardware offsets; the accel fit
+is confounded with face placement and chip mounting; and the MAG fit is in chip
+coordinates. The MAG field correction is calculated, but heading correction
+is gated off until body axes and handedness are verified. BMP calibration
+remains invalid because the CSV pressure unit and ground reference are not
+verified.
 
-All seven flight-loop gains are simulation-only. The three inner rate PID
-outputs are modeled as torque in N·m, while this candidate's mixer accepts
-normalized motor-command differentials and has no validated effectiveness
-matrix. The outer-loop gains depend on unmeasured thrust response and motor lag.
-The research motor-acceleration PID remains disabled because this build has no
-per-motor RPM telemetry; IMU acceleration is not rotor acceleration.
+All seven flight-loop gains are simulation-only but are now installed in the
+software controller path. The controller converts its angle/rate signals to
+radians and radians/second, applies a 20 Hz derivative low-pass, and converts
+inner-loop torque outputs from N·m to normalized mixer demand using the audit's
+assumed roll/pitch/yaw torque authorities. Those authorities, outer-loop gains,
+thrust response and motor lag are unmeasured; this conversion makes the units
+consistent, not the actuator model validated. The research motor-acceleration
+PID remains disabled because this build has no per-motor RPM telemetry; IMU
+acceleration is not rotor acceleration.
+
+Software output limits used for this candidate are ±0.749933 N·m for roll and
+pitch rate, ±0.070808 N·m for yaw rate, ±π rad/s for roll/pitch angle-loop rate
+requests, ±2 m/s for altitude-loop vertical-speed requests, and ±5 m/s² for
+vertical-speed-loop acceleration. Integrator state is clamped to ±0.5 in each
+loop's integrated-error units. The inner-loop torque limits come from an
+assumption-based model; outer-loop limits and integrator clamps are software
+bounds, not flight-identified values. Exact gains are listed in the candidate
+header.
 
 The inherited linear-thrust model has a median hover fraction near 45% and a
 95% interval near 30–89%; the user-selected 35% normal motor ceiling may be

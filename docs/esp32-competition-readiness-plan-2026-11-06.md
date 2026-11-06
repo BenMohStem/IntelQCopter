@@ -744,3 +744,32 @@ accepted merely because it is theoretically faster or more complex.
   unverified. The 35% normal cap may sit below the assumption-based median hover
   estimate; do not raise it from this model alone. No propeller-powered test,
   build, flash, or motor-output enablement was performed.
+
+## Nov 6 analysis conversion into the isolated S3 candidate
+
+The user's implementation request has been applied to
+`hardware/experimental_esp32s3_fc_dsh_candidate/`:
+
+- Startup loads the three-session accelerometer bias/correction matrix, gyro
+  bias and QMC hard/soft-iron fit into the candidate's software calibration
+  structures. The converted sensor values feed the estimator.
+- The seven analysis PID candidates are configured in software. Angle and
+  angular-rate inputs use radians; inner rate loops return N·m and are divided
+  by the report's assumed roll/pitch and yaw torque authorities before the
+  normalized mixer. Derivative-on-measurement uses the model's 20 Hz low-pass.
+  Software output limits are ±0.749933 N·m (roll/pitch rate), ±0.070808 N·m
+  (yaw rate), ±π rad/s (angle-loop rate request), ±2 m/s (altitude-loop speed
+  request) and ±5 m/s² (vertical-speed-loop acceleration). Integrators clamp
+  to ±0.5 in integrated-error units.
+- QMC hard/soft-iron correction is applied in chip coordinates, but yaw/heading
+  correction is disabled pending right-handed chip-to-body axis verification.
+- Barometer calibration remains invalid, hover collective remains unset,
+  command input remains compiled off, and motor pins remain `INPUT` with no ESC
+  output driver. The 35% normal / 50% boost ceilings and 10% idle floor remain.
+
+This is software conversion of research candidates, not a hardware-validated
+controller. The gyro fit may overlap unknown MPU hardware offsets; the accel fit
+may contain pose/mounting error; and torque authority, motor lag and outer-loop
+response are assumed. The candidate was not built, flashed, or physically
+tested. Do not treat it as flight-ready or replace the active calibration
+capture firmware with it.
