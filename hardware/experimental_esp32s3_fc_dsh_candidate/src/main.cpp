@@ -583,11 +583,19 @@ struct PidController {
 PidController pid_roll_angle, pid_pitch_angle, pid_roll_rate, pid_pitch_rate;
 PidController pid_yaw_rate, pid_altitude, pid_vertical_speed;
 
+bool pidReady(const PidController&p){
+  return isfinite(p.kp)&&p.kp>0.0f&&isfinite(p.ki)&&p.ki>=0.0f
+      &&isfinite(p.kd)&&p.kd>=0.0f&&isfinite(p.integrator_limit)
+      &&p.integrator_limit>=0.0f&&isfinite(p.output_limit)
+      &&p.output_limit>0.0f&&isfinite(p.deriv_alpha)
+      &&p.deriv_alpha>=0.0f&&p.deriv_alpha<=1.0f;
+}
+
 bool pidGainsConfigured(){
-  return pid_roll_angle.kp>0.0f&&pid_pitch_angle.kp>0.0f
-      &&pid_roll_rate.kp>0.0f&&pid_pitch_rate.kp>0.0f
-      &&pid_yaw_rate.kp>0.0f&&pid_altitude.kp>0.0f
-      &&pid_vertical_speed.kp>0.0f;
+  return pidReady(pid_roll_angle)&&pidReady(pid_pitch_angle)
+      &&pidReady(pid_roll_rate)&&pidReady(pid_pitch_rate)
+      &&pidReady(pid_yaw_rate)&&pidReady(pid_altitude)
+      &&pidReady(pid_vertical_speed);
 }
 
 struct MotorMixer {
@@ -662,14 +670,14 @@ struct XboxInterface {
       return false;
     }
     bool hold=(c.buttons&cfg::ARM_BUTTONS)==cfg::ARM_BUTTONS;
-    const bool north_pressed=(c.buttons&cfg::XBOX_BTN_NORTH)
-                          &&!(last_btn&cfg::XBOX_BTN_NORTH);
+    const bool arm_combo=(c.buttons&(cfg::ARM_BUTTONS|cfg::XBOX_BTN_NORTH))
+                       ==(cfg::ARM_BUTTONS|cfg::XBOX_BTN_NORTH);
     const bool south_pressed=(c.buttons&cfg::XBOX_BTN_SOUTH)
                           &&!(last_btn&cfg::XBOX_BTN_SOUTH);
     if(!armed){
-      if(hold){
+      if(hold&&(c.buttons&cfg::XBOX_BTN_NORTH)){
         if(!arm_seq){arm_seq=true;arm_hold_ms=c.timestamp_ms;}
-        if(arm_seq&&north_pressed
+        if(arm_seq&&arm_combo
             &&uint32_t(c.timestamp_ms-arm_hold_ms)>=500u){
           armed=true; changed=true; control.arm_time_ms=c.timestamp_ms;
           health.arming_attempts++; arm_seq=false;

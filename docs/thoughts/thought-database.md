@@ -854,3 +854,31 @@ High:
   drivers. Root CMake declares an executable, but this C source has no `main()`
   entry point, so it is only a control core, not a complete firmware image. No
   build/test was run; static review only.
+
+## 31. Revision 16 — 2026-11-06: DSH sleep handoff target correction
+
+- DSH's latest pasted bug list concerns `firmware/flight_controller/flight_controller.c`,
+  the RP2350/Pico control core. It is not the ESP32-S3 competition candidate or
+  the active ESP32-S3 calibration firmware. Keep competition work scoped to
+  `hardware/experimental_esp32s3_fc_dsh_candidate/` and the active S3 bench
+  firmware; do not change the RP2350 core under this scope.
+- Compared DSH's claims with the current checked-in Pico core: accel calibration
+  uses an immutable raw vector and the attitude initializer receives calibrated
+  values; `fc_apply_calibration()` sets `calibration_loaded`; and the altitude
+  filter initialization flag is set after `kf_init()`. These claims appear stale
+  or refer to another working revision. `hover_collective == 0` is deliberately
+  invalid until a caller supplies a measured value, so it is a safe gate, not a
+  default to replace with an assumed 0.5.
+- Still-open Pico-core questions, separate from the S3 competition path: the
+  barometer zero offset has no setter beyond reset, while barometer updates
+  subtract it; the initial Kalman state uses the unadjusted barometer height;
+  and gravity-compensated vertical acceleration is an input contract with the
+  sensor adapter rather than computed inside this control core. The reported
+  `battery_disarm_latched` symbol is absent from this file. Do not patch these
+  as S3 fixes.
+- S3 candidate remains unbuilt/unflashed and not flight-ready: calibration
+  values, PID gains and hover collective are unset; command input is compiled
+  off; all four motor pins are configured as inputs and no ESC output driver
+  exists. PID finite/range validation and a continuous LB+RB+Y 500 ms software
+  arm gesture were added to the isolated candidate, but cannot enable control
+  or physical motors. No test, build, flash or hardware check was run.

@@ -52,6 +52,10 @@ results; this candidate does not establish that the shared bus is reliable.
 - Sensor/calibration/PID/hover prerequisites now latch a failsafe and disarm the
   software controller. Physical GPIO motor outputs remain absent; configured
   motor pins are inputs.
+- PID readiness now rejects non-finite or out-of-range gains and limits before
+  the controller can leave failsafe. The software arm gesture requires holding
+  LB + RB + Y together continuously for 500 ms; this parser is still disabled
+  and is not a flight input path.
 
 ## Remaining blockers
 
