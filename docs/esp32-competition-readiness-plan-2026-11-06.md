@@ -463,13 +463,67 @@ newer source edits are not proof until tied to a build hash and capture.
   it is not the fallback. Continuous `0xC3` attempts did not establish a stable
   stream. These are separate probe trials, not evidence for the current DSH code.
 
-The user reported the drone connected on 2026-11-06. This update did not access
-the port or interact with the hardware. At the time of writing, DSH had staged
-and unstaged edits in the active ESP32 calibration
-  `src/main.cpp` (observed SHA-256
-  `EAF5769052F7FA91ABB609CAED128B91147FAE8EE364A1275046DD0E2048E269`); keep
-  that source out of this plan/GUI change and re-audit it after DSH pins a
-  revision.
+### DSH source snapshot and next hardware step — 2026-11-06
+
+The current repository snapshot is branch `feature/esp32s3-competition-fc`,
+`HEAD=ac47d4c` (`Implement fixed 400 kHz shared I2C bus for all sensors`). The
+worktree is clean and the branch matches its configured upstream. This latest
+commit changes only
+`hardware/bench_calibration/esp32s3_qmc5883p_100hz/src/main.cpp` (SHA-256
+`05B44BA8EF69E63933B56CFA12D1197E34942D664AA53F6A5C11621D0E3B358F`); it is
+not a change to the separate flight-controller candidate.
+
+The committed bench-calibration source now configures one 400 kHz I2C bus,
+`Wire.setTimeOut(30)`, QMC address `0x2C` with normal-mode `CTRL1=0x3D`,
+`CTRL2=0x08`, `XYZ_SIGN=0x06`, and a 5 ms QMC poll schedule. It configures the
+MPU6050 for DLPF 188/184 Hz (`CONFIG=0x01`), divider 1, ±500 °/s, ±8 g and
+`FIFO_EN=0xF8`. BMP280 is configured with `CTRL_MEAS=0x27` (normal mode,
+pressure ×1, temperature ×1), `CONFIG=0x04` (IIR ×2, 0.5 ms standby), and a
+6 ms host read schedule. These are implemented register writes, not all
+verified register readbacks. The commit description reports 500 Hz packets,
+100% sensor-valid packets, zero CRC errors, MAG fresh at 166.7 Hz and BMP fresh
+at 166.2 Hz. No new capture/log in the commit ties those figures to the source
+hash; retain the earlier integrated 400 kHz success and zero-MAG runs as
+conflicting hardware evidence until a pinned, repeatable capture is saved.
+
+Static audit flags in that bench source: its QMC conversion to microtesla uses
+`raw * 0.29`, while the 8 G QMC5883P sensitivity is 3750 LSB/G, equivalent to
+`raw / 37.5` µT/count. Resolve this scale discrepancy before using the firmware
+calibrated vector. The source also marks a successful six-byte register read as
+fresh without checking the BMP data-ready status; a 6 ms read schedule alone
+does not prove a new conversion on every read. The defaults in the source are
+zero hard-iron/gyro/accelerometer offsets and identity scale matrices; the
+independent Nov 4 fitted candidates are not loaded automatically.
+
+The separate FC candidate remains
+`hardware/experimental_esp32s3_fc_dsh_candidate/src/main.cpp` (SHA-256
+`59D2A54BA9ACBBEBBF55060790BB15CB935BAA5A4630C22C07327641061AB815`, last
+changed in `ea10ac4`). Its PlatformIO build flag requests 400 kHz, but this
+source defines `QMC_I2C_HZ=100000` and switches to 100 kHz for QMC transactions;
+its I2C timeout is 10 ms. It therefore does not yet implement the selected
+fixed shared 400 kHz requirement. It has the 188 Hz / ±500 °/s / ±8 g MPU
+settings and FIFO enabled, but disables MPU temperature while enabling the
+temperature FIFO slot. It reads at most one FIFO frame and timestamps it at
+host-read time. The 52-byte v3 packet has no LiDAR range or per-sensor age and
+service-time fields. Its calibration defaults are zero gyro/accelerometer
+bias, identity accelerometer matrix, and invalid magnetometer calibration; it
+does not load the independent calibration fit. Its vertical estimator currently
+uses raw LiDAR range without tilt or sensor-to-COM correction.
+
+**LiDAR remains an explicit next hardware step, not removed from the plan.** The
+user will solder the remaining connection and plug in the centrally mounted
+TOFSense-F2 Mini. After that connection, verify its actual UART pins, logic
+levels, power, baud rate, packet format, status/quality and timestamps before
+accepting data. The current FC candidate uses UART1 RX GPIO1/TX GPIO2 at
+115200 baud and parses a TF-style 9-byte `0x59 0x59` frame; compatibility with
+the fitted F2 Mini is not yet established. Keep GUI calibration steps 13–16
+(0.25, 0.50, 1.00 and 2.00 m) and the LiDAR latency plot in scope. Use a
+separate 3.3 V UART adapter for calibration or add the planned v4 forwarded
+range/status/timestamp fields. Validate the configurable sensor-to-COM vector
+physically and apply the user's tilt/lever-arm equation before fusing altitude.
+
+This status was prepared from repository files only. No build, flash, serial
+capture, or physical LiDAR check was performed for this update.
 
 ## Decisions applied from the new specification
 
