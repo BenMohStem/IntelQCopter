@@ -400,7 +400,7 @@ bool readQmc5883p() {
   mag.fresh = true;
   mag.valid = true;
 
-  float raw_uT[3] = {mag.raw[0] * 0.29f, mag.raw[1] * 0.29f, mag.raw[2] * 0.29f};
+  float raw_uT[3] = {mag.raw[0] / 37.5f, mag.raw[1] / 37.5f, mag.raw[2] / 37.5f};
   float centered[3] = {
     raw_uT[0] - cal_mag_hard_iron.x,
     raw_uT[1] - cal_mag_hard_iron.y,
