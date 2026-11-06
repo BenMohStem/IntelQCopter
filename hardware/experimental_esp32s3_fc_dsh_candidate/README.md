@@ -56,6 +56,9 @@ results; this candidate does not establish that the shared bus is reliable.
   the controller can leave failsafe. The software arm gesture requires holding
   LB + RB + Y together continuously for 500 ms; this parser is still disabled
   and is not a flight input path.
+- The arm transition no longer invalidates the attitude and vertical estimators
+  immediately before the control prerequisite check; PID and mixer state still
+  reset when the software arm state changes to armed.
 
 ## Remaining blockers
 

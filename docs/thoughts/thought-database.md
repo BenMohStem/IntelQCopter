@@ -882,3 +882,8 @@ High:
   exists. PID finite/range validation and a continuous LB+RB+Y 500 ms software
   arm gesture were added to the isolated candidate, but cannot enable control
   or physical motors. No test, build, flash or hardware check was run.
+- Follow-up static review found an arm-transition self-failsafe: the transition
+  cleared attitude and vertical-KF initialization, then the same loop's
+  `computeControl()` required both estimators initialized and disarmed. Removed
+  only those estimator resets; PID and mixer states still reset on arm. The
+  candidate remains unbuilt and all physical outputs remain disabled.

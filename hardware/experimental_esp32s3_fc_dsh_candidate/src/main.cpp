@@ -1160,7 +1160,9 @@ void loop(){
   if(arm_changed){if(control.armed){
     pid_roll_angle.reset();pid_pitch_angle.reset();pid_roll_rate.reset();pid_pitch_rate.reset();
     pid_yaw_rate.reset();pid_altitude.reset();pid_vertical_speed.reset();motor_mixer.reset();
-    attitude.initialized=false;vert_kf.initialized=false;control.altitude_ref_initialized=false;
+    // Keep the live sensor estimators: computeControl requires them to remain
+    // initialized on the same control tick that accepts the arm transition.
+    control.altitude_ref_initialized=false;
     control.lt_reduce_state=0;control.boost_state=0;}}
   float lt_t=pilot.lt; control.lt_reduce_state+=(lt_t-control.lt_reduce_state)*0.2f; control.lt_reduce_state=clampf(control.lt_reduce_state,0,1);
   control.boost_state+=(pilot.rt-control.boost_state)*0.2f; control.boost_state=clampf(control.boost_state,0,1);
