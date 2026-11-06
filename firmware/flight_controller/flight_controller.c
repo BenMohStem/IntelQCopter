@@ -11,14 +11,14 @@
  *   - Motor GPIOs 12/11/14/13 = INPUT ONLY
  *   - No auto-arm on startup/reconnect
  *   - Arming requires deliberate Xbox button combination (LB+RB+Y hold 500ms)
- *   - All motor outputs are mathematical demands only - no physical output
+ *   - All motor outputs are mathematical demands only; no physical output
  *
  * Control architecture (per axis, ESC-command fractions 0..1):
  *   Roll:  angle PID -> rate demand -> rate PID -> torque demand
  *   Pitch: angle PID -> rate demand -> rate PID -> torque demand
  *   Yaw:   rate PID directly (rate demand -> torque demand)
  *   Altitude: position PID -> vertical speed demand -> vertical speed PID
-   *            -> vertical acceleration command -> collective thrust
+ *             -> vertical acceleration command -> collective thrust
  *   Vertical speed: throttle stick -> vertical speed demand
  *
  * Motor mixing (X-frame): collective +/- roll torque +/- pitch torque +/- yaw torque
@@ -93,6 +93,63 @@ typedef struct {
 #define FC_HOVER_THROTTLE_PLACEHOLDER 0.50f
 #define FC_RADIO_TIMEOUT_US 150000u
 #define FC_GRAVITY_MPS2 9.80665f
+
+/* ===========================================================================
+   SENSOR SAMPLE STRUCTURE
+   =========================================================================== */
+typedef struct {
+    bool valid;
+    bool fresh;
+    uint32_t timestamp_us;
+    int16_t accel_raw[3];
+    int16_t gyro_raw[3];
+    int16_t temp_raw;
+    float accel_x_g, accel_y_g, accel_z_g;   /* m/s^2, calibrated */
+    float gyro_x_dps, gyro_y_dps, gyro_z_dps; /* deg/s, calibrated */
+    float temperature_c;
+    float barometer_height_m;   /* meters relative to zero */
+    bool barometer_valid;
+    bool barometer_updated;
+    float barometer_raw_pa;
+    float barometer_temperature_c;
+    float magnetometer_x_uT, magnetometer_y_uT, magnetometer_z_uT;
+    bool magnetometer_valid;
+    bool magnetometer_fresh;
+    float vertical_acceleration_mps2; /* gravity compensated */
+} sensor_sample_t;
+
+typedef struct {
+    bool armed;
+    bool sensor_fault;
+    float motor[4];   /* FL, FR, RR, RL: ESC command fractions 0..1 */
+} control_output_t;
+
+/* ===========================================================================
+   GLOBAL STATE
+   =========================================================================== */
+static bool armed = false;
+static bool failsafe = false;
+static bool controller_connected = false;
+static uint32_t last_controller_ms = 0;
+static float hover_collective = FC_HOVER_THROTTLE_PLACEHOLDER;
+static float baro_zero_offset_m = 0.0f;
+static bool baro_zeroed = false;
+static float lt_reduce_state = 0.0f;
+static float rt_boost_state = 0.0f;
+static float altitude_ref_m = 0.0f;
+static bool altitude_ref_initialized = false;
+
+/* Calibration data */
+static float cal_accel_bias[3] = {0.0f, 0.0f, 0.0f};
+static float cal_accel_scale[3][3] = {{1.0f, 0.0f, 0.0f},
+                                       {0.0f, 1.0f, 0.0f},
+                                       {0.0f, 0.0f, 1.0f}};
+static float cal_gyro_bias[3] = {0.0f, 0.0f, 0.0f};
+static float cal_mag_hard_iron[3] = {0.0f, 0.0f, 0.0f};
+static float cal_mag_soft_iron[3][3] = {{1.0f, 0.0f, 0.0f},
+                                         {0.0f, 1.0f, 0.0f},
+                                         {0.0f, 0.0f, 1.0f}};
+static bool calibration_loaded = false;
 
 /* ===========================================================================
    PID CONTROLLER
@@ -453,8 +510,8 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
         return out;
     }
 
-    /* Failsafe: if armed but not armed or failsafe, zero motors */
-    if (!armed || failsafe) {
+    /* Failsafe: if failsafe active, zero motors */
+    if (failsafe) {
         out.armed = false;
         out.sensor_fault = true;
         return out;
@@ -467,8 +524,8 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
         attitude_init(&attitude, s->accel_x_g, s->accel_y_g, s->accel_z_g);
     }
     attitude_update(&attitude, s->gyro_x_dps, s->gyro_y_dps, s->gyro_z_dps,
-                    s->mag_x_uT, s->mag_y_uT, s->mag_z_uT,
-                    s->mag_valid && s->mag_fresh, dt);
+                    s->magnetometer_x_uT, s->magnetometer_y_uT, s->magnetometer_z_uT,
+                    s->magnetometer_valid && s->magnetometer_fresh, dt);
 
     /* =========================================================================
        STEP 2: Vertical Kalman filter
@@ -671,29 +728,39 @@ void fc_init(void) {
     altitude_ref_initialized = false;
 }
 
+static pilot_command_t pilot_cmd;
+static bool pilot_cmd_valid = false;
+
 void fc_apply_command(const qcopter_command_frame_t *frame, uint64_t now_ms) {
     if (!frame) return;
     controller_connected = true;
     last_controller_ms = now_ms;
 
-    pilot_command_t cmd = {0};
-    cmd.roll_deg = (float)frame->roll * 35.0f / QCOPTER_AXIS_SCALE;
-    cmd.pitch_deg = (float)frame->pitch * 35.0f / QCOPTER_AXIS_SCALE;
-    cmd.yaw_rate_dps = (float)frame->yaw_rate * 180.0f / QCOPTER_AXIS_SCALE;
-    cmd.throttle = (float)frame->throttle / QCOPTER_THROTTLE_SCALE;
-    cmd.boost = (float)frame->rt / QCOPTER_TRIGGER_SCALE;
-    cmd.lt = (float)frame->lt / QCOPTER_TRIGGER_SCALE;
-    cmd.valid = true;
-    cmd.timestamp_ms = now_ms;
-    cmd.buttons = frame->buttons;
-    /* Y button = arm/disarm; A button = emergency disarm */
-    fc_apply_command(&cmd);
+    pilot_cmd.roll_deg = (float)frame->roll * 35.0f / QCOPTER_AXIS_SCALE;
+    pilot_cmd.pitch_deg = (float)frame->pitch * 35.0f / QCOPTER_AXIS_SCALE;
+    pilot_cmd.yaw_rate_dps = (float)frame->yaw_rate * 180.0f / QCOPTER_AXIS_SCALE;
+    pilot_cmd.throttle = (float)frame->throttle / QCOPTER_THROTTLE_SCALE;
+    pilot_cmd.rt = (float)frame->rt / QCOPTER_TRIGGER_SCALE;
+    pilot_cmd.lt = (float)frame->lt / QCOPTER_TRIGGER_SCALE;
+    pilot_cmd.valid = true;
+    pilot_cmd.timestamp_ms = now_ms;
+    pilot_cmd.buttons = frame->buttons;
+    pilot_cmd_valid = true;
 }
 
 control_output_t fc_get_output(const sensor_sample_t *s,
                                const pilot_command_t *cmd,
                                float dt) {
-    return flight_control_step(s, cmd, dt);
+    /* If no external command provided, use the stored UART command */
+    const pilot_command_t *c = cmd;
+    if (c == NULL && pilot_cmd_valid) {
+        c = &pilot_cmd;
+    }
+    if (c == NULL) {
+        control_output_t out = { {0.0f,0.0f,0.0f,0.0f}, false, false };
+        return out;
+    }
+    return flight_control_step(s, c, dt);
 }
 
 bool fc_is_armed(void) {
