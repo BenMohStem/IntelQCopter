@@ -1,6 +1,7 @@
 <#
 IntelQCopter competition calibration, Windows PowerShell 5.1.
-Wi-Fi OFF / QMC5883P 100Hz / UART 921600 / 500Hz IMU target.
+Default: 16 phases including TOFSense-F2 Mini ranges at 0.25/0.50/1.00/2.00 m.
+QMC5883P 200Hz target / UART 921600 / 500Hz IMU schedule.
 
   .\tools\start_calibration.ps1
   .\tools\start_calibration.ps1 -UploadFirmware
@@ -15,8 +16,8 @@ param(
     [string]$Output = '',
     [int]$GyroSamples = 30000,
     [int]$AccelSamples = 5000,
-    [int]$MagTurnSamples = 5000,
-    [int]$MagTumbleSamples = 15000,
+    [int]$MagTurnSamples = 2000,
+    [int]$MagTumbleSamples = 8000,
     [int]$BmpSamples = 1000,
     [ValidateRange(0,30)][double]$SettleSeconds = 3.0,
     [switch]$SkipBmp,
@@ -123,6 +124,11 @@ try {
     Write-Host "  Mag yaw/pitch/roll: $MagTurnSamples samples per rotation"
     Write-Host "  Mag 3D tumble: $MagTumbleSamples samples"
     Write-Host "  Barometer: $BmpSamples samples"
+    if ($SkipLidar) {
+        Write-Host '  LiDAR phases: explicitly skipped; this is incomplete relative to the default 16 phases.' -ForegroundColor Yellow
+    } else {
+        Write-Host "  TOFSense-F2 Mini: 4 required range phases x $LidarSamples fresh readings (0.25, 0.50, 1.00, 2.00 m)"
+    }
     Write-Host "  Preparation: $SettleSeconds seconds per stage"
     Write-Host '  Motor output DISABLED; remove propellers.' -ForegroundColor Yellow
     if ($Wifi) {
@@ -140,8 +146,8 @@ try {
     }
     if ($Output) { $a+=@('--output',$Output) }
     if ($SkipBmp) { $a+=@('--skip-bmp') }
-    # The current 12-stage calibration sequence has no LiDAR calibration stage.
-    # A supplied LiDAR port is only an independent sidecar stream connection.
+    # LiDAR ranges are part of the default 16-phase calibration. Keep -SkipLidar
+    # as an explicit diagnostic override; it records an incomplete calibration.
     if ($SkipLidar) { $a+='--skip-lidar' }
     if ($LidarPort) { $a+=@('--lidar-port',$LidarPort) }
     if ($MagOnly) { $a+='--mag-only' }

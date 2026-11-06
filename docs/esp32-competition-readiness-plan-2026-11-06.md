@@ -123,13 +123,18 @@ logged, repeatable bench evidence.
 
 ### Add LiDAR to calibration and add sensor-latency views
 
-- The desktop GUI now schedules four LiDAR range-reference stages (steps 13–16)
-  after the existing 12 gyro/accelerometer/MAG/BMP stages: 0.25, 0.50, 1.00 and
-  2.00 m. Each requires 300 fresh valid readings by default. The target distance
+- The default desktop GUI session is 16 phases: the existing 12
+  gyro/accelerometer/MAG/BMP phases followed by four TOFSense-F2 Mini
+  range-reference phases (steps 13–16): 0.25, 0.50, 1.00 and 2.00 m. The F2 is
+  the single configured LiDAR model; the port list selects its USB-UART adapter,
+  not among different sensors. Each range requires 300 fresh valid readings.
+  Skipping a phase is explicitly incomplete and does not silently remove later
+  LiDAR references. The target distance
   is measured from the optical reference to a flat target; keep the beam square
   to the target. Invalid returns are logged but do not count. The operator can
   connect a separate 3.3 V UART adapter, or use firmware-forwarded LiDAR data in
-  the v4 telemetry; missing LiDAR can be skipped and is recorded as incomplete.
+  the v4 telemetry; the GUI does not treat missing LiDAR data as a completed
+  calibration.
   Do not assume it shares the I²C bus.
 - The LiDAR analysis action fits measured range against reference range only
   when all four required distances meet the configured sample minimum. It keeps
@@ -143,17 +148,21 @@ logged, repeatable bench evidence.
   the configuration remains editable and physically unverified until measured.
   Geometry results are an explanatory worksheet only, not an estimator.
 - A dedicated Sensor Latency tab plots separate MPU, QMC, BMP280 and LiDAR
-  sample-age and per-tick service-time traces. Rolling P50/P95/P99/max, the
-  `<2 ms` service target, freshness mask, per-sensor cumulative error counts and
-  control-deadline misses are shown. The GUI records v4 metrics in calibration
-  CSV rows. Legacy v2/v3 firmware has no per-sensor timing fields, so the tab
-  explicitly reports telemetry unavailable and plots no invented values.
+  sample-age and per-tick service-time traces when measured values arrive in
+  firmware v4. Rolling P50/P95/P99/max, freshness mask, per-sensor cumulative
+  error counts and control-deadline misses are shown. The GUI records v4 metrics
+  in calibration CSV rows. Legacy v2/v3 firmware has no per-sensor timing
+  fields, so the tab reports UNMEASURED and plots no invented values or static
+  2 ms line. The 500 Hz control period is not sensor latency or service time.
 - To supply the GUI with physical timestamps and per-sensor metrics, firmware
   must implement the versioned 92-byte v4 packet below on both USB and Wi-Fi.
   Until then, the GUI retains v2/v3 decoding and external LiDAR UART support.
 - Keep all descriptions short and plot labels separated. The GUI completion
   chime sounds at countdown end and only after a phase reaches its full valid
   sample target; skips/incomplete stages do not sound as successes.
+- Phase progress is emitted from the recorder after accepted valid samples,
+  rather than from timing-column serialization. Update the progress bar at a
+  bounded 5 Hz or faster without queueing every sensor packet for Tk.
 - Distinguish measured sensor service time from conversion interval, packet-
   arrival interval and GUI redraw time; none of these may be substituted for
   another.
@@ -407,7 +416,7 @@ newer source edits are not proof until tied to a build hash and capture.
 | BMP280 calibration capture | BMP280 ID `0x58`, expected address `0x76`; old captured source requests normal mode, temperature ×2, pressure ×1, IIR ×4, and 63 ms standby. It polls/labels pressure on a 5 ms schedule and logs raw ADC plus compensated SI values. | The complete session has 32,956 `bmp_new` flags (~166.67 flags/s), but this host cadence conflicts with the 63 ms configured standby and does not prove 166.67 independent conversions. Confirm actual register readback, data-ready state, and conversion timestamps. |
 | Future BMP candidate | Normal mode, temperature ×1, pressure ×1, 0.5 ms standby; `CTRL_MEAS=0x27`. Start with IIR ×2 (`CONFIG=0x04`); compare ×4 (`CONFIG=0x08`) using timestamped data and step/noise measurements. Read status before marking a conversion fresh. | Datasheet-derived target only. Do not label cached reads fresh or claim a proven 200 Hz pressure conversion rate. The expected nominal ceiling for the stated profile is about 166.7 Hz. |
 | UART / GUI | 921600 baud, 8N1, Wi-Fi off; binary v3 packet is 52 bytes with `A5 5A` sync, 500 Hz scheduled packet cadence, sequence/timestamp, validity/freshness flags, and CRC-16/CCITT-FALSE over bytes 0–49 in bytes 50–51. | CRC-valid, sequential 500 packet/s streams were observed in preflight and in capture segments. This proves the telemetry stream, not a 500 Hz control loop or fresh conversion from every sensor. |
-| Calibration flow | Keep the 12-phase GUI: 30,000 stationary MPU rows; six accelerometer faces ×5,000; yaw/pitch/roll MAG turns ×2,000 each; MAG tumble ×8,000; BMP ×1,000. No LiDAR stage. | The November 4 10:09 session reached every target, skipped no stages, and has 98,868 rows plus a matching result JSON. This is the only identified complete session. |
+| Calibration flow | Current default: 16 phases — 30,000 stationary MPU rows; six accelerometer faces ×5,000; yaw/pitch/roll MAG turns ×2,000 each; MAG tumble ×8,000; BMP ×1,000; then four F2 LiDAR ranges ×300 fresh readings at 0.25/0.50/1.00/2.00 m. `-SkipLidar` is an explicit incomplete-session override. | The November 4 10:09 accepted session is historical 12-phase data with no LiDAR and remains the only identified fully completed session. |
 | Actuators / Xbox | Motor pins remain inactive; physical arming disabled. Windows USB/serial Xbox bridge is bench-only until a real flight receiver and adapter are verified. | No actuator, thrust, motor-order, receiver-loss, or flight behavior has been validated. |
 
 ### Proven results and calibration limits
@@ -465,13 +474,15 @@ newer source edits are not proof until tied to a build hash and capture.
 
 ### DSH source snapshot and next hardware step — 2026-11-06
 
-The current repository snapshot is branch `feature/esp32s3-competition-fc`,
-`HEAD=ac47d4c` (`Implement fixed 400 kHz shared I2C bus for all sensors`). The
-worktree is clean and the branch matches its configured upstream. This latest
-commit changes only
+The current firmware baseline is branch `feature/esp32s3-competition-fc`,
+`HEAD=c4b9d81` (`Fix QMC conversion factor to raw/37.5 uT per counts`),
+following DSH commit `ac47d4c` (`Implement fixed 400 kHz shared I2C bus for all
+sensors`). The latest DSH commit changes only
 `hardware/bench_calibration/esp32s3_qmc5883p_100hz/src/main.cpp` (SHA-256
-`05B44BA8EF69E63933B56CFA12D1197E34942D664AA53F6A5C11621D0E3B358F`); it is
-not a change to the separate flight-controller candidate.
+`5F6110AB561008D02820AFBAF9533D4B76E8B05EDDE2CA6856571E74AFBF455D`); it is
+not a change to the separate flight-controller candidate. The active worktree
+also contains new untracked calibration skip manifests; preserve them as
+operator evidence.
 
 The committed bench-calibration source now configures one 400 kHz I2C bus,
 `Wire.setTimeOut(30)`, QMC address `0x2C` with normal-mode `CTRL1=0x3D`,
@@ -486,12 +497,11 @@ at 166.2 Hz. No new capture/log in the commit ties those figures to the source
 hash; retain the earlier integrated 400 kHz success and zero-MAG runs as
 conflicting hardware evidence until a pinned, repeatable capture is saved.
 
-Static audit flags in that bench source: its QMC conversion to microtesla uses
-`raw * 0.29`, while the 8 G QMC5883P sensitivity is 3750 LSB/G, equivalent to
-`raw / 37.5` µT/count. Resolve this scale discrepancy before using the firmware
-calibrated vector. The source also marks a successful six-byte register read as
-fresh without checking the BMP data-ready status; a 6 ms read schedule alone
-does not prove a new conversion on every read. The defaults in the source are
+The earlier `ac47d4c` bench source used `raw * 0.29` for QMC microtesla. DSH
+fixed this in `c4b9d81` to `raw / 37.5`, consistent with the QMC5883P ±8 G
+sensitivity of 3750 LSB/G. The source still marks a successful six-byte BMP
+register read as fresh without checking data-ready status; a 6 ms read schedule
+alone does not prove a new conversion on every read. Firmware defaults remain
 zero hard-iron/gyro/accelerometer offsets and identity scale matrices; the
 independent Nov 4 fitted candidates are not loaded automatically.
 

@@ -448,7 +448,7 @@ class Recorder(threading.Thread):
         self.completed_files = []
 
     def connect_lidar(self, port):
-        """Attach optional LiDAR on its own COM port, without restarting ESP stream.
+        """Attach the single F2 Mini on its own COM port, without restarting ESP stream.
 
         No LiDAR is silently substituted from ESP packets: this reads the
         F2 Mini NLink frames on a separate USB-UART at 921600 baud.
@@ -510,6 +510,7 @@ class Recorder(threading.Thread):
             self.last_countdown_emit = 0.0
             self.capture_started_notified = False
             self.phase_last_progress = 0
+            self.last_progress_emit_at = 0.0
             self.next_hint_at = self.phase_start + 5.0
             return True
 
@@ -620,6 +621,11 @@ class Recorder(threading.Thread):
                 self.sample_count+=1
                 self.last_accepted_at=received
             count=self.sample_count
+            if (count != self.phase_last_progress and
+                    (received-self.last_progress_emit_at >= 0.20 or count >= stage.target)):
+                self.phase_last_progress=count
+                self.last_progress_emit_at=received
+                self.events.put(('progress',count))
             if count>=stage.target:
                 self.active=None
                 self.events.put(('stage_done',(stage,count)))
@@ -641,8 +647,6 @@ class Recorder(threading.Thread):
             row['mpu_temp_c']=f'{f.temp/340.0+36.53:.3f}' if f.mpu_ok else ''
             row['bmp_temp_c']=f'{f.bmp_tc100/100:.3f}' if f.bmp_ok else ''
         writer.writerow([row[c] for c in CSV_COLUMNS])
-        if accepted and (count%10==0 or count==stage.target):
-            self.events.put(('progress',count))
 
     @staticmethod
     def _phase_rejection_reason(f, stage):
@@ -741,6 +745,11 @@ class Recorder(threading.Thread):
                     self.sample_count += 1
                     self.last_accepted_at = now
                 count = self.sample_count
+                if (count != self.phase_last_progress and
+                        (now-self.last_progress_emit_at >= 0.20 or count >= stage.target)):
+                    self.phase_last_progress = count
+                    self.last_progress_emit_at = now
+                    self.events.put(('progress',count))
                 if now >= self.next_hint_at and (now-self.last_accepted_at) > 5.0:
                     self.events.put(('hint',
                         f'No new {stage.sensor.upper()} samples for {stage.pose}/{stage.mag_stage}. '
@@ -844,11 +853,6 @@ class Recorder(threading.Thread):
         for name,value in zip(('mpu','qmc','bmp','lidar'),frame.sensor_error_counts or ()):
             row[f'{name}_errors_total']=value
         row['deadline_overruns_total']=frame.deadline_overruns
-        if capture and count != self.phase_last_progress and (count%25==0 or count==stage.target):
-            self.phase_last_progress=count
-            self.events.put(('progress', count))
-
-
 class Application:
     def __init__(self, tk, args, stage_list, axis_name, axis_matrix, output):
         from tkinter import ttk, messagebox
@@ -891,10 +895,10 @@ class Application:
         self.paused_status=tk.StringVar(value='')
         self.health=tk.StringVar(value='Opening sensor stream…')
         self.latency_status=tk.StringVar(value='Waiting for sensor telemetry.')
-        self.latency_summary=tk.StringVar(value='Latency percentiles appear after firmware v4 timing data arrives.')
+        self.latency_summary=tk.StringVar(value='UNAVAILABLE — per-sensor age and service time require measured firmware v4 fields.')
         self._latency_status_last=''
         self.lidar_port_var=tk.StringVar(value='')
-        self.lidar_status_var=tk.StringVar(value='LiDAR is optional until connected or forwarded in firmware v4.')
+        self.lidar_status_var=tk.StringVar(value='Required for the full 16-phase calibration: connect the TOFSense-F2 Mini.')
         self._lidar_last_status=''
         self.geometry_config_path=ROOT/'lidar_geometry_config.json'
         self.geometry_vars={
@@ -947,13 +951,12 @@ class Application:
         ttk.Label(extra,text='Withheld-data fit, 3D coverage and bootstrap; superseded redo attempts are excluded.',
                   foreground='#5A6470').pack(side='left')
         lidar_row=ttk.Frame(phase);lidar_row.pack(fill='x',pady=(0,3))
-        ttk.Label(lidar_row,text='Optional F2 UART:').pack(side='left')
+        ttk.Label(lidar_row,text='F2 adapter COM (one TOFSense-F2 Mini):').pack(side='left')
         self.lidar_port_combo=ttk.Combobox(lidar_row,textvariable=self.lidar_port_var,
                                            width=10,state='readonly')
         self.lidar_port_combo.pack(side='left',padx=4)
         ttk.Button(lidar_row,text='Refresh',command=self.refresh_lidar_ports).pack(side='left',padx=3)
-        ttk.Button(lidar_row,text='Connect LiDAR',command=self.connect_lidar_from_gui).pack(side='left',padx=3)
-        ttk.Button(lidar_row,text='Skip LiDAR ranges',command=self.skip_all_lidar_from_gui).pack(side='left',padx=3)
+        ttk.Button(lidar_row,text='Connect F2',command=self.connect_lidar_from_gui).pack(side='left',padx=3)
         ttk.Label(lidar_row,textvariable=self.lidar_status_var,foreground='#285884',
                   wraplength=620,justify='left').pack(side='left',padx=8)
         ttk.Label(phase,textvariable=self.health,foreground='#285884').pack(anchor='w')
@@ -1046,10 +1049,12 @@ class Application:
             ax.grid(alpha=.25)
             age,=ax.plot([],[],label='sample age',lw=1.1)
             service,=ax.plot([],[],label='sensor service',lw=1.1)
-            ax.axhline(2000,color='#b44',linestyle='--',linewidth=.8,label='2 ms service target')
+            empty=ax.text(.5,.5,'WAITING FOR MEASURED TIMING DATA',
+                          transform=ax.transAxes,ha='center',va='center',
+                          fontsize=9,color='#6b4f24',wrap=True)
             ax.legend(loc='upper right',fontsize=7)
             self.latency_axes.append(ax)
-            self.latency_lines[sensor]=(age,service)
+            self.latency_lines[sensor]=(age,service,empty)
         self.latency_canvas=FigureCanvasTkAgg(latency_fig,master=self.tab_latency)
         self.latency_canvas.draw()
         self.latency_canvas.get_tk_widget().pack(fill='both',expand=True,padx=5,pady=5)
@@ -1163,8 +1168,17 @@ class Application:
         self.lidar_port_combo['values'] = choices
         if not self.lidar_port_var.get().strip() and len(choices) == 1:
             self.lidar_port_var.set(choices[0])
-        self.lidar_status_var.set('Available LiDAR ports: '+(', '.join(choices) if choices else
-                                  'none; connect a separate USB-UART adapter'))
+            self.args.lidar_port = choices[0]
+        elif self.lidar_port_var.get().strip() not in choices:
+            self.lidar_port_var.set('')
+            self.args.lidar_port = ''
+        if choices:
+            self.lidar_status_var.set(
+                'Single TOFSense-F2 Mini; choose its separate USB-UART port: '+', '.join(choices))
+        else:
+            self.lidar_status_var.set(
+                'F2 required for phases 13–16; no separate USB-UART port found. '
+                'Connect the F2 adapter or use firmware v4 forwarding.')
 
     def connect_lidar_from_gui(self):
         port = self.lidar_port_var.get().strip()
@@ -1176,30 +1190,7 @@ class Application:
         if ok:
             self.args.lidar_port = port
         else:
-            self.msg.showwarning('Optional LiDAR connection',note)
-
-    def skip_all_lidar_from_gui(self):
-        pending = [x for x in self.stages[self.stage_index:] if x.sensor == 'lidar']
-        if not pending:
-            self.lidar_status_var.set('No remaining LiDAR ranges to skip.')
-            return
-        if not self.msg.askyesno('Skip optional LiDAR calibration?',
-                                'Skip all remaining LiDAR distance stages?\n'
-                                'MPU6050, magnetometer and BMP280 calibration will be preserved.\n'
-                                'LiDAR will be marked as SKIPPED (not calibrated).'):
-            return
-        if (self.stage_index < len(self.stages) and
-                self.stages[self.stage_index].sensor == 'lidar' and self.worker):
-            self.worker.skip_stage()
-            self.capture_active = False
-        for x in pending:
-            self.skipped_stages.append({'pose':x.pose, 'mag_stage':x.mag_stage,
-                                        'reason':'optional_skipped_in_gui'})
-        self.stages = [x for x in self.stages if x.sensor != 'lidar']
-        self._save_skip_manifest()
-        self.lidar_status_var.set('LiDAR skipped in GUI; missing calibration is recorded in .skipped.json')
-        if not self.capture_active:
-            self.update_stage()
+            self.msg.showwarning('TOFSense-F2 connection',note)
 
     def _draw_magnetic_axes(self, points):
         """Update light grid panes, numeric µT ticks and the positive-axis triad."""
@@ -1343,18 +1334,11 @@ class Application:
         stage=self.stages[self.stage_index]
         if not self.msg.askyesno('Skip uncalibrated phase?',
             f'Skip {stage.pose}/{stage.mag_stage}?\nThis stage will be MISSING or INCOMPLETE in the calibration report.\n'
-            'If LiDAR is selected, all optional ranges are skipped. No missing constants are invented.'):
+            'Skipped readings are not counted as calibrated data.'):
             return
         self.worker.skip_stage()
-        if stage.sensor == 'lidar':
-            # One skip omits all optional LiDAR references without four dialogs.
-            while self.stage_index<len(self.stages) and self.stages[self.stage_index].sensor=='lidar':
-                x=self.stages[self.stage_index]
-                self.skipped_stages.append({'pose':x.pose,'mag_stage':x.mag_stage,'reason':'optional_not_connected'})
-                self.stage_index+=1
-        else:
-            self.skipped_stages.append({'pose':stage.pose,'mag_stage':stage.mag_stage})
-            self.stage_index+=1
+        self.skipped_stages.append({'pose':stage.pose,'mag_stage':stage.mag_stage})
+        self.stage_index+=1
         self.capture_active=False
         self.update_stage()
         self._save_skip_manifest()
@@ -1413,22 +1397,33 @@ class Application:
                     duration=service[index] if service else None
                     self.latency_series[f'{sensor}_age'].append(float(age) if age is not None else math.nan)
                     self.latency_series[f'{sensor}_service'].append(float(duration) if duration is not None else math.nan)
-                self._set_latency_status(
-                    'Firmware v4 reports per-control-tick age and sensor service time. '
-                    'Dashed line is the <2 ms service target; sample age, conversion period, '
-                    'filter delay, and GUI/network delay are distinct. '
-                    f'Fresh mask: 0x{fresh_mask:02X}; cumulative MPU/QMC/BMP/LiDAR errors '
-                    f'{errors}; deadline overruns {deadline_count}.')
+                has_measurements=any(value is not None for group in (ages,service)
+                                     if group for value in group)
+                if has_measurements:
+                    self._set_latency_status(
+                        'Measured firmware v4 per-sensor age/service data received. '
+                        'The 2 ms PID period is not shown as sensor latency. '
+                        f'Fresh mask: 0x{fresh_mask:02X}; cumulative MPU/QMC/BMP/LiDAR errors '
+                        f'{errors}; deadline overruns {deadline_count}.')
+                else:
+                    self._set_latency_status(
+                        'UNMEASURED: firmware v4 packet has no valid per-sensor age/service fields. '
+                        'No latency values are plotted.')
             frame=self.worker.last_frame
             if frame is not None and frame.version < 4:
                 self._set_latency_status(
-                    f'Firmware v{frame.version} has no per-sensor timestamps/service metrics. '
-                    'Plots stay empty until v4 sends measured age and service time; packet interval is not sensor latency.')
+                    f'UNMEASURED: firmware v{frame.version} has no per-sensor age/service metrics. '
+                    'The 2 ms PID schedule and packet interval are not sensor latency; plots stay empty.')
         if self.worker and self.worker.lidar_reader is not None:
             reader=self.worker.lidar_reader
             state=('ERROR: '+reader.error if reader.error else
                    f'LiDAR connected on {reader.port} at 921600 baud' if reader.connected.is_set() else
                    f'Opening LiDAR serial {reader.port}...')
+            if state != self._lidar_last_status:
+                self._lidar_last_status=state
+                self.lidar_status_var.set(state)
+        elif self.worker and self.worker.lidar_inband_seen:
+            state='TOFSense-F2 Mini samples received from firmware v4 telemetry.'
             if state != self._lidar_last_status:
                 self._lidar_last_status=state
                 self.lidar_status_var.set(state)
@@ -1600,9 +1595,10 @@ class Application:
     def redraw_latency(self):
         ts=list(self.latency_times)
         summary=[]
+        any_measurements=False
         for index,sensor in enumerate(('MPU','QMC','BMP','LiDAR')):
             ax=self.latency_axes[index]
-            age_line,service_line=self.latency_lines[sensor]
+            age_line,service_line,empty_label=self.latency_lines[sensor]
             ages=list(self.latency_series[f'{sensor}_age'])
             service=list(self.latency_series[f'{sensor}_service'])
             age_line.set_data(ts,ages)
@@ -1611,7 +1607,14 @@ class Application:
                 ax.set_xlim(max(0,ts[-1]-30),max(30,ts[-1]+0.1))
             finite=[value for value in (*ages,*service) if math.isfinite(value)]
             if finite:
-                ax.set_ylim(0,max(2200,max(finite)*1.08))
+                any_measurements=True
+                empty_label.set_visible(False)
+                ax.set_ylim(0,max(1.0,max(finite)*1.08))
+            else:
+                empty_label.set_text(
+                    'NO MEASURED DATA\nFirmware v4 age/service fields required')
+                empty_label.set_visible(True)
+                ax.set_ylim(0,1)
             def percentile_stats(values):
                 clean=sorted(value for value in values if math.isfinite(value))
                 if not clean:return 'n/a'
@@ -1619,7 +1622,12 @@ class Application:
                 return '/'.join(str(round(at(q))) for q in (0.50,0.95,0.99,1.0))
             summary.append(f'{sensor} age P50/P95/P99/max {percentile_stats(ages)} µs; '
                            f'service {percentile_stats(service)} µs')
-        self.latency_summary.set('Rolling window (~15 s), P50/P95/P99/max: '+' | '.join(summary))
+        if any_measurements:
+            self.latency_summary.set('Rolling window (~15 s), measured P50/P95/P99/max: '+' | '.join(summary))
+        else:
+            self.latency_summary.set(
+                'UNAVAILABLE — no measured per-sensor age or service-time values have arrived. '
+                'The 2 ms control period is not a latency measurement.')
         self.latency_canvas.draw_idle()
 
     def calculate(self):
@@ -1785,8 +1793,8 @@ def main():
     ap.add_argument('--mag-tumble-samples',type=int,default=8000)
     ap.add_argument('--bmp-samples',type=int,default=1000)
     ap.add_argument('--skip-bmp',action='store_true')
-    ap.add_argument('--skip-lidar',action='store_true',help='Omit optional LiDAR stages entirely')
-    ap.add_argument('--lidar-port',default='',help='Optional 3.3V USB-UART for TOFSense F2 Mini (not ESP32 COM port)')
+    ap.add_argument('--skip-lidar',action='store_true',help='Explicitly omit required default F2 stages; capture is incomplete')
+    ap.add_argument('--lidar-port',default='',help='3.3V USB-UART COM port for the single TOFSense F2 Mini (not ESP32 COM port)')
     ap.add_argument('--lidar-samples',type=int,default=300,help='Fresh valid range readings per reference distance')
     ap.add_argument('--mag-only',action='store_true',help='Record only the four QMC/HMC 3D rotation stages; combine with full six-face CSV later')
     ap.add_argument('--settle-seconds',type=float,default=3.0,help='Preparation delay after Enter before recording (default 3s)')
