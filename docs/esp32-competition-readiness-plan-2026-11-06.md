@@ -11,16 +11,32 @@ into a staged, evidence-gated engineering track. The source attachment is
 It is a design request, not proof that a setting, driver, calibration or control
 law works on the aircraft. The attachment estimates the competition is about two
 days away; the event date has not been independently confirmed, so keep the scope
-small until its schedule is known.
+small. The user's latest estimate is about 12 hours until competition; the exact
+event schedule has not been independently confirmed.
+
+## Competition-window override — 2026-11-06
+
+- Defer LiDAR for the urgent recalibration and keep the GUI at 12 IMU/MAG/BMP
+  phases. The launcher omits LiDAR by default; `-WithLidar` restores its four
+  range phases later. The current capture must not wait on an unsoldered or
+  disconnected LiDAR.
+- After a fully completed capture, fit calibration only from completed session
+  data, review raw axes/units, accepted counts, coverage, residuals and withheld
+  error, then pin the capture hash and generated calibration hash.
+- The next priority is DSH's post-calibration sensor import, estimator timing
+  and motorless controller checks. Do not call PID gains flight-tuned based on
+  software plots. The current flight-controller core keeps motor outputs
+  disabled; real flight still depends on a verified receiver/adapter, ESC
+  protocol, motor order, airframe axes and the applicable physical test gates.
 
 ## User-directed sensor and calibration revision — 2026-11-06
 
 This revision supersedes earlier forward-looking decisions in this document
-that kept the QMC on 100 kHz, kept the calibration GUI LiDAR-free, or selected
-the 42/44 Hz MPU profile as the next capture profile. The targets below still
-require implementation and measurement on a pinned source build. The separate
-desktop GUI edit adds a completion chime; it does not validate or alter DSH
-firmware.
+that kept the QMC on 100 kHz or selected the 42/44 Hz MPU profile as the next
+capture profile. The targets below still require implementation and measurement
+on a pinned source build. The later competition-window override defers LiDAR
+from the urgent capture. The desktop GUI completion chime does not validate or
+alter DSH firmware.
 
 ### Shared I²C: fixed 400 kHz target
 
@@ -121,9 +137,10 @@ logged, repeatable bench evidence.
   separately. Do not trade data integrity or block the 500 Hz loop to force a
   nominal rate.
 
-### Add LiDAR to calibration and add sensor-latency views
+### LiDAR calibration and sensor-latency views (deferred for the competition run)
 
-- The default desktop GUI session is 16 phases: the existing 12
+- When explicitly enabled with `-WithLidar`, the desktop GUI session is 16
+  phases: the existing 12
   gyro/accelerometer/MAG/BMP phases followed by four TOFSense-F2 Mini
   range-reference phases (steps 13–16): 0.25, 0.50, 1.00 and 2.00 m. The F2 is
   the single configured LiDAR model; the port list selects its USB-UART adapter,
@@ -134,7 +151,7 @@ logged, repeatable bench evidence.
   to the target. Invalid returns are logged but do not count. The operator can
   connect a separate 3.3 V UART adapter, or use firmware-forwarded LiDAR data in
   the v4 telemetry; the GUI does not treat missing LiDAR data as a completed
-  calibration.
+  calibration. The urgent competition run uses 12 phases without LiDAR.
   Do not assume it shares the I²C bus.
 - The LiDAR analysis action fits measured range against reference range only
   when all four required distances meet the configured sample minimum. It keeps
@@ -416,7 +433,7 @@ newer source edits are not proof until tied to a build hash and capture.
 | BMP280 calibration capture | BMP280 ID `0x58`, expected address `0x76`; old captured source requests normal mode, temperature ×2, pressure ×1, IIR ×4, and 63 ms standby. It polls/labels pressure on a 5 ms schedule and logs raw ADC plus compensated SI values. | The complete session has 32,956 `bmp_new` flags (~166.67 flags/s), but this host cadence conflicts with the 63 ms configured standby and does not prove 166.67 independent conversions. Confirm actual register readback, data-ready state, and conversion timestamps. |
 | Future BMP candidate | Normal mode, temperature ×1, pressure ×1, 0.5 ms standby; `CTRL_MEAS=0x27`. Start with IIR ×2 (`CONFIG=0x04`); compare ×4 (`CONFIG=0x08`) using timestamped data and step/noise measurements. Read status before marking a conversion fresh. | Datasheet-derived target only. Do not label cached reads fresh or claim a proven 200 Hz pressure conversion rate. The expected nominal ceiling for the stated profile is about 166.7 Hz. |
 | UART / GUI | 921600 baud, 8N1, Wi-Fi off; binary v3 packet is 52 bytes with `A5 5A` sync, 500 Hz scheduled packet cadence, sequence/timestamp, validity/freshness flags, and CRC-16/CCITT-FALSE over bytes 0–49 in bytes 50–51. | CRC-valid, sequential 500 packet/s streams were observed in preflight and in capture segments. This proves the telemetry stream, not a 500 Hz control loop or fresh conversion from every sensor. |
-| Calibration flow | Current default: 16 phases — 30,000 stationary MPU rows; six accelerometer faces ×5,000; yaw/pitch/roll MAG turns ×2,000 each; MAG tumble ×8,000; BMP ×1,000; then four F2 LiDAR ranges ×300 fresh readings at 0.25/0.50/1.00/2.00 m. `-SkipLidar` is an explicit incomplete-session override. | The November 4 10:09 accepted session is historical 12-phase data with no LiDAR and remains the only identified fully completed session. |
+| Calibration flow | Current urgent default: 12 phases without LiDAR — 30,000 stationary MPU rows; six accelerometer faces ×5,000; yaw/pitch/roll MAG turns ×5,000 each; MAG tumble ×20,000; BMP ×1,000. `-WithLidar` appends four F2 ranges ×300 at 0.25/0.50/1.00/2.00 m. | The November 4 10:09 accepted session is historical 12-phase data and remains the only identified fully completed session. The larger MAG targets are launcher settings, not yet a completed capture. |
 | Actuators / Xbox | Motor pins remain inactive; physical arming disabled. Windows USB/serial Xbox bridge is bench-only until a real flight receiver and adapter are verified. | No actuator, thrust, motor-order, receiver-loss, or flight behavior has been validated. |
 
 ### Proven results and calibration limits

@@ -898,7 +898,9 @@ class Application:
         self.latency_summary=tk.StringVar(value='UNAVAILABLE — per-sensor age and service time require measured firmware v4 fields.')
         self._latency_status_last=''
         self.lidar_port_var=tk.StringVar(value='')
-        self.lidar_status_var=tk.StringVar(value='Required for the full 16-phase calibration: connect the TOFSense-F2 Mini.')
+        self.lidar_status_var=tk.StringVar(value=(
+            'LiDAR is excluded from this session.' if self.args.skip_lidar else
+            'Connect the TOFSense-F2 Mini for range phases 13–16.'))
         self._lidar_last_status=''
         self.geometry_config_path=ROOT/'lidar_geometry_config.json'
         self.geometry_vars={
@@ -911,7 +913,7 @@ class Application:
         self._load_geometry_config()
 
         top=ttk.Frame(self.root,padding=8);top.pack(fill='x')
-        ttk.Label(top,text='IntelQCopter | 500 Hz IMU · 200 Hz QMC · F2 LiDAR calibration',font=('Segoe UI',15,'bold')).pack(anchor='w')
+        ttk.Label(top,text='IntelQCopter | 500 Hz IMU · 200 Hz QMC calibration',font=('Segoe UI',15,'bold')).pack(anchor='w')
         ttk.Label(top,text=f'Capture: {Path(output).name}  ·  MAG axes: {axis_name}',font=('Segoe UI',8)).pack(anchor='w')
         ttk.Label(top,textvariable=self.info,font=('Segoe UI',8)).pack(anchor='w',pady=(3,0))
         ttk.Separator(self.root,orient='horizontal').pack(fill='x')
@@ -947,10 +949,11 @@ class Application:
         self.combine_button=ttk.Button(extra,text='Combine CSV + calibration JSON...',command=self.combine_calibrations)
         self.combine_button.pack(side='left',padx=(0,8))
         self.lidar_analysis_button=ttk.Button(extra,text='Analyze LiDAR range CSV...',command=self.analyze_lidar_csv)
-        self.lidar_analysis_button.pack(side='left',padx=(0,8))
+        if not self.args.skip_lidar:
+            self.lidar_analysis_button.pack(side='left',padx=(0,8))
         ttk.Label(extra,text='Withheld-data fit, 3D coverage and bootstrap; superseded redo attempts are excluded.',
                   foreground='#5A6470').pack(side='left')
-        lidar_row=ttk.Frame(phase);lidar_row.pack(fill='x',pady=(0,3))
+        lidar_row=ttk.Frame(phase)
         ttk.Label(lidar_row,text='F2 adapter COM (one TOFSense-F2 Mini):').pack(side='left')
         self.lidar_port_combo=ttk.Combobox(lidar_row,textvariable=self.lidar_port_var,
                                            width=10,state='readonly')
@@ -959,6 +962,8 @@ class Application:
         ttk.Button(lidar_row,text='Connect F2',command=self.connect_lidar_from_gui).pack(side='left',padx=3)
         ttk.Label(lidar_row,textvariable=self.lidar_status_var,foreground='#285884',
                   wraplength=620,justify='left').pack(side='left',padx=8)
+        if not self.args.skip_lidar:
+            lidar_row.pack(fill='x',pady=(0,3))
         ttk.Label(phase,textvariable=self.health,foreground='#285884').pack(anchor='w')
         ttk.Label(phase,textvariable=self.saved_info,foreground='#186A58').pack(anchor='w')
 
@@ -973,7 +978,8 @@ class Application:
         notebook.add(self.tab_live,text='Live motion, magnetic field & altitude')
         notebook.add(self.tab_thermal,text='MPU6050 / BMP280 temperatures')
         notebook.add(self.tab_latency,text='Sensor latency')
-        notebook.add(self.tab_geometry,text='LiDAR geometry')
+        if not self.args.skip_lidar:
+            notebook.add(self.tab_geometry,text='LiDAR geometry')
         self.notebook=notebook
         fig=Figure(figsize=(14,8.0),dpi=95,constrained_layout=False)
         fig.subplots_adjust(left=0.07,right=0.97,bottom=0.12,top=0.91,wspace=0.30,hspace=0.48)
@@ -1164,6 +1170,9 @@ class Application:
             self.geometry_result.set(f'Could not save geometry configuration: {exc}')
 
     def refresh_lidar_ports(self):
+        if self.args.skip_lidar:
+            self.lidar_status_var.set('LiDAR is excluded from this calibration session.')
+            return
         choices = self._available_lidar_ports()
         self.lidar_port_combo['values'] = choices
         if not self.lidar_port_var.get().strip() and len(choices) == 1:
@@ -1460,6 +1469,7 @@ class Application:
                     s=self.stages[self.stage_index]
                     self.progress.set(f'{payload:,} / {s.target:,} fresh valid samples')
                     self.bar['value']=min(100,100*payload/s.target)
+                    self.root.update_idletasks()
             elif kind=='stage_done':
                 s,count=payload
                 # Ignore a queued completion after a user-initiated skip.
@@ -1793,7 +1803,11 @@ def main():
     ap.add_argument('--mag-tumble-samples',type=int,default=8000)
     ap.add_argument('--bmp-samples',type=int,default=1000)
     ap.add_argument('--skip-bmp',action='store_true')
-    ap.add_argument('--skip-lidar',action='store_true',help='Explicitly omit required default F2 stages; capture is incomplete')
+    ap.add_argument('--with-lidar',dest='skip_lidar',action='store_false',
+                    help='Add the four F2 range phases after BMP calibration')
+    ap.add_argument('--skip-lidar',dest='skip_lidar',action='store_true',
+                    help='Omit F2 range phases (default for the current calibration flow)')
+    ap.set_defaults(skip_lidar=True)
     ap.add_argument('--lidar-port',default='',help='3.3V USB-UART COM port for the single TOFSense F2 Mini (not ESP32 COM port)')
     ap.add_argument('--lidar-samples',type=int,default=300,help='Fresh valid range readings per reference distance')
     ap.add_argument('--mag-only',action='store_true',help='Record only the four QMC/HMC 3D rotation stages; combine with full six-face CSV later')

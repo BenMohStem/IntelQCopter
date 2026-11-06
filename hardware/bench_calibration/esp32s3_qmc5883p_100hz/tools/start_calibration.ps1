@@ -1,11 +1,12 @@
 <#
 IntelQCopter competition calibration, Windows PowerShell 5.1.
-Default: 16 phases including TOFSense-F2 Mini ranges at 0.25/0.50/1.00/2.00 m.
+Default: 12 sensor phases, without LiDAR. Add -WithLidar to append four F2 ranges.
 QMC5883P 200Hz target / UART 921600 / 500Hz IMU schedule.
 
   .\tools\start_calibration.ps1
   .\tools\start_calibration.ps1 -UploadFirmware
   .\tools\start_calibration.ps1 -Port COM3 -UploadFirmware
+  .\tools\start_calibration.ps1 -WithLidar # Append F2 range phases when ready
   .\tools\start_calibration.ps1 -Check -Seconds 20
   .\tools\start_calibration.ps1 -Wifi                 # Wi-Fi calibration, no cable needed
   .\tools\start_calibration.ps1 -UploadFirmware -Wifi # Build+upload via COM, then calibrate via Wi-Fi
@@ -16,12 +17,13 @@ param(
     [string]$Output = '',
     [int]$GyroSamples = 30000,
     [int]$AccelSamples = 5000,
-    [int]$MagTurnSamples = 2000,
-    [int]$MagTumbleSamples = 8000,
+    [int]$MagTurnSamples = 5000,
+    [int]$MagTumbleSamples = 20000,
     [int]$BmpSamples = 1000,
     [ValidateRange(0,30)][double]$SettleSeconds = 3.0,
     [switch]$SkipBmp,
     [switch]$SkipLidar,
+    [switch]$WithLidar,
     [string]$LidarPort = '',
     [int]$LidarSamples = 300,
     [switch]$MagOnly,
@@ -33,6 +35,7 @@ param(
     [ValidateRange(2,300)][int]$Seconds = 20
 )
 $ErrorActionPreference = 'Stop'
+if ($WithLidar -and $SkipLidar) { throw 'Choose either -WithLidar or -SkipLidar, not both.' }
 $Root = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 . (Join-Path $PSScriptRoot 'resolve_platformio.ps1')
 . (Join-Path $PSScriptRoot 'resolve_serial_port.ps1')
@@ -124,10 +127,10 @@ try {
     Write-Host "  Mag yaw/pitch/roll: $MagTurnSamples samples per rotation"
     Write-Host "  Mag 3D tumble: $MagTumbleSamples samples"
     Write-Host "  Barometer: $BmpSamples samples"
-    if ($SkipLidar) {
-        Write-Host '  LiDAR phases: explicitly skipped; this is incomplete relative to the default 16 phases.' -ForegroundColor Yellow
+    if (-not $WithLidar -or $SkipLidar) {
+        Write-Host '  LiDAR: excluded from this 12-phase calibration run.' -ForegroundColor DarkGray
     } else {
-        Write-Host "  TOFSense-F2 Mini: 4 required range phases x $LidarSamples fresh readings (0.25, 0.50, 1.00, 2.00 m)"
+        Write-Host "  TOFSense-F2 Mini: 4 additional range phases x $LidarSamples fresh readings (0.25, 0.50, 1.00, 2.00 m)"
     }
     Write-Host "  Preparation: $SettleSeconds seconds per stage"
     Write-Host '  Motor output DISABLED; remove propellers.' -ForegroundColor Yellow
@@ -146,9 +149,9 @@ try {
     }
     if ($Output) { $a+=@('--output',$Output) }
     if ($SkipBmp) { $a+=@('--skip-bmp') }
-    # LiDAR ranges are part of the default 16-phase calibration. Keep -SkipLidar
-    # as an explicit diagnostic override; it records an incomplete calibration.
-    if ($SkipLidar) { $a+='--skip-lidar' }
+    # Keep the urgent calibration flow to its 12 IMU/MAG/BMP phases. LiDAR is
+    # added only when the operator explicitly selects -WithLidar.
+    if ($WithLidar -and -not $SkipLidar) { $a+='--with-lidar' } else { $a+='--skip-lidar' }
     if ($LidarPort) { $a+=@('--lidar-port',$LidarPort) }
     if ($MagOnly) { $a+='--mag-only' }
     & $PythonExe @PythonPrefix @a
