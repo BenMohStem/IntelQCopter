@@ -743,3 +743,63 @@ High:
 - Preserved concurrent changes to ESP32 `src/main.cpp` and `platformio.ini`.
   No firmware build, flash, physical sensor test, motor test or flight validation
   was performed as part of this revision.
+
+## 29. Revision 14 — 2026-11-06: final calibration underway; DSH PID review
+
+- The user reports they are running the final sensor calibration with LiDAR
+  omitted. The user owns the ESP32 serial port and current capture. Do not open
+  COM3, relaunch the GUI, read an active CSV, or label a capture complete until
+  the user confirms the run ended. Completion means all 12 configured phases
+  reached target and no stage was skipped or left partial. Preserve every
+  partial/retry CSV and `.skipped.json` manifest.
+- At review time, the latest DSH software commit was `a7e464d` (`Fix GUI
+  progress bar and latency; QMC raw/37.5 uT`), following the LiDAR-free launcher
+  change `0130070`. This commit has an internal `I2cBus::Stats` duration for
+  `readRegs()` operations,
+  but the values are not packed into a v4 telemetry frame, do not reach the CSV
+  service columns, and do not represent sensor sample age. Failed reads return
+  before duration is stored. Do not claim the GUI latency plot now has valid
+  measurements from this code alone.
+- BMP source review: `readBmp280()` reads six pressure/temperature registers
+  through `i2cBus.readRegs()`, then calls Adafruit `readTemperature()` and
+  `readPressure()`, which perform additional Wire reads outside the measured
+  span. It also marks each polling read fresh without a demonstrated new-
+  conversion check. This risks duplicate bus work and overstated freshness.
+  Resolve after the user's capture is safely complete; distinguish transaction
+  time from conversion/sample age.
+- GUI source currently calls `root.update_idletasks()` twice after each progress
+  event. One call is sufficient; treat the second as redundant. The event is
+  emitted from accepted sample progress, but a live 12-phase session is the
+  evidence needed to confirm visible progress on the user's machine.
+- The flight file is `firmware/flight_controller/flight_controller.c`, distinct
+  from ESP32 calibration firmware. Static review of the current C source found:
+  - Gains are explicitly placeholders. Roll/pitch angle loops use P only;
+    roll/pitch/yaw rate D gains are zero; altitude gains and 0.50 hover
+    collective are not flight-identified values.
+  - `flight_control_step()` returns four normalized software-mixer values only,
+    has no ESC driver, and hard-sets `out.armed = false`.
+  - Its configuration macros select ±500 °/s, ±4 g, and 41 Hz DLPF, not the
+    user's requested ±500 °/s, ±8 g, 188/184 Hz candidate. The file's sensor
+    helper is not evidence of live sensor register configuration.
+  - `sensor_sample_t` has no timestamps/ages; `sample_is_healthy()` checks finite
+    values and validity only, so it cannot reject stale reused sensor samples.
+  - `flight_control_step()` dereferences `cmd->buttons` in the barometer block
+    before checking `cmd == NULL`. Also, the North-button barometer zero call is
+    level-triggered while the returned `out.armed` is hardcoded false. Validate
+    `cmd` before any dereference and use a deliberate rising-edge plus confirmed
+    ground/disarmed condition before zeroing.
+- Post-capture priority for DSH: analyze only the completed 12-phase session;
+  preserve original CSV bytes and hashes alongside calibration JSON, units/axis
+  notes, per-phase counts, gyro bias/noise, accelerometer bias/full matrix and
+  residual/coverage, magnetometer hard-iron/full soft-iron fit and held-out
+  magnitude errors, plus BMP raw/freshness/temperature/pressure statistics.
+  Keep raw values unchanged and exclude LiDAR. Then reconcile the fit with flight
+  sensor scale/range, validate sample age and estimator/control behavior through
+  motorless replay or SITL. Do not invent flight gains without measured airframe
+  inertia, actuator authority and delay; keep motors/arming disabled unless the
+  hardware adapter and every required authorization/safety gate are established.
+- For a Claude/GPT handoff, bundle only fully completed sessions selected by the
+  user, but preserve all other attempts in the repository. Include the matching
+  firmware/source revision, capture SHA-256, calibration output hash, a data
+  dictionary, equations/conventions, plots, and explicit unverified items. Do
+  not pass filtered-only derivatives in place of the original raw capture.

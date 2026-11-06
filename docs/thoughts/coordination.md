@@ -8,20 +8,23 @@ relevant subsystem README and `VALIDATION_LOG.md`.
 ## Current state
 
 - Branch: `feature/esp32s3-competition-fc` (isolated ESP32-S3 candidate).
+- Latest DSH software commit before this docs-only handoff: `a7e464d` (`Fix GUI progress bar and latency; QMC raw/37.5 uT`).
 - The user-supplied competition specification is translated into
   `docs/esp32-competition-readiness-plan-2026-11-06.md`. It is a design request,
   not validation evidence; current motor and hardware restrictions still apply.
-- A new uncommitted edit to the calibration `src/main.cpp` and `platformio.ini`
-  appeared in this branch. During review, `main.cpp` changed hash between reads;
-  preserve it, recheck `git status` and SHA before further review, and do not
-  include those source changes in documentation commits. At the observed snapshot,
-  the PlatformIO diff changed the I2C build define from 100 kHz to 400 kHz; this
-  remains unvalidated against mixed prior full-stream results.
-- DeepSeek stopped. Its uncommitted calibration `src/main.cpp` candidate is
-  preserved for review at
-  `archive/review-candidates/2026-11-05/qmc5883p-main-dsh-working-tree.cpp`;
-  the working-tree source was restored to the current commit during cleanup.
-  Review the archived candidate before adopting its register/configuration edits.
+- The user reports that the final 12-phase IMU/MAG/BMP calibration is currently
+  running; LiDAR is excluded. Treat COM3 and active capture files as owned by the
+  user. Do not open the port, restart the GUI, or inspect the active CSV until the
+  user says the run is complete. Completion requires all 12 phases at target and
+  no skipped or partial stage attempts.
+- DSH's latest shared ESP32 calibration commit is `a7e464d`. It adds I²C read
+  duration fields in `src/main.cpp`; those values are not yet serialized into the
+  GUI's v4 telemetry fields and are not per-sensor sample age. Review the source
+  before claiming that latency is measured. The duplicate Tk idle refresh in the
+  GUI is harmless but redundant; remove one on a later UI edit.
+- ESP32-S3 `src/main.cpp` is calibration/telemetry firmware, not the Pico flight
+  controller. Keep the sensor capture separate from
+  `firmware/flight_controller/flight_controller.c` work.
 - The Cloud GPT A-to-Z Markdown snapshot is preserved under
   `archive/imported-documents/cloud-gpt-a-to-z-2026-11-05/`; its review is
   `cloud-gpt-a-to-z-review.md`. It is reference material, not active policy.
@@ -29,8 +32,9 @@ relevant subsystem README and `VALIDATION_LOG.md`.
   are at `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/independent_audit_20261104/`.
   Its source ZIP and scripts remain in `C:\Users\Mohamed\Downloads\GPT_TMP\`;
   the four raw CSVs were hash-checked against repository captures.
-- Drone is disconnected for PCB repair. Do not use COM3 or claim hardware
-  validation until the user says the board is repaired and connected.
+- The user reports the aircraft is connected and is calibrating sensors. This
+  does not establish that the flight-control PCB, receiver, ESC protocol, motor
+  order or motor outputs have been verified.
 - User-reported TOFSense-F2 Mini mounting is central underside on the F450,
   beam along body −Z; preliminary sensor-to-COM vector is `(0,0,-0.026658) m`.
   See `docs/lidar-geometry-and-altitude-fusion-2026-11-06.md`. Physical dimensions,
@@ -82,7 +86,10 @@ The canonical ESP32 bench chronology and failed-trial record is
 [`VALIDATION_LOG.md`](../../hardware/bench_calibration/esp32s3_qmc5883p_100hz/VALIDATION_LOG.md).
 Read it before making calibration claims or changing bench procedures.
 
-The November 4 guided session
+The user reports a new LiDAR-free guided session in progress. Do not select any
+current capture for analysis until the user confirms completion and the session
+manifest/CSV show all 12 phases reached target without skips. Preserve partial
+segments and skipped-stage manifests. The November 4 guided session
 `captures/calibration_package_20261104/iq_500hz_20261104_100907.csv` has evidence
 for all 12 target phases, no skipped stages, and a matching result JSON. Raw
 review confirms 38,652 fresh MAG samples at about 195 Hz during active phases;
@@ -93,6 +100,26 @@ and 3.456% MAG magnitude RMS on separate 02:57 and 03:17 sessions (raw hashes
 matched locally; the analysis was not rerun in this cleanup pass). PCB/axis and
 physical heading validation remain pending. See `cloud-gpt-a-to-z-review.md`
 and the imported audit report for details.
+
+## Post-calibration DSH/PID handoff
+
+- The Pico `flight_controller.c` snapshot still marks PID gains as placeholders,
+  exposes only a software mixer, and forces `out.armed = false`; it has no
+  hardware ESC output path. Its MPU configuration macros select ±500 °/s,
+  ±4 g and 41 Hz, while the requested candidate is ±500 °/s, ±8 g and 188/184 Hz.
+- `sensor_sample_t` carries validity booleans but no acquisition timestamps or
+  sample ages. PID review must retain the latest sample each 500 Hz iteration
+  without pretending reused values are fresh; add explicit age/freshness
+  handling in the owner firmware before using a sample in control.
+- Static review found `flight_control_step()` reads `cmd->buttons` before the
+  later null/validity check, and the barometer zero button is level-triggered
+  while `out.armed` is always false. Validate the command first and use a
+  deliberate edge/ground-state rule before estimator zeroing. Keep the physical
+  output lock unchanged.
+- Do not invent numeric flight gains from calibration alone. First analyze the
+  completed capture; reconcile axes, scales and units; then use motorless
+  replay/SITL with measured timing and a clearly labeled plant. No receiver,
+  ESC, motor-order or thrust characterization is validated in this checkout.
 
 ## Rules for the next AI
 
