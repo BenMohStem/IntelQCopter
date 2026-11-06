@@ -80,23 +80,57 @@ def make_test_frame(distance_mm=1000,status=0,sys_ms=1234,signal=10):
     return bytes(p)
 
 
-def analyze_csv(path, output=None):
+def analyze_csv(path, output=None, min_samples=20, required_distances=None):
     import numpy as np
-    rows=list(csv.DictReader(Path(path).open(newline='',encoding='utf-8-sig')))
+    paths=[Path(item) for item in path] if isinstance(path,(list,tuple)) else [Path(path)]
     grouped={}
     invalids=0
-    for r in rows:
-        if r.get('valid')!='1':
-            invalids+=1
-            continue
-        try:
-            d=float(r['reference_m']); z=float(r['distance_m'])
-        except (KeyError,ValueError):continue
-        if not (math.isfinite(d) and math.isfinite(z)):continue
-        grouped.setdefault(d,[]).append(z)
+    for source in paths:
+        with source.open(newline='',encoding='utf-8-sig') as stream:
+            reader=csv.DictReader(stream)
+            columns=set(reader.fieldnames or ())
+            gui_csv='lidar_reference_m' in columns
+            source_groups={}
+            latest_attempt_by_distance={}
+            for r in reader:
+                if gui_csv:
+                    if r.get('kind')!='L':continue
+                    try:
+                        d=float(r['lidar_reference_m']); z=float(r['lidar_distance_m'])
+                        attempt_num=int(r.get('phase_attempt') or 0)
+                    except (KeyError,ValueError,TypeError):
+                        invalids+=1;continue
+                    good=(r.get('phase_accepted')=='1' and r.get('lidar_status')=='0'
+                          and 0.02<=z<=7.8)
+                    latest_attempt_by_distance[d]=max(
+                        attempt_num,latest_attempt_by_distance.get(d,attempt_num))
+                else:
+                    if r.get('valid')!='1':
+                        invalids+=1;continue
+                    try:
+                        d=float(r['reference_m']); z=float(r['distance_m'])
+                    except (KeyError,ValueError):continue
+                    good=True
+                    attempt_num=0
+                if not (math.isfinite(d) and math.isfinite(z)):
+                    invalids+=1;continue
+                if not good:
+                    invalids+=1;continue
+                source_groups.setdefault((d,attempt_num),[]).append(z)
+        # Count valid data only from the newest attempt for each reference. If
+        # that attempt has no valid rows, an older attempt stays superseded.
+        latest={}
+        for (distance,attempt),values in source_groups.items():
+            if gui_csv and attempt!=latest_attempt_by_distance.get(distance):
+                continue
+            if distance not in latest or attempt>latest[distance][0]:
+                latest[distance]=(attempt,values)
+        for distance,(_,values) in latest.items():
+            grouped.setdefault(distance,[]).extend(values)
+    min_samples=max(1,int(min_samples))
     stats=[]
     for target, values in sorted(grouped.items()):
-        if len(values)<20:continue
+        if len(values)<min_samples:continue
         zz=np.array(values,dtype=float)
         med=float(np.median(zz))
         mad=float(1.4826*np.median(np.abs(zz-med)))
@@ -104,12 +138,21 @@ def analyze_csv(path, output=None):
         stats.append({'reference_m':target,'samples':len(zz),'mean_m':float(np.mean(zz)),
                       'median_m':med,'std_m':float(np.std(zz,ddof=1)),
                       'robust_std_m':mad,'bias_at_pose_m':med-target})
-    report={'schema':'IntelQCopter F2 Mini optional bench range calibration v1',
-            'source':str(Path(path).resolve()),'valid_references':len(stats),
+    expected=([float(x) for x in required_distances] if required_distances else [])
+    counts={f'{target:.3f}':len(values) for target,values in sorted(grouped.items())}
+    missing=[distance for distance in expected if len(grouped.get(distance,()))<min_samples]
+    report={'schema':'IntelQCopter F2 Mini range calibration v2',
+            'source':str(paths[0].resolve()) if len(paths)==1 else None,
+            'valid_references':len(stats),
+            'input_files':[str(item.resolve()) for item in paths],
+            'minimum_samples_per_reference':min_samples,
+            'valid_sample_counts_by_reference_m':counts,
+            'required_references_m':expected,
+            'incomplete_references_m':missing,
             'invalid_frames':invalids,'per_distance':stats,
             'manufacturer_max_rate_hz':50,
             'warning':'No flight use. Valid only for verified target surface, orientation, illumination, supply and thermal conditions.'}
-    if len(stats)>=3:
+    if len(stats)>=3 and not missing:
         x=np.array([s['reference_m'] for s in stats]); y=np.array([s['median_m'] for s in stats])
         # Fit z=a*d+b. Use point-level medians to avoid overweighting repeated samples
         # (serial samples are autocorrelated). Nonlinear range error needs more points.
@@ -121,8 +164,10 @@ def analyze_csv(path, output=None):
                    'per_reference_residual_m':r.tolist(),
                    'note':'Small sample of target distances; check independent holdout range and alternative target materials before use.'}
     else:
-        report['fit_warning']='At least 3 distinct reference distances, with >=20 valid samples each, are required.'
-    output=Path(output) if output else Path(path).with_suffix('.lidar_report.json')
+        report['fit_warning']=(f'At least 3 references with {min_samples} valid readings each are required; '
+                               'when required distances are listed, every one must meet that count.')
+    base=paths[0]
+    output=Path(output) if output else base.with_suffix('.lidar_report.json')
     output.write_text(json.dumps(report,indent=2),encoding='utf-8')
     return report,output
 
@@ -278,12 +323,17 @@ if __name__=='__main__':
     ap=argparse.ArgumentParser()
     ap.add_argument('--gui',action='store_true')
     ap.add_argument('--port',default='')
-    ap.add_argument('--analyze',type=Path)
+    ap.add_argument('--analyze',type=Path,nargs='+')
+    ap.add_argument('--min-samples',type=int,default=20,
+                    help='Minimum accepted samples at each reference for fitting (default: 20)')
+    ap.add_argument('--required-distances',type=float,nargs='*',default=None,
+                    help='Require these distances in metres before producing a fit')
     ap.add_argument('--self-test',action='store_true')
     ns=ap.parse_args()
     if ns.self_test:self_test()
     elif ns.analyze:
-        r,p=analyze_csv(ns.analyze)
+        r,p=analyze_csv(ns.analyze,min_samples=ns.min_samples,
+                        required_distances=ns.required_distances)
         print(p);print(json.dumps(r,indent=2))
     else:
         BenchApp(ns.port).root.mainloop()

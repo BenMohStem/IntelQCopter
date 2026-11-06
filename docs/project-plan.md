@@ -29,29 +29,41 @@ work and flight validation. The detailed selected bench profile and evidence
 ledger are in [the ESP32-S3 readiness plan](esp32-competition-readiness-plan-2026-11-06.md).
 The aircraft is reported connected, but no new hardware data were collected.
 
-The user has now requested a LiDAR calibration stage in the GUI, alongside a
-dedicated sensor-latency tab. This supersedes the earlier LiDAR-free GUI plan.
-The reported central underside TOFSense-F2 Mini mount on the F450 and its
-preliminary geometry are recorded in
-[the LiDAR geometry note](lidar-geometry-and-altitude-fusion-2026-11-06.md).
-The offline replay helper applies the preliminary, configurable COM lever arm
-and separates local vertical position, terrain height, and beam-hit clearance.
-It requires a confirmed pressure reference to label local altitude; no physical
-driver or flight estimator is implemented. The revised Xbox mapping remains a
-plan until source audit and transport evidence pass.
+The calibration GUI now appends LiDAR distance-reference stages 13–16 at 0.25,
+0.50, 1.00 and 2.00 m, with 300 fresh valid samples per range by default. It
+adds an editable geometry worksheet and a dedicated sensor-latency tab. The
+worksheet applies the reported F450 central underside mount and full vector
+equation, but is not a flight estimator. The default COM lever arm remains a
+preliminary measurement. See [the LiDAR geometry note](lidar-geometry-and-altitude-fusion-2026-11-06.md).
+Firmware v2/v3 still lacks per-sensor age and
+service telemetry; the GUI waits for the planned v4 fields instead of plotting
+packet interval as latency. Cable-free in-band LiDAR also depends on DSH
+forwarding the sensor in v4. The revised Xbox mapping remains a plan until
+source audit and transport evidence pass.
 
-The latest sensor plan targets one fixed 400 kHz I²C bus for MPU6050, QMC5883P,
-and BMP280; a nonblocking 500 Hz control iteration that consumes the latest
-available sample from each sensor; staged MPU DLPF/software-filter evaluation;
-and measured per-sensor timing. These are implementation targets, not claims
-that the current uncommitted DSH source or repaired board has passed them. See
-the dated revision and acceptance gates in the ESP32-S3 readiness plan.
+The sensor plan targets a fixed 400 kHz I²C bus for MPU6050, QMC5883P and
+BMP280; a nonblocking 500 Hz loop that always uses the latest available sensor
+snapshot; MPU 188 Hz first, then a measured 256 Hz trial, with 98 Hz only if 188
+fails; ±500 °/s, ±8 g and FIFO; and the fastest verified BMP conversion with
+noise/delay measured separately. These remain targets. At this update the DSH
+working tree still contains the prior 42/44 Hz, ±250 °/s, ±2 g, FIFO-disabled
+MPU configuration, QMC bus clock switching to 100 kHz, and 52-byte v3 stream.
+Its staged one-line default clock change is not a fix, and no new compile or
+hardware capture was performed. The exact branch/source status is in the GPT
+Cloud handoff; see the detailed [readiness plan](esp32-competition-readiness-plan-2026-11-06.md).
 
 The user also requested a cable-free calibration session for easier 3D
 magnetometer tumbling. The desktop launcher and GUI contain a Wi-Fi/UDP option,
-but end-to-end capture and magnetic interference still require verification.
-Codex owns desktop GUI work (including an audible cue on completed phases);
-DSH owns ESP32 firmware and sensor telemetry. Motor outputs remain disabled.
+but end-to-end capture, v4 LiDAR forwarding, and magnetic interference still
+require verification. Codex owns desktop GUI and analysis work; DSH owns ESP32
+firmware and sensor telemetry. Motor outputs remain disabled.
+
+Only the November 4 `iq_500hz_20261104_100907.csv` is currently admitted as a
+100% complete calibration session: 98,868 rows, exact target counts for all 12
+stages, empty skip manifest, independent audit and matching SHA-256. Keep its
+parameters provisional because it was captured at the old ±250 °/s, ±2 g and
+low-DLPF profile. The large November 6 capture is preserved but excluded from
+fits; its launch settings and accepted-count/attempt mapping are unresolved.
 
 The competition window is described as approximately two days away in the
 supplied text, but its date is unconfirmed. Keep the release scope conservative;
