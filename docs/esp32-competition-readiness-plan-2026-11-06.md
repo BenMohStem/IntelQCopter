@@ -18,8 +18,10 @@ small until its schedule is known.
 - Work on the isolated `feature/esp32s3-competition-fc` branch. Keep the current
   Pico/RP2350 and RP2040 architecture and its worktrees separate. Do not rewrite
   or combine other AI worktrees.
-- The aircraft is disconnected for PCB repair. No COM3 session, flash, physical
-  test, motor-output test, or flight validation is part of the current pass.
+- The user reports the aircraft is connected as of 2026-11-06. Its repair state,
+  fitted sensors, and wiring have not been independently inspected in this plan
+  update. No COM3 capture, flash, physical test, motor-output test, or flight
+  validation was performed for this update.
 - Physical arming and ESC output remain disabled under `AGENTS.md`. Any candidate
   state machine or mixer is software-only; an `ARMED` message is not evidence of
   physical actuator control.
@@ -38,11 +40,11 @@ small until its schedule is known.
   188.16 fresh conversions/s over 15 seconds at 100 kHz I2C. This is an isolated
   sensor result, not proof of full-system operation.
 - Full-system records conflict: one 400 kHz UART preflight reported 166.8 fresh
-  MAG samples/s, while a later 400 kHz full-stream capture had 4,001 valid
-  packets and zero fresh MAG samples. A completed calibration capture contains
-  fresh MAG data, but the exact firmware/configuration lineage must be pinned
-  from its raw records before selecting a release setting. The current local
-  `platformio.ini` edit selects 400 kHz; it is uncommitted and unvalidated.
+  MAG samples/s, while another 4,001-packet 400 kHz stream recorded zero fresh
+  MAG samples. The completed calibration capture contains fresh MAG data, but
+  its precise per-transaction bus clock must stay linked to its build
+  configuration. The currently committed DSH `platformio.ini` selects 400 kHz;
+  this source setting does not establish reliable QMC operation at that rate.
 - The calibration package currently describes a 12-phase GUI without LiDAR and
   an isolated 200 Hz QMC result. The complete November 4 session is the current
   full-session calibration candidate; its fits remain provisional, and the
@@ -56,6 +58,87 @@ small until its schedule is known.
   evidence.
 - The PCB shows an HMC5883L footprint while recent captures identify a QMC5883P.
   Resolve the actual fitted sensor, SDA/SCL route, power and pull-ups after repair.
+
+## Selected bench configuration and evidence status
+
+Use this as the **reproducible sensor-calibration baseline** while DSH's current
+flight-controller changes are being reviewed. It is not a flight release. The
+existing full-session capture and isolated MAG probe are the hardware evidence;
+newer source edits are not proof until tied to a build hash and capture.
+
+| Area | Selected configuration | What the evidence establishes |
+|---|---|---|
+| MCU / board | ESP32-S3 DevKitC-1 N8, Arduino framework, PlatformIO Espressif32 7.1.3 | Used by the calibration project and handoff. No new DSH firmware build is recorded in this plan update. |
+| Sensor bus | SDA GPIO9, SCL GPIO8. MPU6050 expected at `0x68`; QMC5883P at `0x2C`; BMP280 at `0x76` through MPU bypass. Keep Wi-Fi disabled. | IDs and sensor data were observed in the November 4 capture. The board drawing still labels an HMC5883L footprint; the physical part and repaired routing need confirmation. |
+| I²C speed | Selected strategy: initialize/default at 100 kHz; use 100 kHz for all QMC reads/writes; switch to 400 kHz only around MPU/BMP transactions, then return to 100 kHz before QMC access. Do not run QMC at a global 400 kHz without a separately accepted test. | The captured calibration source uses this split-speed pattern; the isolated 100 kHz QMC probe sustained fresh data. Integrated global-400 kHz results conflict. Bus waveform and rise time are unmeasured. |
+| QMC identity / range | QMC5883P, address `0x2C`, ID register `0x00 = 0x80`; `CTRL2 0x0B = 0x08` (±8 G); raw conversion `µT = counts / 37.5`. | Identity and raw conversions agree with the capture audit. Calibration values remain sensor-frame candidates; board-to-body orientation is unresolved. |
+| QMC chosen ODR | Normal mode, low-OSR `CTRL1 0x0A = 0x3D` (nominal 200 Hz). Boot sequence: suspend with `CTRL1=0x00`, wait 20 ms, write `XYZ_SIGN 0x29=0x06`, write `CTRL2=0x08`, then write `CTRL1=0x3D`. | Isolated 100 kHz probe measured 188.84 fresh/s sustained (a second run measured 186.82/s). The complete November 4 session used `CTRL1=0x3D` and recorded 38,652 fresh flags at about 195.47/s in active stages; its exact bus/config lineage must be retained with that capture. |
+| QMC read / freshness | Use a STOP after the register-pointer write, then a separate read START. Read status `0x09`; count fresh only when DRDY bit 0 is set and the six XYZ bytes at `0x01–0x06` are read successfully. Reject overflow bit 1. Decode XYZ little-endian. Polling may run at 500 Hz; that is not the MAG conversion rate. | The isolated 200 Hz probe used STOP+START and reported zero XYZ failures and zero overflow in its sustained run. Do not infer that this alone fixed every later integrated failure. |
+| Calibration-capture MPU profile | MPU6050 ID `0x68`; `PWR_MGMT_1=0x01`, `PWR_MGMT_2=0x00`, `CONFIG=0x03` (42/44 Hz DLPF), `SMPLRT_DIV=0x01`, `GYRO_CONFIG=0x00` (±250°/s), `ACCEL_CONFIG=0x00` (±2 g), FIFO disabled, polled 14-byte output. Convert gyro with 131 LSB/(°/s), accel with 16,384 LSB/g. | This is the profile associated with the November 4 calibration audit. The saved stream has approximately 2 ms packet spacing. It does **not** validate the proposed high-range FIFO flight profile. |
+| Future FC MPU candidate | Target 500 Hz with `CONFIG=0x01` (188/184 Hz filters), `SMPLRT_DIV=0x01`, `GYRO_CONFIG=0x08` (±500°/s; 65.5 LSB/(°/s)), `ACCEL_CONFIG=0x10` (±8 g; 4,096 LSB/g), and experimental 14-byte `FIFO_EN=0xF8`. Keep temperature enabled if included in FIFO; do not set `TEMP_DIS`. If using a bounded 56-byte batch (four frames), log backlog/age and state whether older frames are integrated or discarded. Read back every register. | **Not proven on hardware.** Existing calibration biases/matrices were generated under the older profile and must be checked for transfer before use. The FIFO path still needs alignment, timing, age, overflow, and physical gravity/zero-rate verification. |
+| BMP280 calibration capture | BMP280 ID `0x58`, expected address `0x76`; old captured source requests normal mode, temperature ×2, pressure ×1, IIR ×4, and 63 ms standby. It polls/labels pressure on a 5 ms schedule and logs raw ADC plus compensated SI values. | The complete session has 32,956 `bmp_new` flags (~166.67 flags/s), but this host cadence conflicts with the 63 ms configured standby and does not prove 166.67 independent conversions. Confirm actual register readback, data-ready state, and conversion timestamps. |
+| Future BMP candidate | Normal mode, temperature ×1, pressure ×1, 0.5 ms standby; `CTRL_MEAS=0x27`. Start with IIR ×2 (`CONFIG=0x04`); compare ×4 (`CONFIG=0x08`) using timestamped data and step/noise measurements. Read status before marking a conversion fresh. | Datasheet-derived target only. Do not label cached reads fresh or claim a proven 200 Hz pressure conversion rate. The expected nominal ceiling for the stated profile is about 166.7 Hz. |
+| UART / GUI | 921600 baud, 8N1, Wi-Fi off; binary v3 packet is 52 bytes with `A5 5A` sync, 500 Hz scheduled packet cadence, sequence/timestamp, validity/freshness flags, and CRC-16/CCITT-FALSE over bytes 0–49 in bytes 50–51. | CRC-valid, sequential 500 packet/s streams were observed in preflight and in capture segments. This proves the telemetry stream, not a 500 Hz control loop or fresh conversion from every sensor. |
+| Calibration flow | Keep the 12-phase GUI: 30,000 stationary MPU rows; six accelerometer faces ×5,000; yaw/pitch/roll MAG turns ×2,000 each; MAG tumble ×8,000; BMP ×1,000. No LiDAR stage. | The November 4 10:09 session reached every target, skipped no stages, and has 98,868 rows plus a matching result JSON. This is the only identified complete session. |
+| Actuators / Xbox | Motor pins remain inactive; physical arming disabled. Windows USB/serial Xbox bridge is bench-only until a real flight receiver and adapter are verified. | No actuator, thrust, motor-order, receiver-loss, or flight behavior has been validated. |
+
+### Proven results and calibration limits
+
+- **HARDWARE OBSERVED — isolated QMC:** with `CTRL1=0x3D`, `CTRL2=0x08`,
+  `XYZ_SIGN=0x06`, 100 kHz I²C and STOP+START reads, one 15-second run measured
+  188.16 fresh conversions/s; other recorded runs measured 188.84 and 186.82/s.
+  These results validate the isolated sensor profile on the tested setup, not
+  the current DSH flight-controller rewrite.
+- **HARDWARE OBSERVED — completed sensor calibration:** the 2026-11-04 10:09
+  capture has 98,868 packet rows, all 12 phases complete, no skipped stages,
+  38,652 MAG-fresh flags, 32,956 BMP-fresh flags, and no sequence gaps within
+  contiguous recorded phases. MAG-fresh rate is about 195.47/s in those phases.
+  The gaps between phases are operator pauses, not packet loss.
+- **HARDWARE OBSERVED — separate integrated 400 kHz preflight:** one 8-second
+  run produced 4,001 valid 500 Hz packets and 1,002 fresh MAG flags (166.8/s),
+  with zero CRC errors and sequence loss. Another 4,001-packet 400 kHz stream
+  recorded zero fresh MAG. Keep both results; 400 kHz is not yet a reliable
+  selected MAG bus rate.
+- **OFFLINE RECOMPUTED — MAG candidate:** on the 14,000 accepted fresh MAG
+  calibration rows, the independent SPD fit reports hard-iron offset
+  `[-29.4823, -18.3980, -35.4743] µT` and symmetric correction matrix
+  `[[0.973367, 0.005037, 0.038278], [0.005037, 0.964535, -0.017912],
+  [0.038278, -0.017912, 1.067011]]`. Correct as
+  `Cmag * (raw_sensor_uT - hard_iron_uT)`; the fit gives 1.2504 µT corrected
+  magnitude SD (3.069% CV) in-session. This is **provisional**, not a flight
+  calibration: the field magnitude scale is inferred, sensor-to-body rotation
+  and heading sign are unresolved, and powered-motor interference was not tested.
+- **OFFLINE RECOMPUTED — accelerometer / gyro:** the audit's accelerometer bias
+  is `[1.26466, -0.05910, -0.67874] m/s²`; six-face fitted RMS is about
+  `0.0533 m/s²`, with correction matrix
+  `[[0.999284, -0.038751, -0.032968], [0.041351, 0.992794, 0.040449],
+  [0.042481, -0.040867, 0.987205]]`; apply `Cacc * (a_measured - bias)` once.
+  Same-face holdout is repeatable, but leave-one-face-out residual reaches
+  `0.355 m/s²`, so absolute pose/mounting error remains. The 60-second REST gyro bias at
+  about 28 °C is `[+0.16197, -0.30495, -0.87743] °/s`, with single-sample SD
+  `[0.04773, 0.04486, 0.04320] °/s`. Bias changed across other sessions and
+  temperatures; these are session-specific candidates, not immutable flight
+  constants.
+- **NOT PROVEN:** QMC 400 kHz reliability, the new ±500°/s/±8 g FIFO profile,
+  BMP independent conversion cadence at the proposed settings, LiDAR output or
+  terrain fusion, body-axis/heading correctness, Xbox receiver behavior, a
+  500 Hz closed-loop controller, motor response, or flight.
+- **Not selected:** QMC continuous mode or `CTRL1=0xC3`. Earlier attempts did
+  not produce a stable sensor stream. Do not continue to higher-rate MAG modes
+  until the 200 Hz profile and full-system bus behavior are repeatable.
+- **Fallback and failed alternatives:** the historical v13 100 Hz `CTRL1=0xC9`
+  profile at 100 kHz produced about 89.7–90.6 fresh/s. It belongs to that
+  register-map/profile variant; do not treat `0xC9` as a simple ODR edit to the
+  current QST Rev. A `0x3D` profile. Restore that archived driver as a whole if
+  it is needed as a fallback. The 200 Hz
+  high-OSR `CTRL1=0xCD` trial repeatedly lost status/readback or held DRDY low;
+  it is not the fallback. Continuous `0xC3` attempts did not establish a stable
+  stream. These are separate probe trials, not evidence for the current DSH code.
+
+The user reported the drone connected on 2026-11-06. This update did not access
+the port or interact with the hardware. At the time of writing, DSH had an
+uncommitted edit in the active ESP32 calibration `src/main.cpp`; keep that
+source out of this plan-only change and re-audit it after DSH pins a revision.
 
 ## Decisions applied from the new specification
 
@@ -81,13 +164,13 @@ small until its schedule is known.
   file, compile configuration, sensor register writes/readback, calibration
   loading, GUI and protocol, Xbox transport, motor-pin mode, error paths, known
   bugs, and evidence for every claim.
-- At the start of this plan update, `platformio.ini` and `src/main.cpp` had
+- During the initial 2026-11-06 audit, `platformio.ini` and `src/main.cpp` had
   uncommitted changes. The `main.cpp` SHA-256 changed during read-only inspection
   (`3AAFFB577532B79676F6C29302E0D3C7FCC94BF36A75528533DB06F7FD07B6DA` to
-  `A5A01360326C2FF10B2DBC9EF4F62253920E2AF3BF7EFBEE0D63EF021DEE3670`). Treat
-  that candidate as actively changing, not audited or validated. The current
-  observed `platformio.ini` SHA-256 is
-  `EABB92D2F405C620166C024E992FB140C69BD3A1FEA496A50E56F484C474D1D8`.
+  `A5A01360326C2FF10B2DBC9EF4F62253920E2AF3BF7EFBEE0D63EF021DEE3670`). The
+  then-observed `platformio.ini` SHA-256 was
+  `EABB92D2F405C620166C024E992FB140C69BD3A1FEA496A50E56F484C474D1D8`. These
+  are historical candidate hashes, not validation of the current DSH source.
 - Initial static-review flags from the changing candidate include the 100 kHz
   to 400 kHz bus edit, user-reported LiDAR presence with unverified electrical
   interface/routing/configuration, a serial pilot-command parser
@@ -97,6 +180,10 @@ small until its schedule is known.
 - Do not alter or commit those firmware edits as part of this plan update. Do not
   claim a build result until a safe, reproducible build is run on a pinned source
   snapshot and recorded.
+- At this plan-only revision, `HEAD` is `b0697a6` and DSH has an additional
+  uncommitted change to `hardware/bench_calibration/esp32s3_qmc5883p_100hz/src/main.cpp`.
+  Preserve it; do not include it in the plan commit. Re-pin and review after DSH
+  says the source is ready.
 
 ### 1. Establish a stable sensor and telemetry baseline
 

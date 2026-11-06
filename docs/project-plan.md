@@ -13,7 +13,9 @@ Convenience copy: `C:\Users\Mohamed\Desktop\Work\PLAN.md`.
 - Pico runtime stays in `firmware/flight_controller/flight_controller.c` and
   `firmware/handler_controller/handler_controller.c`; ROS 2 keeps normal layout.
 - Motor arming remains disabled. Xbox PC-to-USB tests are not flight receivers.
-- Drone is disconnected for PCB repair. No COM3, upload, or physical validation.
+- The user reports the drone connected on 2026-11-06. PCB repair, fitted sensor
+  identity, and wiring remain unverified in this work session; no COM port,
+  upload, or physical validation was performed for the plan update.
 - Keep local SDKs/environments and unrelated personal files out of GitHub.
 
 ## ESP32-S3 engineering scope added 2026-11-06
@@ -23,7 +25,9 @@ isolated [competition-readiness plan](esp32-competition-readiness-plan-2026-11-0
 turns it into sensor, calibration, GUI, estimation, Xbox, control and validation
 gates. Its performance values are targets until measured. Preserve the stable
 fallback, the current safety lock, and the distinction between calibration/bench
-work and flight validation. The aircraft remains disconnected for PCB repair.
+work and flight validation. The detailed selected bench profile and evidence
+ledger are in [the ESP32-S3 readiness plan](esp32-competition-readiness-plan-2026-11-06.md).
+The aircraft is reported connected, but no new hardware data were collected.
 
 The current 12-step calibration GUI remains LiDAR-free. The user reports a
 central underside TOFSense-F2 Mini mount on the F450; its geometry and estimator
@@ -99,6 +103,15 @@ command. Continue with documentation and non-destructive classification.
   `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/independent_audit_20261104/`.
   It reports gyro bias/noise, six-face accel correction, full SPD MAG fit,
   bootstrap, session holdouts, barometer variance and limitations.
+- Selected repeatable MAG baseline: QMC5883P at `0x2C` (ID `0x80`), normal
+  low-OSR 200 Hz (`CTRL1=0x3D`, `CTRL2=0x08`, `XYZ_SIGN=0x06`), 100 kHz QMC
+  transactions with STOP+START reads, and freshness gated by status DRDY plus a
+  successful six-byte XYZ read. The capture source switches to 400 kHz for
+  MPU/BMP and back to 100 kHz for QMC; global 400 kHz remains unproven. Isolated
+  tests measured about 188–189 fresh/s;
+  the complete November 4 capture recorded about 195 fresh flags/s in active
+  phases, but integrated 400 kHz results conflict. See the readiness plan for
+  exact evidence and the distinct unverified FC sensor targets.
 - Reproduce or independently review the audit computations from the verified
   raw CSVs before approving calibration constants. Record methods, versions,
   axes, units and limitations; check the fresh-sample gate and matrix direction.
@@ -122,9 +135,9 @@ command. Continue with documentation and non-destructive classification.
   and assumptions, commit and push after each milestone when possible.
 - Never call a compile, simulation, or PC bridge a physical validation.
 
-## Current PCB blocker
+## Current hardware identification gate
 
-The drone is disconnected pending PCB repair. Available PCB evidence shows an
-HMC5883L compass footprint; calibration evidence labels the sensor QMC5883P.
-Resolve fitted part and SDA/SCL routing from board files/photos after repair,
-before any hardware test or flight parameter deployment.
+The user reports the drone connected. Available PCB evidence shows an
+HMC5883L compass footprint while calibration captures identify a QMC5883P.
+Confirm the fitted part and SDA/SCL routing from the repaired board before using
+the configuration for flight. No hardware test was run for this plan update.
