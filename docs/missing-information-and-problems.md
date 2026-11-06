@@ -11,7 +11,7 @@
 | 1 | Exact LoRa chip/module, band, antenna and required command rate/range | Driver selection, packet airtime and link watchdog cannot be finalized |
 | 2 | Exact RP2350 board/PCB package and voltage regulator/power distribution choices | Pin allocation, analogue grounding and PCB routing |
 | 2 | Joystick/trigger electrical ranges/directions, display model and final button mapping | End-point calibration, wiring and UI |
-| 2 | TOFSense-F2 Mini exact interface/version and mounting; confirm sensor authenticity/models | Bus driver, rate/latency, offsets, valid return rules |
+| 2 | User reports a TOFSense-F2 Mini centrally underneath the F450, optical axis body −Z; confirm module identity/authenticity, physically measure optical-reference-to-COM vector, and verify interface, routing, configured baud/address, and timestamps | Driver selection, tilt/lever-arm correction, rate/latency, electrical compatibility, and valid-return rules |
 | 2 | Battery connector, measured pack mass, voltage-divider/current sensor calibration | SOC uncertainty and low-battery behaviour |
 | 2 | Photos/measurements of exact USTHB garden and panel sizes/materials | An illustrative scene cannot establish clearance in the actual location |
 

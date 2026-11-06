@@ -52,7 +52,10 @@ F450/Q450, 1400 KV motors (exact model unknown), 9047 props, four 40 A ESCs,
 3S 4200 mAh / 120C LiPo. The battery's roughly 150 g is an estimate. Complete mass,
 inertia, thrust/current curves and sensor noise still need measurement.
 MPU6050, BMP280 and HMC5883L are planned over I²C; LoRa is the primary handheld link,
-with up to two optional CC1101 channels. TOFSense F2 mini placement remains undecided.
+with up to two optional CC1101 channels. The user reports a TOFSense-F2 Mini
+mounted centrally underneath the F450, pointing body −Z; its COM offset is still
+preliminary and must be physically measured. See
+[LiDAR geometry and altitude-fusion requirements](docs/lidar-geometry-and-altitude-fusion-2026-11-06.md).
 
 ## Documentation and original evidence
 

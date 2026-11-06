@@ -140,8 +140,8 @@ try {
     }
     if ($Output) { $a+=@('--output',$Output) }
     if ($SkipBmp) { $a+=@('--skip-bmp') }
-    # LiDAR stages remain available in the GUI even with no LiDAR COM port.
-    # Users can connect a separate UART adapter or skip all LiDAR in the GUI.
+    # The current 12-stage calibration sequence has no LiDAR calibration stage.
+    # A supplied LiDAR port is only an independent sidecar stream connection.
     if ($SkipLidar) { $a+='--skip-lidar' }
     if ($LidarPort) { $a+=@('--lidar-port',$LidarPort) }
     if ($MagOnly) { $a+='--mag-only' }

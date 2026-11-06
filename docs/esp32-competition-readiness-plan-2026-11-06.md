@@ -65,7 +65,7 @@ small until its schedule is known.
 | QMC 200 Hz | Start with normal mode `CTRL1=0x3D`, `CTRL2=0x08`; verify the actual write/readback and independent fresh conversions. Defer continuous mode and higher-rate experiments until after the near-term release window. |
 | MPU profiles | Audit current register writes and sample source first. Proposed FAST188 is the initial candidate; BALANCED98 is a fallback; ULTRA256 is experimental. No automatic profile switching. Require FIFO overflow, frame alignment, age and timing evidence. |
 | BMP280 | Measure the actual configured conversion rate and age. The spec's approximately 166.7 Hz example is a calculation for its stated oversampling/standby settings, not a measured rate for this board. Use timestamped reuse at the control rate. |
-| LiDAR GUI | Keep the current 12-phase no-LiDAR route usable. The new spec asks for an optional LiDAR detect/skip and known-distance validation path, which updates the earlier no-LiDAR-only direction. Add it only when the actual device, RX/TX routing, orientation and measured reference distances are known; never invent a range calibration. |
+| LiDAR geometry | The user reports a central underside TOFSense-F2 Mini on the F450, beam along body −Z, with preliminary sensor-to-COM offset `(0,0,-0.026658) m`. Follow the separate geometry/altitude-fusion note; measure the assembled offset and verify interface/timestamps before use. Do not restore a LiDAR stage to the existing 12-phase GUI. |
 | Xbox mapping | Use the new proposal as the planned mapping: right-stick deflection slews bounded roll/pitch angle targets; left-stick X changes yaw heading when reliable; left-stick Y commands vertical rate in altitude mode; RT/LT have mode-specific bounded trim or manual-throttle behavior. Verify transport and document the mapping before implementation. This supersedes the earlier draft for planning, not as a claim about a working receiver. |
 | Arming | Retain the repository lock. The spec's long-press/combination idea may be analyzed in software, but it does not authorize physical arming, motor output or a flight test. |
 | RP2350 | Keep as a later migration after the ESP32 reference source and its validation evidence are preserved. Do not migrate the competition candidate now. |
@@ -89,7 +89,8 @@ small until its schedule is known.
   observed `platformio.ini` SHA-256 is
   `EABB92D2F405C620166C024E992FB140C69BD3A1FEA496A50E56F484C474D1D8`.
 - Initial static-review flags from the changing candidate include the 100 kHz
-  to 400 kHz bus edit, assumed LiDAR presence, a serial pilot-command parser
+  to 400 kHz bus edit, user-reported LiDAR presence with unverified electrical
+  interface/routing/configuration, a serial pilot-command parser
   whose controller/bridge endpoint still needs verification, and a 10 ms I2C
   transaction timeout against a 2 ms loop target. Recheck against a pinned
   source revision; this is an issue list, not a complete code review.
@@ -115,11 +116,11 @@ small until its schedule is known.
 ### 2. Preserve and extend calibration
 
 - Keep the existing GUI and its 12-step gyro/accelerometer/MAG/barometer path.
-  Keep automatic diagnostics usable without the GUI.
-- Add optional LiDAR identification, skip, ground baseline and multi-distance
-  offset/scale checks only after hardware identity and independent measured
-  distances are available. Add tilt/alignment and range-quality checks; do not
-  make LiDAR a prerequisite when absent or unreliable.
+  Keep automatic diagnostics usable without the GUI; do not add a LiDAR stage.
+- Keep standalone LiDAR distance/offset checks outside that GUI. Plan them only
+  after the reported F2 Mini identity, electrical interface, body alignment, and
+  independently measured target distances are verified. See
+  `lidar-geometry-and-altitude-fusion-2026-11-06.md`.
 - Load versioned/checksummed calibration at boot. Validate sensor identity,
   register configuration and CRC. Keep raw measurements; apply hard/soft-iron
   and accelerometer matrices exactly once. Never replace saved calibration with
@@ -145,9 +146,11 @@ small until its schedule is known.
 - Identify the real Xbox transport (BLE, supported USB host or PC bridge) and
   test end-to-end timestamps, dead zones, loss detection and the planned mapping.
   A Windows serial bridge is not a flight receiver.
-- Characterize barometric relative altitude separately from LiDAR terrain range.
-  Use timestamps, innovations, disturbance checks and dropout continuity. No
-  ground truth means retain the existing range calibration and state uncertainty.
+- Keep barometric altitude, LiDAR beam-hit terrain height, local vertical
+  position, velocity and observable terrain estimate distinct. Apply the full
+  configurable lever-arm equation and gate by range/status, attitude geometry,
+  sample age and innovation. The offline helper is not a flight estimator; no
+  reset-on-range behavior or ground truth is assumed.
 
 ### 4. Validate software, then stop at the authorized boundary
 

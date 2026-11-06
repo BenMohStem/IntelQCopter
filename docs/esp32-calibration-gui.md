@@ -64,9 +64,11 @@ the analyzed package. It detects the CH343 COM port, reads at 921600 baud, and
 records each phase to a timestamped CSV in the package's `captures/` folder.
 Defaults are 30,000 stationary gyro samples, 5,000 samples per accelerometer
 face, 2,000 samples for each magnetic yaw/pitch/roll stage, 8,000 magnetic 3D
-tumble samples, 1,000 barometer samples, and a 3-second settle countdown.
-Optional LiDAR uses its own USB-UART adapter; skip all LiDAR stages in the GUI if
-it is not connected.
+tumble samples, 1,000 barometer samples, and a 3-second settle countdown. The
+calibration path has 12 stages and no LiDAR calibration stage. Keep the current
+GUI focused on those stages; the separately attached F2 UART is not part of this
+calibration flow. See [TOFSense-F2 Mini geometry and altitude fusion](lidar-geometry-and-altitude-fusion-2026-11-06.md)
+for its reported F450 mounting and future estimator validation gates.
 
 For magnetic stages, rotate the whole assembled sensor/airframe slowly around
 yaw, pitch, roll and then across unrestricted 3D orientations. Keep nearby steel,

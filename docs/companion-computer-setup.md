@@ -62,8 +62,11 @@ weights are excluded from Git. Keep hardware missions inactive initially.
    panel node has a simulation-specific .18 m forward/.02 m up mounting transform.
 3. A real metric local pose/velocity source. Current tests use simulated odometry.
    RGB + IMU/barometer does not automatically provide drift-free A-to-B navigation.
-4. TOFSense exact model/interface, frame and timestamp handling. Current simulation
-   uses a downward analytical floor ray; there is no validated physical lidar driver.
+4. The user reports a TOFSense-F2 Mini centrally underneath the F450, pointing
+   body −Z. Its physical offset is preliminary; verify optical-reference-to-COM,
+   interface, routing, frame alignment, and timestamps before use. The current
+   simulation uses a downward analytical floor ray; there is no validated
+   physical LiDAR driver. The sensor is on the aircraft, not the N150 companion.
 5. USB/UART wiring, rate, CRC, timeouts and FC authority/heartbeat. Those require
    the actual RP2350 board. Hardware motor arming remains disabled.
 
@@ -84,5 +87,7 @@ below the freshness deadlines; test dropout and companion restart before flight.
 6. Only after hardware is complete, measured and reviewed: explicitly decide arming.
 
 The known-size blue-panel demo is not general arbitrary-obstacle avoidance. A
-single forward lidar ray cannot certify the complete rotor corridor; a downward
-mount primarily helps altitude. The mounting choice remains open for real hardware.
+single forward lidar ray cannot certify the complete rotor corridor. The reported
+downward mount primarily supports terrain-relative altitude; the mount and offset
+still need physical measurement before hardware use. See the
+[geometry and altitude-fusion note](lidar-geometry-and-altitude-fusion-2026-11-06.md).

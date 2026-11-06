@@ -26,6 +26,8 @@ under [test evidence](../artifacts/test-runs/README.md).
 
 ## Sensors, calibration, and hardware
 
+- [TOFSense-F2 Mini geometry and altitude fusion](lidar-geometry-and-altitude-fusion-2026-11-06.md)
+  — reported F450 mount, lever-arm equation, terrain limits, and estimator gates.
 - [Sensor calibration](sensor-calibration.md) — implemented fits, capture procedure,
   uncertainty, and hardware gaps.
 - [ESP32-S3 calibration GUI](esp32-calibration-gui.md) — guided capture procedure and

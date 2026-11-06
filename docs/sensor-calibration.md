@@ -43,7 +43,7 @@ The reference sets the current location to zero; it does not establish altitude 
 
 `linear_cal_add` collects measured/reference pairs. `linear_cal_finish` fits gain and offset with at least three samples and rejects insufficient input span or a residual sigma above the caller's limit. `linear_cal_apply` performs the correction. Capture references across the intended operating range, using repeated measurements at several distinct points.
 
-- Lidar: use measured fixture-to-target distances and account for sensor mounting offset. Validate more distances and surfaces after fitting. Ground slopes, vehicle tilt, invalid returns, and range limits require separate handling; a gain/offset fit does not solve them.
+- LiDAR: use measured fixture-to-target distances and account for the sensor mounting offset. The user's F450 optical-reference-to-COM estimate is preliminary; see the [geometry and altitude-fusion note](lidar-geometry-and-altitude-fusion-2026-11-06.md). Validate more distances and surfaces after fitting. Ground slopes, vehicle tilt, invalid returns, and range limits require separate handling; a gain/offset fit does not solve them.
 - Voltage divider: compare the ADC-derived reading with a trusted multimeter at several pack voltages. Keep ADC input limits within the board's electrical range.
 - Current: capture zero current and several independently measured loads, defining positive current as discharge. A current sensor is still required for coulomb counting; a voltage divider cannot measure current.
 

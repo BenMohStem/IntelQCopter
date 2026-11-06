@@ -720,3 +720,26 @@ High:
   candidate, re-pin its hash before a complete audit, and do not stage it with
   documentation. No firmware tests, build, flash, hardware test or motor test
   were performed in this plan update.
+
+## 28. Revision 13 — 2026-11-06: record F450 LiDAR geometry and offline fusion gates
+
+- Recorded the user's TOFSense-F2 Mini underside mounting report and preliminary
+  `r_s=(0,0,-0.026658) m` sensor-to-COM vector. The optical reference and COM
+  measurements remain preliminary; actual dimensions and electrical routing
+  must be measured/verified on the repaired airframe.
+- Added the full body-to-world beam-hit geometry, separate terrain-relative and
+  navigation states, startup/landing/reboot rules, and terrain-footprint limits
+  in `docs/lidar-geometry-and-altitude-fusion-2026-11-06.md`. Manufacturer data
+  confirms 0.02–7.8 m range, up to 50 Hz, and 2–3° FOV. Device capability is not
+  flight integration evidence.
+- Updated only the offline vertical replay helper to apply the configurable
+  lever arm, require sample age, enforce manufacturer range, and gate excessive
+  tilt. The 5-state research filter separates local position, terrain height and
+  beam-hit clearance; it requires a one-time confirmed ground pressure reference
+  before barometer data are labeled local altitude. The default 0.07 m range
+  sigma and terrain random walk remain assumed and do not represent propagated
+  attitude/mount covariance. Added targeted synthetic tests and a new labeled
+  synthetic plot; no flight firmware/GUI LiDAR stage was added.
+- Preserved concurrent changes to ESP32 `src/main.cpp` and `platformio.ini`.
+  No firmware build, flash, physical sensor test, motor test or flight validation
+  was performed as part of this revision.

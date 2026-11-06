@@ -31,6 +31,17 @@ relevant subsystem README and `VALIDATION_LOG.md`.
   the four raw CSVs were hash-checked against repository captures.
 - Drone is disconnected for PCB repair. Do not use COM3 or claim hardware
   validation until the user says the board is repaired and connected.
+- User-reported TOFSense-F2 Mini mounting is central underside on the F450,
+  beam along body −Z; preliminary sensor-to-COM vector is `(0,0,-0.026658) m`.
+  See `docs/lidar-geometry-and-altitude-fusion-2026-11-06.md`. Physical dimensions,
+  sensor identity, interface, routing, and timestamps remain unverified. Keep the
+  calibration GUI at 12 steps with no LiDAR stage.
+- Offline `tools/altitude_fusion.py` now applies the configurable preliminary
+  lever arm, manufacturer range bounds, required logged LiDAR age, and tilt/beam
+  gate. Its research KF separates local z, terrain height and LiDAR clearance;
+  it needs a confirmed ground pressure reference to label local altitude. It
+  remains a replay prototype with assumed scalar noise, not a driver or FC
+  estimator. Targeted synthetic tests and a terrain-separated example plot exist.
 - Main board design evidence identifies HMC5883L footprint, while recent sensor
   capture is labeled QMC5883P. Reconcile the actual fitted device and SDA/SCL net
   route before hardware conclusions.
