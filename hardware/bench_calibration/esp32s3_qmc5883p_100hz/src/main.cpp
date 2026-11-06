@@ -1,24 +1,20 @@
 /*
- * IntelQCopter — competition calibration, full MPU/BMP/QMC binary UART.
- * No Wi-Fi, no external INT/DRDY wiring. MAG freshness uses internal 0x09 status.
+ * IntelQCopter — ESP32-S3 Competition Flight Controller
+ * Sensor acquisition: fixed 400 kHz shared I2C bus, MPU6050 FIFO,
+ * nonblocking 500 Hz loop, BMP/QMC cached-with-timestamp.
  *
- * Hardware validated previously by the user's measurements:
- *   MPU6050  0x68: ESP32 SDA=GPIO9, SCL=GPIO8.
- *   BMP280   0x76: reachable through MPU6050 XDA/XCL I2C bypass.
- *   QMC5883P 0x2C: chip ID 0x80 on the main I2C bus.
+ * I²C policy: single 400 kHz bus for MPU6050, BMP280, QMC5883P.
+ * No clock switching, no fallback to 100 kHz. Wire.setTimeOut(30)
+ * bounds every transaction.
  *
- * This program never generates motor/ESC output.
+ * Loop policy: 500 Hz nonblocking. No waiting for DRDY/INT,
+ * BMP conversion, or LiDAR. Every cycle uses the latest available
+ * sample per sensor, retaining its real timestamp and marking
+ * whether it is new (fresh) or reused. Reused samples are not
+ * counted as fresh.
  *
- * Architecture:
- *   Arduino loop():  500 Hz target, absolute 2,000 us deadlines.
- *   Sensor reads:    MPU every cycle, QMC 200 Hz low-OSR, BMP ~10 Hz.
- *   Transport:       identical 52-byte CRC-protected v3 packets over
- *                    USB serial and optionally Wi-Fi UDP.
- *   Wi-Fi task:      runs on core 0, owns all UDP calls, NEVER touches I2C.
- *   UART: CH343 921600 baud, 52-byte CRC-framed packets.
- *
- * Note: an attempted host read is NOT proof of a fresh physical ADC sample.
- * Record actual timestamps and validate acquisition jitter offline.
+ * MPU6050: FIFO enabled, ±500°/s, ±8g, DLPF_CFG=1, SMPLRT_DIV=1
+ * (188/184 Hz), FIFO_EN=0xF8. 14-byte FIFO packets read each cycle.
  */
 
 #include <Arduino.h>
@@ -52,8 +48,10 @@
 #include <freertos/task.h>
 #endif
 
-namespace iq {
-namespace config {
+// ============================================================================
+// CONFIGURATION (global scope)
+// ============================================================================
+
 constexpr uint8_t SDA_PIN = 9;
 constexpr uint8_t SCL_PIN = 8;
 constexpr uint8_t MOTOR_PINS[4] = {12, 11, 14, 13}; // FL, FR, RR, RL: INPUT ONLY
@@ -61,637 +59,581 @@ constexpr uint8_t MPU_PRIMARY_ADDRESS = 0x68;
 constexpr uint8_t MPU_ALTERNATE_ADDRESS = 0x69;
 constexpr uint8_t BMP_PRIMARY_ADDRESS = 0x76;
 constexpr uint8_t BMP_ALTERNATE_ADDRESS = 0x77;
-constexpr uint8_t MAG_ADDRESS = 0x2C; // QMC5883P, not HMC5883L or QMC5883L
-constexpr uint32_t IMU_PERIOD_US = 2000; // 500 Hz scheduling target
-constexpr uint32_t BMP_PERIOD_US = 5000; // 200 Hz max-speed (user-requested faster acquisition)
-constexpr uint32_t MAG_PERIOD_US = 2000; // Poll internal DRDY at 500 Hz ODR target
+constexpr uint8_t MAG_ADDRESS = 0x2C; // QMC5883P
+
+constexpr uint32_t CONTROL_PERIOD_US = 2000;   // 500 Hz
+constexpr uint32_t BMP_PERIOD_US = 6000;       // ~166.7 Hz practical
+constexpr uint32_t MAG_PERIOD_US = 5000;       // 200 Hz QMC ODR target
 constexpr uint32_t MAG_STALE_MS = 1000;
 constexpr uint32_t MAG_CONFIG_RETRY_MS = 1000;
 constexpr uint8_t MAG_MAX_CONFIG_ATTEMPTS = 5;
-constexpr uint32_t SERIAL_BAUD = 921600; // CH343 UART, binary v3 packets
+constexpr uint32_t SERIAL_BAUD = 921600;
 constexpr size_t PACKET_SIZE = 52;
-constexpr uint32_t I2C_FAST_HZ = 400000; // 400 kHz for MPU/BMP reads (MPU6050/BMP280 support it)
-constexpr uint32_t I2C_SLOW_HZ = 100000; // 100 kHz for QMC reads (QMC5883P fails at 400 kHz on this board)
+constexpr uint32_t I2C_HZ = 400000;            // Single shared bus speed
 
-// QMC5883P normal-mode 200 Hz low-OSR profile (ID 0x80, C1 0x3D, C2 0x08).
-// Verified working: 30 s isolated run measured 188.84 fresh samples/s; full-system
-// ~160 Hz fresh at 100 kHz I2C. C1 0x3D selects ODR 200 Hz / OSR1=1 / OSR2=1.
-// C2 0x08: +/-8 gauss + set/reset. 0x29 = 0x06 XYZ sign.
-// I2C bus stays at 100 kHz for verified stable operation.
-// All QMC configuration is non-blocking: setup() must always return so the
-// streaming loop starts even if QMC readback is slow.
-// Readback is intentionally skipped — updateMagnetometer() polls 0x09 DRDY.
 constexpr uint8_t MAG_CONTROL1 = static_cast<uint8_t>(IQ_MAG_CONTROL1);
 constexpr uint8_t MAG_CONTROL2 = 0x08;
-constexpr uint8_t MAG_XYZ_SIGN = 0x06;
+constexpr uint8_t MAG_XYZ_SIGN_VAL = 0x06;
 
-#if IQ_WIFI_ENABLED
-constexpr char WIFI_AP_NAME[] = "IntelQCopter-Cal";
-// Replace in your private copy before wireless use; >= 8 characters.
-constexpr char WIFI_PASSWORD[] = "IntelQCopter2026";
-constexpr uint16_t WIFI_CONTROL_PORT = 19006;
-constexpr size_t UDP_BATCH_MAX = 16;
-#endif
-} // namespace config
+// MPU6050 register map
+constexpr uint8_t MPU_REG_PWR_MGMT_1    = 0x6B;
+constexpr uint8_t MPU_REG_PWR_MGMT_2    = 0x6C;
+constexpr uint8_t MPU_REG_CONFIG        = 0x1A;
+constexpr uint8_t MPU_REG_GYRO_CONFIG   = 0x1B;
+constexpr uint8_t MPU_REG_ACCEL_CONFIG  = 0x1C;
+constexpr uint8_t MPU_REG_FIFO_EN       = 0x23;
+constexpr uint8_t MPU_REG_INT_PIN_CFG   = 0x37;
+constexpr uint8_t MPU_REG_USER_CTRL     = 0x6A;
+constexpr uint8_t MPU_REG_FIFO_COUNT_H  = 0x72;
+constexpr uint8_t MPU_REG_FIFO_R_W      = 0x74;
+constexpr uint8_t MPU_REG_WHO_AM_I      = 0x75;
 
-// ---------------------------- I2C access ----------------------------------
-// Wire is owned by this acquisition task; the Wi-Fi task never calls it.
-bool i2cPresent(uint8_t address) {
-  Wire.beginTransmission(address);
-  return Wire.endTransmission() == 0;
-}
+constexpr uint8_t MPU_PWR_MGMT_1_RESET  = 0x80;
+constexpr uint8_t MPU_PWR_MGMT_1_CLKSEL = 0x01;
+constexpr uint8_t MPU_DLPF_CFG_1        = 0x01;
+constexpr uint8_t MPU_SMPLRT_DIV_1      = 0x01;
+constexpr uint8_t MPU_GYRO_FS_500       = 0x08;
+constexpr uint8_t MPU_ACCEL_FS_8G       = 0x10;
+constexpr uint8_t MPU_FIFO_EN_ALL       = 0xF8;
+constexpr uint8_t MPU_BYPASS_EN         = 0x02;
+constexpr uint8_t MPU_FIFO_EN_BIT       = 0x40;
+constexpr uint8_t MPU_FIFO_RESET_BIT    = 0x04;
 
-bool i2cWrite(uint8_t address, uint8_t reg, uint8_t value) {
-  Wire.beginTransmission(address);
-  Wire.write(reg);
-  Wire.write(value);
-  return Wire.endTransmission() == 0;
-}
+constexpr size_t MPU_FIFO_PACKET_BYTES = 14;
 
-bool i2cRead(uint8_t address, uint8_t reg, uint8_t *output, size_t count) {
-  Wire.beginTransmission(address);
-  Wire.write(reg);
-  if (Wire.endTransmission(false) != 0) return false;
-  if (Wire.requestFrom(static_cast<int>(address), static_cast<int>(count)) !=
-      static_cast<int>(count)) {
-    while (Wire.available()) (void)Wire.read();
-    return false;
+// QMC5883P register map
+constexpr uint8_t QMC_REG_CHIP_ID   = 0x00;
+constexpr uint8_t QMC_REG_CTRL1     = 0x0A;
+constexpr uint8_t QMC_REG_CTRL2     = 0x0B;
+constexpr uint8_t QMC_REG_XYZ_SIGN  = 0x29;
+constexpr uint8_t QMC_REG_DATA_XL   = 0x01;
+constexpr uint8_t QMC_REG_STATUS    = 0x09;
+
+constexpr uint8_t QMC_CHIP_ID       = 0x80;
+
+// BMP280 register map
+constexpr uint8_t BMP_REG_ID           = 0xD0;
+constexpr uint8_t BMP_REG_RESET        = 0xE0;
+constexpr uint8_t BMP_REG_CTRL_MEAS    = 0xF4;
+constexpr uint8_t BMP_REG_CONFIG       = 0xF5;
+constexpr uint8_t BMP_REG_PRESSURE_MSB = 0xF7;
+
+constexpr uint8_t BMP_CHIP_ID          = 0x58;
+
+// ============================================================================
+// I²C BUS MANAGER — single 400 kHz bus
+// ============================================================================
+
+class I2cBus {
+public:
+  struct Stats {
+    uint32_t total = 0;
+    uint32_t ok = 0;
+    uint32_t fail = 0;
+    uint32_t mpu = 0;
+    uint32_t bmp = 0;
+    uint32_t mag = 0;
+  } st;
+
+  bool begin() {
+    Wire.begin(SDA_PIN, SCL_PIN);
+    Wire.setClock(I2C_HZ);
+    Wire.setTimeOut(30);
+    return true;
   }
-  for (size_t i = 0; i < count; ++i)
-    output[i] = static_cast<uint8_t>(Wire.read());
-  return true;
-}
 
-bool i2cReadByte(uint8_t address, uint8_t reg, uint8_t &value) {
-  return i2cRead(address, reg, &value, 1);
-}
-
-// QMC-specific access uses STOP+START between the register-pointer write and
-// read. The integrated captures reported ESP32 Wire repeated-START failures
-// after QMC startup (endTransmission(false) / i2cWriteReadNonStop error -1).
-// Keep the normal repeated-START helper for MPU/BMP; this changes only the QMC
-// transaction method. A successful bus read is still not a fresh conversion:
-// updateMagnetometer() requires the internal status register's DRDY bit.
-bool i2cReadQmc(uint8_t reg, uint8_t *output, size_t count) {
-  Wire.beginTransmission(config::MAG_ADDRESS);
-  if (Wire.write(reg) != 1) {
-    (void)Wire.endTransmission(true);
-    return false;
+  bool writeReg(uint8_t addr, uint8_t reg, uint8_t value, uint32_t &sc) {
+    ++st.total; ++sc;
+    Wire.beginTransmission(addr);
+    if (Wire.write(reg) != 1) { Wire.endTransmission(); ++st.fail; return false; }
+    if (Wire.write(value) != 1) { Wire.endTransmission(); ++st.fail; return false; }
+    if (Wire.endTransmission() != 0) { ++st.fail; return false; }
+    ++st.ok; return true;
   }
-  if (Wire.endTransmission(true) != 0) {
-    return false;
+
+  bool readRegs(uint8_t addr, uint8_t reg, uint8_t *out, size_t count,
+                uint32_t &sc) {
+    ++st.total; ++sc;
+    Wire.beginTransmission(addr);
+    if (Wire.write(reg) != 1) { Wire.endTransmission(); ++st.fail; return false; }
+    if (Wire.endTransmission(false) != 0) { ++st.fail; return false; }
+    int got = Wire.requestFrom((int)addr, (int)count);
+    if (got != (int)count) {
+      while (Wire.available()) (void)Wire.read();
+      ++st.fail; return false;
+    }
+    for (size_t i = 0; i < count; ++i) out[i] = static_cast<uint8_t>(Wire.read());
+    ++st.ok; return true;
   }
-  if (Wire.requestFrom(static_cast<int>(config::MAG_ADDRESS),
-                       static_cast<int>(count)) != static_cast<int>(count)) {
-    while (Wire.available() > 0) (void)Wire.read();
-    return false;
+
+  bool isPresent(uint8_t addr) {
+    Wire.beginTransmission(addr);
+    return Wire.endTransmission() == 0;
   }
-  for (size_t i = 0; i < count; ++i) {
-    if (Wire.available() <= 0) return false;
-    output[i] = static_cast<uint8_t>(Wire.read());
-  }
-  return true;
-}
-bool i2cReadQmcByte(uint8_t reg, uint8_t &value) {
-  return i2cReadQmc(reg, &value, 1);
-}
-
-// Temporary I2C clock switching: MPU6050 and BMP280 work at 400 kHz,
-// but QMC5883P fails at 400 kHz on this board (wiring/pull-up limitation).
-// Switch to fast clock before MPU/BMP reads, back to slow for QMC reads.
-inline void i2cSetClockFast() { Wire.setClock(config::I2C_FAST_HZ); }
-inline void i2cSetClockSlow() { Wire.setClock(config::I2C_SLOW_HZ); }
-
-int16_t signedBigEndian(const uint8_t *b) {
-  return static_cast<int16_t>((uint16_t(b[0]) << 8) | b[1]);
-}
-
-int16_t signedLittleEndian(const uint8_t *b) {
-  return static_cast<int16_t>((uint16_t(b[1]) << 8) | b[0]);
-}
-
-// ------------------------------ Measurements -------------------------------
-struct ImuReading {
-  bool valid = false;
-  int16_t accel[3] = {};
-  int16_t gyro[3] = {};
-  int16_t temperature = 0;
 };
 
-struct PressureReading {
+I2cBus i2cBus;
+
+// ============================================================================
+// SENSOR DATA STRUCTURES
+// ============================================================================
+
+struct ImuSample {
   bool valid = false;
   bool fresh = false;
-  uint32_t rawPressure = 0;
-  uint32_t rawTemperature = 0;
-  int16_t temperatureCentiC = 0;
-  uint32_t pressureCentiPa = 0;
+  uint32_t timestamp_us = 0;
+  int16_t accel_raw[3] = {};
+  int16_t gyro_raw[3] = {};
+  int16_t temp_raw = 0;
+  uint32_t fifo_packets = 0;
+  uint32_t fifo_overflows = 0;
 };
 
-struct MagneticReading {
+struct PressureSample {
   bool valid = false;
   bool fresh = false;
-  int16_t axes[3] = {};
+  uint32_t timestamp_us = 0;
+  uint32_t raw_pressure = 0;
+  uint32_t raw_temperature = 0;
+  float temperature_c = 0.0f;
+  float pressure_pa = 0.0f;
 };
 
-ImuReading currentImu;
-PressureReading currentPressure;
-MagneticReading currentMagnetic;
-Adafruit_BMP280 bmp(&Wire);
-uint8_t mpuAddress = 0;
-uint8_t bmpAddress = 0;
-bool mpuPresent = false;
-bool bmpPresent = false;
-bool magneticConfigured = false;
-
-// Diagnostic counters are never interpreted as successful measurements.
-struct MagnetometerHealth {
-  uint32_t attempts = 0;
-  uint32_t failures = 0;
-  uint32_t successfulConfigurations = 0;
-  uint32_t recoveryConfigurations = 0;
-  uint32_t i2cFailures = 0;
-  uint32_t noFreshData = 0;
-  uint32_t statusReadFails = 0;
-  uint32_t notReady = 0;
-  uint32_t overflows = 0;
-  uint32_t xyzReadFails = 0;
-  uint32_t freshConversions = 0;
-  uint8_t lastControl1 = 0;
-  uint8_t lastControl2 = 0;
-  // These timestamps have distinct meanings: a successful register setup is
-  // not a magnetic conversion and must never make the sample appear fresh.
-  uint32_t lastFreshSampleMs = 0;
-  uint32_t lastAttemptMs = 0;
-  uint32_t identicalReads = 0;
-  uint32_t rawReadSuccess = 0;
-  uint16_t consecutiveStatusFailures = 0;
-};
-MagnetometerHealth magHealth;
-
-uint32_t lastPressurePollUs = 0;
-uint32_t lastMagneticPollUs = 0;
-
-// ----------------------------- MPU6050 -------------------------------------
-bool initializeMpu6050() {
-  mpuAddress = i2cPresent(config::MPU_PRIMARY_ADDRESS)
-      ? config::MPU_PRIMARY_ADDRESS
-      : (i2cPresent(config::MPU_ALTERNATE_ADDRESS)
-            ? config::MPU_ALTERNATE_ADDRESS : 0);
-  if (!mpuAddress) return false;
-  uint8_t id = 0;
-  if (!i2cReadByte(mpuAddress, 0x75, id) || id != 0x68) return false;
-  if (!i2cWrite(mpuAddress, 0x6B, 0x01)) return false; // Wake, gyro PLL
-  delay(100);
-  bool ok = i2cWrite(mpuAddress, 0x6C, 0x00); // Enable all 6 axes
-  ok &= i2cWrite(mpuAddress, 0x1A, 0x03);      // DLPF 42/44 Hz
-  ok &= i2cWrite(mpuAddress, 0x19, 0x01);      // 1 kHz / 2 = 500 Hz
-  ok &= i2cWrite(mpuAddress, 0x1B, 0x00);      // Gyro ±250 deg/s
-  ok &= i2cWrite(mpuAddress, 0x1C, 0x00);      // Accel ±2g
-  ok &= i2cWrite(mpuAddress, 0x23, 0x00);      // FIFO disabled
-  ok &= i2cWrite(mpuAddress, 0x38, 0x00);      // Polled data
-
-  // INT_PIN_CFG (0x37) is an MPU register that enables I2C bypass.
-  // It does NOT require wiring an external INT or DRDY pin.
-  // Allow ESP32 to access BMP280 through MPU's auxiliary XDA/XCL pins.
-  uint8_t userControl = 0, interruptPins = 0;
-  if (!i2cReadByte(mpuAddress, 0x6A, userControl) ||
-      !i2cReadByte(mpuAddress, 0x37, interruptPins)) return false;
-  ok &= i2cWrite(mpuAddress, 0x6A, userControl & uint8_t(~0x60));
-  ok &= i2cWrite(mpuAddress, 0x37, interruptPins | 0x02);
-  uint8_t divider = 0, filter = 0;
-  ok &= i2cReadByte(mpuAddress, 0x6A, userControl);
-  ok &= i2cReadByte(mpuAddress, 0x37, interruptPins);
-  ok &= i2cReadByte(mpuAddress, 0x19, divider);
-  ok &= i2cReadByte(mpuAddress, 0x1A, filter);
-  return ok && !(userControl & 0x20) && (interruptPins & 0x02) &&
-      divider == 1 && (filter & 0x07) == 3;
-}
-
-ImuReading sampleImu6050() {
-  ImuReading result;
-  if (!mpuPresent) return result;
-  i2cSetClockFast(); // MPU6050 supports 400 kHz I2C
-  uint8_t data[14];
-  if (!i2cRead(mpuAddress, 0x3B, data, sizeof(data))) {
-    i2cSetClockSlow();
-    return result;
-  }
-  i2cSetClockSlow(); // Restore slow clock for QMC compatibility
-  for (int i = 0; i < 3; ++i) {
-    result.accel[i] = signedBigEndian(data + 2*i);
-    result.gyro[i] = signedBigEndian(data + 8 + 2*i);
-  }
-  result.temperature = signedBigEndian(data + 6);
-  result.valid = true;
-  return result;
-}
-
-// ------------------------------ BMP280 -------------------------------------
-bool initializeBmp280() {
-  bmpAddress = i2cPresent(config::BMP_PRIMARY_ADDRESS)
-      ? config::BMP_PRIMARY_ADDRESS
-      : (i2cPresent(config::BMP_ALTERNATE_ADDRESS)
-            ? config::BMP_ALTERNATE_ADDRESS : 0);
-  if (!bmpAddress) return false;
-  uint8_t id = 0;
-  if (!i2cReadByte(bmpAddress, 0xD0, id) || id != 0x58) return false;
-  if (!bmp.begin(bmpAddress)) return false;
-  bmp.setSampling(Adafruit_BMP280::MODE_NORMAL,
-                  Adafruit_BMP280::SAMPLING_X2,
-                  Adafruit_BMP280::SAMPLING_X1,    // X1 pressure (0.45 ms) for 200 Hz
-                  Adafruit_BMP280::FILTER_X4,
-                  Adafruit_BMP280::STANDBY_MS_63);
-  return true;
-}
-
-void updatePressure(uint32_t nowUs) {
-  currentPressure.fresh = false;
-  if (!bmpPresent || uint32_t(nowUs-lastPressurePollUs) < config::BMP_PERIOD_US)
-    return;
-  lastPressurePollUs = nowUs;
-  i2cSetClockFast(); // BMP280 supports 400 kHz I2C
-  uint8_t registers[6];
-  if (!i2cRead(bmpAddress, 0xF7, registers, sizeof(registers))) {
-    i2cSetClockSlow();
-    currentPressure.valid = false;
-    return;
-  }
-  const float temperature = bmp.readTemperature();
-  const float pressure = bmp.readPressure();
-  i2cSetClockSlow(); // Restore slow clock for QMC compatibility
-  if (!std::isfinite(temperature) || !std::isfinite(pressure) ||
-      temperature < -100.f || temperature > 100.f ||
-      pressure < 10000.f || pressure > 120000.f) {
-    currentPressure.valid = false;
-    return;
-  }
-  currentPressure.rawPressure = (uint32_t(registers[0]) << 12) |
-      (uint32_t(registers[1]) << 4) | (registers[2] >> 4);
-  currentPressure.rawTemperature = (uint32_t(registers[3]) << 12) |
-      (uint32_t(registers[4]) << 4) | (registers[5] >> 4);
-  currentPressure.temperatureCentiC = int16_t(lroundf(temperature*100.f));
-  currentPressure.pressureCentiPa = uint32_t(lroundf(pressure*100.f));
-  currentPressure.valid = true;
-  currentPressure.fresh = true;
-}
-
-// ----------------------------- QMC5883P ------------------------------------
-// Register map verified against QST's datasheet and the Betaflight driver.
-// ------------------------------ QMC5883P ------------------------------------
-// QMC5883P — 400 kHz I2C attempt (user requested maximum speed).
-// QMC5883P datasheet Rev E lists 400 kHz fast mode. On THIS board the QMC is
-// an external breakout module whose wiring/pull-ups may not support 400 kHz.
-// Strategy:
-//   - configureQmc5883p(): configure QMC at 100 kHz ONLY (proven ~167 Hz fresh).
-//     setup() ALWAYS returns — no 400 kHz operations here that could hang boot.
-//   - updateMagnetometer(): try status read at 400 kHz first; if QMC responds,
-//     try XYZ read at 400 kHz. If either fails at 400 kHz, fall back to 100 kHz.
-//     Wire.setTimeOut(30) prevents indefinite hangs on 400 kHz reads.
-// Readback is intentionally skipped — updateMagnetometer() polls 0x09 DRDY.
-bool configureQmc5883p() {
-  ++magHealth.attempts;
-  magHealth.lastAttemptMs = millis();
-  magneticConfigured = false;
-  currentMagnetic.valid = false;
-  currentMagnetic.fresh = false;
-
-  // Allow QMC power-on/boot to settle before any bus transaction.
-  delay(40);
-
-  // QMC configuration ALWAYS at 100 kHz — verified stable on this hardware.
-  i2cSetClockSlow();
-
-  uint8_t id = 0;
-  if (!i2cReadQmcByte(0x00, id) || id != 0x80) {
-    ++magHealth.failures;
-    return false; // QMC not present at 100 kHz — board still streams UART
-  }
-
-  // v13 verified order/timing: suspend -> wait 20 ms -> sign -> ctrl2 -> ctrl1.
-  if (!i2cWrite(config::MAG_ADDRESS, 0x0A, 0x00)) {
-    ++magHealth.failures;
-    return false;
-  }
-  delay(20);
-  const bool signOk = i2cWrite(config::MAG_ADDRESS, 0x29, config::MAG_XYZ_SIGN);
-  const bool ctrl2Ok = i2cWrite(config::MAG_ADDRESS, 0x0B, config::MAG_CONTROL2);
-  const bool ctrl1Ok = i2cWrite(config::MAG_ADDRESS, 0x0A, config::MAG_CONTROL1);
-  if (!(signOk && ctrl2Ok && ctrl1Ok)) {
-    ++magHealth.failures;
-    return false;
-  }
-
-  magneticConfigured = true;
-  ++magHealth.successfulConfigurations;
-  lastMagneticPollUs = micros();
-  return true;
-}
-
-void updateMagnetometer(uint32_t nowUs) {
-  currentMagnetic.fresh = false;
-  const uint32_t nowMs = millis();
-  const bool noRecentSample = magHealth.freshConversions == 0 ||
-      uint32_t(nowMs - magHealth.lastFreshSampleMs) >= config::MAG_STALE_MS;
-  if ((!magneticConfigured || noRecentSample) &&
-      magHealth.attempts < config::MAG_MAX_CONFIG_ATTEMPTS &&
-      uint32_t(nowMs - magHealth.lastAttemptMs) >= config::MAG_CONFIG_RETRY_MS) {
-    // Startup can race a marginal sensor rail, and the QMC can lose its mode
-    // while the ESP32 remains alive. Retry configuration at a bounded rate;
-    // never hammer the shared bus on each 500 Hz scheduler tick.
-    if (magneticConfigured) ++magHealth.recoveryConfigurations;
-    (void)configureQmc5883p();
-  }
-  if (!magneticConfigured) { currentMagnetic.valid = false; return; }
-  // On complete MAG I2C loss, stop saturating the shared sensor bus.
-  // Normal operation still polls 0x09 at 200Hz for a 100Hz conversion rate.
-  const uint32_t pollUs = magHealth.consecutiveStatusFailures >= 8 ? 100000U :
-                          config::MAG_PERIOD_US;
-  if (uint32_t(nowUs - lastMagneticPollUs) < pollUs) return;
-  lastMagneticPollUs = nowUs;
-
-  // QMC reads: try 400 kHz first (user-requested maximum speed).
-  // QMC5883P datasheet Rev E lists 400 kHz fast mode — try it here with
-  // timeout fallback to 100 kHz if QMC doesn't respond at 400 kHz.
-  i2cSetClockFast();
+struct MagneticSample {
+  bool valid = false;
+  bool fresh = false;
+  uint32_t timestamp_us = 0;
+  int16_t raw[3] = {};
+  float calibrated[3] = {};
   uint8_t status = 0;
-  if (!i2cReadQmcByte(0x09, status)) {
-    // QMC not responding at 400 kHz — fall back to 100 kHz for this cycle.
-    i2cSetClockSlow();
-    if (!i2cReadQmcByte(0x09, status)) {
-      ++magHealth.i2cFailures;
-      ++magHealth.statusReadFails;
-      if (magHealth.consecutiveStatusFailures < 65535)
-        ++magHealth.consecutiveStatusFailures;
-      return;
-    }
-  }
-  if (status & 0x02) {
-    magHealth.consecutiveStatusFailures = 0;
-    ++magHealth.overflows;
-  } else if (!(status & 0x01)) {
-    magHealth.consecutiveStatusFailures = 0;
-    ++magHealth.notReady;
-  } else {
-    magHealth.consecutiveStatusFailures = 0;
-    uint8_t data[6] = {};
-    // Try XYZ read at 400 kHz first; fall back to 100 kHz if QMC unresponsive.
-    i2cSetClockFast();
-    bool xyzOk = i2cReadQmc(0x01, data, sizeof(data));
-    if (!xyzOk) {
-      i2cSetClockSlow();
-      xyzOk = i2cReadQmc(0x01, data, sizeof(data));
-    }
-    if (!xyzOk) {
-      ++magHealth.i2cFailures;
-      ++magHealth.xyzReadFails;
-    } else {
-      int16_t xyz[3];
-      for (int i = 0; i < 3; ++i) xyz[i] = signedLittleEndian(data + i*2);
-      if (!((xyz[0] == 0 && xyz[1] == 0 && xyz[2] == 0) ||
-            (xyz[0] == -1 && xyz[1] == -1 && xyz[2] == -1) ||
-            xyz[0] == INT16_MIN || xyz[1] == INT16_MIN || xyz[2] == INT16_MIN)) {
-        const bool identical = currentMagnetic.valid &&
-            xyz[0] == currentMagnetic.axes[0] &&
-            xyz[1] == currentMagnetic.axes[1] &&
-            xyz[2] == currentMagnetic.axes[2];
-        for (int i=0; i<3; ++i) currentMagnetic.axes[i] = xyz[i];
-        currentMagnetic.valid = true;
-        currentMagnetic.fresh = true;
-        ++magHealth.rawReadSuccess;
-        ++magHealth.freshConversions;
-        if (identical) ++magHealth.identicalReads; // Still a fresh ADC result.
-        magHealth.lastFreshSampleMs = millis();
-      } else ++magHealth.noFreshData;
-    }
-  }
-  // Staleness invalidates cached samples. The bounded retry above attempts
-  // recovery at most five times, one second apart.
-  if (magHealth.freshConversions == 0 ||
-      uint32_t(millis() - magHealth.lastFreshSampleMs) >= config::MAG_STALE_MS)
-    currentMagnetic.valid = false;
-}
-
-// ------------------------ Binary telemetry v3 ------------------------------
-// Do not change layout: the existing Python GUI expects exactly 52 bytes.
-struct PacketWriter {
-  uint8_t bytes[config::PACKET_SIZE] = {};
-  size_t length = 0;
-  void u8(uint8_t value) { bytes[length++] = value; }
-  void u16(uint16_t value) { u8(uint8_t(value)); u8(uint8_t(value >> 8)); }
-  void i16(int16_t value) { u16(uint16_t(value)); }
-  void u32(uint32_t value) { u16(uint16_t(value)); u16(uint16_t(value>>16)); }
 };
 
-uint16_t crcCcittFalse(const uint8_t *bytes, size_t size) {
-  uint16_t crc = 0xFFFF;
-  for (size_t i = 0; i < size; ++i) {
-    crc ^= uint16_t(bytes[i]) << 8;
-    for (uint8_t bit = 0; bit < 8; ++bit)
-      crc = (crc & 0x8000) ? uint16_t((crc << 1) ^ 0x1021)
-                           : uint16_t(crc << 1);
-  }
-  return crc;
-}
+ImuSample imu;
+PressureSample baro;
+MagneticSample mag;
 
-struct TimingState {
-  int64_t nextDeadlineUs = 0;
-  int64_t previousSampleUs = 0;
-  uint32_t missedDeadlines = 0;
-  uint32_t consecutiveSamples = 0;
-  uint32_t observedDtUs = config::IMU_PERIOD_US;
-  uint32_t serialDrops = 0;
+Adafruit_BMP280 *bmp_driver = nullptr;
+
+struct Health {
+  uint32_t loop_count = 0;
+  uint32_t missed_deadlines = 0;
+  uint32_t imu_errors = 0;
+  uint32_t baro_errors = 0;
+  uint32_t mag_errors = 0;
+  uint32_t serial_drops = 0;
+  uint32_t uptime_us = 0;
 };
-TimingState timing;
-uint32_t packetSequence = 0;
+Health health;
 
-#if IQ_WIFI_ENABLED
-struct WifiFrame { uint8_t data[config::PACKET_SIZE]; };
-QueueHandle_t wifiQueue = nullptr;
-WiFiUDP wifiSocket;
-uint32_t wifiQueueDrops = 0;
-uint32_t wifiSendFailures = 0;
+struct CalVector3 { float x, y, z; };
+struct CalMatrix3x3 { float m[3][3]; };
 
-// Networking belongs to core 0. Any delay/drop stays out of I2C acquisition.
-void wifiSenderTask(void *) {
-  IPAddress receiver;
-  uint16_t receiverPort = 0;
-  uint32_t lastHandshakeMs = 0;
-  uint8_t batch[config::UDP_BATCH_MAX * config::PACKET_SIZE];
-  constexpr char HELLO[] = "IQ_HELLO_V1";
+CalVector3 cal_accel_bias = {0, 0, 0};
+CalMatrix3x3 cal_accel_scale = {{{1,0,0},{0,1,0},{0,0,1}}};
+CalVector3 cal_gyro_bias = {0, 0, 0};
+CalVector3 cal_mag_hard_iron = {0, 0, 0};
+CalMatrix3x3 cal_mag_soft_iron = {{{1,0,0},{0,1,0},{0,0,1}}};
+bool calibration_loaded = false;
 
-  for (;;) {
-    const int received = wifiSocket.parsePacket();
-    if (received > 0) {
-      char text[48] = {};
-      const int length = wifiSocket.read(
-          reinterpret_cast<uint8_t*>(text), (received < 47 ? received : 47));
-      if (length == int(sizeof(HELLO) - 1) &&
-          memcmp(text, HELLO, sizeof(HELLO) - 1) == 0) {
-        receiver = wifiSocket.remoteIP();
-        receiverPort = wifiSocket.remotePort();
-        lastHandshakeMs = millis();
-        wifiSocket.beginPacket(receiver, receiverPort);
-        wifiSocket.write(reinterpret_cast<const uint8_t*>("IQ_READY_V1"), 11);
-        wifiSocket.endPacket();
-      }
-      while (wifiSocket.available()) (void)wifiSocket.read();
-    }
-    if (receiverPort && uint32_t(millis()-lastHandshakeMs) > 5000)
-      receiverPort = 0;
+uint8_t mpu_address = 0;
+uint8_t bmp_address = 0;
+uint8_t mag_address = MAG_ADDRESS;
+bool mpu_present = false;
+bool bmp_present = false;
+bool mag_configured = false;
 
-    WifiFrame frame;
-    if (xQueueReceive(wifiQueue, &frame, pdMS_TO_TICKS(3)) != pdTRUE)
-      continue;
-    if (!receiverPort) continue;
+// ============================================================================
+// MPU6050 FIFO DRIVER
+// ============================================================================
 
-    memcpy(batch, frame.data, config::PACKET_SIZE);
-    size_t frames = 1;
-    // Small bounded batching reduces Wi-Fi interrupts; timestamps unchanged.
-    vTaskDelay(pdMS_TO_TICKS(5));
-    while (frames < config::UDP_BATCH_MAX &&
-           xQueueReceive(wifiQueue, &frame, 0) == pdTRUE) {
-      memcpy(batch + frames * config::PACKET_SIZE,
-             frame.data, config::PACKET_SIZE);
-      ++frames;
-    }
-    const size_t bytes = frames * config::PACKET_SIZE;
-    if (!wifiSocket.beginPacket(receiver, receiverPort) ||
-        wifiSocket.write(batch, bytes) != bytes ||
-        !wifiSocket.endPacket()) ++wifiSendFailures;
+bool initMpu6050() {
+  mpu_address = i2cBus.isPresent(MPU_PRIMARY_ADDRESS)
+      ? MPU_PRIMARY_ADDRESS
+      : (i2cBus.isPresent(MPU_ALTERNATE_ADDRESS)
+          ? MPU_ALTERNATE_ADDRESS : 0);
+  if (!mpu_address) return false;
+
+  uint8_t id = 0;
+  if (!i2cBus.readRegs(mpu_address, MPU_REG_WHO_AM_I, &id, 1, health.imu_errors) || id != 0x68)
+    return false;
+
+  if (!i2cBus.writeReg(mpu_address, MPU_REG_PWR_MGMT_1, MPU_PWR_MGMT_1_RESET, health.imu_errors))
+    return false;
+  delay(100);
+
+  if (!i2cBus.writeReg(mpu_address, MPU_REG_PWR_MGMT_1, MPU_PWR_MGMT_1_CLKSEL, health.imu_errors))
+    return false;
+
+  if (!i2cBus.writeReg(mpu_address, MPU_REG_PWR_MGMT_2, 0x00, health.imu_errors)) return false;
+
+  if (!i2cBus.writeReg(mpu_address, MPU_REG_CONFIG, MPU_DLPF_CFG_1, health.imu_errors)) return false;
+
+  if (!i2cBus.writeReg(mpu_address, 0x19, MPU_SMPLRT_DIV_1, health.imu_errors)) return false;
+
+  if (!i2cBus.writeReg(mpu_address, MPU_REG_GYRO_CONFIG, MPU_GYRO_FS_500, health.imu_errors)) return false;
+
+  if (!i2cBus.writeReg(mpu_address, MPU_REG_ACCEL_CONFIG, MPU_ACCEL_FS_8G, health.imu_errors)) return false;
+
+  if (!i2cBus.writeReg(mpu_address, MPU_REG_FIFO_EN, MPU_FIFO_EN_ALL, health.imu_errors)) return false;
+
+  uint8_t ic = 0;
+  if (!i2cBus.readRegs(mpu_address, MPU_REG_INT_PIN_CFG, &ic, 1, health.imu_errors)) return false;
+  if (!i2cBus.writeReg(mpu_address, MPU_REG_INT_PIN_CFG, ic | MPU_BYPASS_EN, health.imu_errors)) return false;
+
+  uint8_t uc = 0;
+  if (!i2cBus.readRegs(mpu_address, MPU_REG_USER_CTRL, &uc, 1, health.imu_errors)) return false;
+  if (!i2cBus.writeReg(mpu_address, MPU_REG_USER_CTRL, uc | MPU_FIFO_EN_BIT, health.imu_errors)) return false;
+
+  if (!i2cBus.writeReg(mpu_address, MPU_REG_USER_CTRL,
+      uc | MPU_FIFO_EN_BIT | MPU_FIFO_RESET_BIT, health.imu_errors)) return false;
+
+  mpu_present = true;
+  return true;
+}
+
+bool readMpuFifo() {
+  if (!mpu_present) { imu.valid = false; imu.fresh = false; return false; }
+
+  uint8_t fc[2] = {};
+  if (!i2cBus.readRegs(mpu_address, MPU_REG_FIFO_COUNT_H, fc, 2, health.imu_errors)) {
+    health.imu_errors++;
+    imu.valid = false; imu.fresh = false;
+    return false;
   }
+  uint16_t fifo_count = (uint16_t(fc[0]) << 8) | fc[1];
+
+  if (fifo_count >= 1024) {
+    uint8_t uc = 0;
+    i2cBus.readRegs(mpu_address, MPU_REG_USER_CTRL, &uc, 1, health.imu_errors);
+    i2cBus.writeReg(mpu_address, MPU_REG_USER_CTRL,
+        uc | MPU_FIFO_EN_BIT | MPU_FIFO_RESET_BIT, health.imu_errors);
+    health.imu_errors++;
+    imu.valid = false; imu.fresh = false;
+    return false;
+  }
+
+  if (fifo_count < MPU_FIFO_PACKET_BYTES) {
+    imu.valid = false; imu.fresh = false;
+    return false;
+  }
+
+  uint8_t data[MPU_FIFO_PACKET_BYTES] = {};
+  if (!i2cBus.readRegs(mpu_address, MPU_REG_FIFO_R_W, data, MPU_FIFO_PACKET_BYTES, health.imu_errors)) {
+    health.imu_errors++;
+    imu.valid = false; imu.fresh = false;
+    return false;
+  }
+
+  imu.timestamp_us = (uint32_t)esp_timer_get_time();
+  imu.fresh = true;
+  imu.valid = true;
+  imu.fifo_packets = fifo_count / MPU_FIFO_PACKET_BYTES;
+
+  imu.accel_raw[0] = (int16_t)((uint16_t(data[0]) << 8) | data[1]);
+  imu.accel_raw[1] = (int16_t)((uint16_t(data[2]) << 8) | data[3]);
+  imu.accel_raw[2] = (int16_t)((uint16_t(data[4]) << 8) | data[5]);
+  imu.temp_raw     = (int16_t)((uint16_t(data[6]) << 8) | data[7]);
+  imu.gyro_raw[0]  = (int16_t)((uint16_t(data[8]) << 8) | data[9]);
+  imu.gyro_raw[1]  = (int16_t)((uint16_t(data[10]) << 8) | data[11]);
+  imu.gyro_raw[2]  = (int16_t)((uint16_t(data[12]) << 8) | data[13]);
+
+  return true;
 }
 
-bool initializeWifiTelemetry() {
-  // Wi-Fi starts BEFORE QMC setup: QMC is reconfigured after the radio is active.
-  WiFi.mode(WIFI_AP);
-  WiFi.setSleep(false);
-  if (!WiFi.softAP(config::WIFI_AP_NAME,
-                   config::WIFI_PASSWORD, 6, false, 1)) return false;
-  wifiQueue = xQueueCreate(256, sizeof(WifiFrame));
-  if (!wifiQueue || !wifiSocket.begin(config::WIFI_CONTROL_PORT)) return false;
-  return xTaskCreatePinnedToCore(wifiSenderTask, "iq_wifi_telemetry", 6144,
-                                  nullptr, 1, nullptr, 0) == pdPASS;
+// ============================================================================
+// QMC5883P DRIVER — 400 kHz only
+// ============================================================================
+
+bool initQmc5883p() {
+  mag_address = MAG_ADDRESS;
+  if (!i2cBus.isPresent(mag_address)) return false;
+
+  uint8_t id = 0;
+  if (!i2cBus.readRegs(mag_address, QMC_REG_CHIP_ID, &id, 1, health.mag_errors) || id != QMC_CHIP_ID)
+    return false;
+
+  if (!i2cBus.writeReg(mag_address, QMC_REG_CTRL1, 0x00, health.mag_errors)) return false;
+  delay(20);
+
+  if (!i2cBus.writeReg(mag_address, QMC_REG_XYZ_SIGN, MAG_XYZ_SIGN_VAL, health.mag_errors)) return false;
+
+  if (!i2cBus.writeReg(mag_address, QMC_REG_CTRL2, MAG_CONTROL2, health.mag_errors)) return false;
+
+  if (!i2cBus.writeReg(mag_address, QMC_REG_CTRL1, MAG_CONTROL1, health.mag_errors)) return false;
+
+  mag_configured = true;
+  return true;
 }
-#endif
 
-void transmitCurrentMeasurements(uint32_t acquisitionTimestampUs,
-                                 uint16_t deadlineLateUs) {
-  // Binary v3 flags: 0 MPU valid, 1 BMP valid, 2 MAG valid,
-  // 3 BMP fresh, 4 MAG fresh, 5 late, 6 QMC5883P, 7 QMC5883L.
-  const uint8_t flags =
-      (currentImu.valid ? 0x01 : 0) |
-      (currentPressure.valid ? 0x02 : 0) |
-      (currentMagnetic.valid ? 0x04 : 0) |
-      (currentPressure.fresh ? 0x08 : 0) |
-      (currentMagnetic.fresh ? 0x10 : 0) |
-      (deadlineLateUs > 250 ? 0x20 : 0) |
-      0x40; // Known QMC5883P at 0x2C, packet version 3.
+bool readQmc5883p() {
+  if (!mag_configured) { mag.valid = false; mag.fresh = false; return false; }
 
-  PacketWriter p;
+  uint8_t status = 0;
+  if (!i2cBus.readRegs(mag_address, QMC_REG_STATUS, &status, 1, health.mag_errors)) {
+    health.mag_errors++;
+    mag.valid = false; mag.fresh = false;
+    return false;
+  }
+  mag.status = status;
+
+  if (status & 0x02) { health.mag_errors++; mag.valid = false; mag.fresh = false; return false; }
+  if (!(status & 0x01)) { mag.valid = false; mag.fresh = false; return false; }
+
+  uint8_t data[6] = {};
+  if (!i2cBus.readRegs(mag_address, QMC_REG_DATA_XL, data, 6, health.mag_errors)) {
+    health.mag_errors++;
+    mag.valid = false; mag.fresh = false;
+    return false;
+  }
+
+  for (int i = 0; i < 3; i++)
+    mag.raw[i] = (int16_t)((uint16_t(data[2*i+1]) << 8) | data[2*i]);
+
+  if ((mag.raw[0] == 0 && mag.raw[1] == 0 && mag.raw[2] == 0) ||
+      (mag.raw[0] == -1 && mag.raw[1] == -1 && mag.raw[2] == -1) ||
+      mag.raw[0] == INT16_MIN || mag.raw[1] == INT16_MIN || mag.raw[2] == INT16_MIN) {
+    mag.valid = false; mag.fresh = false;
+    return false;
+  }
+
+  mag.timestamp_us = (uint32_t)esp_timer_get_time();
+  mag.fresh = true;
+  mag.valid = true;
+
+  float raw_uT[3] = {mag.raw[0] * 0.29f, mag.raw[1] * 0.29f, mag.raw[2] * 0.29f};
+  float centered[3] = {
+    raw_uT[0] - cal_mag_hard_iron.x,
+    raw_uT[1] - cal_mag_hard_iron.y,
+    raw_uT[2] - cal_mag_hard_iron.z
+  };
+  for (int i = 0; i < 3; i++)
+    mag.calibrated[i] = cal_mag_soft_iron.m[i][0] * centered[0] +
+                        cal_mag_soft_iron.m[i][1] * centered[1] +
+                        cal_mag_soft_iron.m[i][2] * centered[2];
+
+  return true;
+}
+
+// ============================================================================
+// BMP280 DRIVER — 400 kHz only
+// ============================================================================
+
+bool initBmp280() {
+  bmp_address = i2cBus.isPresent(BMP_PRIMARY_ADDRESS)
+      ? BMP_PRIMARY_ADDRESS
+      : (i2cBus.isPresent(BMP_ALTERNATE_ADDRESS)
+          ? BMP_ALTERNATE_ADDRESS : 0);
+  if (!bmp_address) return false;
+
+  uint8_t id = 0;
+  if (!i2cBus.readRegs(bmp_address, BMP_REG_ID, &id, 1, health.baro_errors) || id != BMP_CHIP_ID)
+    return false;
+
+  if (!i2cBus.writeReg(bmp_address, BMP_REG_RESET, 0xB6, health.baro_errors)) return false;
+  delay(10);
+
+  if (!i2cBus.writeReg(bmp_address, BMP_REG_CTRL_MEAS, 0x27, health.baro_errors)) return false;
+  if (!i2cBus.writeReg(bmp_address, BMP_REG_CONFIG, 0x04, health.baro_errors)) return false;
+
+  bmp_present = true;
+  return true;
+}
+
+bool readBmp280() {
+  if (!bmp_present) { baro.valid = false; baro.fresh = false; return false; }
+
+  uint8_t regs[6] = {};
+  if (!i2cBus.readRegs(bmp_address, BMP_REG_PRESSURE_MSB, regs, 6, health.baro_errors)) {
+    health.baro_errors++;
+    baro.valid = false; baro.fresh = false;
+    return false;
+  }
+
+  baro.raw_pressure  = ((uint32_t(regs[0]) << 12) | (uint32_t(regs[1]) << 4) | (regs[2] >> 4));
+  baro.raw_temperature = ((uint32_t(regs[3]) << 12) | (uint32_t(regs[4]) << 4) | (regs[5] >> 4));
+  baro.timestamp_us = (uint32_t)esp_timer_get_time();
+  baro.fresh = true;
+  baro.valid = true;
+
+  if (bmp_driver) {
+    float t = bmp_driver->readTemperature();
+    float p = bmp_driver->readPressure();
+    if (std::isfinite(t) && std::isfinite(p) && t > -100.f && t < 100.f && p > 10000.f && p < 120000.f) {
+      baro.temperature_c = t;
+      baro.pressure_pa = p;
+    }
+  }
+
+  return true;
+}
+
+bool loadCalDefaults() {
+  cal_accel_bias = {0, 0, 0};
+  cal_accel_scale = {{{1,0,0},{0,1,0},{0,0,1}}};
+  cal_gyro_bias = {0, 0, 0};
+  cal_mag_hard_iron = {0, 0, 0};
+  cal_mag_soft_iron = {{{1,0,0},{0,1,0},{0,0,1}}};
+  calibration_loaded = true;
+  return true;
+}
+
+bool applyAccelCal(const int16_t raw[3], float out[3]) {
+  for (int i = 0; i < 3; i++) {
+    float r = raw[i] / 4096.0f * 9.80665f;
+    out[i] = cal_accel_scale.m[i][0] * (r - cal_accel_bias.x) +
+             cal_accel_scale.m[i][1] * (r - cal_accel_bias.y) +
+             cal_accel_scale.m[i][2] * (r - cal_accel_bias.z);
+  }
+  return true;
+}
+
+bool applyGyroCal(const int16_t raw[3], float out[3]) {
+  for (int i = 0; i < 3; i++) {
+    float r = raw[i] / 65.5f;
+    out[i] = r - (i == 0 ? cal_gyro_bias.x : (i == 1 ? cal_gyro_bias.y : cal_gyro_bias.z));
+  }
+  return true;
+}
+
+// ============================================================================
+// BINARY TELEMETRY v3 (52 bytes)
+// ============================================================================
+
+struct Packet {
+  uint8_t bytes[PACKET_SIZE] = {};
+  size_t len = 0;
+  void u8(uint8_t v) { if (len < PACKET_SIZE) bytes[len++] = v; }
+  void u16(uint16_t v) { u8(v & 0xFF); u8((v >> 8) & 0xFF); }
+  void i16(int16_t v) { u16((uint16_t)v); }
+  void u32(uint32_t v) { u8(v & 0xFF); u8((v >> 8) & 0xFF); u8((v >> 16) & 0xFF); u8((v >> 24) & 0xFF); }
+};
+
+uint16_t crc16(const uint8_t *d, size_t n) {
+  uint16_t c = 0xFFFF;
+  for (size_t i = 0; i < n; i++) {
+    c ^= d[i] << 8;
+    for (uint8_t b = 0; b < 8; b++)
+      c = (c & 0x8000) ? (c << 1) ^ 0x1021 : c << 1;
+  }
+  return c;
+}
+
+void buildPacket(Packet &p, const ImuSample &imu, const MagneticSample &mag,
+                 const PressureSample &baro, uint32_t seq,
+                 uint32_t timestamp_us, uint16_t late_us) {
+  uint8_t flags = 0;
+  flags |= imu.valid  ? 0x01 : 0;
+  flags |= baro.valid ? 0x02 : 0;
+  flags |= mag.valid  ? 0x04 : 0;
+  flags |= baro.fresh ? 0x08 : 0;
+  flags |= mag.fresh  ? 0x10 : 0;
+  flags |= late_us > 250 ? 0x20 : 0;
+  flags |= 0x40;
+
+  p.len = 0;
   p.u8(0xA5); p.u8(0x5A); p.u8(3); p.u8(flags);
-  p.u32(packetSequence++);
-  p.u32(acquisitionTimestampUs);
-  p.u16(deadlineLateUs);
-  for (int i=0;i<3;++i) p.i16(currentImu.accel[i]);
-  for (int i=0;i<3;++i) p.i16(currentImu.gyro[i]);
-  p.i16(currentImu.temperature);
-  for (int i=0;i<3;++i) p.i16(currentMagnetic.axes[i]);
-  p.u32(currentPressure.rawPressure);
-  p.u32(currentPressure.rawTemperature);
-  p.i16(currentPressure.temperatureCentiC);
-  p.u32(currentPressure.pressureCentiPa);
-  p.u16(uint16_t(timing.missedDeadlines));
-  if (p.length != config::PACKET_SIZE-2) return;
-  p.u16(crcCcittFalse(p.bytes, p.length));
+  p.u32(seq);
+  p.u32(timestamp_us);
+  p.u16(late_us);
 
-#if IQ_WIFI_ENABLED
-  if (wifiQueue) {
-    WifiFrame frame;
-    memcpy(frame.data, p.bytes, config::PACKET_SIZE);
-    if (xQueueSend(wifiQueue, &frame, 0) != pdTRUE) ++wifiQueueDrops;
-  }
-#endif
-  if (Serial.availableForWrite() >= int(config::PACKET_SIZE))
-    Serial.write(p.bytes, config::PACKET_SIZE);
-  else
-    ++timing.serialDrops;
+  for (int i = 0; i < 3; i++) p.i16(imu.accel_raw[i]);
+  for (int i = 0; i < 3; i++) p.i16(imu.gyro_raw[i]);
+  p.i16(imu.temp_raw);
+  for (int i = 0; i < 3; i++) p.i16(mag.raw[i]);
+
+  p.u32(baro.raw_pressure);
+  p.u32(baro.raw_temperature);
+  p.i16(int16_t(baro.temperature_c * 100.0f));
+  p.u32(uint32_t(baro.pressure_pa));
+
+  p.u16(uint16_t(health.missed_deadlines));
+
+  while (p.len < 50) p.u8(0);
+  p.u16(crc16(p.bytes, 50));
 }
 
-// ------------------------- Boot and task loop ------------------------------
-void initializeSensorsAndRadio() {
-  for (uint8_t pin : config::MOTOR_PINS) pinMode(pin, INPUT);
-  delay(1200); // USB and 3.3V rails settle before touching the I2C bus.
-  Wire.begin(config::SDA_PIN, config::SCL_PIN);
-  Wire.setClock(IQ_I2C_HZ);
-  Wire.setTimeOut(30);
-
-  for (int retry=0;retry<5 && !mpuPresent;++retry) {
-    mpuPresent = initializeMpu6050();
-    if (!mpuPresent) delay(200);
-  }
-  // Match the successful isolated v13 test as closely as possible:
-  // configure the QMC after MPU bypass and before BMP280 traffic.
-  (void)configureQmc5883p();
-
-  if (mpuPresent) {
-    delay(30); // Bypass needs to settle before asking the BMP for its ID.
-    for (int retry=0;retry<3 && !bmpPresent;++retry) {
-      bmpPresent = initializeBmp280();
-      if (!bmpPresent) delay(100);
-    }
-  }
-
-#if IQ_WIFI_ENABLED
-  const bool wifiReady = initializeWifiTelemetry();
-  (void)wifiReady; // USB still works if the Wi-Fi access point cannot start.
-  delay(350); // Allow radio startup load to finish BEFORE QMC configuration.
-#endif
-
-  // One fixed boot configuration, just like the v13 100Hz success.
-  // Never repeatedly suspend/start the sensor during calibration.
-  lastMagneticPollUs = micros();
-  lastPressurePollUs = micros();
-  timing.nextDeadlineUs = esp_timer_get_time() + config::IMU_PERIOD_US;
-}
-
-void sampleAtAbsoluteDeadline() {
-  const int64_t nowUs = esp_timer_get_time();
-  const int64_t untilDeadline = timing.nextDeadlineUs - nowUs;
-  if (untilDeadline > 240) {
-    delayMicroseconds(uint32_t(untilDeadline - 140));
-    return;
-  }
-  if (untilDeadline > 0) return;
-
-  const int64_t startedAtUs = esp_timer_get_time();
-  const int64_t lateness = startedAtUs-timing.nextDeadlineUs;
-  if (lateness >= int64_t(config::IMU_PERIOD_US)) {
-    const uint64_t skipped = uint64_t(lateness)/config::IMU_PERIOD_US;
-    timing.missedDeadlines += uint32_t(skipped > UINT32_MAX ? UINT32_MAX : skipped);
-    timing.nextDeadlineUs += int64_t(skipped)*config::IMU_PERIOD_US;
-  }
-  timing.nextDeadlineUs += config::IMU_PERIOD_US;
-  if (timing.previousSampleUs != 0 && startedAtUs > timing.previousSampleUs)
-    timing.observedDtUs = uint32_t(startedAtUs - timing.previousSampleUs);
-  timing.previousSampleUs = startedAtUs;
-  ++timing.consecutiveSamples;
-
-  // MPU first, timestamped at cycle start. Slower sensors only when due.
-  currentImu = sampleImu6050();
-  updateMagnetometer(uint32_t(startedAtUs));
-  updatePressure(uint32_t(startedAtUs));
-  const uint16_t late = uint16_t(lateness > 65535 ? 65535 :
-                                   (lateness > 0 ? lateness : 0));
-  transmitCurrentMeasurements(uint32_t(startedAtUs), late);
-}
-
-} // namespace iq
+// ============================================================================
+// MAIN LOOP — 500 Hz nonblocking
+// ============================================================================
 
 void setup() {
-  Serial.begin(iq::config::SERIAL_BAUD);
-  iq::initializeSensorsAndRadio();
+  Serial.begin(SERIAL_BAUD);
+  while (!Serial && millis() < 2000) { /* wait for USB */ }
+
+  for (uint8_t pin : MOTOR_PINS) pinMode(pin, INPUT);
+
+  i2cBus.begin();
+  loadCalDefaults();
+
+  mpu_present = initMpu6050();
+  delay(30);
+  mag_configured = initQmc5883p();
+  if (mpu_present) {
+    delay(30);
+    bmp_present = initBmp280();
+    if (bmp_present) bmp_driver = new Adafruit_BMP280(&Wire);
+  }
+
+  health.uptime_us = esp_timer_get_time();
+
+  Serial.printf("IQ FC 400kHz: MPU=%d BMP=%d MAG=%d I2C=400kHz\n",
+    mpu_present, bmp_present, mag_configured);
 }
 
 void loop() {
-  iq::sampleAtAbsoluteDeadline();
+  static uint32_t next_deadline = 0;
+  static uint32_t seq = 0;
+  static uint32_t last_baro_us = 0;
+  static uint32_t last_mag_us = 0;
+  Packet pkt;
+
+  uint32_t now = (uint32_t)esp_timer_get_time();
+  if (next_deadline == 0) next_deadline = now + CONTROL_PERIOD_US;
+
+  int64_t until = (int64_t)next_deadline - (int64_t)now;
+  if (until > 240) {
+    delayMicroseconds((uint32_t)(until - 140));
+    return;
+  }
+  if (until > 0) return;
+
+  uint32_t started = (uint32_t)esp_timer_get_time();
+  int64_t late = (int64_t)started - (int64_t)next_deadline;
+  if (late >= (int64_t)CONTROL_PERIOD_US) {
+    uint64_t skipped = (uint64_t)late / CONTROL_PERIOD_US;
+    health.missed_deadlines += (uint32_t)(skipped > UINT32_MAX ? UINT32_MAX : skipped);
+    next_deadline += (uint64_t)skipped * CONTROL_PERIOD_US;
+  }
+  next_deadline += CONTROL_PERIOD_US;
+  health.loop_count++;
+  health.uptime_us = started;
+
+  bool imu_ok = readMpuFifo();
+  if (!imu_ok) health.imu_errors++;
+
+  bool baro_ok = false;
+  if ((int64_t)(started - last_baro_us) >= (int64_t)BMP_PERIOD_US) {
+    last_baro_us = started;
+    baro_ok = readBmp280();
+    if (!baro_ok) health.baro_errors++;
+  } else {
+    baro.fresh = false;
+  }
+
+  bool mag_ok = false;
+  if ((int64_t)(started - last_mag_us) >= (int64_t)MAG_PERIOD_US) {
+    last_mag_us = started;
+    mag_ok = readQmc5883p();
+    if (!mag_ok) health.mag_errors++;
+  } else {
+    mag.fresh = false;
+  }
+
+  uint16_t late_us = (uint16_t)(late > 65535 ? 65535 : (late > 0 ? late : 0));
+  buildPacket(pkt, imu, mag, baro, seq++, started, late_us);
+
+  if (Serial.availableForWrite() >= (int)PACKET_SIZE)
+    Serial.write(pkt.bytes, PACKET_SIZE);
+  else
+    health.serial_drops++;
 }
