@@ -30,6 +30,7 @@
 #include <cstring>
 #include <climits>
 #include <initializer_list>
+#include "nov06_recalibration_candidates.hpp"
 
 #ifndef IQ_WIFI_ENABLED
 #define IQ_WIFI_ENABLED 0
@@ -399,6 +400,16 @@ struct MotorOutput {
 // ============================================================================
 
 namespace iq {
+
+// Compile the audit values for traceability, but fail compilation if anyone
+// changes their research-only runtime gates without revisiting the evidence.
+static_assert(nov06_recalibration::kResearchOnly
+              && !nov06_recalibration::kHardwareValidated
+              && !nov06_recalibration::kApplyCalibrationToRuntime
+              && !nov06_recalibration::kApplySimulationPidToRuntime
+              && !nov06_recalibration::kEnableMotorAccelerationPid
+              && !nov06_recalibration::kHasMotorRpmTelemetry,
+              "Nov 6 audit candidates are not an active flight profile");
 
 uint16_t crcCcittFalse(const uint8_t*d,size_t s);
 

@@ -898,3 +898,27 @@ High:
 - These values are normalized software command fractions, not propeller RPM,
   motor current, thrust or mechanical stress limits. The S3 candidate still has
   no physical motor output path and has not been built or hardware-tested.
+
+## 33. Revision 18 — 2026-11-06: Nov 6 calibration/PID audit ingested
+
+- Added the audit's typed sensor fits, model priors, simulation-only PID values,
+  and motor-acceleration PID candidate to
+  `hardware/experimental_esp32s3_fc_dsh_candidate/src/nov06_recalibration_candidates.hpp`.
+  The header is included by the S3 candidate, and compile-time assertions keep
+  calibration/PID candidates inactive. Runtime calibration remains invalid;
+  live PID gains remain unconfigured. The active capture firmware was not
+  changed.
+- The report's MPU and QMC conversion assumptions match the candidate's raw
+  scales (4096 counts/g, 65.5 counts/(deg/s), 37.5 counts/µT), but the captures
+  lack register readback. Do not apply the large gyro bias until hardware offset
+  registers are read; the accel fit is confounded by manual face placement;
+  MAG chip-to-body axes/heading remain unknown; BMP pressure units and a ground
+  reference remain uncertain.
+- PID values remain inert because the model uses assumed inertia and motor lag;
+  inner rate outputs are torque while the current mixer consumes normalized
+  command differentials. The proposed rotor-acceleration PID is disabled due
+  to absent RPM telemetry. The assumed linear hover median is about 45%, above
+  the user's current 35% normal command cap; this flags possible inability to
+  hover under that model, not an evidence-based reason to raise the cap. The
+  audit reports repeated prop failures; no powered propeller tests, build, flash
+  or motor-output enablement were performed.

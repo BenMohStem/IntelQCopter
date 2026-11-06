@@ -79,6 +79,35 @@ results; this candidate does not establish that the shared bus is reliable.
   full-load 400 kHz test, motor output adapter, or flight-control validation is
   available for this candidate.
 
+## Nov 6 recalibration/PID audit ingestion
+
+The three-session analysis is represented in
+`src/nov06_recalibration_candidates.hpp` as typed, compiled-in research data.
+`main.cpp` has compile-time guards requiring the profile to remain inactive;
+the runtime calibration structs remain invalid and the live PID objects remain
+zero/unconfigured. The capture firmware was not changed.
+
+The analysis confirms the assumed raw scales already present here: 4096
+counts/g, 65.5 counts/(deg/s), and 37.5 counts/µT. Its fitted offsets/matrices
+remain candidates: the large gyro rest bias requires MPU hardware-offset
+readback; the accel fit is confounded with face placement and chip mounting;
+the MAG fit is in chip coordinates and does not establish body axes or heading;
+and the BMP CSV's hPa-to-Pa conversion is unconfirmed with no portable ground
+reference. Therefore none is loaded into live control.
+
+All seven flight-loop gains are simulation-only. The three inner rate PID
+outputs are modeled as torque in N·m, while this candidate's mixer accepts
+normalized motor-command differentials and has no validated effectiveness
+matrix. The outer-loop gains depend on unmeasured thrust response and motor lag.
+The research motor-acceleration PID remains disabled because this build has no
+per-motor RPM telemetry; IMU acceleration is not rotor acceleration.
+
+The inherited linear-thrust model has a median hover fraction near 45% and a
+95% interval near 30–89%; the user-selected 35% normal motor ceiling may be
+below hover demand. The model is assumption-based, so this is a recorded risk,
+not a reason to raise the cap. No propeller-powered test or motor-output
+enablement is authorized by this code change.
+
 Do not upload this source for flight or enable physical arming. Keep the active
 calibration firmware and its captures as the recovery reference. The DSH working
 tree snapshot taken before this review is preserved at

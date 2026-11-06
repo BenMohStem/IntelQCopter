@@ -734,3 +734,13 @@ accepted merely because it is theoretically faster or more complex.
   `archive/review-candidates/2026-11-06/`; the active calibration source and all
   capture/skip manifests remain separate. Unrelated untracked capture manifests
   and generated calibration artifacts were left outside this review commit.
+- The Nov 6 three-session recalibration/PID audit was ingested as typed,
+  compiled-in research data in
+  `hardware/experimental_esp32s3_fc_dsh_candidate/src/nov06_recalibration_candidates.hpp`.
+  Compile-time guards prevent loading its sensor fits or simulation gains into
+  runtime control. The source unit scales match the candidate, but the gyro
+  offset register state, accel chip/body axes, MAG body transform/heading, BMP
+  pressure units/reference, torque-to-command model and motor response remain
+  unverified. The 35% normal cap may sit below the assumption-based median hover
+  estimate; do not raise it from this model alone. No propeller-powered test,
+  build, flash, or motor-output enablement was performed.
