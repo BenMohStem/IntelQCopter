@@ -1,5 +1,22 @@
 # Bench calibration changes and evidence
 
+## 2026-11-07 — save only accepted calibration samples
+
+- `tools/live_calibration_gui.py` now writes a CSV row only when the active
+  phase accepts a real sensor sample. MAG/BMP phases no longer archive every
+  intervening 500 Hz packet; stale and rejected samples stay visible in the
+  live GUI but are not stored.
+- Rows contain the active calibration sensor's channels: stationary REST keeps
+  gyro, accel and MPU temperature; six-face stages keep accel and temperature;
+  MAG stages keep fresh raw/corrected XYZ for ellipsoid fitting; BMP stages
+  keep fresh pressure/temperature and ADC values; LiDAR stages keep valid
+  ranges. The existing CSV columns remain for tool compatibility, with
+  unrelated fields blank. MAG/BMP/LiDAR sample rows omit transport sequence
+  IDs so normal sparse sampling is not mistaken for packet loss.
+- Completed/retried session history and old captures are unchanged. No tests,
+  GUI launch, sensor capture, firmware build, upload or hardware access was run
+  for this source edit.
+
 ## 2026-11-03 — integrate v4 and test QMC read recovery
 
 - Source: user-provided `IntelQCopter_100Hz_UART_Mag_Recovery_v4` from Downloads.

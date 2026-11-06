@@ -51,6 +51,18 @@ The LiDAR Geometry tab exposes the preliminary sensor-to-COM vector, attitude
 and slant range. Its result is a geometry worksheet, not fused altitude. Save a
 geometry configuration only after entering a physically measured lever arm.
 
+## Capture storage
+
+New calibration CSVs store accepted samples only, for the currently active
+stage. The default targets are 30,000 accepted MPU readings for the stationary
+gyro phase, 5,000 accelerometer readings for each of six faces, 2,000 fresh
+readings for each MAG yaw/pitch/roll phase, 8,000 fresh MAG tumble readings,
+and 1,000 fresh BMP readings. If enabled, each LiDAR reference saves 300 valid
+ranges. Stale MAG/BMP packets, rejected samples, and other sensors' raw values
+are not written into that row; raw MAG XYZ is retained because ellipsoid
+calibration needs the point cloud. Live plots, packet health and the latency
+tab continue to use the full stream in memory. Existing CSVs are not modified.
+
 ## Sensor profile targets (not validation claims)
 
 | Device | Requested starting point | Evidence needed |

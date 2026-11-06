@@ -2,7 +2,9 @@
 """IntelQCopter guided calibration GUI (binary v2/v3 and timing/LiDAR v4).
 
 The firmware sends 500 packet/s; only fresh MAG/BMP packets count for slow
-sensor phases. All raw samples are saved to CSV; graphing is decimated.
+sensor phases. CSV stores only accepted calibration samples for the active
+phase and the channels needed to calibrate that sensor; the live stream remains
+available to plots but is not archived.
 Run from tools/ or using start_calibration.ps1 in the project root.
 """
 from __future__ import annotations
@@ -600,7 +602,7 @@ class Recorder(threading.Thread):
             self.started.set()
             self.events.put(('stopped', None))
 
-    def _handle_lidar(self,sample,received,writer,*,source='serial',frame=None):
+    def _handle_lidar(self,sample,received,writer,*,source='serial'):
         self.lidar_total+=1
         self.events.put(('lidar_sample',{
             'distance_m':sample.distance_m,'valid':bool(sample.valid),
@@ -630,23 +632,24 @@ class Recorder(threading.Thread):
                 self.active=None
                 self.events.put(('stage_done',(stage,count)))
         ref=float(int(stage.mag_stage[1:]))/1000.0
-        row=dict.fromkeys(CSV_COLUMNS,'')
-        row.update(kind='L',pose='LIDAR',mag_stage=stage.mag_stage,
-                   host_utc_iso=datetime.now(timezone.utc).isoformat(timespec='milliseconds'),
-                   host_monotonic_s=f'{received:.6f}',phase_accepted=int(accepted),
-                   phase_attempt=attempt,
-                   lidar_reference_m=f'{ref:.3f}',lidar_distance_m=f'{sample.distance_m:.6f}',
-                   lidar_status=sample.status,lidar_signal=sample.signal_strength,
-                   lidar_sensor_time_ms=sample.sensor_time_ms,lidar_module_id=sample.module_id)
-        if frame is not None:
-            self._write_latency_columns(row,frame)
-        # Temperatures are the latest ESP32 observations, asynchronous to LiDAR;
-        # they are *not* measurements of the LiDAR die temperature.
-        if self.last_frame is not None:
-            f=self.last_frame
-            row['mpu_temp_c']=f'{f.temp/340.0+36.53:.3f}' if f.mpu_ok else ''
-            row['bmp_temp_c']=f'{f.bmp_tc100/100:.3f}' if f.bmp_ok else ''
-        writer.writerow([row[c] for c in CSV_COLUMNS])
+        # Persist only valid calibration returns. Invalid ranges remain visible
+        # in the live GUI but do not inflate a calibration session file.
+        if accepted:
+            row=dict.fromkeys(CSV_COLUMNS,'')
+            row.update(kind='L',pose='LIDAR',mag_stage=stage.mag_stage,
+                       host_utc_iso=datetime.now(timezone.utc).isoformat(timespec='milliseconds'),
+                       host_monotonic_s=f'{received:.6f}',phase_accepted=1,
+                       phase_attempt=attempt,
+                       lidar_reference_m=f'{ref:.3f}',lidar_distance_m=f'{sample.distance_m:.6f}',
+                       lidar_status=sample.status,lidar_signal=sample.signal_strength,
+                       lidar_sensor_time_ms=sample.sensor_time_ms,lidar_module_id=sample.module_id)
+            # These are asynchronous board temperatures for session context,
+            # not temperatures measured by the LiDAR module.
+            if self.last_frame is not None:
+                f=self.last_frame
+                row['mpu_temp_c']=f'{f.temp/340.0+36.53:.3f}' if f.mpu_ok else ''
+                row['bmp_temp_c']=f'{f.bmp_tc100/100:.3f}' if f.bmp_ok else ''
+            writer.writerow([row[c] for c in CSV_COLUMNS])
 
     @staticmethod
     def _phase_rejection_reason(f, stage):
@@ -712,7 +715,7 @@ class Recorder(threading.Thread):
                 sensor_time_ms=f.lidar_sensor_time_ms if f.lidar_sensor_time_ms is not None else 0,
                 module_id=f.lidar_module_id if f.lidar_module_id is not None else 0,
             )
-            self._handle_lidar(sample,now,writer,source='telemetry',frame=f)
+            self._handle_lidar(sample,now,writer,source='telemetry')
 
         if f.bmp_new and f.bmp() > 10000:
             if self.p0 is None:
@@ -730,6 +733,8 @@ class Recorder(threading.Thread):
             stage = self.active
             counting = bool(stage and not self.paused and now >= self.phase_start)
             preparing = bool(stage and not self.paused and now < self.phase_start)
+            attempt = self.current_attempt
+            stage_elapsed = now-self.stage_start_time
             valid = False
             if preparing and now-self.last_countdown_emit >= 0.20:
                 self.last_countdown_emit = now
@@ -778,50 +783,53 @@ class Recorder(threading.Thread):
                         f'LiDAR range stage is unusually slow: {self.sample_count}/{stage.target} accepted readings. Check port, status and target setup.'))
             else:
                 count = self.sample_count
-            capture = counting and stage.sensor != 'lidar'
+            # Persist only accepted calibration samples. For slower MAG/BMP
+            # stages this avoids writing every 500 Hz packet between fresh
+            # conversions. Unrelated sensor channels and live timing telemetry
+            # stay in memory. MAG/BMP sample rows intentionally omit packet
+            # sequence IDs because skipped 500 Hz packets are expected there.
+            capture = counting and valid and stage.sensor != 'lidar'
         if capture:
-            a = f.accel() if f.mpu_ok else (math.nan,)*3
-            g = f.gyro() if f.mpu_ok else (math.nan,)*3
-            m = mx if f.mag_ok else (math.nan,)*3
-            mb = mx_board if f.mag_ok else (math.nan,)*3
-            row = [
-                'D', f.seq, f.t_us, stage.pose, int(f.mpu_ok),int(f.bmp_ok),int(f.mag_ok),
-                f.ax,f.ay,f.az,f.gx,f.gy,f.gz,f.temp,
-                *[f'{v:.6f}' for v in a], *[f'{v:.6f}' for v in g],
-                f'{f.temp/340.0+36.53:.3f}' if f.mpu_ok else 'nan',
-                int(f.bmp_new), f.bmp_raw_p, f.bmp_raw_t,
-                f'{f.bmp_tc100/100:.2f}' if f.bmp_ok else 'nan',
-                f'{f.bmp():.2f}' if f.bmp_ok else 'nan',
-                int(f.mag_new), f.mx,f.my,f.mz,
-                *[f'{v:.6f}' for v in m],
-                datetime.now(timezone.utc).isoformat(timespec='milliseconds'),
-                stage.mag_stage, f.late_us, f.missed_ticks,
-                *[f'{v:.6f}' for v in mb],
-                f'{altitude:.4f}', f'{now:.3f}', int(valid),
-                f'{now-self.stage_start_time:.3f}', f.mag_sensor_type,
-                dt_us if dt_valid else '', seq_gap_before, int(dt_valid and dt_us>5000), int(dt_valid and dt_us>10000), self.current_attempt,
-                '',
-                f'{f.lidar_distance_mm/1000.0:.6f}' if f.version>=4 and f.lidar_distance_mm is not None else '',
-                f.lidar_status if f.version>=4 and f.lidar_status is not None else '',
-                f.lidar_signal_strength if f.version>=4 and f.lidar_signal_strength is not None else '',
-                f.lidar_sensor_time_ms if f.version>=4 and f.lidar_sensor_time_ms is not None else '',
-                f.lidar_module_id if f.version>=4 and f.lidar_module_id is not None else '',
-                *[str(value) for value in (f.sensor_age_us or (None,)*4)],
-                *[str(value) for value in (f.service_us or (None,)*4)],
-                str(f.sensor_fresh_mask) if f.version>=4 else '',
-                *[str(value) for value in (f.sensor_error_counts or (None,)*4)],
-                str(f.deadline_overruns) if f.deadline_overruns is not None else '',
-            ]
-            # Empty optional v4 fields stay empty in CSV rather than becoming the
-            # text "None" in captures produced by legacy v2/v3 firmware.
-            row=[ '' if value=='None' else value for value in row ]
-            assert len(row)==len(CSV_COLUMNS), (len(row),len(CSV_COLUMNS))
-            writer.writerow(row)
+            row=dict.fromkeys(CSV_COLUMNS,'')
+            row.update(kind='D',t_us=f.t_us,pose=stage.pose,
+                       host_utc_iso=datetime.now(timezone.utc).isoformat(timespec='milliseconds'),
+                       host_monotonic_s=f'{now:.6f}',phase_accepted=1,
+                       phase_elapsed_s=f'{stage_elapsed:.3f}',phase_attempt=attempt,
+                       mag_stage=stage.mag_stage)
+            if stage.sensor=='mpu':
+                a=f.accel()
+                row.update(seq=f.seq,mpu_ok=1,ax_raw=f.ax,ay_raw=f.ay,az_raw=f.az,
+                           mpu_temp_raw=f.temp,late_us=f.late_us,
+                           missed_ticks=f.missed_ticks,
+                           ax_mps2=f'{a[0]:.6f}',ay_mps2=f'{a[1]:.6f}',az_mps2=f'{a[2]:.6f}',
+                           mpu_temp_c=f'{f.temp/340.0+36.53:.3f}',
+                           observed_packet_dt_us=dt_us if dt_valid else '',
+                           seq_gap_before=seq_gap_before,
+                           gap_gt_5ms=int(dt_valid and dt_us>5000),
+                           gap_gt_10ms=int(dt_valid and dt_us>10000))
+                # Gyro calibration uses the stationary REST phase; face stages
+                # only need accelerometer data and the shared temperature.
+                if stage.pose=='REST':
+                    g=f.gyro()
+                    row.update(gx_raw=f.gx,gy_raw=f.gy,gz_raw=f.gz,
+                               gx_dps=f'{g[0]:.6f}',gy_dps=f'{g[1]:.6f}',gz_dps=f'{g[2]:.6f}')
+            elif stage.sensor=='mag':
+                row.update(mag_ok=1,mag_new=1,mag_sensor_type=f.mag_sensor_type,
+                           mx_raw=f.mx,my_raw=f.my,mz_raw=f.mz,
+                           mx_uT=f'{mx[0]:.6f}',my_uT=f'{mx[1]:.6f}',mz_uT=f'{mx[2]:.6f}',
+                           mag_board_x_uT=f'{mx_board[0]:.6f}',
+                           mag_board_y_uT=f'{mx_board[1]:.6f}',
+                           mag_board_z_uT=f'{mx_board[2]:.6f}')
+            elif stage.sensor=='bmp':
+                row.update(bmp_ok=1,bmp_new=1,bmp_adc_p=f.bmp_raw_p,bmp_adc_t=f.bmp_raw_t,
+                           bmp_temp_c=f'{f.bmp_tc100/100:.2f}',pressure_pa=f'{f.bmp():.2f}')
+            assert len(row)==len(CSV_COLUMNS)
+            writer.writerow([row[c] for c in CSV_COLUMNS])
 
         if now - self.last_emit >= 0.12:
             self.last_emit = now
             # Drop disposable plot snapshots if Tk falls behind; never drop
-            # phase completion or alerts. Raw CSV recording is unaffected.
+            # phase completion or alerts. Calibration sample capture is separate.
             if self.events.qsize() < 60:
                 self.events.put(('plot', {
                 't': now, 'a': f.accel() if f.mpu_ok else (math.nan,)*3,
@@ -841,18 +849,6 @@ class Recorder(threading.Thread):
             }))
                 self.pending_mag_plot = None
 
-    @staticmethod
-    def _write_latency_columns(row,frame):
-        if frame is None or frame.version < 4:
-            return
-        for name,value in zip(('mpu','qmc','bmp','lidar'),frame.sensor_age_us or ()):
-            row[f'sensor_age_{name}_us']=value
-        for name,value in zip(('mpu','qmc','bmp','lidar'),frame.service_us or ()):
-            row[f'service_{name}_us']=value
-        row['sensor_fresh_mask']=frame.sensor_fresh_mask
-        for name,value in zip(('mpu','qmc','bmp','lidar'),frame.sensor_error_counts or ()):
-            row[f'{name}_errors_total']=value
-        row['deadline_overruns_total']=frame.deadline_overruns
 class Application:
     def __init__(self, tk, args, stage_list, axis_name, axis_matrix, output):
         from tkinter import ttk, messagebox
@@ -888,7 +884,8 @@ class Application:
         self.mag_popup=None
         self.mag_popup_last_draw=0.0
         self.info=tk.StringVar(value='Connecting sensor telemetry...')
-        self.saved_info=tk.StringVar(value='Capture file is automatically written during each phase.')
+        self.saved_info=tk.StringVar(value=(
+            'Saves accepted calibration samples only; live packet data stays in the GUI.'))
         self.headline=tk.StringVar(value='')
         self.instruction=tk.StringVar(value='')
         self.progress=tk.StringVar(value='')
