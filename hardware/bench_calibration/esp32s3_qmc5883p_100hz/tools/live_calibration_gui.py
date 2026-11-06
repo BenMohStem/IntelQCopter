@@ -1410,19 +1410,20 @@ class Application:
                                      if group for value in group)
                 if has_measurements:
                     self._set_latency_status(
-                        'Measured firmware v4 per-sensor age/service data received. '
-                        'The 2 ms PID period is not shown as sensor latency. '
-                        f'Fresh mask: 0x{fresh_mask:02X}; cumulative MPU/QMC/BMP/LiDAR errors '
-                        f'{errors}; deadline overruns {deadline_count}.')
+                        f'Measured sensor age/service: MPU={ages[0] if ages and ages[0] is not None else "--"}µs, '
+                        f'QMC={ages[1] if ages and ages[1] is not None else "--"}µs, '
+                        f'BMP={ages[2] if ages and ages[2] is not None else "--"}µs, '
+                        f'LiDAR={ages[3] if ages and ages[3] is not None else "--"}µs; '
+                        f'errors={errors}, deadline_overruns={deadline_count}.')
                 else:
                     self._set_latency_status(
-                        'UNMEASURED: firmware v4 packet has no valid per-sensor age/service fields. '
-                        'No latency values are plotted.')
+                        'NO SENSOR TIMING DATA: firmware does not send per-sensor age/service fields. '
+                        'Age/service plots will remain empty until firmware v4 is installed.')
             frame=self.worker.last_frame
             if frame is not None and frame.version < 4:
                 self._set_latency_status(
-                    f'UNMEASURED: firmware v{frame.version} has no per-sensor age/service metrics. '
-                    'The 2 ms PID schedule and packet interval are not sensor latency; plots stay empty.')
+                    f'NOT MEASURED: firmware v{frame.version} lacks per-sensor age/service fields. '
+                    'The 2 ms control loop period is NOT sensor latency; latency plots stay empty.')
         if self.worker and self.worker.lidar_reader is not None:
             reader=self.worker.lidar_reader
             state=('ERROR: '+reader.error if reader.error else
@@ -1432,7 +1433,12 @@ class Application:
                 self._lidar_last_status=state
                 self.lidar_status_var.set(state)
         elif self.worker and self.worker.lidar_inband_seen:
-            state='TOFSense-F2 Mini samples received from firmware v4 telemetry.'
+            state='LiDAR samples received via ESP32-S3 UART telemetry (firmware v4).'
+            if state != self._lidar_last_status:
+                self._lidar_last_status=state
+                self.lidar_status_var.set(state)
+        elif self.worker and self.worker.lidar_port:
+            state=f'LiDAR port configured: {self.worker.lidar_port} — not yet connected.'
             if state != self._lidar_last_status:
                 self._lidar_last_status=state
                 self.lidar_status_var.set(state)
@@ -1469,6 +1475,7 @@ class Application:
                     s=self.stages[self.stage_index]
                     self.progress.set(f'{payload:,} / {s.target:,} fresh valid samples')
                     self.bar['value']=min(100,100*payload/s.target)
+                    self.root.update_idletasks()
                     self.root.update_idletasks()
             elif kind=='stage_done':
                 s,count=payload

@@ -133,6 +133,9 @@ public:
     uint32_t mpu = 0;
     uint32_t bmp = 0;
     uint32_t mag = 0;
+    uint32_t mpu_service_us = 0xFFFF;
+    uint32_t bmp_service_us = 0xFFFF;
+    uint32_t mag_service_us = 0xFFFF;
   } st;
 
   bool begin() {
@@ -154,6 +157,7 @@ public:
   bool readRegs(uint8_t addr, uint8_t reg, uint8_t *out, size_t count,
                 uint32_t &sc) {
     ++st.total; ++sc;
+    uint32_t start_us = (uint32_t)esp_timer_get_time();
     Wire.beginTransmission(addr);
     if (Wire.write(reg) != 1) { Wire.endTransmission(); ++st.fail; return false; }
     if (Wire.endTransmission(false) != 0) { ++st.fail; return false; }
@@ -163,6 +167,18 @@ public:
       ++st.fail; return false;
     }
     for (size_t i = 0; i < count; ++i) out[i] = static_cast<uint8_t>(Wire.read());
+    uint32_t end_us = (uint32_t)esp_timer_get_time();
+    uint32_t service_us = end_us - start_us;
+    if (addr == MPU_PRIMARY_ADDRESS || addr == MPU_ALTERNATE_ADDRESS) {
+      st.mpu_service_us = service_us;
+      st.mpu++;
+    } else if (addr == BMP_PRIMARY_ADDRESS || addr == BMP_ALTERNATE_ADDRESS) {
+      st.bmp_service_us = service_us;
+      st.bmp++;
+    } else if (addr == MAG_ADDRESS) {
+      st.mag_service_us = service_us;
+      st.mag++;
+    }
     ++st.ok; return true;
   }
 
@@ -429,8 +445,12 @@ bool initBmp280() {
   if (!i2cBus.readRegs(bmp_address, BMP_REG_ID, &id, 1, health.baro_errors) || id != BMP_CHIP_ID)
     return false;
 
-  if (!i2cBus.writeReg(bmp_address, BMP_REG_RESET, 0xB6, health.baro_errors)) return false;
-  delay(10);
+  bmp_driver = new Adafruit_BMP280(&Wire);
+  if (!bmp_driver->begin(bmp_address)) {
+    delete bmp_driver;
+    bmp_driver = nullptr;
+    return false;
+  }
 
   if (!i2cBus.writeReg(bmp_address, BMP_REG_CTRL_MEAS, 0x27, health.baro_errors)) return false;
   if (!i2cBus.writeReg(bmp_address, BMP_REG_CONFIG, 0x04, health.baro_errors)) return false;
@@ -571,7 +591,6 @@ void setup() {
   if (mpu_present) {
     delay(30);
     bmp_present = initBmp280();
-    if (bmp_present) bmp_driver = new Adafruit_BMP280(&Wire);
   }
 
   health.uptime_us = esp_timer_get_time();
