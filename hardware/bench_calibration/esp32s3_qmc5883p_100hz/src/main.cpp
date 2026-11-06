@@ -1,775 +1,697 @@
 /*
- * IntelQCopter — ESP32-S3 Competition Flight Controller
- * ======================================================
+ * IntelQCopter — competition calibration, full MPU/BMP/QMC binary UART.
+ * No Wi-Fi, no external INT/DRDY wiring. MAG freshness uses internal 0x09 status.
  *
- * Target:  ESP32-S3 DevKitC-1 N8, 8 MB flash, no PSRAM
- * Framework: Arduino / PlatformIO
- * Control rate: 500 Hz deterministic (2 ms cycle)
- * UART: 921600 baud, 8N1, 52-byte CRC-protected v3 binary packets
- * I²C: 400 kHz for ALL sensors (MPU6050, BMP280, QMC5883P)
- * Motor outputs: DISABLED during upload, calibration, and diagnostics
+ * Hardware validated previously by the user's measurements:
+ *   MPU6050  0x68: ESP32 SDA=GPIO9, SCL=GPIO8.
+ *   BMP280   0x76: reachable through MPU6050 XDA/XCL I2C bypass.
+ *   QMC5883P 0x2C: chip ID 0x80 on the main I2C bus.
  *
- * LiDAR geometry (TOFSense-F2 Mini, body -Z pointing down):
- *   Mounting offset relative to COM: (0, 0, -0.026658) m
- *   H_COM ≈ (D + 0.026658) × cos(roll) × cos(pitch)
+ * This program never generates motor/ESC output.
+ *
+ * Architecture:
+ *   Arduino loop():  500 Hz target, absolute 2,000 us deadlines.
+ *   Sensor reads:    MPU every cycle, QMC 200 Hz low-OSR, BMP ~10 Hz.
+ *   Transport:       identical 52-byte CRC-protected v3 packets over
+ *                    USB serial and optionally Wi-Fi UDP.
+ *   Wi-Fi task:      runs on core 0, owns all UDP calls, NEVER touches I2C.
+ *   UART: CH343 921600 baud, 52-byte CRC-framed packets.
+ *
+ * Note: an attempted host read is NOT proof of a fresh physical ADC sample.
+ * Record actual timestamps and validate acquisition jitter offline.
  */
 
 #include <Arduino.h>
 #include <Wire.h>
 #include <Adafruit_BMP280.h>
 #include <esp_timer.h>
-#include <esp_system.h>
 #include <cmath>
 #include <cstdint>
 #include <cstring>
 #include <climits>
 #include <initializer_list>
 
-// ============================================================================
-// CONFIGURATION CONSTANTS (namespace cfg)
-// ============================================================================
+#ifndef IQ_WIFI_ENABLED
+#define IQ_WIFI_ENABLED 0
+#endif
+#if IQ_WIFI_ENABLED != 0
+// Wi-Fi calibration enabled — UDP telemetry on IntelQCopter-Cal AP
+#endif
+#ifndef IQ_I2C_HZ
+#define IQ_I2C_HZ 400000
+#endif
+#ifndef IQ_MAG_CONTROL1
+#define IQ_MAG_CONTROL1 0x3D
+#endif
 
-namespace cfg {
+#if IQ_WIFI_ENABLED
+#include <WiFi.h>
+#include <WiFiUdp.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/queue.h>
+#include <freertos/task.h>
+#endif
 
+namespace iq {
+namespace config {
 constexpr uint8_t SDA_PIN = 9;
 constexpr uint8_t SCL_PIN = 8;
-constexpr uint32_t I2C_HZ = 400000;
-
+constexpr uint8_t MOTOR_PINS[4] = {12, 11, 14, 13}; // FL, FR, RR, RL: INPUT ONLY
 constexpr uint8_t MPU_PRIMARY_ADDRESS = 0x68;
 constexpr uint8_t MPU_ALTERNATE_ADDRESS = 0x69;
 constexpr uint8_t BMP_PRIMARY_ADDRESS = 0x76;
 constexpr uint8_t BMP_ALTERNATE_ADDRESS = 0x77;
-constexpr uint8_t MAG_ADDRESS = 0x2C;
-
-constexpr uint8_t MOTOR_PINS[4] = {12, 11, 14, 13};
-constexpr uint8_t LIDAR_RX = 1;
-constexpr uint8_t LIDAR_TX = 2;
-
-constexpr float LIDAR_OFFSET_Z_M = -0.026658f;
-constexpr float LIDAR_OFFSET_X_M = 0.0f;
-constexpr float LIDAR_OFFSET_Y_M = 0.0f;
-constexpr float LIDAR_MAX_RANGE_M = 12.0f;
-constexpr float LIDAR_MIN_RANGE_M = 0.3f;
-constexpr float LIDAR_MAX_TILT_RAD = 0.5f;
-
-constexpr uint32_t CONTROL_PERIOD_US = 2000;
-constexpr uint32_t IMU_PERIOD_US = 2000;
-constexpr uint32_t MAG_PERIOD_US = 5000;
-constexpr uint32_t BMP_PERIOD_US = 6000;
-constexpr uint32_t LIDAR_PERIOD_US = 20000;
+constexpr uint8_t MAG_ADDRESS = 0x2C; // QMC5883P, not HMC5883L or QMC5883L
+constexpr uint32_t IMU_PERIOD_US = 2000; // 500 Hz scheduling target
+constexpr uint32_t BMP_PERIOD_US = 5000; // 200 Hz max-speed (user-requested faster acquisition)
+constexpr uint32_t MAG_PERIOD_US = 2000; // Poll internal DRDY at 500 Hz ODR target
 constexpr uint32_t MAG_STALE_MS = 1000;
-constexpr uint32_t CONTROLLER_TIMEOUT_MS = 250;
-
-constexpr uint32_t SERIAL_BAUD = 921600;
+constexpr uint32_t MAG_CONFIG_RETRY_MS = 1000;
+constexpr uint8_t MAG_MAX_CONFIG_ATTEMPTS = 5;
+constexpr uint32_t SERIAL_BAUD = 921600; // CH343 UART, binary v3 packets
 constexpr size_t PACKET_SIZE = 52;
+constexpr uint32_t I2C_FAST_HZ = 400000; // 400 kHz for MPU/BMP reads (MPU6050/BMP280 support it)
+constexpr uint32_t I2C_SLOW_HZ = 100000; // 100 kHz for QMC reads (QMC5883P fails at 400 kHz on this board)
 
-constexpr uint8_t MPU_REG_PWR_MGMT_1    = 0x6B;
-constexpr uint8_t MPU_REG_PWR_MGMT_2    = 0x6C;
-constexpr uint8_t MPU_REG_CONFIG        = 0x1A;
-constexpr uint8_t MPU_REG_GYRO_CONFIG   = 0x1B;
-constexpr uint8_t MPU_REG_ACCEL_CONFIG  = 0x1C;
-constexpr uint8_t MPU_REG_ACCEL_CONFIG2 = 0x1D;
-constexpr uint8_t MPU_REG_FIFO_EN       = 0x23;
-constexpr uint8_t MPU_REG_INT_PIN_CFG   = 0x37;
-constexpr uint8_t MPU_REG_INT_ENABLE    = 0x38;
-constexpr uint8_t MPU_REG_USER_CTRL     = 0x6A;
-constexpr uint8_t MPU_REG_FIFO_COUNT_H  = 0x72;
-constexpr uint8_t MPU_REG_FIFO_R_W      = 0x74;
-constexpr uint8_t MPU_REG_WHO_AM_I      = 0x75;
+// QMC5883P normal-mode 200 Hz low-OSR profile (ID 0x80, C1 0x3D, C2 0x08).
+// Verified working: 30 s isolated run measured 188.84 fresh samples/s; full-system
+// ~160 Hz fresh at 100 kHz I2C. C1 0x3D selects ODR 200 Hz / OSR1=1 / OSR2=1.
+// C2 0x08: +/-8 gauss + set/reset. 0x29 = 0x06 XYZ sign.
+// I2C bus stays at 100 kHz for verified stable operation.
+// All QMC configuration is non-blocking: setup() must always return so the
+// streaming loop starts even if QMC readback is slow.
+// Readback is intentionally skipped — updateMagnetometer() polls 0x09 DRDY.
+constexpr uint8_t MAG_CONTROL1 = static_cast<uint8_t>(IQ_MAG_CONTROL1);
+constexpr uint8_t MAG_CONTROL2 = 0x08;
+constexpr uint8_t MAG_XYZ_SIGN = 0x06;
 
-constexpr uint8_t MPU_PWR_MGMT_1_RESET      = 0x80;
-constexpr uint8_t MPU_PWR_MGMT_1_CLKSEL     = 0x01;
-constexpr uint8_t MPU_PWR_MGMT_1_TEMP_DIS   = 0x08;
-constexpr uint8_t MPU_DLPF_188HZ            = 0x01;
-constexpr uint8_t MPU_GYRO_FS_500           = 0x08;
-constexpr uint8_t MPU_ACCEL_FS_8G           = 0x10;
-constexpr uint8_t MPU_FIFO_TEMP_EN          = 0x80;
-constexpr uint8_t MPU_FIFO_XG_EN            = 0x40;
-constexpr uint8_t MPU_FIFO_YG_EN            = 0x20;
-constexpr uint8_t MPU_FIFO_ZG_EN            = 0x10;
-constexpr uint8_t MPU_FIFO_ACCEL_EN         = 0x08;
-constexpr uint8_t MPU_USER_CTRL_FIFO_EN     = 0x40;
-constexpr uint8_t MPU_USER_CTRL_FIFO_RESET  = 0x04;
-constexpr uint8_t MPU_INT_PIN_CFG_BYPASS_EN = 0x02;
-constexpr uint8_t MPU_INT_ENABLE_RAW_RDY_EN = 0x01;
+#if IQ_WIFI_ENABLED
+constexpr char WIFI_AP_NAME[] = "IntelQCopter-Cal";
+// Replace in your private copy before wireless use; >= 8 characters.
+constexpr char WIFI_PASSWORD[] = "IntelQCopter2026";
+constexpr uint16_t WIFI_CONTROL_PORT = 19006;
+constexpr size_t UDP_BATCH_MAX = 16;
+#endif
+} // namespace config
 
-constexpr uint8_t QMC_REG_CHIP_ID   = 0x00;
-constexpr uint8_t QMC_REG_CTRL1     = 0x0A;
-constexpr uint8_t QMC_REG_CTRL2     = 0x0B;
-constexpr uint8_t QMC_REG_SET_PERIOD= 0x0C;
-constexpr uint8_t QMC_REG_XYZ_SIGN  = 0x29;
-constexpr uint8_t QMC_REG_DATA_XL   = 0x01;
-constexpr uint8_t QMC_REG_STATUS    = 0x09;
+// ---------------------------- I2C access ----------------------------------
+// Wire is owned by this acquisition task; the Wi-Fi task never calls it.
+bool i2cPresent(uint8_t address) {
+  Wire.beginTransmission(address);
+  return Wire.endTransmission() == 0;
+}
 
-constexpr uint8_t QMC_CHIP_ID       = 0x80;
-constexpr uint8_t QMC_CTRL1_200HZ   = 0x3D;
-constexpr uint8_t QMC_CTRL2_8GAUSS  = 0x08;
-constexpr uint8_t QMC_XYZ_SIGN_VAL  = 0x06;
+bool i2cWrite(uint8_t address, uint8_t reg, uint8_t value) {
+  Wire.beginTransmission(address);
+  Wire.write(reg);
+  Wire.write(value);
+  return Wire.endTransmission() == 0;
+}
 
-constexpr uint8_t BMP_REG_ID           = 0xD0;
-constexpr uint8_t BMP_REG_RESET        = 0xE0;
-constexpr uint8_t BMP_REG_CTRL_MEAS    = 0xF4;
-constexpr uint8_t BMP_REG_CONFIG       = 0xF5;
-constexpr uint8_t BMP_REG_PRESSURE_MSB = 0xF7;
-
-constexpr uint8_t BMP_CHIP_ID          = 0x58;
-constexpr uint8_t BMP_CTRL_MEAS_X1X1   = 0x27;
-constexpr uint8_t BMP_CONFIG_IIR2_0P5MS= 0x04;
-
-constexpr uint8_t XBOX_BTN_LB   = 1u << 0;
-constexpr uint8_t XBOX_BTN_RB   = 1u << 1;
-constexpr uint8_t XBOX_BTN_NORTH= 1u << 2;
-constexpr uint8_t XBOX_BTN_EAST = 1u << 3;
-constexpr uint8_t XBOX_BTN_SOUTH= 1u << 4;
-constexpr uint8_t XBOX_BTN_WEST = 1u << 5;
-
-constexpr uint8_t ARM_BUTTONS = XBOX_BTN_LB | XBOX_BTN_RB | XBOX_BTN_NORTH;
-
-constexpr float FC_ARMED_IDLE_FRACTION = 0.10f;
-constexpr float FC_NORMAL_MOTOR_CEILING = 0.45f;
-constexpr float FC_BOOST_MOTOR_CEILING = 0.65f;
-constexpr float FC_MAX_VERTICAL_SPEED_MPS = 2.0f;
-constexpr float FC_MAX_CLIMB_MPS = 1.5f;
-constexpr float FC_MAX_DESCENT_MPS = 1.0f;
-
-constexpr float MAX_ROLL_DEG = 35.0f;
-constexpr float MAX_PITCH_DEG = 35.0f;
-constexpr float MAX_YAW_RATE_DPS = 180.0f;
-
-} // namespace cfg
-
-// ============================================================================
-// DATA TYPES (global scope)
-// ============================================================================
-
-struct CalVector3 { float x, y, z; };
-struct CalMatrix3x3 { float m[3][3]; };
-
-struct AccelCalibration { CalVector3 bias; CalMatrix3x3 scale; float rms_mps2; bool valid; };
-struct MagCalibration { CalVector3 hard_iron; CalMatrix3x3 soft_iron; float radius_mean_uT; bool valid; };
-struct BaroCalibration { float ground_pressure_pa, ref_var_pa2, meas_var_pa2; bool valid; };
-struct GyroCalibration { CalVector3 bias_dps; float var_dps2[3]; bool valid; };
-
-struct ImuSample {
-  bool valid=false, fresh=false; uint32_t ts=0;
-  int16_t accel_raw[3]={}, gyro_raw[3]={}, temp_raw=0;
-  float accel[3]={}, gyro[3]={}, temp_c=0.0f;
-  uint32_t fifo_count=0, overflows=0;
-};
-struct MagSample {
-  bool valid=false, fresh=false; uint32_t ts=0;
-  int16_t raw[3]={}; float cal[3]={}; uint8_t status=0;
-};
-struct BaroSample {
-  bool valid=false, fresh=false; uint32_t ts=0;
-  uint32_t raw_p=0, raw_t=0;
-  float temp_c=0.0f, press_pa=0.0f;
-  float height_m=0.0f, height_sigma_m=0.0f;
-};
-struct LidarSample {
-  bool valid=false, fresh=false; uint32_t ts=0;
-  float dist_m=0.0f, qual=0.0f; bool tilt_ok=false;
-  float height_corr_m=0.0f;
-};
-
-struct SysHealth {
-  uint32_t loops=0, missed=0, imu_err=0, mag_err=0, baro_err=0, lidar_err=0;
-  uint32_t ctrl_loss=0, arm_att=0, disarms=0, failsafes=0, ser_drops=0;
-  uint32_t reset_reason=0, uptime_us=0;
-};
-
-struct CtrlState {
-  bool armed=false, disarmed=true, failsafe=false;
-  bool ctrl_connected=false;
-  uint32_t last_ctrl_ms=0, arm_ms=0, disarm_ms=0;
-  float hover=0.50f, baro_zero=0.0f;
-  bool baro_zeroed=false, lt_red=0.0f, boost=0.0f;
-  float roll_ref=0, pitch_ref=0, yaw_ref=0;
-  float alt_ref=0; bool alt_ref_init=false;
-};
-
-struct PilotCmd {
-  bool valid=false; uint32_t ts=0; uint8_t btn=0;
-  float roll=0, pitch=0, yaw=0, thr=0, rt=0, lt=0;
-};
-
-struct MotorOut {
-  float m[4]={0,0,0,0}; bool armed=false, fault=false, fs=false;
-};
-
-// ============================================================================
-// I²C TRANSACTION MANAGER
-// ============================================================================
-
-class I2cMgr {
-public:
-  struct Stats {
-    uint32_t total=0, ok=0, fail=0, to=0, rec=0;
-    uint32_t mpu=0, bmp=0, mag=0;
-    uint32_t max_us=0, tot_us=0;
-  } st;
-
-  bool begin() {
-    Wire.begin(cfg::SDA_PIN, cfg::SCL_PIN);
-    Wire.setClock(cfg::I2C_HZ);
-    Wire.setTimeOut(10);
-    return true;
+bool i2cRead(uint8_t address, uint8_t reg, uint8_t *output, size_t count) {
+  Wire.beginTransmission(address);
+  Wire.write(reg);
+  if (Wire.endTransmission(false) != 0) return false;
+  if (Wire.requestFrom(static_cast<int>(address), static_cast<int>(count)) !=
+      static_cast<int>(count)) {
+    while (Wire.available()) (void)Wire.read();
+    return false;
   }
-  bool wr(uint8_t a, uint8_t r, uint8_t v) {
-    uint32_t t=micros(); bool o=i2c_w(a,r,&v,1); rec(o,micros()-t); return o;
+  for (size_t i = 0; i < count; ++i)
+    output[i] = static_cast<uint8_t>(Wire.read());
+  return true;
+}
+
+bool i2cReadByte(uint8_t address, uint8_t reg, uint8_t &value) {
+  return i2cRead(address, reg, &value, 1);
+}
+
+// QMC-specific access uses STOP+START between the register-pointer write and
+// read. The integrated captures reported ESP32 Wire repeated-START failures
+// after QMC startup (endTransmission(false) / i2cWriteReadNonStop error -1).
+// Keep the normal repeated-START helper for MPU/BMP; this changes only the QMC
+// transaction method. A successful bus read is still not a fresh conversion:
+// updateMagnetometer() requires the internal status register's DRDY bit.
+bool i2cReadQmc(uint8_t reg, uint8_t *output, size_t count) {
+  Wire.beginTransmission(config::MAG_ADDRESS);
+  if (Wire.write(reg) != 1) {
+    (void)Wire.endTransmission(true);
+    return false;
   }
-  bool rd(uint8_t a, uint8_t r, uint8_t *o, size_t n) {
-    uint32_t t=micros(); bool ok=i2c_r(a,r,o,n); rec(ok,micros()-t); return ok;
+  if (Wire.endTransmission(true) != 0) {
+    return false;
   }
-  bool rd8(uint8_t a, uint8_t r, uint8_t &v){ return rd(r,a,&v,1); }
-  bool present(uint8_t a){ Wire.beginTransmission(a); return Wire.endTransmission()==0; }
-  bool recover() {
-    st.rec++;
-    pinMode(cfg::SCL_PIN, OUTPUT); pinMode(cfg::SDA_PIN, OUTPUT);
-    for(int i=0;i<9;i++){digitalWrite(cfg::SCL_PIN,LOW);delayMicroseconds(5);digitalWrite(cfg::SCL_PIN,HIGH);delayMicroseconds(5);}
-    digitalWrite(cfg::SDA_PIN,LOW);delayMicroseconds(5);digitalWrite(cfg::SCL_PIN,LOW);delayMicroseconds(5);
-    digitalWrite(cfg::SDA_PIN,HIGH);delayMicroseconds(5);
-    Wire.begin(cfg::SDA_PIN,cfg::SCL_PIN); Wire.setClock(cfg::I2C_HZ); Wire.setTimeOut(10);
-    return true;
+  if (Wire.requestFrom(static_cast<int>(config::MAG_ADDRESS),
+                       static_cast<int>(count)) != static_cast<int>(count)) {
+    while (Wire.available() > 0) (void)Wire.read();
+    return false;
   }
-private:
-  bool i2c_w(uint8_t a,uint8_t r,const uint8_t *v,size_t n){
-    Wire.beginTransmission(a);
-    if(Wire.write(r)!=1){Wire.endTransmission();return false;}
-    for(size_t i=0;i<n;i++) if(Wire.write(v[i])!=1){Wire.endTransmission();return false;}
-    return Wire.endTransmission()==0;
+  for (size_t i = 0; i < count; ++i) {
+    if (Wire.available() <= 0) return false;
+    output[i] = static_cast<uint8_t>(Wire.read());
   }
-  bool i2c_r(uint8_t a,uint8_t r,uint8_t *o,size_t n){
-    Wire.beginTransmission(a);
-    if(Wire.write(r)!=1){Wire.endTransmission();return false;}
-    if(Wire.endTransmission(false)!=0)return false;
-    int got=Wire.requestFrom((int)a,(int)n);
-    if(got!=(int)n){while(Wire.available())(void)Wire.read();return false;}
-    for(size_t i=0;i<n;i++) o[i]=static_cast<uint8_t>(Wire.read());
-    return true;
-  }
-  void rec(bool ok,uint32_t us){ st.total++; if(ok)st.ok++;else st.fail++;
-    if(us>st.max_us)st.max_us=us; st.tot_us+=us; }
+  return true;
+}
+bool i2cReadQmcByte(uint8_t reg, uint8_t &value) {
+  return i2cReadQmc(reg, &value, 1);
+}
+
+// Temporary I2C clock switching: MPU6050 and BMP280 work at 400 kHz,
+// but QMC5883P fails at 400 kHz on this board (wiring/pull-up limitation).
+// Switch to fast clock before MPU/BMP reads, back to slow for QMC reads.
+inline void i2cSetClockFast() { Wire.setClock(config::I2C_FAST_HZ); }
+inline void i2cSetClockSlow() { Wire.setClock(config::I2C_SLOW_HZ); }
+
+int16_t signedBigEndian(const uint8_t *b) {
+  return static_cast<int16_t>((uint16_t(b[0]) << 8) | b[1]);
+}
+
+int16_t signedLittleEndian(const uint8_t *b) {
+  return static_cast<int16_t>((uint16_t(b[1]) << 8) | b[0]);
+}
+
+// ------------------------------ Measurements -------------------------------
+struct ImuReading {
+  bool valid = false;
+  int16_t accel[3] = {};
+  int16_t gyro[3] = {};
+  int16_t temperature = 0;
 };
 
-// ============================================================================
-// QUATERNION
-// ============================================================================
-
-struct Quat { float w,x,y,z;
-  Quat():w(1),x(0),y(0),z(0){}
-  void norm(){float n=sqrtf(w*w+x*x+y*y+z*z);
-    if(n>0.001f){w/=n;x/=n;y/=n;z/=n;}else{w=1;x=0;y=0;z=0;}}
-  void euler(float&r,float&p,float&y) const {
-    float sr=2*(w*x+y*y), cr=1-2*(x*x+y*y); r=atan2f(sr,cr)*57.2957795f;
-    float sp=2*(w*y-z*x);
-    p=fabsf(sp)>=1.0f?copysignf(90.0f,sp):asinf(sp)*57.2957795f;
-    float sy=2*(w*z+x*y), cy=1-2*(y*y+z*z); y=atan2f(sy,cy)*57.2957795f;
-  }
+struct PressureReading {
+  bool valid = false;
+  bool fresh = false;
+  uint32_t rawPressure = 0;
+  uint32_t rawTemperature = 0;
+  int16_t temperatureCentiC = 0;
+  uint32_t pressureCentiPa = 0;
 };
 
-// ============================================================================
-// ATTITUDE ESTIMATOR
-// ============================================================================
+struct MagneticReading {
+  bool valid = false;
+  bool fresh = false;
+  int16_t axes[3] = {};
+};
 
-struct AttEst {
-  Quat q; float gb[3]={0,0,0};
-  float r=0,p=0,y=0, gr=0, gp=0, gy=0;
-  bool initd=false; uint32_t last=0;
-  float kr=0.5f, kp=0.5f, ky=0.1f;
+ImuReading currentImu;
+PressureReading currentPressure;
+MagneticReading currentMagnetic;
+Adafruit_BMP280 bmp(&Wire);
+uint8_t mpuAddress = 0;
+uint8_t bmpAddress = 0;
+bool mpuPresent = false;
+bool bmpPresent = false;
+bool magneticConfigured = false;
 
-  void init(const float*acc){
-    r=atan2f(acc[1],acc[2])*57.2957795f;
-    p=atan2f(-acc[0],sqrtf(acc[1]*acc[1]+acc[2]*acc[2]))*57.2957795f;
-    float cr=cosf(r*0.0174532925f), sr=sinf(r*0.0174532925f);
-    float cp=cosf(p*0.0174532925f), sp=sinf(p*0.0174532925f);
-    q.w=cr*cp; q.x=sr*cp; q.y=cr*sp; q.z=-sr*sp; q.norm();
-    r_deg=r; p_deg=p; y_deg=0; initd=true; last=esp_timer_get_time();
+// Diagnostic counters are never interpreted as successful measurements.
+struct MagnetometerHealth {
+  uint32_t attempts = 0;
+  uint32_t failures = 0;
+  uint32_t successfulConfigurations = 0;
+  uint32_t recoveryConfigurations = 0;
+  uint32_t i2cFailures = 0;
+  uint32_t noFreshData = 0;
+  uint32_t statusReadFails = 0;
+  uint32_t notReady = 0;
+  uint32_t overflows = 0;
+  uint32_t xyzReadFails = 0;
+  uint32_t freshConversions = 0;
+  uint8_t lastControl1 = 0;
+  uint8_t lastControl2 = 0;
+  // These timestamps have distinct meanings: a successful register setup is
+  // not a magnetic conversion and must never make the sample appear fresh.
+  uint32_t lastFreshSampleMs = 0;
+  uint32_t lastAttemptMs = 0;
+  uint32_t identicalReads = 0;
+  uint32_t rawReadSuccess = 0;
+  uint16_t consecutiveStatusFailures = 0;
+};
+MagnetometerHealth magHealth;
+
+uint32_t lastPressurePollUs = 0;
+uint32_t lastMagneticPollUs = 0;
+
+// ----------------------------- MPU6050 -------------------------------------
+bool initializeMpu6050() {
+  mpuAddress = i2cPresent(config::MPU_PRIMARY_ADDRESS)
+      ? config::MPU_PRIMARY_ADDRESS
+      : (i2cPresent(config::MPU_ALTERNATE_ADDRESS)
+            ? config::MPU_ALTERNATE_ADDRESS : 0);
+  if (!mpuAddress) return false;
+  uint8_t id = 0;
+  if (!i2cReadByte(mpuAddress, 0x75, id) || id != 0x68) return false;
+  if (!i2cWrite(mpuAddress, 0x6B, 0x01)) return false; // Wake, gyro PLL
+  delay(100);
+  bool ok = i2cWrite(mpuAddress, 0x6C, 0x00); // Enable all 6 axes
+  ok &= i2cWrite(mpuAddress, 0x1A, 0x03);      // DLPF 42/44 Hz
+  ok &= i2cWrite(mpuAddress, 0x19, 0x01);      // 1 kHz / 2 = 500 Hz
+  ok &= i2cWrite(mpuAddress, 0x1B, 0x00);      // Gyro ±250 deg/s
+  ok &= i2cWrite(mpuAddress, 0x1C, 0x00);      // Accel ±2g
+  ok &= i2cWrite(mpuAddress, 0x23, 0x00);      // FIFO disabled
+  ok &= i2cWrite(mpuAddress, 0x38, 0x00);      // Polled data
+
+  // INT_PIN_CFG (0x37) is an MPU register that enables I2C bypass.
+  // It does NOT require wiring an external INT or DRDY pin.
+  // Allow ESP32 to access BMP280 through MPU's auxiliary XDA/XCL pins.
+  uint8_t userControl = 0, interruptPins = 0;
+  if (!i2cReadByte(mpuAddress, 0x6A, userControl) ||
+      !i2cReadByte(mpuAddress, 0x37, interruptPins)) return false;
+  ok &= i2cWrite(mpuAddress, 0x6A, userControl & uint8_t(~0x60));
+  ok &= i2cWrite(mpuAddress, 0x37, interruptPins | 0x02);
+  uint8_t divider = 0, filter = 0;
+  ok &= i2cReadByte(mpuAddress, 0x6A, userControl);
+  ok &= i2cReadByte(mpuAddress, 0x37, interruptPins);
+  ok &= i2cReadByte(mpuAddress, 0x19, divider);
+  ok &= i2cReadByte(mpuAddress, 0x1A, filter);
+  return ok && !(userControl & 0x20) && (interruptPins & 0x02) &&
+      divider == 1 && (filter & 0x07) == 3;
+}
+
+ImuReading sampleImu6050() {
+  ImuReading result;
+  if (!mpuPresent) return result;
+  i2cSetClockFast(); // MPU6050 supports 400 kHz I2C
+  uint8_t data[14];
+  if (!i2cRead(mpuAddress, 0x3B, data, sizeof(data))) {
+    i2cSetClockSlow();
+    return result;
   }
-  float r_deg=0,p_deg=0,y_deg=0;
+  i2cSetClockSlow(); // Restore slow clock for QMC compatibility
+  for (int i = 0; i < 3; ++i) {
+    result.accel[i] = signedBigEndian(data + 2*i);
+    result.gyro[i] = signedBigEndian(data + 8 + 2*i);
+  }
+  result.temperature = signedBigEndian(data + 6);
+  result.valid = true;
+  return result;
+}
 
-  void update(const float*g,const float*acc,const float*mag,bool m_ok,float dt){
-    if(!initd)return;
-    float gx=g[0]-gb[0], gy=g[1]-gb[1], gz=g[2]-gb[2];
-    float h=dt*0.5f;
-    float qx=gx*0.0174532925f*h, qy=gy*0.0174532925f*h, qz=gz*0.0174532925f*h;
-    float nq=sqrtf(qx*qx+qy*qy+qz*qz);
-    Quat qd; qd.w=cosf(nq);
-    if(nq>0.001f){float s=sinf(nq)/nq; qd.x=qx*s; qd.y=qy*s; qd.z=qz*s;}
-    Quat qn;
-    qn.w=q.w*qd.w-q.x*qd.x-q.y*qd.y-q.z*qd.z;
-    qn.x=q.w*qd.x+q.x*qd.w+q.y*qd.z-q.z*qd.y;
-    qn.y=q.w*qd.y-q.x*qd.z+q.y*qd.w+q.z*qd.x;
-    qn.z=q.w*qd.z+q.x*qd.y-q.y*qd.x+q.z*qd.w;
-    q=qn; q.norm();
+// ------------------------------ BMP280 -------------------------------------
+bool initializeBmp280() {
+  bmpAddress = i2cPresent(config::BMP_PRIMARY_ADDRESS)
+      ? config::BMP_PRIMARY_ADDRESS
+      : (i2cPresent(config::BMP_ALTERNATE_ADDRESS)
+            ? config::BMP_ALTERNATE_ADDRESS : 0);
+  if (!bmpAddress) return false;
+  uint8_t id = 0;
+  if (!i2cReadByte(bmpAddress, 0xD0, id) || id != 0x58) return false;
+  if (!bmp.begin(bmpAddress)) return false;
+  bmp.setSampling(Adafruit_BMP280::MODE_NORMAL,
+                  Adafruit_BMP280::SAMPLING_X2,
+                  Adafruit_BMP280::SAMPLING_X1,    // X1 pressure (0.45 ms) for 200 Hz
+                  Adafruit_BMP280::FILTER_X4,
+                  Adafruit_BMP280::STANDBY_MS_63);
+  return true;
+}
 
-    if(acc){
-      float n=sqrtf(acc[0]*acc[0]+acc[1]*acc[1]+acc[2]*acc[2]);
-      if(n>0.5f&&n<2.0f){
-        float ax=acc[0]/n,ay=acc[1]/n,az=acc[2]/n;
-        float vx=2*(q.x*q.z-q.w*q.y), vy=2*(q.y*q.z+q.w*q.x), vz=q.w*q.w-q.x*q.x-q.y*q.y+q.z*q.z;
-        float ex=ay*vz-az*vy, ey=az*vx-ax*vz, ez=ax*vy-ay*vx;
-        gx+=kr*ex; gy+=kr*ey; gz+=kr*ez;
+void updatePressure(uint32_t nowUs) {
+  currentPressure.fresh = false;
+  if (!bmpPresent || uint32_t(nowUs-lastPressurePollUs) < config::BMP_PERIOD_US)
+    return;
+  lastPressurePollUs = nowUs;
+  i2cSetClockFast(); // BMP280 supports 400 kHz I2C
+  uint8_t registers[6];
+  if (!i2cRead(bmpAddress, 0xF7, registers, sizeof(registers))) {
+    i2cSetClockSlow();
+    currentPressure.valid = false;
+    return;
+  }
+  const float temperature = bmp.readTemperature();
+  const float pressure = bmp.readPressure();
+  i2cSetClockSlow(); // Restore slow clock for QMC compatibility
+  if (!std::isfinite(temperature) || !std::isfinite(pressure) ||
+      temperature < -100.f || temperature > 100.f ||
+      pressure < 10000.f || pressure > 120000.f) {
+    currentPressure.valid = false;
+    return;
+  }
+  currentPressure.rawPressure = (uint32_t(registers[0]) << 12) |
+      (uint32_t(registers[1]) << 4) | (registers[2] >> 4);
+  currentPressure.rawTemperature = (uint32_t(registers[3]) << 12) |
+      (uint32_t(registers[4]) << 4) | (registers[5] >> 4);
+  currentPressure.temperatureCentiC = int16_t(lroundf(temperature*100.f));
+  currentPressure.pressureCentiPa = uint32_t(lroundf(pressure*100.f));
+  currentPressure.valid = true;
+  currentPressure.fresh = true;
+}
+
+// ----------------------------- QMC5883P ------------------------------------
+// Register map verified against QST's datasheet and the Betaflight driver.
+// ------------------------------ QMC5883P ------------------------------------
+// QMC5883P — 400 kHz I2C attempt (user requested maximum speed).
+// QMC5883P datasheet Rev E lists 400 kHz fast mode. On THIS board the QMC is
+// an external breakout module whose wiring/pull-ups may not support 400 kHz.
+// Strategy:
+//   - configureQmc5883p(): configure QMC at 100 kHz ONLY (proven ~167 Hz fresh).
+//     setup() ALWAYS returns — no 400 kHz operations here that could hang boot.
+//   - updateMagnetometer(): try status read at 400 kHz first; if QMC responds,
+//     try XYZ read at 400 kHz. If either fails at 400 kHz, fall back to 100 kHz.
+//     Wire.setTimeOut(30) prevents indefinite hangs on 400 kHz reads.
+// Readback is intentionally skipped — updateMagnetometer() polls 0x09 DRDY.
+bool configureQmc5883p() {
+  ++magHealth.attempts;
+  magHealth.lastAttemptMs = millis();
+  magneticConfigured = false;
+  currentMagnetic.valid = false;
+  currentMagnetic.fresh = false;
+
+  // Allow QMC power-on/boot to settle before any bus transaction.
+  delay(40);
+
+  // QMC configuration ALWAYS at 100 kHz — verified stable on this hardware.
+  i2cSetClockSlow();
+
+  uint8_t id = 0;
+  if (!i2cReadQmcByte(0x00, id) || id != 0x80) {
+    ++magHealth.failures;
+    return false; // QMC not present at 100 kHz — board still streams UART
+  }
+
+  // v13 verified order/timing: suspend -> wait 20 ms -> sign -> ctrl2 -> ctrl1.
+  if (!i2cWrite(config::MAG_ADDRESS, 0x0A, 0x00)) {
+    ++magHealth.failures;
+    return false;
+  }
+  delay(20);
+  const bool signOk = i2cWrite(config::MAG_ADDRESS, 0x29, config::MAG_XYZ_SIGN);
+  const bool ctrl2Ok = i2cWrite(config::MAG_ADDRESS, 0x0B, config::MAG_CONTROL2);
+  const bool ctrl1Ok = i2cWrite(config::MAG_ADDRESS, 0x0A, config::MAG_CONTROL1);
+  if (!(signOk && ctrl2Ok && ctrl1Ok)) {
+    ++magHealth.failures;
+    return false;
+  }
+
+  magneticConfigured = true;
+  ++magHealth.successfulConfigurations;
+  lastMagneticPollUs = micros();
+  return true;
+}
+
+void updateMagnetometer(uint32_t nowUs) {
+  currentMagnetic.fresh = false;
+  const uint32_t nowMs = millis();
+  const bool noRecentSample = magHealth.freshConversions == 0 ||
+      uint32_t(nowMs - magHealth.lastFreshSampleMs) >= config::MAG_STALE_MS;
+  if ((!magneticConfigured || noRecentSample) &&
+      magHealth.attempts < config::MAG_MAX_CONFIG_ATTEMPTS &&
+      uint32_t(nowMs - magHealth.lastAttemptMs) >= config::MAG_CONFIG_RETRY_MS) {
+    // Startup can race a marginal sensor rail, and the QMC can lose its mode
+    // while the ESP32 remains alive. Retry configuration at a bounded rate;
+    // never hammer the shared bus on each 500 Hz scheduler tick.
+    if (magneticConfigured) ++magHealth.recoveryConfigurations;
+    (void)configureQmc5883p();
+  }
+  if (!magneticConfigured) { currentMagnetic.valid = false; return; }
+  // On complete MAG I2C loss, stop saturating the shared sensor bus.
+  // Normal operation still polls 0x09 at 200Hz for a 100Hz conversion rate.
+  const uint32_t pollUs = magHealth.consecutiveStatusFailures >= 8 ? 100000U :
+                          config::MAG_PERIOD_US;
+  if (uint32_t(nowUs - lastMagneticPollUs) < pollUs) return;
+  lastMagneticPollUs = nowUs;
+
+  // QMC reads: try 400 kHz first (user-requested maximum speed).
+  // QMC5883P datasheet Rev E lists 400 kHz fast mode — try it here with
+  // timeout fallback to 100 kHz if QMC doesn't respond at 400 kHz.
+  i2cSetClockFast();
+  uint8_t status = 0;
+  if (!i2cReadQmcByte(0x09, status)) {
+    // QMC not responding at 400 kHz — fall back to 100 kHz for this cycle.
+    i2cSetClockSlow();
+    if (!i2cReadQmcByte(0x09, status)) {
+      ++magHealth.i2cFailures;
+      ++magHealth.statusReadFails;
+      if (magHealth.consecutiveStatusFailures < 65535)
+        ++magHealth.consecutiveStatusFailures;
+      return;
+    }
+  }
+  if (status & 0x02) {
+    magHealth.consecutiveStatusFailures = 0;
+    ++magHealth.overflows;
+  } else if (!(status & 0x01)) {
+    magHealth.consecutiveStatusFailures = 0;
+    ++magHealth.notReady;
+  } else {
+    magHealth.consecutiveStatusFailures = 0;
+    uint8_t data[6] = {};
+    // Try XYZ read at 400 kHz first; fall back to 100 kHz if QMC unresponsive.
+    i2cSetClockFast();
+    bool xyzOk = i2cReadQmc(0x01, data, sizeof(data));
+    if (!xyzOk) {
+      i2cSetClockSlow();
+      xyzOk = i2cReadQmc(0x01, data, sizeof(data));
+    }
+    if (!xyzOk) {
+      ++magHealth.i2cFailures;
+      ++magHealth.xyzReadFails;
+    } else {
+      int16_t xyz[3];
+      for (int i = 0; i < 3; ++i) xyz[i] = signedLittleEndian(data + i*2);
+      if (!((xyz[0] == 0 && xyz[1] == 0 && xyz[2] == 0) ||
+            (xyz[0] == -1 && xyz[1] == -1 && xyz[2] == -1) ||
+            xyz[0] == INT16_MIN || xyz[1] == INT16_MIN || xyz[2] == INT16_MIN)) {
+        const bool identical = currentMagnetic.valid &&
+            xyz[0] == currentMagnetic.axes[0] &&
+            xyz[1] == currentMagnetic.axes[1] &&
+            xyz[2] == currentMagnetic.axes[2];
+        for (int i=0; i<3; ++i) currentMagnetic.axes[i] = xyz[i];
+        currentMagnetic.valid = true;
+        currentMagnetic.fresh = true;
+        ++magHealth.rawReadSuccess;
+        ++magHealth.freshConversions;
+        if (identical) ++magHealth.identicalReads; // Still a fresh ADC result.
+        magHealth.lastFreshSampleMs = millis();
+      } else ++magHealth.noFreshData;
+    }
+  }
+  // Staleness invalidates cached samples. The bounded retry above attempts
+  // recovery at most five times, one second apart.
+  if (magHealth.freshConversions == 0 ||
+      uint32_t(millis() - magHealth.lastFreshSampleMs) >= config::MAG_STALE_MS)
+    currentMagnetic.valid = false;
+}
+
+// ------------------------ Binary telemetry v3 ------------------------------
+// Do not change layout: the existing Python GUI expects exactly 52 bytes.
+struct PacketWriter {
+  uint8_t bytes[config::PACKET_SIZE] = {};
+  size_t length = 0;
+  void u8(uint8_t value) { bytes[length++] = value; }
+  void u16(uint16_t value) { u8(uint8_t(value)); u8(uint8_t(value >> 8)); }
+  void i16(int16_t value) { u16(uint16_t(value)); }
+  void u32(uint32_t value) { u16(uint16_t(value)); u16(uint16_t(value>>16)); }
+};
+
+uint16_t crcCcittFalse(const uint8_t *bytes, size_t size) {
+  uint16_t crc = 0xFFFF;
+  for (size_t i = 0; i < size; ++i) {
+    crc ^= uint16_t(bytes[i]) << 8;
+    for (uint8_t bit = 0; bit < 8; ++bit)
+      crc = (crc & 0x8000) ? uint16_t((crc << 1) ^ 0x1021)
+                           : uint16_t(crc << 1);
+  }
+  return crc;
+}
+
+struct TimingState {
+  int64_t nextDeadlineUs = 0;
+  int64_t previousSampleUs = 0;
+  uint32_t missedDeadlines = 0;
+  uint32_t consecutiveSamples = 0;
+  uint32_t observedDtUs = config::IMU_PERIOD_US;
+  uint32_t serialDrops = 0;
+};
+TimingState timing;
+uint32_t packetSequence = 0;
+
+#if IQ_WIFI_ENABLED
+struct WifiFrame { uint8_t data[config::PACKET_SIZE]; };
+QueueHandle_t wifiQueue = nullptr;
+WiFiUDP wifiSocket;
+uint32_t wifiQueueDrops = 0;
+uint32_t wifiSendFailures = 0;
+
+// Networking belongs to core 0. Any delay/drop stays out of I2C acquisition.
+void wifiSenderTask(void *) {
+  IPAddress receiver;
+  uint16_t receiverPort = 0;
+  uint32_t lastHandshakeMs = 0;
+  uint8_t batch[config::UDP_BATCH_MAX * config::PACKET_SIZE];
+  constexpr char HELLO[] = "IQ_HELLO_V1";
+
+  for (;;) {
+    const int received = wifiSocket.parsePacket();
+    if (received > 0) {
+      char text[48] = {};
+      const int length = wifiSocket.read(
+          reinterpret_cast<uint8_t*>(text), (received < 47 ? received : 47));
+      if (length == int(sizeof(HELLO) - 1) &&
+          memcmp(text, HELLO, sizeof(HELLO) - 1) == 0) {
+        receiver = wifiSocket.remoteIP();
+        receiverPort = wifiSocket.remotePort();
+        lastHandshakeMs = millis();
+        wifiSocket.beginPacket(receiver, receiverPort);
+        wifiSocket.write(reinterpret_cast<const uint8_t*>("IQ_READY_V1"), 11);
+        wifiSocket.endPacket();
       }
+      while (wifiSocket.available()) (void)wifiSocket.read();
     }
-    if(m_ok&&mag){
-      float mx=mag[0],my=mag[1],mz=mag[2];
-      float emx=2*(q.w*q.x+q.y*q.z)*mx+2*(q.w*q.y-q.x*q.z)*my+(q.w*q.w-q.x*q.x-q.y*q.y+q.z*q.z)*mz;
-      float emy=2*(q.x*q.y-q.w*q.z)*mx+(q.w*q.w+q.x*q.x-q.y*q.y-q.z*q.z)*my+2*(q.w*q.x+q.y*q.z)*mz;
-      float hd=atan2f(-emy,emx)*57.2957795f;
-      float err=hd-y_deg;
-      while(err>180)err-=360; while(err<-180)err+=360;
-      gz+=ky*err;
+    if (receiverPort && uint32_t(millis()-lastHandshakeMs) > 5000)
+      receiverPort = 0;
+
+    WifiFrame frame;
+    if (xQueueReceive(wifiQueue, &frame, pdMS_TO_TICKS(3)) != pdTRUE)
+      continue;
+    if (!receiverPort) continue;
+
+    memcpy(batch, frame.data, config::PACKET_SIZE);
+    size_t frames = 1;
+    // Small bounded batching reduces Wi-Fi interrupts; timestamps unchanged.
+    vTaskDelay(pdMS_TO_TICKS(5));
+    while (frames < config::UDP_BATCH_MAX &&
+           xQueueReceive(wifiQueue, &frame, 0) == pdTRUE) {
+      memcpy(batch + frames * config::PACKET_SIZE,
+             frame.data, config::PACKET_SIZE);
+      ++frames;
     }
-    qx=gx*0.0174532925f*h; qy=gy*0.0174532925f*h; qz=gz*0.0174532925f*h;
-    nq=sqrtf(qx*qx+qy*qy+qz*qz);
-    qd.w=cosf(nq);
-    if(nq>0.001f){float s=sinf(nq)/nq; qd.x=qx*s; qd.y=qy*s; qd.z=qz*s;}
-    qn.w=q.w*qd.w-q.x*qd.x-q.y*qd.y-q.z*qd.z;
-    qn.x=q.w*qd.x+q.x*qd.w+q.y*qd.z-q.z*qd.y;
-    qn.y=q.w*qd.y-q.x*qd.z+q.y*qd.w+q.z*qd.x;
-    qn.z=q.w*qd.z+q.x*qd.y-q.y*qd.x+q.z*qd.w;
-    q=qn; q.norm();
-    q.euler(r_deg,p_deg,y_deg);
-    gr=gx; gp=gy; gy=gz; last=esp_timer_get_time();
+    const size_t bytes = frames * config::PACKET_SIZE;
+    if (!wifiSocket.beginPacket(receiver, receiverPort) ||
+        wifiSocket.write(batch, bytes) != bytes ||
+        !wifiSocket.endPacket()) ++wifiSendFailures;
   }
-};
-
-// ============================================================================
-// VERTICAL KALMAN FILTER
-// ============================================================================
-
-struct VertKf {
-  float h=0,v=0,ab=0;
-  float p00=0.04f,p01=0,p10=0,p11=0.1f,p22=0.01f;
-  float an=1.5f,bn=0.0025f,ln=0.01f;
-  bool initd=false; uint32_t last=0;
-  void init(float hh,float vv){h=hh;v=vv;ab=0;p00=0.04f;p01=0;p10=0;p11=0.1f;p22=0.01f;initd=true;last=esp_timer_get_time();}
-  void pred(float acc,float dt){
-    if(!initd)return;
-    float a=acc-ab;
-    h+=v*dt+0.5f*a*dt*dt; v+=a*dt;
-    float d2=dt*dt,d3=d2*dt,d4=d3*dt,qq=an*an;
-    p00+=dt*(p01+p10)+d2*p11+0.25f*d4*qq;
-    p01+=dt*p11+0.5f*d3*qq; p10+=dt*p11+0.5f*d3*qq; p11+=d2*qq;
-    p22+=0.0001f; last=esp_timer_get_time();}
-  void baro(float hh,float sig){
-    if(!initd||sig<=0)return; float r=sig*sig; if(r<1e-6f)r=1e-6f;
-    float inn=hh-h, iv=p00+r, k0=p00/iv, k1=p10/iv;
-    h+=k0*inn; v+=k1*inn;
-    float z=1-k0; p00=z*z*p00+k0*k0*r; p01=z*(p01-k1*p00)+k0*k1*r; p10=p01;
-    p11=p11-2*k1*p01+k1*k1*p00+k1*k1*r;}
-  void lidar(float hh,float sig){
-    if(!initd||sig<=0)return; float r=sig*sig; if(r<1e-6f)r=1e-6f;
-    float inn=hh-h, iv=p00+r, k0=p00/iv, k1=p10/iv;
-    h+=k0*inn; v+=k1*inn;
-    float z=1-k0; p00=z*z*p00+k0*k0*r; p01=z*(p01-k1*p00)+k0*k1*r; p10=p01;
-    p11=p11-2*k1*p01+k1*k1*p00+k1*k1*r;}
-};
-
-// ============================================================================
-// PID CONTROLLER
-// ============================================================================
-
-struct Pid {
-  float kp=0,ki=0,kd=0,il=0,ol=0, integ=0, prev=0, df=0, da=0.7f;
-  bool initd=false;
-  void reset(){integ=0;prev=0;initd=false;df=0;}
-  float upd(float sp,float mv,float dt){
-    if(!(dt>0)){reset();return 0;}
-    float e=sp-mv, der=0;
-    if(initd){der=(mv-prev)/dt; df=da*df+(1-da)*der; der=df;}
-    float ci=integ+e*dt; ci=fmaxf(-il,fminf(il,ci));
-    float raw=kp*e+ki*ci-kd*der;
-    float o=fmaxf(-ol,fminf(ol,raw));
-    if(raw==o||(raw>o&&e<0)||(raw<o&&e>0)) integ=ci;
-    prev=mv; initd=true; return o;}
-};
-
-Pid pid_roll_a, pid_pitch_a, pid_roll_r, pid_pitch_r, pid_yaw_r, pid_alt, pid_vs;
-
-// ============================================================================
-// MOTOR MIXER
-// ============================================================================
-
-struct Mixer {
-  float last[4]={0,0,0,0}; float mslew=10.0f;
-  void mix(float coll,float r,float p,float y,float ceil,float idle,float dt,float*out){
-    float c[4]={r-p-y,-r-p+y,-r+p-y,r+p+y};
-    float lo=c[0],hi=c[0]; for(int i=1;i<4;i++){lo=fminf(lo,c[i]);hi=fmaxf(hi,c[i]);}
-    float span=ceil-idle, sc=(hi-lo>span)?span/(hi-lo):1.0f;
-    float al=fmaxf(idle,fminf(ceil-hi*sc,coll)); al=fminf(al,ceil-lo*sc);
-    float md=mslew*dt;
-    for(int i=0;i<4;i++){
-      float rv=al+sc*c[i]; rv=fmaxf(idle,fminf(ceil,rv));
-      float d=rv-last[i]; d=fmaxf(-md,fminf(md,d)); out[i]=fmaxf(idle,fminf(ceil,last[i]+d));
-      last[i]=out[i];}}
-  void reset(){for(int i=0;i<4;i++)last[i]=0;}
-};
-
-// ============================================================================
-// XBOX INTERFACE
-// ============================================================================
-
-struct Xbox {
-  HardwareSerial &s; bool conn=false; uint32_t last=0;
-  uint8_t lbtn=0; bool armseq=false; uint32_t armh=0;
-  float sdz=0.05f, tdz=0.02f;
-  Xbox(HardwareSerial&ss, SysHealth& s):s(ss), st(s){}
-  bool parse(const uint8_t*d,size_t n,PilotCmd&c){
-    if(n<22)return false;
-    int16_t rr=(int16_t)((d[2]<<8)|d[3]), pr=(int16_t)((d[4]<<8)|d[5]);
-    int16_t yr=(int16_t)((d[6]<<8)|d[7]);
-    uint16_t th=d[8]|(d[9]<<8), lt=d[10]|(d[11]<<8), rt=d[12]|(d[13]<<8);
-    uint16_t bt=d[14]|(d[15]<<8);
-    if(((d[0])|(d[1]<<8))==0)return false;
-    c.roll=dz(rr/10000.0f,sdz); c.pitch=dz(-pr/10000.0f,sdz);
-    c.yaw=dz(yr/10000.0f,sdz);
-    c.thr=dz((th-5000)/5000.0f,sdz);
-    c.rt=dz(rt/1000.0f,tdz); c.lt=dz(lt/1000.0f,tdz);
-    c.btn=(uint8_t)bt; c.ts=millis(); c.valid=true;
-    conn=true; last=c.ts; lbtn=c.btn; return true;}
-  float dz(float v,float z){if(fabsf(v)<z)return 0; return v>0?(v-z)/(1-z):(v+z)/(1-z);}
-  bool ok(){return conn&&(millis()-last<cfg::CONTROLLER_TIMEOUT_MS);}
-  bool arm(PilotCmd&c,bool&armed,bool&ch){
-    ch=false;
-    if(!ok()){if(armed){armed=false;ch=true;st.disarms++;st.failsafes++;} armseq=false;armh=0;return false;}
-    bool hold=(c.btn&cfg::ARM_BUTTONS)==cfg::ARM_BUTTONS;
-    bool y=(c.btn&cfg::XBOX_BTN_NORTH)&&!(lbtn&cfg::XBOX_BTN_NORTH);
-    if(!armed){if(hold){if(!armseq){armseq=true;armh=c.ts;}
-      if(armseq&&y&&(c.ts-armh>=500)){armed=true;ch=true;st.arm_att++;armseq=false;}}
-    }else{armseq=false;armh=0;
-      if((c.btn&cfg::XBOX_BTN_SOUTH)&&!(lbtn&cfg::XBOX_BTN_SOUTH)){armed=false;ch=true;st.disarms++;}}
-    armseq=false;armh=0; lbtn=c.btn; return armed;}
-  SysHealth& st;
-};
-
-// ============================================================================
-// CRC + TELEMETRY
-// ============================================================================
-
-uint16_t crc16(const uint8_t*d,size_t n){
-  uint16_t c=0xFFFF;
-  for(size_t i=0;i<n;i++){c^=d[i]<<8; for(uint8_t b=0;b<8;b++) c=(c&0x8000)?(c<<1)^0x1021:c<<1;}
-  return c;}
-
-struct Pkt {
-  uint8_t b[cfg::PACKET_SIZE]={}; size_t l=0;
-  void u8(uint8_t v){ if(l<cfg::PACKET_SIZE) b[l++]=v; }
-  void u16(uint16_t v){ u8(v&0xFF); u8((v>>8)&0xFF); }
-  void i16(int16_t v){ u16((uint16_t)v); }
-  void u32(uint32_t v){ u8(v&0xFF); u8((v>>8)&0xFF); u8((v>>16)&0xFF); u8((v>>24)&0xFF); }
-};
-
-void mkPkt(Pkt&p,const ImuSample&imu,const MagSample&mag,const BaroSample&bar,
-           const LidarSample&lid,const AttEst&att,const VertKf&vk,
-           const MotorOut&mo,uint32_t seq,uint32_t ts,uint16_t late,const I2cMgr::Stats&st){
-  uint8_t fl=0;
-  fl|=imu.valid?1:0; fl|=bar.valid?2:0; fl|=mag.valid?4:0;
-  fl|=bar.fresh?8:0; fl|=mag.fresh?16:0; fl|=lid.valid?32:0;
-  fl|=lid.fresh?64:0; fl|=(late>250)?128:0;
-  fl|=mo.armed?256:0; fl|=mo.fs?512:0; fl|=1024;
-  p.l=0; p.u8(0xA5); p.u8(0x5A); p.u8(3); p.u8(fl&0xFF);
-  p.u8((fl>>8)&0xFF); p.u32(seq); p.u32(ts); p.u16(late);
-  for(int i=0;i<3;i++) p.i16(int16_t(imu.accel[i]*1000.0f));
-  p.i16(int16_t(att.gr*100.0f)); p.i16(int16_t(att.gp*100.0f));
-  p.i16(int16_t(att.gy*100.0f)); p.i16(int16_t(imu.temp_c*100.0f));
-  for(int i=0;i<3;i++) p.i16(int16_t(mag.cal[i]*100.0f));
-  p.u32(bar.raw_p); p.u32(bar.raw_t);
-  p.i16(int16_t(bar.temp_c*100.0f)); p.u32(uint32_t(bar.press_pa));
-  p.i16(int16_t(vk.h*1000.0f)); p.i16(int16_t(vk.v*1000.0f));
-  p.i16(int16_t(lid.height_corr_m*1000.0f));
-  p.i16(int16_t(att.r_deg*100.0f)); p.i16(int16_t(att.p_deg*100.0f));
-  p.i16(int16_t(att.y_deg*100.0f));
-  for(int i=0;i<4;i++) p.i16(int16_t(mo.m[i]*1000.0f));
-  p.u16(0); p.u16(uint16_t(st.fail));
-  while(p.l<cfg::PACKET_SIZE-2) p.u8(0);
-  p.u16(crc16(p.b,p.l));
 }
 
-// ============================================================================
-// CALIBRATION
-// ============================================================================
+bool initializeWifiTelemetry() {
+  // Wi-Fi starts BEFORE QMC setup: QMC is reconfigured after the radio is active.
+  WiFi.mode(WIFI_AP);
+  WiFi.setSleep(false);
+  if (!WiFi.softAP(config::WIFI_AP_NAME,
+                   config::WIFI_PASSWORD, 6, false, 1)) return false;
+  wifiQueue = xQueueCreate(256, sizeof(WifiFrame));
+  if (!wifiQueue || !wifiSocket.begin(config::WIFI_CONTROL_PORT)) return false;
+  return xTaskCreatePinnedToCore(wifiSenderTask, "iq_wifi_telemetry", 6144,
+                                  nullptr, 1, nullptr, 0) == pdPASS;
+}
+#endif
 
-AccelCalibration cal_a={}; MagCalibration cal_m={};
-BaroCalibration cal_b={}; GyroCalibration cal_g={};
-bool cal_loaded=false;
+void transmitCurrentMeasurements(uint32_t acquisitionTimestampUs,
+                                 uint16_t deadlineLateUs) {
+  // Binary v3 flags: 0 MPU valid, 1 BMP valid, 2 MAG valid,
+  // 3 BMP fresh, 4 MAG fresh, 5 late, 6 QMC5883P, 7 QMC5883L.
+  const uint8_t flags =
+      (currentImu.valid ? 0x01 : 0) |
+      (currentPressure.valid ? 0x02 : 0) |
+      (currentMagnetic.valid ? 0x04 : 0) |
+      (currentPressure.fresh ? 0x08 : 0) |
+      (currentMagnetic.fresh ? 0x10 : 0) |
+      (deadlineLateUs > 250 ? 0x20 : 0) |
+      0x40; // Known QMC5883P at 0x2C, packet version 3.
 
-bool apply_accel(const float*r,float*o){
-  if(!cal_a.valid)return false;
-  for(int i=0;i<3;i++) o[i]=cal_a.scale.m[i][0]*(r[0]-cal_a.bias.x)+cal_a.scale.m[i][1]*(r[1]-cal_a.bias.y)+cal_a.scale.m[i][2]*(r[2]-cal_a.bias.z);
-  return true;}
-bool apply_gyro(const float*r,float*o){
-  if(!cal_g.valid)return false;
-  o[0]=r[0]-cal_g.bias_dps.x; o[1]=r[1]-cal_g.bias_dps.y; o[2]=r[2]-cal_g.bias_dps.z;
-  return true;}
-bool apply_mag(const float*r,float*o){
-  if(!cal_m.valid)return false;
-  float c[3]={r[0]-cal_m.hard_iron.x,r[1]-cal_m.hard_iron.y,r[2]-cal_m.hard_iron.z};
-  for(int i=0;i<3;i++) o[i]=cal_m.soft_iron.m[i][0]*c[0]+cal_m.soft_iron.m[i][1]*c[1]+cal_m.soft_iron.m[i][2]*c[2];
-  return true;}
-bool load_cal(){
-  cal_g.bias_dps={0,0,0}; cal_g.var_dps2[0]=0.01f;cal_g.var_dps2[1]=0.01f;cal_g.var_dps2[2]=0.01f; cal_g.valid=true;
-  cal_a.bias={0,0,0}; cal_a.scale={{{1,0,0},{0,1,0},{0,0,1}}}; cal_a.rms_mps2=0.05f; cal_a.valid=true;
-  cal_m.hard_iron={0,0,0}; cal_m.soft_iron={{{1,0,0},{0,1,0},{0,0,1}}}; cal_m.radius_mean_uT=40.0f; cal_m.valid=false;
-  cal_b.ground_pressure_pa=101325.0f; cal_b.ref_var_pa2=0; cal_b.meas_var_pa2=10.0f; cal_b.valid=true;
-  cal_loaded=true; return true;}
+  PacketWriter p;
+  p.u8(0xA5); p.u8(0x5A); p.u8(3); p.u8(flags);
+  p.u32(packetSequence++);
+  p.u32(acquisitionTimestampUs);
+  p.u16(deadlineLateUs);
+  for (int i=0;i<3;++i) p.i16(currentImu.accel[i]);
+  for (int i=0;i<3;++i) p.i16(currentImu.gyro[i]);
+  p.i16(currentImu.temperature);
+  for (int i=0;i<3;++i) p.i16(currentMagnetic.axes[i]);
+  p.u32(currentPressure.rawPressure);
+  p.u32(currentPressure.rawTemperature);
+  p.i16(currentPressure.temperatureCentiC);
+  p.u32(currentPressure.pressureCentiPa);
+  p.u16(uint16_t(timing.missedDeadlines));
+  if (p.length != config::PACKET_SIZE-2) return;
+  p.u16(crcCcittFalse(p.bytes, p.length));
 
-// ============================================================================
-// LiDAR GEOMETRY
-// ============================================================================
-// H_COM = -[R r_s]_z - D [R d_s]_z
-// Over horizontal ground: H_COM ≈ (D + 0.026658) × cos(roll) × cos(pitch)
-
-float lidar_height(float d,float roll_deg,float pitch_deg){
-  if(d<cfg::LIDAR_MIN_RANGE_M||d>cfg::LIDAR_MAX_RANGE_M) return NAN;
-  float rr=roll_deg*0.0174532925f, pr=pitch_deg*0.0174532925f;
-  if(fabsf(rr)>cfg::LIDAR_MAX_TILT_RAD||fabsf(pr)>cfg::LIDAR_MAX_TILT_RAD) return NAN;
-  float cr=cosf(rr), cp=cosf(pr);
-  float off=-cfg::LIDAR_OFFSET_Z_M;
-  return (d+off)*cr*cp;
+#if IQ_WIFI_ENABLED
+  if (wifiQueue) {
+    WifiFrame frame;
+    memcpy(frame.data, p.bytes, config::PACKET_SIZE);
+    if (xQueueSend(wifiQueue, &frame, 0) != pdTRUE) ++wifiQueueDrops;
+  }
+#endif
+  if (Serial.availableForWrite() >= int(config::PACKET_SIZE))
+    Serial.write(p.bytes, config::PACKET_SIZE);
+  else
+    ++timing.serialDrops;
 }
 
-// ============================================================================
-// GLOBAL STATE
-// ============================================================================
+// ------------------------- Boot and task loop ------------------------------
+void initializeSensorsAndRadio() {
+  for (uint8_t pin : config::MOTOR_PINS) pinMode(pin, INPUT);
+  delay(1200); // USB and 3.3V rails settle before touching the I2C bus.
+  Wire.begin(config::SDA_PIN, config::SCL_PIN);
+  Wire.setClock(IQ_I2C_HZ);
+  Wire.setTimeOut(30);
 
-I2cMgr i2c;
-Adafruit_BMP280 *bmp_drv=nullptr;
-uint8_t mpu_addr=0, bmp_addr=0, mag_addr=cfg::MAG_ADDRESS;
-bool mpu_ok=false, bmp_ok=false, mag_ok=false, lidar_ok=false;
+  for (int retry=0;retry<5 && !mpuPresent;++retry) {
+    mpuPresent = initializeMpu6050();
+    if (!mpuPresent) delay(200);
+  }
+  // Match the successful isolated v13 test as closely as possible:
+  // configure the QMC after MPU bypass and before BMP280 traffic.
+  (void)configureQmc5883p();
 
-ImuSample imu; MagSample mag; BaroSample bar; LidarSample lid;
-SysHealth st;
-AttEst att; VertKf vkf;
-Mixer mixer;
-Xbox xbox_if(Serial, st);
-CtrlState ctrl;
-PilotCmd pilot;
-MotorOut mout;
+  if (mpuPresent) {
+    delay(30); // Bypass needs to settle before asking the BMP for its ID.
+    for (int retry=0;retry<3 && !bmpPresent;++retry) {
+      bmpPresent = initializeBmp280();
+      if (!bmpPresent) delay(100);
+    }
+  }
 
-// ============================================================================
-// SENSOR DRIVERS
-// ============================================================================
+#if IQ_WIFI_ENABLED
+  const bool wifiReady = initializeWifiTelemetry();
+  (void)wifiReady; // USB still works if the Wi-Fi access point cannot start.
+  delay(350); // Allow radio startup load to finish BEFORE QMC configuration.
+#endif
 
-bool mpu_init(){
-  mpu_addr=0;
-  if(i2c.present(cfg::MPU_PRIMARY_ADDRESS))mpu_addr=cfg::MPU_PRIMARY_ADDRESS;
-  else if(i2c.present(cfg::MPU_ALTERNATE_ADDRESS))mpu_addr=cfg::MPU_ALTERNATE_ADDRESS;
-  if(!mpu_addr)return false;
-  uint8_t id=0; if(!i2c.rd8(mpu_addr,cfg::MPU_REG_WHO_AM_I,id)||id!=0x68)return false;
-  if(!i2c.wr(mpu_addr,cfg::MPU_REG_PWR_MGMT_1,cfg::MPU_PWR_MGMT_1_RESET))return false; delay(100);
-  if(!i2c.wr(mpu_addr,cfg::MPU_REG_PWR_MGMT_1,cfg::MPU_PWR_MGMT_1_CLKSEL|cfg::MPU_PWR_MGMT_1_TEMP_DIS))return false;
-  if(!i2c.wr(mpu_addr,cfg::MPU_REG_PWR_MGMT_2,0x00))return false;
-  if(!i2c.wr(mpu_addr,cfg::MPU_REG_CONFIG,cfg::MPU_DLPF_188HZ))return false;
-  if(!i2c.wr(mpu_addr,0x19,0x01))return false;
-  if(!i2c.wr(mpu_addr,cfg::MPU_REG_GYRO_CONFIG,cfg::MPU_GYRO_FS_500))return false;
-  if(!i2c.wr(mpu_addr,cfg::MPU_REG_ACCEL_CONFIG,cfg::MPU_ACCEL_FS_8G))return false;
-  if(!i2c.wr(mpu_addr,cfg::MPU_REG_FIFO_EN,cfg::MPU_FIFO_TEMP_EN|cfg::MPU_FIFO_XG_EN|cfg::MPU_FIFO_YG_EN|cfg::MPU_FIFO_ZG_EN|cfg::MPU_FIFO_ACCEL_EN))return false;
-  uint8_t ic=0; if(!i2c.rd8(mpu_addr,cfg::MPU_REG_INT_PIN_CFG,ic))return false;
-  if(!i2c.wr(mpu_addr,cfg::MPU_REG_INT_PIN_CFG,ic|cfg::MPU_INT_PIN_CFG_BYPASS_EN))return false;
-  uint8_t uc=0; if(!i2c.rd8(mpu_addr,cfg::MPU_REG_USER_CTRL,uc))return false;
-  if(!i2c.wr(mpu_addr,cfg::MPU_REG_USER_CTRL,uc|cfg::MPU_USER_CTRL_FIFO_EN))return false;
-  if(!i2c.wr(mpu_addr,cfg::MPU_REG_USER_CTRL,uc|cfg::MPU_USER_CTRL_FIFO_EN|cfg::MPU_USER_CTRL_FIFO_RESET))return false;
-  if(!i2c.wr(mpu_addr,cfg::MPU_REG_INT_ENABLE,cfg::MPU_INT_ENABLE_RAW_RDY_EN))return false;
-  mpu_ok=true; return true;}
-
-bool mpu_read(ImuSample&s){
-  if(!mpu_ok)return false;
-  uint8_t fc[2]={};
-  if(!i2c.rd(mpu_addr,cfg::MPU_REG_FIFO_COUNT_H,fc,2)){st.imu_err++;return false;}
-  uint16_t fcnt=(uint16_t(fc[0])<<8)|fc[1]; s.fifo_count=fcnt/14;
-  if(fcnt<14){ uint8_t d[14]={};
-    if(!i2c.rd(mpu_addr,0x3B,d,14)){st.imu_err++;return false;}
-    for(int i=0;i<3;i++){s.accel_raw[i]=(int16_t)((uint16_t(d[2*i])<<8)|d[2*i+1]);
-      s.gyro_raw[i]=(int16_t)((uint16_t(d[8+2*i])<<8)|d[9+2*i]);}
-    s.temp_raw=(int16_t)((uint16_t(d[6])<<8)|d[7]); s.overflows=0;}
-  else{ uint8_t d[14]={};
-    if(!i2c.rd(mpu_addr,cfg::MPU_REG_FIFO_R_W,d,14)){st.imu_err++;return false;}
-    for(int i=0;i<3;i++){s.accel_raw[i]=(int16_t)((uint16_t(d[2*i])<<8)|d[2*i+1]);
-      s.gyro_raw[i]=(int16_t)((uint16_t(d[8+2*i])<<8)|d[9+2*i]);}
-    s.temp_raw=(int16_t)((uint16_t(d[6])<<8)|d[7]);
-    s.overflows=(fcnt>1024)?1:0; if(s.overflows)st.imu_err++;}
-  s.ts=esp_timer_get_time(); s.valid=true; s.fresh=true; return true;}
-
-bool mag_init(){
-  mag_addr=cfg::MAG_ADDRESS; if(!i2c.present(mag_addr))return false;
-  uint8_t id=0; if(!i2c.rd8(mag_addr,cfg::QMC_REG_CHIP_ID,id)||id!=cfg::QMC_CHIP_ID)return false;
-  if(!i2c.wr(mag_addr,cfg::QMC_REG_CTRL1,0x00))return false; delay(20);
-  if(!i2c.wr(mag_addr,cfg::QMC_REG_XYZ_SIGN,cfg::QMC_XYZ_SIGN_VAL))return false;
-  if(!i2c.wr(mag_addr,cfg::QMC_REG_CTRL2,cfg::QMC_CTRL2_8GAUSS))return false;
-  if(!i2c.wr(mag_addr,cfg::QMC_REG_CTRL1,cfg::QMC_CTRL1_200HZ))return false;
-  mag_ok=true; return true;}
-
-bool mag_read(MagSample&s){
-  if(!mag_ok)return false;
-  uint8_t stt=0; if(!i2c.rd8(mag_addr,cfg::QMC_REG_STATUS,stt)){st.mag_err++;return false;}
-  s.status=stt; if(stt&0x02){st.mag_err++;return false;} if(!(stt&0x01))return false;
-  uint8_t d[6]={}; if(!i2c.rd(mag_addr,cfg::QMC_REG_DATA_XL,d,6)){st.mag_err++;return false;}
-  for(int i=0;i<3;i++)s.raw[i]=(int16_t)((uint16_t(d[2*i+1])<<8)|d[2*i]);
-  if((s.raw[0]==0&&s.raw[1]==0&&s.raw[2]==0)||(s.raw[0]==-1&&s.raw[1]==-1&&s.raw[2]==-1)
-     ||s.raw[0]==INT16_MIN||s.raw[1]==INT16_MIN||s.raw[2]==INT16_MIN)return false;
-  s.ts=esp_timer_get_time(); s.valid=true; s.fresh=true; return true;}
-
-bool bmp_init(){
-  bmp_addr=0;
-  if(i2c.present(cfg::BMP_PRIMARY_ADDRESS))bmp_addr=cfg::BMP_PRIMARY_ADDRESS;
-  else if(i2c.present(cfg::BMP_ALTERNATE_ADDRESS))bmp_addr=cfg::BMP_ALTERNATE_ADDRESS;
-  if(!bmp_addr)return false;
-  uint8_t id=0; if(!i2c.rd8(bmp_addr,cfg::BMP_REG_ID,id)||id!=cfg::BMP_CHIP_ID)return false;
-  if(!i2c.wr(bmp_addr,cfg::BMP_REG_RESET,0xB6))return false; delay(10);
-  if(!i2c.wr(bmp_addr,cfg::BMP_REG_CTRL_MEAS,cfg::BMP_CTRL_MEAS_X1X1))return false;
-  if(!i2c.wr(bmp_addr,cfg::BMP_REG_CONFIG,cfg::BMP_CONFIG_IIR2_0P5MS))return false;
-  bmp_ok=true; return true;}
-
-bool bmp_read(BaroSample&s){
-  if(!bmp_ok)return false;
-  uint8_t r[6]={}; if(!i2c.rd(bmp_addr,cfg::BMP_REG_PRESSURE_MSB,r,6)){st.baro_err++;return false;}
-  s.raw_p=((uint32_t(r[0])<<12)|((uint32_t(r[1])<<4)|(r[2]>>4)));
-  s.raw_t=((uint32_t(r[3])<<12)|((uint32_t(r[4])<<4)|(r[5]>>4)));
-  s.ts=esp_timer_get_time(); s.valid=true; s.fresh=true; return true;}
-
-bool bmp_comp(const BaroSample&raw,float&tc,float&pp){
-  if(!bmp_drv)return false;
-  tc=bmp_drv->readTemperature(); pp=bmp_drv->readPressure();
-  return isfinite(tc)&&isfinite(pp)&&tc>-40&&tc<85&&pp>30000&&pp<110000;}
-
-bool lidar_read(LidarSample&s){
-  if(!lidar_ok)return false;
-  static HardwareSerial ls(1); static uint8_t buf[9]; static size_t bi=0;
-  while(ls.available()){
-    uint8_t b=ls.read();
-    if(bi==0&&b!=0x59)continue; if(bi==1&&b!=0x59){bi=0;continue;}
-    buf[bi++]=b;
-    if(bi==9){ uint8_t sum=0; for(int i=0;i<8;i++)sum+=buf[i];
-      if(sum!=buf[8]){bi=0;st.lidar_err++;continue;}
-      uint16_t dc=(uint16_t(buf[1])<<8)|buf[0];
-      uint16_t sv=(uint16_t(buf[3])<<8)|buf[2];
-      s.dist_m=dc/100.0f; s.qual=sv/65535.0f; s.ts=esp_timer_get_time();
-      s.valid=true; s.fresh=true; bi=0; return true;}}
-  return false;}
-
-// ============================================================================
-// CONTROL
-// ============================================================================
-
-void ctrl_compute(const PilotCmd&cmd,const AttEst&att,const VertKf&vk,float dt,MotorOut&mo){
-  mo.armed=ctrl.armed&&!ctrl.failsafe; mo.fault=false;
-  if(!mo.armed){for(int i=0;i<4;i++)mo.m[i]=0;return;}
-  float rs=cmd.roll*cfg::MAX_ROLL_DEG, ps=cmd.pitch*cfg::MAX_PITCH_DEG;
-  float rrs=pid_roll_a.upd(rs,att.r_deg,dt);
-  float prs=pid_pitch_a.upd(ps,att.p_deg,dt);
-  float rtq=pid_roll_r.upd(rrs,att.gr,dt);
-  float ptq=pid_pitch_r.upd(prs,att.gp,dt);
-  float ytq=pid_yaw_r.upd(cmd.yaw*cfg::MAX_YAW_RATE_DPS,att.gy,dt);
-  float vs=cmd.thr*cfg::FC_MAX_VERTICAL_SPEED_MPS;
-  float tt=(cmd.rt-ctrl.lt_red)*1.0f;
-  vs+=tt; vs=fmaxf(-cfg::FC_MAX_DESCENT_MPS,fminf(cfg::FC_MAX_CLIMB_MPS,vs));
-  float ac=pid_vs.upd(vs,vk.v,dt);
-  bool ah=fabsf(cmd.thr)<0.1f;
-  if(ah&&ctrl.alt_ref_init){float ac2=pid_alt.upd(ctrl.alt_ref,vk.h,dt); ac+=ac2;}
-  else{if(!ctrl.alt_ref_init){ctrl.alt_ref=vk.h;ctrl.alt_ref_init=true;} ctrl.alt_ref+=vs*dt;}
-  float cr=cosf(att.r_deg*0.0174532925f), cp=cosf(att.p_deg*0.0174532925f);
-  float tf=fmaxf(0.5f,cr*cp);
-  float coll=(ctrl.hover+ac*0.05f)/tf;
-  coll=fmaxf(cfg::FC_ARMED_IDLE_FRACTION,fminf(cfg::FC_BOOST_MOTOR_CEILING,coll));
-  float ceil=cfg::FC_NORMAL_MOTOR_CEILING+(cfg::FC_BOOST_MOTOR_CEILING-cfg::FC_NORMAL_MOTOR_CEILING)*cmd.rt;
-  mixer.mix(coll,rtq,ptq,ytq,ceil,cfg::FC_ARMED_IDLE_FRACTION,dt,mo.m);
-  if(!imu.valid||!mag.valid||!bar.valid){mo.fs=true;ctrl.failsafe=true;}
-  else{mo.fs=false;ctrl.failsafe=false;}}
-
-void hw_init(){
-  for(uint8_t p:cfg::MOTOR_PINS)pinMode(p,INPUT);
-  Serial1.begin(115200,SERIAL_8N1,cfg::LIDAR_RX,cfg::LIDAR_TX); delay(100);
-  i2c.begin(); load_cal();
-  mpu_ok=mpu_init();
-  if(mpu_ok){delay(30); bmp_ok=bmp_init();
-    if(bmp_ok){bmp_drv=new Adafruit_BMP280(&Wire); bmp_drv->begin(bmp_addr);}}
-  mag_ok=mag_init(); lidar_ok=true;
-  st.reset_reason=esp_reset_reason();}
-
-// ============================================================================
-// Arduino entry points
-// ============================================================================
-
-void setup(){
-  Serial.begin(cfg::SERIAL_BAUD);
-  while(!Serial&&millis()<2000){}
-  hw_init();
-  st.uptime_us=esp_timer_get_time();
-  Serial.printf("IQ FC v1.0: MPU=%d BMP=%d MAG=%d LiDAR=%d\n",
-    mpu_ok,bmp_ok,mag_ok,lidar_ok);
-  Serial.printf("I2C: %u Hz, 500 Hz ctrl, Motor: OFF\n",cfg::I2C_HZ);
+  // One fixed boot configuration, just like the v13 100Hz success.
+  // Never repeatedly suspend/start the sensor during calibration.
+  lastMagneticPollUs = micros();
+  lastPressurePollUs = micros();
+  timing.nextDeadlineUs = esp_timer_get_time() + config::IMU_PERIOD_US;
 }
 
-void loop(){
-  static uint32_t nd=0,seq=0; Pkt pkt;
-  int64_t now=esp_timer_get_time();
-  if(nd==0)nd=now+cfg::CONTROL_PERIOD_US;
-  int64_t ud=nd-now;
-  if(ud>300){delayMicroseconds((uint32_t)(ud-200));return;}
-  if(ud>0)return;
-  int64_t sa=esp_timer_get_time(); int64_t late=sa-nd;
-  if(late>=(int64_t)cfg::CONTROL_PERIOD_US){
-    uint64_t sk=(uint64_t)late/cfg::CONTROL_PERIOD_US;
-    st.missed+=(uint32_t)(sk>UINT32_MAX?UINT32_MAX:sk);
-    nd+=(int64_t)sk*cfg::CONTROL_PERIOD_US;}
-  float dt=cfg::CONTROL_PERIOD_US/1000000.0f; nd+=cfg::CONTROL_PERIOD_US;
-  st.loops++; st.uptime_us=sa;
+void sampleAtAbsoluteDeadline() {
+  const int64_t nowUs = esp_timer_get_time();
+  const int64_t untilDeadline = timing.nextDeadlineUs - nowUs;
+  if (untilDeadline > 240) {
+    delayMicroseconds(uint32_t(untilDeadline - 140));
+    return;
+  }
+  if (untilDeadline > 0) return;
 
-  bool imu_ok=mpu_read(imu);
-  bool mag_ok=mag_read(mag);
-  bool bar_ok=bmp_read(bar);
-  bool lid_ok=lidar_read(lid);
-  if(!imu_ok)st.imu_err++; if(!mag_ok)st.mag_err++;
-  if(!bar_ok)st.baro_err++; if(!lid_ok)st.lidar_err++;
+  const int64_t startedAtUs = esp_timer_get_time();
+  const int64_t lateness = startedAtUs-timing.nextDeadlineUs;
+  if (lateness >= int64_t(config::IMU_PERIOD_US)) {
+    const uint64_t skipped = uint64_t(lateness)/config::IMU_PERIOD_US;
+    timing.missedDeadlines += uint32_t(skipped > UINT32_MAX ? UINT32_MAX : skipped);
+    timing.nextDeadlineUs += int64_t(skipped)*config::IMU_PERIOD_US;
+  }
+  timing.nextDeadlineUs += config::IMU_PERIOD_US;
+  if (timing.previousSampleUs != 0 && startedAtUs > timing.previousSampleUs)
+    timing.observedDtUs = uint32_t(startedAtUs - timing.previousSampleUs);
+  timing.previousSampleUs = startedAtUs;
+  ++timing.consecutiveSamples;
 
-  if(imu_ok){
-    float ar[3]={imu.accel_raw[0]/4096.0f*9.80665f,imu.accel_raw[1]/4096.0f*9.80665f,imu.accel_raw[2]/4096.0f*9.80665f};
-    float gr[3]={imu.gyro_raw[0]/65.5f,imu.gyro_raw[1]/65.5f,imu.gyro_raw[2]/65.5f};
-    imu.temp_c=imu.temp_raw/340.0f+36.53f;
-    apply_accel(ar,imu.accel); apply_gyro(gr,imu.gyro);
-    imu.accel[2]-=9.80665f;}
-  if(mag_ok){float mru[3]={mag.raw[0]*0.29f,mag.raw[1]*0.29f,mag.raw[2]*0.29f};
-    float mcu[3]; apply_mag(mru,mcu); for(int i=0;i<3;i++)mag.cal[i]=mcu[i];}
-  if(bar_ok){float tc,pp;
-    if(bmp_comp(bar,tc,pp)){bar.temp_c=tc; bar.press_pa=pp;
-      if(cal_b.valid){float r=pp/cal_b.ground_pressure_pa;
-        float hm=44330.0f*(1.0f-powf(r,0.190294957f));
-        if(!ctrl.baro_zeroed&&ctrl.disarmed){ctrl.baro_zero=hm;ctrl.baro_zeroed=true;}
-        bar.height_m=hm-ctrl.baro_zero; bar.height_sigma_m=1.0f;}}}
-  if(imu_ok){
-    if(!att.initd)att.init(imu.accel);
-    att.update(imu.gyro,imu.accel,mag_ok?mag.cal:nullptr,mag_ok&&cal_m.valid,dt);}
-  if(bar_ok&&imu_ok){
-    if(!vkf.initd)vkf.init(bar.height_m,0);
-    vkf.pred(imu.accel[2],dt);
-    vkf.baro(bar.height_m,bar.height_sigma_m);
-    if(lid_ok){
-      float ch=lidar_height(lid.dist_m,att.r_deg,att.p_deg);
-      if(!isnan(ch)){lid.height_corr_m=ch;lid.tilt_ok=true;vkf.lidar(ch,0.1f);}
-      else lid.tilt_ok=false;}}
-  static uint8_t ub[22]; static size_t bi=0;
-  while(Serial.available()){
-    uint8_t b=Serial.read();
-    if(bi==0&&b!=0xA5)continue; if(bi==1&&b!=0x5A){bi=0;continue;}
-    ub[bi++]=b;
-    if(bi==22){uint16_t rc=(uint16_t(ub[20])|(uint16_t(ub[21])<<8));
-      uint16_t cc=crc16(ub,20);
-      if(rc==cc)xbox_if.parse(ub,22,pilot); bi=0;}}
-  bool armch=false; xbox_if.arm(pilot,ctrl.armed,armch);
-  if(armch){
-    if(ctrl.armed){Serial.println("ARMED");
-      pid_roll_a.reset();pid_pitch_a.reset();pid_roll_r.reset();pid_pitch_r.reset();
-      pid_yaw_r.reset();pid_alt.reset();pid_vs.reset();mixer.reset();
-      att.initd=false;vkf.initd=false;ctrl.alt_ref_init=false;
-      ctrl.lt_red=0;ctrl.boost=0;}
-    else{Serial.println("DISARMED");ctrl.baro_zeroed=false;}}
-  float lt_t=pilot.lt; ctrl.lt_red+=(lt_t-ctrl.lt_red)*0.2f; ctrl.lt_red=fmaxf(0,fminf(1,ctrl.lt_red));
-  ctrl.boost+=(pilot.rt-ctrl.boost)*0.2f; ctrl.boost=fmaxf(0,fminf(1,ctrl.boost));
-  MotorOut mo; ctrl_compute(pilot,att,vkf,dt,mo);
-  uint16_t lu=(uint16_t)(late>65535?65535:(late>0?late:0));
-  mkPkt(pkt,imu,mag,bar,lid,att,vkf,mo,seq++,(uint32_t)sa,lu,i2c.st);
-  if(Serial.availableForWrite()>=(int)cfg::PACKET_SIZE)Serial.write(pkt.b,cfg::PACKET_SIZE);
-  else st.ser_drops++;
+  // MPU first, timestamped at cycle start. Slower sensors only when due.
+  currentImu = sampleImu6050();
+  updateMagnetometer(uint32_t(startedAtUs));
+  updatePressure(uint32_t(startedAtUs));
+  const uint16_t late = uint16_t(lateness > 65535 ? 65535 :
+                                   (lateness > 0 ? lateness : 0));
+  transmitCurrentMeasurements(uint32_t(startedAtUs), late);
+}
+
+} // namespace iq
+
+void setup() {
+  Serial.begin(iq::config::SERIAL_BAUD);
+  iq::initializeSensorsAndRadio();
+}
+
+void loop() {
+  iq::sampleAtAbsoluteDeadline();
 }
