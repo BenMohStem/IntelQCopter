@@ -1005,3 +1005,26 @@ High:
 - Added direct launch instructions for both the repository root and its parent
   `Desktop\Work` directory, matching the user's corrected invocation.
 - No GUI, test, COM3 session, build, upload or hardware check was performed.
+
+## 39. Revision 24 — 2026-11-07: consolidate workspaces and archive local handoffs
+
+- Set `C:\Users\Mohamed\Desktop\Work\QCopter` as the single canonical checkout.
+  Removed three clean Desktop worktrees after confirming their remote branches;
+  preserved dirty Stepwise, Codex, and Kilo workspaces. Local branches remain.
+- Moved 28 loose handoff, report, prompt, backup, and helper-script items from
+  `Desktop\Work` into the ignored `.local\archives\` tree. Preserved the Xbox
+  KiCad output and indexed all 72 files with SHA-256. No unique project source or
+  calibration data was deleted.
+- Audited `Downloads\GPT_TMP`: removed three `(1)` ZIPs only after exact
+  SHA-256 equality with retained copies. Its 29 `.pio` caches (1,274,887,985
+  bytes) remain; recursive deletion was blocked before execution. Do not claim
+  that this cache space has been reclaimed.
+- Replaced the hard-coded Wi-Fi password in the current archived-candidate copy
+  with a placeholder. An ignored local backup keeps the original bytes; Git
+  history was not rewritten. Rotate the access-point password if it is active.
+- A concurrent scan found uncommitted ESP32 flight-controller files and
+  calibration analyses in the canonical checkout. They were left untouched and
+  excluded from the cleanup commit.
+- No test, build, GUI launch, flash, COM-port access, or physical validation was
+  performed. See `docs/workspace-cleanup-2026-11-07.md` and
+  `archive/project-cleanup-manifest.md` for paths and limits.

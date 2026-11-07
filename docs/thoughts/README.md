@@ -32,8 +32,9 @@ is a compatibility pointer; its original contents are preserved in
    database rather than editing earlier revisions in place.
 4. **Do not both drive COM3.** Claim the board explicitly before a run; end the claim
    when done.
-5. **Preserve all evidence:** never delete or overwrite captures, artifacts, archive,
-   or GPT_TMP zips.
+5. **Preserve unique evidence:** never delete or overwrite captures, artifacts,
+   source archives, or unique GPT_TMP zips. A byte-identical duplicate download
+   may be removed only after SHA-256 verification and recording the retained copy.
 6. **Attribute work:** Commit with descriptive messages so the other model can see
    what moved.
 7. **Escalate to the user** for motor/ESC output, arming, or safety-policy changes.

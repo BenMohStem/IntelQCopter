@@ -140,7 +140,7 @@ constexpr float MPU_GYRO_BIAS_DPS[3] = {0.161969f, -0.304950f, -0.877433f};
 #if IQ_WIFI_ENABLED
 constexpr char WIFI_AP_NAME[] = "IntelQCopter-Cal";
 // Replace in your private copy before wireless use; >= 8 characters.
-constexpr char WIFI_PASSWORD[] = "IntelQCopter2026";
+constexpr char WIFI_PASSWORD[] = "REDACTED_LOCAL_CONFIGURATION";
 constexpr uint16_t WIFI_CONTROL_PORT = 19006;
 constexpr size_t UDP_BATCH_MAX = 16;
 #endif

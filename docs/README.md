@@ -64,6 +64,7 @@ under [test evidence](../artifacts/test-runs/README.md).
 
 - [Architecture and migration map](architecture.md) — repository layout and file lifecycle.
 - [Current project plan](project-plan.md) — cleanup, calibration, readability, and review phases.
+- [Workspace cleanup and local archive map](workspace-cleanup-2026-11-07.md) — canonical checkout, removed duplicate worktrees, local-only handoffs, and GPT_TMP cache inventory.
 - [Local build inventory](build-directory-inventory-2026-11-05.md) — ignored mixed workspace
   contents; do not bulk-delete.
 - [Shared AI thought base](thoughts/README.md) — current handoff, canonical database, and

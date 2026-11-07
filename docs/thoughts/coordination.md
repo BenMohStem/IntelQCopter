@@ -86,8 +86,16 @@ relevant subsystem README and `VALIDATION_LOG.md`.
 
 ## Cleanup state
 
-- Canonical plan: `docs/project-plan.md`; convenience copy:
-  `C:\Users\Mohamed\Desktop\Work\PLAN.md`.
+- Canonical plan: `docs/project-plan.md`; `C:\Users\Mohamed\Desktop\Work\PLAN.md`
+  is a short entry point to that plan.
+- Workspace moves and the Downloads audit:
+  `docs/workspace-cleanup-2026-11-07.md`.
+- Three clean Desktop worktrees were removed locally after confirming their
+  GitHub branches. Dirty Stepwise, Codex, and Kilo workspaces remain untouched.
+- The latest filesystem scan found uncommitted ESP32 flight-controller files in
+  the canonical checkout. Preserve them and exclude them from cleanup commits.
+- GPT_TMP's 29 `.pio` caches remain because recursive deletion was blocked; three
+  byte-identical ZIP duplicates were removed after SHA verification.
 - Canonical shared memory: `docs/thoughts/thought-database.md`.
 - Cleanup decisions and archive/delete records:
   `archive/project-cleanup-manifest.md`.

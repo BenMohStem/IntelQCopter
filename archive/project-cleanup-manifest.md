@@ -49,6 +49,24 @@ retry those removals through another route.
 
 ## Deletions
 
-No project source, calibration data, simulation evidence, cache, or local
-environment was deleted in this pass. Cache deletion was not completed; retain
-the existing build tree until its precise contents and active use are reviewed.
+This section records the earlier cleanup pass. See the dated update below for
+the 2026-11-07 workspace consolidation and verified duplicate-download cleanup.
+
+## 2026-11-07 workspace consolidation and local archive update
+
+| Date | Path | Action | Result |
+|---|---|---|---|
+| 2026-11-07 | `Desktop\Work\QCopter-codex-lidar` | Removed clean local linked worktree after verifying remote branch and commit | Branch `codex/lidar-geometry-latency-2026-11-06` remains on `origin` at `70bbbff`; local generated files/build cache removed with checkout |
+| 2026-11-07 | `Desktop\Work\IntelQCopter-USTHB` | Removed clean local linked worktree after verifying remote branch and commit | Branch `codex/usthb-university-report` remains on `origin` at `7e77c87` |
+| 2026-11-07 | `Desktop\Work\QCopter-ESP32-Xbox` | Removed clean local linked worktree after archiving its only untracked output | Branch `esp32-xbox` remains on `origin` at `af29870`; generated local build files removed with checkout |
+| 2026-11-07 | Xbox worktree KiCad output (72 files, 2,262,126 bytes) | Moved intact to ignored local storage; hashes recorded | `.local/archives/workspaces/esp32-xbox-output/`; see `SHA256SUMS.txt` |
+| 2026-11-07 | 28 loose files/folders from `Desktop\Work` | Moved, not deleted | `.local/archives/desktop-work/`; retained handoff versions, calibration handoff, prompts, old helper scripts, and Isaac JSON reports; total 991,755,430 bytes |
+| 2026-11-07 | Two project `.7z` backups in the checkout | Moved, not deleted | `.local/archives/backups/`; excluded from Git |
+| 2026-11-07 | Three `(1).zip` copies in `Downloads\GPT_TMP` | Deleted after SHA-256 equality with retained ZIP was verified | Duplicate hashes: `090020AC3B64E87F98C0D1013BFA9DC383483E7DEA313F99EF50B958E6BC1036`, `10E551E78570C13B0F8E87117816C28ECB462658F57D12623C723800C46EC3F5`, `ACE33912AC963A0FC689D2788CC8067B2F99870D8D8F17ED4D39456359D30089`; 10,921,465 bytes freed |
+| 2026-11-07 | `Downloads\GPT_TMP\**\.pio` | Inventoried but not deleted | 29 cache directories, 1,274,887,985 bytes; recursive deletion was blocked by Windows command safety review before any cache changed. Details: `Downloads\GPT_TMP\CLEANUP_MANIFEST_2026-11-07.md` |
+| 2026-11-07 | `archive/review-candidates/2026-11-05/qmc5883p-main-dsh-working-tree.cpp` | Replaced embedded Wi-Fi password in current copy with a placeholder before publication | Original preserved locally at ignored `.local/security-review/`; history not rewritten. Rotate the AP password if still active. |
+
+Dirty Stepwise, Codex motor-limits, and Kilo workspaces were not altered. The
+new uncommitted ESP32 flight-controller and calibration-analysis files found in
+the canonical checkout were also preserved and excluded from this cleanup.
+No GUI, test, compile, flash, COM-port, sensor, or flight validation was run.

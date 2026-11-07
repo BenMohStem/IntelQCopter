@@ -2,7 +2,7 @@
 
 Updated: 2026-11-07 (Africa/Lagos)
 
-Convenience copy: `C:\Users\Mohamed\Desktop\Work\PLAN.md`.
+Entry point: `C:\Users\Mohamed\Desktop\Work\PLAN.md` links back to this canonical plan.
 
 ## Guardrails
 
@@ -94,7 +94,7 @@ current schedule; the outcome and exact event date have not been confirmed.
   checked against the raw CSV and unsupported/contradictory claims are labeled
   in `docs/thoughts/cloud-gpt-a-to-z-review.md`.
 
-### B. Inventory and safe cleanup — active
+### B. Inventory and safe cleanup — active (workspace consolidation updated 2026-11-07)
 
 1. Maintain `archive/project-cleanup-manifest.md` for every disposition.
 2. Preserve `tmp/` because it is tracked source, lessons, and evidence.
@@ -115,6 +115,16 @@ copy, not a disposable build product. A copy-verify-relocate operation into
 `archive/source-snapshots/` was rejected by the command safety policy before
 execution; the source remains untouched in `build/`. Do not retry through another
 command. Continue with documentation and non-destructive classification.
+
+The Desktop workspace consolidation and Downloads\GPT_TMP audit are recorded in
+[the workspace cleanup report](workspace-cleanup-2026-11-07.md). Three clean
+duplicate worktrees were removed after verifying their remote branches; dirty
+AI workspaces were preserved. The canonical checkout's DSH changes and the
+calibration analysis outputs remain uncommitted and must not be included in an
+unrelated cleanup commit. `GPT_TMP` still has 29 generated `.pio` trees; the
+recursive cache removal was blocked before any of those trees changed. Three
+byte-identical ZIP copies were removed after hash verification. Keep the mixed
+repository `build/` tree classified separately and do not bulk-delete it.
 
 ### C. Readability — pending
 
