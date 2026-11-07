@@ -944,3 +944,24 @@ High:
   torque authority is assumed. Keep the 35% normal / 50% boost caps and 10%
   idle policy unchanged. No build, test, flash, physical motor test or flight
   test was run; the active bench-capture firmware was not modified.
+
+## 35. Revision 20 — 2026-11-07: calibration session storage and BMP plot fix
+
+- GUI v3 packets carry BMP pressure in one field with two observed encodings:
+  the bench firmware serializes whole Pa, while the DSH candidate serializes
+  centi-Pa. The GUI previously always divided by 100, so a normal 101,325 Pa
+  sample from the bench image became 1,013.25 Pa, failed the altitude reference
+  threshold, and left the live altitude plot blank. Decode by physical range
+  (30–120 kPa), reject invalid pressure, and show a 30-fresh-reading reference status.
+  The plot remains relative barometric height only; it is not fused altitude.
+- GUI session persistence is now lazy and per-session: accepted phase rows only,
+  a single timestamped CSV, auto-finalization on completion, and explicit
+  save-incomplete/discard/cancel choices when starting another session mid-run.
+  Incomplete CSVs include missing phase counts; complete/incomplete sessions,
+  analysis outputs, and date-grouped unclassified legacy captures have separate
+  locations under `measurements/calibration/esp32s3/`. Historic skip manifests
+  and part files are preserved in the archive, but current GUI flow produces
+  neither. LiDAR calibration remains deferred until after competition.
+- The archive index records original paths and SHA-256 hashes for the files
+  moved from the bench captures root. No captures were deleted. No tests, GUI
+  launch, build, flash, or physical sensor check was performed for this edit.

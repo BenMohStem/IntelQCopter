@@ -1,0 +1,4 @@
+# Sensor captures are local measurement records; the archive index and reports
+# are tracked, but hundreds of MB of raw runs should not be committed by default.
+/sessions/**/*.csv
+/archive/legacy_gui_captures/**/*.csv

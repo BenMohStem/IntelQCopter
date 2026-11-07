@@ -1,6 +1,6 @@
 # ESP32-S3 sensor calibration bench
 
-Updated: 2026-11-06. This folder contains the desktop calibration tool and a
+Updated: 2026-11-07. This folder contains the desktop calibration tool and a
 separate ESP32-S3 bench firmware. It is not the Pico flight-controller runtime.
 ESC/motor output and physical arming remain disabled.
 
@@ -26,42 +26,33 @@ telemetry, or LiDAR forwarding works.
 
 ## Guided calibration stages
 
-The default session has 16 stages. The established 12 gyro, six-face accel,
-magnetometer and barometer stages are followed by LiDAR range-reference stages
-13–16 at 0.25, 0.50, 1.00 and 2.00 m. Each LiDAR reference requires 300 fresh,
-valid readings by default. The user can skip all four when the module or its
-forwarded data is unavailable; skipped stages remain marked incomplete.
-
-Measure each target distance from the TOFSense-F2 Mini optical reference to a
-flat, matte target. Keep the beam square to the target and record the measured
-reference distance. A separate 3.3 V UART adapter may be selected in the GUI;
-firmware v4 may instead forward range/status/timestamp over USB or Wi-Fi. Do not
-connect LiDAR UART to the 400 kHz I²C bus.
-
-LiDAR analysis requires every requested reference to meet the configured sample
-minimum. Example for a complete four-range GUI CSV:
-
-```powershell
-python .\hardware\bench_calibration\esp32s3_qmc5883p_100hz\tools\lidar_calibration.py `
-  --analyze .\hardware\bench_calibration\esp32s3_qmc5883p_100hz\captures\<capture>.csv `
-  --min-samples 300 --required-distances 0.25 0.50 1.00 2.00
-```
-
-The LiDAR Geometry tab exposes the preliminary sensor-to-COM vector, attitude
-and slant range. Its result is a geometry worksheet, not fused altitude. Save a
-geometry configuration only after entering a physically measured lever arm.
+The competition run has 12 phases: 30,000 stationary gyro samples, six accel
+faces, four magnetometer rotations, and 1,000 BMP samples. LiDAR setup, geometry,
+and range phases are deferred until after the competition. Existing telemetry
+parsing can still read v4 frames, but the GUI does not prompt for a LiDAR port or
+collect LiDAR calibration samples.
 
 ## Capture storage
 
-New calibration CSVs store accepted samples only, for the currently active
-stage. The default targets are 30,000 accepted MPU readings for the stationary
-gyro phase, 5,000 accelerometer readings for each of six faces, 2,000 fresh
-readings for each MAG yaw/pitch/roll phase, 8,000 fresh MAG tumble readings,
-and 1,000 fresh BMP readings. If enabled, each LiDAR reference saves 300 valid
-ranges. Stale MAG/BMP packets, rejected samples, and other sensors' raw values
-are not written into that row; raw MAG XYZ is retained because ellipsoid
-calibration needs the point cloud. Live plots, packet health and the latency
-tab continue to use the full stream in memory. Existing CSVs are not modified.
+New sessions are written under `measurements/calibration/esp32s3/sessions/`.
+Only accepted samples for the active phase are stored; stale/rejected packets
+and unrelated sensor channels remain in memory for plots and health status. The
+PowerShell launcher defaults to 30,000 gyro, 5,000 per accel face, 5,000 per
+MAG yaw/pitch/roll turn, 20,000 MAG tumble, and 1,000 BMP samples. Raw MAG XYZ is
+kept for ellipsoid fitting. A CSV is created lazily on the first accepted
+sample. Completed sessions auto-save under `complete/`; a deliberately saved
+partial run goes under `incomplete/` with missing phase counts in a final META
+row. Starting another session offers save-incomplete, discard, or cancel when
+the current session is unfinished. No empty startup CSV, skip manifest, or new
+`_part02` file is created. Derived calibration and combined outputs go under
+`measurements/calibration/esp32s3/analysis/`.
+
+Live altitude supports both pressure encodings present in ESP32-S3 v3 firmware:
+whole Pa and centi-Pa. It accepts only physical-range values (30–120 kPa),
+establishes a median reference from the first 30 fresh valid BMP readings, and plots
+relative barometric height. The plot reports invalid pressure or reference
+progress instead of silently remaining blank. This display is not fused height
+and does not establish terrain-relative altitude.
 
 ## Sensor profile targets (not validation claims)
 
@@ -85,7 +76,8 @@ freshness, transaction timing and capture evidence support it.
 
 ## Latency and telemetry
 
-The GUI has separate Live, Temperature, Sensor Latency and LiDAR Geometry tabs.
+The GUI has separate Live, Temperature and Sensor Latency tabs. LiDAR geometry
+and calibration controls are deferred until after the competition.
 The latency tab plots MPU, QMC, BMP and LiDAR age and service time, plus rolling
 P50/P95/P99/max and per-sensor error/deadline counters. Current v2/v3 packets
 are 52 bytes and do not carry these per-sensor metrics; the tab correctly stays
@@ -124,8 +116,9 @@ shared bus/wiring works. The current DSH source edits and the requested 400 kHz,
 188 Hz and BMP rates are not physical validation. No LiDAR interface or
 airframe lever arm has been independently surveyed in this work session.
 
-The large November 6 capture has an empty skip manifest but no saved launch
-arguments, and its accepted rows include multiple attempts/counts that differ
-from the GUI's default targets. It is **not** classified as a 100% complete
-session and must not be included in calibration fitting until its intended
-targets and provenance are established. Preserve it as evidence.
+The large November 6 capture has no saved launch arguments, and its accepted
+rows include multiple attempts/counts that differ from the GUI's default
+targets. It is **not** classified as a 100% complete session and must not be
+included in calibration fitting until its intended targets and provenance are
+established. It is preserved in the dated legacy archive with a SHA-256 entry;
+no completeness claim is inferred from its former skip manifest.

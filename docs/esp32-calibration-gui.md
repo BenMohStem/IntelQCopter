@@ -61,26 +61,30 @@ To start the installed-firmware GUI without flashing, run:
 ```
 
 This uses the installed firmware (no upload) and starts the guided GUI. USB
-serial uses 921600 baud; Wi-Fi uses the configured AP and local UDP port.
-Defaults are 30,000 stationary gyro samples, 5,000 samples per accelerometer
-face, 2,000 samples for each magnetic yaw/pitch/roll stage, 8,000 magnetic 3D
-tumble samples, 1,000 barometer samples, then four LiDAR references at 0.25,
-0.50, 1.00 and 2.00 m with 300 fresh valid samples each. Thus the default
-session has 16 stages (LiDAR is steps 13–16), with an explicit option to skip
-the four LiDAR ranges. Measure reference distance from the F2 optical reference
-to a flat target and keep the beam normal to the target. LiDAR may arrive through
-a separate 3.3 V UART adapter or firmware v4 forwarding.
+serial uses 921600 baud; Wi-Fi uses the configured AP and local UDP port. The
+competition launcher runs 12 phases: 30,000 stationary gyro samples, 5,000
+samples per accelerometer face, 5,000 samples for each magnetic yaw/pitch/roll
+stage, 20,000 magnetic tumble samples, and 1,000 barometer samples. LiDAR setup,
+geometry and calibration phases are deferred until after the competition.
 
-The GUI includes a LiDAR Geometry worksheet with editable `r_s`, roll, pitch,
-yaw and slant range, plus a separate Sensor Latency tab. The worksheet computes
-full COM-to-beam-hit geometry and horizontal footprint; it is not an estimator.
-Firmware v2/v3 has no per-sensor timestamps/service durations, so latency plots
-remain blank with an explanation until the 92-byte v4 telemetry is implemented
-by DSH. The v4 tab displays rolling P50/P95/P99/max, freshness, per-sensor error
-counts and deadline misses. It distinguishes sensor service time from age,
-conversion interval, filter delay, USB/Wi-Fi transport and GUI redraw time. See
-[TOFSense-F2 Mini geometry and altitude fusion](lidar-geometry-and-altitude-fusion-2026-11-06.md)
-for the reported mounting and estimator safety/validation requirements.
+Sessions are stored under
+`measurements/calibration/esp32s3/sessions/`. A CSV is created only when the
+first accepted sample arrives. Full sessions auto-save into `complete/`; the
+“Save & begin new calibration” button starts a fresh run directly after a
+completed session. During an unfinished run, it asks whether to save the old
+session as incomplete with missing phase counts, discard its samples, or cancel.
+No empty session CSV, skip manifest or `_part02` file is produced. Analysis
+outputs go into `measurements/calibration/esp32s3/analysis/`.
+
+The Live tab plots relative barometric height when valid pressure is available.
+The decoder handles both whole-Pa and centi-Pa pressure values used by the
+observed ESP32-S3 v3 builds, requires 30–120 kPa, then sets the median of the
+first 30 fresh valid readings as a relative reference. A status label explains
+invalid pressure or reference progress. This is a barometric display, not
+LiDAR-fused or terrain-relative altitude. The separate Sensor Latency tab
+displays measured per-sensor age/service fields when available; v2/v3 do not
+carry those timing values, so the GUI reports them unavailable instead of
+substituting the 2 ms control period.
 
 For magnetic stages, rotate the whole assembled sensor/airframe slowly around
 yaw, pitch, roll and then across unrestricted 3D orientations. Keep nearby steel,
@@ -89,7 +93,7 @@ gate the pose or verify directional coverage. After capture, analyze one or
 more CSV files with:
 
 ```powershell
-python .\hardware\bench_calibration\esp32s3_qmc5883p_100hz\tools\calibrate.py .\hardware\bench_calibration\esp32s3_qmc5883p_100hz\captures\<capture>.csv
+python .\hardware\bench_calibration\esp32s3_qmc5883p_100hz\tools\calibrate.py .\measurements\calibration\esp32s3\sessions\complete\<capture>.csv
 ```
 
 Review warnings and the independent validation run before using coefficients.

@@ -1,12 +1,11 @@
 <#
 IntelQCopter competition calibration, Windows PowerShell 5.1.
-Default: 12 sensor phases, without LiDAR. Add -WithLidar to append four F2 ranges.
+Competition mode: 12 sensor phases, with all LiDAR setup and stages deferred.
 QMC5883P 200Hz target / UART 921600 / 500Hz IMU schedule.
 
   .\tools\start_calibration.ps1
   .\tools\start_calibration.ps1 -UploadFirmware
   .\tools\start_calibration.ps1 -Port COM3 -UploadFirmware
-  .\tools\start_calibration.ps1 -WithLidar # Append F2 range phases when ready
   .\tools\start_calibration.ps1 -Check -Seconds 20
   .\tools\start_calibration.ps1 -Wifi                 # Wi-Fi calibration, no cable needed
   .\tools\start_calibration.ps1 -UploadFirmware -Wifi # Build+upload via COM, then calibrate via Wi-Fi
@@ -22,10 +21,6 @@ param(
     [int]$BmpSamples = 1000,
     [ValidateRange(0,30)][double]$SettleSeconds = 3.0,
     [switch]$SkipBmp,
-    [switch]$SkipLidar,
-    [switch]$WithLidar,
-    [string]$LidarPort = '',
-    [int]$LidarSamples = 300,
     [switch]$MagOnly,
     [switch]$MagProbe,
     [switch]$Wifi,  # Enable ESP32-S3 Wi-Fi AP calibration (UDP)
@@ -35,7 +30,6 @@ param(
     [ValidateRange(2,300)][int]$Seconds = 20
 )
 $ErrorActionPreference = 'Stop'
-if ($WithLidar -and $SkipLidar) { throw 'Choose either -WithLidar or -SkipLidar, not both.' }
 $Root = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 . (Join-Path $PSScriptRoot 'resolve_platformio.ps1')
 . (Join-Path $PSScriptRoot 'resolve_serial_port.ps1')
@@ -63,10 +57,6 @@ try {
         & $PythonExe @PythonPrefix '-m' 'pip' 'install' '-r' (Join-Path $Root 'requirements.txt')
         if ($LASTEXITCODE -ne 0) { throw 'Python requirements installation failed.' }
     }
-    if ($LidarPort -and $Port -and $LidarPort -ieq $Port) {
-        throw 'The LiDAR and ESP32 cannot use the same serial port.'
-    }
-
     # Wi-Fi mode: ESP32-S3 acts as Access Point, PC connects via UDP.
     # No COM port needed for calibration - only for firmware upload.
     # Build first (cable connected), then remove cable and calibrate via Wi-Fi.
@@ -127,11 +117,7 @@ try {
     Write-Host "  Mag yaw/pitch/roll: $MagTurnSamples samples per rotation"
     Write-Host "  Mag 3D tumble: $MagTumbleSamples samples"
     Write-Host "  Barometer: $BmpSamples samples"
-    if (-not $WithLidar -or $SkipLidar) {
-        Write-Host '  LiDAR: excluded from this 12-phase calibration run.' -ForegroundColor DarkGray
-    } else {
-        Write-Host "  TOFSense-F2 Mini: 4 additional range phases x $LidarSamples fresh readings (0.25, 0.50, 1.00, 2.00 m)"
-    }
+    Write-Host '  LiDAR: deferred until after the competition.' -ForegroundColor DarkGray
     Write-Host "  Preparation: $SettleSeconds seconds per stage"
     Write-Host '  Motor output DISABLED; remove propellers.' -ForegroundColor Yellow
     if ($Wifi) {
@@ -139,20 +125,17 @@ try {
             '--wifi','--gyro-samples',"$GyroSamples",
             '--accel-samples',"$AccelSamples",'--mag-turn-samples',"$MagTurnSamples",
             '--mag-tumble-samples',"$MagTumbleSamples",'--bmp-samples',"$BmpSamples",
-            '--lidar-samples',"$LidarSamples",'--settle-seconds',"$SettleSeconds")
+            '--settle-seconds',"$SettleSeconds")
     } else {
         $a=@((Join-Path $Root 'tools\launch_calibration_gui.py'),
             '--port',$selectedPort,'--gyro-samples',"$GyroSamples",
             '--accel-samples',"$AccelSamples",'--mag-turn-samples',"$MagTurnSamples",
             '--mag-tumble-samples',"$MagTumbleSamples",'--bmp-samples',"$BmpSamples",
-            '--lidar-samples',"$LidarSamples",'--settle-seconds',"$SettleSeconds")
+            '--settle-seconds',"$SettleSeconds")
     }
     if ($Output) { $a+=@('--output',$Output) }
     if ($SkipBmp) { $a+=@('--skip-bmp') }
-    # Keep the urgent calibration flow to its 12 IMU/MAG/BMP phases. LiDAR is
-    # added only when the operator explicitly selects -WithLidar.
-    if ($WithLidar -and -not $SkipLidar) { $a+='--with-lidar' } else { $a+='--skip-lidar' }
-    if ($LidarPort) { $a+=@('--lidar-port',$LidarPort) }
+    # Competition calibration intentionally has no LiDAR setup or stages.
     if ($MagOnly) { $a+='--mag-only' }
     & $PythonExe @PythonPrefix @a
     if ($LASTEXITCODE -ne 0) { throw "Calibration application exited with code $LASTEXITCODE." }

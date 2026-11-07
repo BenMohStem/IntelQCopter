@@ -35,13 +35,25 @@ HMC_COUNTS_PER_UT = 1090.0 / 100.0
 QMC_COUNTS_PER_UT = 3000.0 / 100.0  # QMC5883L +/-8 G
 QMCP_COUNTS_PER_UT = 3750.0 / 100.0  # QMC5883P +/-8 G, QST datasheet Rev E
 ROOT = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = ROOT.parents[2]
+CALIBRATION_ROOT = PROJECT_ROOT/'measurements'/'calibration'/'esp32s3'
+SESSION_COMPLETE_DIR = CALIBRATION_ROOT/'sessions'/'complete'
+SESSION_INCOMPLETE_DIR = CALIBRATION_ROOT/'sessions'/'incomplete'
+ANALYSIS_DIR = CALIBRATION_ROOT/'analysis'
 
-CSV_COLUMNS = ('kind,seq,t_us,pose,mpu_ok,bmp_ok,mag_ok,ax_raw,ay_raw,az_raw,gx_raw,gy_raw,gz_raw,'
+CSV_COLUMNS = (
+    'kind,seq,t_us,pose,mpu_ok,bmp_ok,mag_ok,ax_raw,ay_raw,az_raw,gx_raw,gy_raw,gz_raw,'
     'mpu_temp_raw,ax_mps2,ay_mps2,az_mps2,gx_dps,gy_dps,gz_dps,mpu_temp_c,'
     'bmp_new,bmp_adc_p,bmp_adc_t,bmp_temp_c,pressure_pa,mag_new,mx_raw,my_raw,mz_raw,'
     'mx_uT,my_uT,mz_uT,host_utc_iso,mag_stage,late_us,missed_ticks,'
-    'mag_board_x_uT,mag_board_y_uT,mag_board_z_uT,relative_altitude_m,host_monotonic_s,phase_accepted,phase_elapsed_s,mag_sensor_type,observed_packet_dt_us,seq_gap_before,gap_gt_5ms,gap_gt_10ms,phase_attempt,lidar_reference_m,lidar_distance_m,lidar_status,lidar_signal,lidar_sensor_time_ms,lidar_module_id,'
-    'sensor_age_mpu_us,sensor_age_qmc_us,sensor_age_bmp_us,sensor_age_lidar_us,service_mpu_us,service_qmc_us,service_bmp_us,service_lidar_us,sensor_fresh_mask,mpu_errors_total,qmc_errors_total,bmp_errors_total,lidar_errors_total,deadline_overruns_total').split(',')
+    'mag_board_x_uT,mag_board_y_uT,mag_board_z_uT,relative_altitude_m,host_monotonic_s,'
+    'phase_accepted,phase_elapsed_s,mag_sensor_type,observed_packet_dt_us,seq_gap_before,'
+    'gap_gt_5ms,gap_gt_10ms,phase_attempt,lidar_reference_m,lidar_distance_m,lidar_status,'
+    'lidar_signal,lidar_sensor_time_ms,lidar_module_id,sensor_age_mpu_us,sensor_age_qmc_us,'
+    'sensor_age_bmp_us,sensor_age_lidar_us,service_mpu_us,service_qmc_us,service_bmp_us,'
+    'service_lidar_us,sensor_fresh_mask,mpu_errors_total,qmc_errors_total,bmp_errors_total,'
+    'lidar_errors_total,deadline_overruns_total,session_started_utc,session_status,missing_stages'
+).split(',')
 
 
 @dataclass(slots=True)
@@ -114,7 +126,19 @@ class Frame:
         return tuple(x / counts_per_ut for x in (self.mx,self.my,self.mz))
 
     def bmp(self):
-        return self.bmp_pa100 / 100.0
+        """Return plausible pressure in Pa for both observed v3 wire encodings.
+
+        The bench firmware emits integer Pa, while the DSH candidate emits
+        centi-Pa in the same v3 field. Detect the scale from physical range;
+        return NaN for invalid/zero values instead of plotting a false zero.
+        """
+        raw = float(self.bmp_pa100)
+        if 30000.0 <= raw <= 120000.0:
+            return raw
+        scaled = raw/100.0
+        if 30000.0 <= scaled <= 120000.0:
+            return scaled
+        return math.nan
 
 
 class BinaryDecoder:
@@ -314,13 +338,7 @@ def stages(args):
                  'Slowly tumble through all orientations, including diagonal poses.')]
         + ([] if args.skip_bmp else [Stage('BMP','STILL',args.bmp_samples,'bmp',
                  'Keep still at one reference height, away from drafts and propeller wash.')])
-        + ([] if args.skip_lidar else [
-            Stage('LIDAR',f'D{int(round(distance_m*1000)):04d}',args.lidar_samples,'lidar',
-                  f'Point the sensor squarely at a flat, matte target. Measure {distance_m:.2f} m from the LiDAR optical reference to the target; keep the beam perpendicular and the airframe still.')
-            for distance_m in (0.25,0.50,1.00,2.00)])
 )
-    # The LiDAR references are additional range-validation phases (13–16).
-    # They do not replace or claim completion of gyro, accel, MAG, or BMP work.
     return sequence
 
 
@@ -398,10 +416,10 @@ class OptionalLidarSource(threading.Thread):
 
 
 class Recorder(threading.Thread):
-    def __init__(self, port, file, event_queue, axis_map, settle_seconds=3.0,
+    def __init__(self, port, event_queue, axis_map, settle_seconds=3.0,
                  wifi=False, wifi_host="192.168.4.1", wifi_port=19005, lidar_port=""):
         super().__init__(daemon=True)
-        self.port, self.file = port, Path(file)
+        self.port = port
         self.wifi,self.wifi_host,self.wifi_port=bool(wifi),str(wifi_host),int(wifi_port)
         self.events = event_queue
         self.lidar_port = str(lidar_port).strip()
@@ -431,6 +449,7 @@ class Recorder(threading.Thread):
         self.seq_gaps = 0
         self.p0_samples = []
         self.p0 = None
+        self.altitude_status = 'Waiting for valid BMP280 pressure (30–120 kPa).'
         self.last_emit = 0.0
         self.phase_last_progress = 0
         self.error = None
@@ -439,15 +458,19 @@ class Recorder(threading.Thread):
         self.stage_warning_issued = False
         self.stage_start_time = 0.0
         self.last_reject_reason = 'No samples checked yet'
-        self.skipped = []
         self.last_countdown_emit = 0.0
         self.capture_started_notified = False
-        self.checkpoint_request = threading.Event()
         self.attempt_counter = 0
         self.current_attempt = 0
-        self.segment_number = 1
-        self.current_file = self.file
-        self.completed_files = []
+        self.commands = queue.Queue()
+        self.session_path = None
+        self.complete_path = None
+        self.session_started_utc = ''
+        self.stage_counts = {}
+        self.session_rows = 0
+        self.current_file = None
+        self._fp = None
+        self._csv_writer = None
 
     def connect_lidar(self, port):
         """Attach the single F2 Mini on its own COM port, without restarting ESP stream.
@@ -470,12 +493,97 @@ class Recorder(threading.Thread):
         self.lidar_reader.start()
         return True, f'Connecting LiDAR on {port} at 921600 baud...'
 
-    def save_checkpoint(self):
-        """Request a completed, closed CSV segment while acquisition continues."""
-        self.checkpoint_request.set()
+    def start_session(self, incomplete_path, complete_path, started_utc):
+        """Begin a new logical session; the CSV is opened on its first sample."""
+        self.commands.put(('start', Path(incomplete_path), Path(complete_path), started_utc))
 
-    def _segment_filename(self, number):
-        return self.file.with_name(self.file.stem + f'_part{number:02d}' + self.file.suffix)
+    def finalize_session(self, status, missing_stages=()):
+        self.commands.put(('finalize', str(status), tuple(missing_stages)))
+
+    def discard_session(self):
+        self.commands.put(('discard',))
+
+    def _write_row(self, row):
+        """Lazily create the session file when the first accepted sample arrives."""
+        if self.session_path is None:
+            return
+        if self._csv_writer is None:
+            self.session_path.parent.mkdir(parents=True, exist_ok=True)
+            self._fp = self.session_path.open('x', newline='', encoding='utf-8')
+            self._csv_writer = csv.writer(self._fp)
+            self._csv_writer.writerow(CSV_COLUMNS)
+        self._csv_writer.writerow([row.get(column, '') for column in CSV_COLUMNS])
+        self.session_rows += 1
+
+    def _process_commands(self):
+        while True:
+            try: command = self.commands.get_nowait()
+            except queue.Empty: return
+            operation = command[0]
+            if operation == 'start':
+                _, self.session_path, self.complete_path, self.session_started_utc = command
+                self.current_file = self.session_path
+                self.session_rows = 0
+                self.attempt_counter = 0
+                self.current_attempt = 0
+                with self.lock:
+                    self.stage_counts = {}
+                self.events.put(('session_started', self.session_path))
+            elif operation == 'finalize':
+                _, status, missing_stages = command
+                path = None
+                rows = self.session_rows
+                if (rows and self._fp is None and self.session_path is not None
+                        and self.session_path.exists()):
+                    # Preserve the final session metadata if the sensor stream
+                    # ended just before the GUI's finalize request was handled.
+                    with self.session_path.open('a', newline='', encoding='utf-8') as stream:
+                        writer=csv.writer(stream)
+                        meta=dict.fromkeys(CSV_COLUMNS,'')
+                        meta.update(kind='META',session_started_utc=self.session_started_utc,
+                                    session_status=status,missing_stages='; '.join(missing_stages))
+                        writer.writerow([meta.get(column,'') for column in CSV_COLUMNS])
+                if self._fp is not None and self._csv_writer is not None:
+                    if rows:
+                        meta = dict.fromkeys(CSV_COLUMNS, '')
+                        meta.update(kind='META', session_started_utc=self.session_started_utc,
+                                    session_status=status,
+                                    missing_stages='; '.join(missing_stages))
+                        self._csv_writer.writerow([meta.get(column, '') for column in CSV_COLUMNS])
+                    self._fp.flush()
+                    self._fp.close()
+                    self._fp = self._csv_writer = None
+                if rows and self.session_path is not None:
+                    path = self.session_path
+                    if status == 'complete' and self.complete_path is not None:
+                        self.complete_path.parent.mkdir(parents=True, exist_ok=True)
+                        self.session_path.replace(self.complete_path)
+                        path = self.complete_path
+                    self.current_file = path
+                else:
+                    self.current_file = None
+                self.events.put(('session_saved', (status, path, rows, missing_stages)))
+                self.session_path = self.complete_path = None
+                self.session_started_utc = ''
+                self.session_rows = 0
+                with self.lock:
+                    self.stage_counts = {}
+            elif operation == 'discard':
+                path = self.session_path
+                rows = self.session_rows
+                if self._fp is not None:
+                    self._fp.close()
+                    self._fp = self._csv_writer = None
+                if path is not None:
+                    try: path.unlink()
+                    except FileNotFoundError: pass
+                self.current_file = None
+                self.events.put(('session_discarded', (path, rows)))
+                self.session_path = self.complete_path = None
+                self.session_started_utc = ''
+                self.session_rows = 0
+                with self.lock:
+                    self.stage_counts = {}
 
     def pause_stage(self):
         with self.lock:
@@ -502,6 +610,7 @@ class Recorder(threading.Thread):
             self.active = stage
             self.attempt_counter += 1
             self.current_attempt = self.attempt_counter
+            self.stage_counts[(stage.pose, stage.mag_stage)] = 0
             self.paused = False
             self.sample_count = 0
             self.last_accepted_at = time.monotonic()
@@ -520,23 +629,8 @@ class Recorder(threading.Thread):
         with self.lock:
             self.active = None
 
-    def skip_stage(self):
-        """Explicitly omit a stage; never silently relabel data as calibrated."""
-        with self.lock:
-            stage = self.active
-            self.active = None
-            self.paused = False
-            if stage:
-                self.skipped.append({'pose':stage.pose,'mag_stage':stage.mag_stage,
-                                     'accepted_before_skip':self.sample_count,
-                                     'target':stage.target})
-            return stage
-
-
     def run(self):
-        fp = None
         try:
-            self.file.parent.mkdir(parents=True, exist_ok=True)
             if self.wifi:
                 stream = WifiPacketStream(host=self.wifi_host,local_port=self.wifi_port)
             else:
@@ -547,62 +641,46 @@ class Recorder(threading.Thread):
                 ok, note = self.connect_lidar(self.lidar_port)
                 self.events.put(('lidar_status',note))
             with stream as ser:
-                fp = self.current_file.open('x', newline='', encoding='utf-8')
-                csvw = csv.writer(fp)
-                csvw.writerow(CSV_COLUMNS)
-                fp.flush()
                 self.started.set()
                 self.events.put(('status',
                     f'Wi-Fi UDP listening on :{self.wifi_port}; connect PC to IntelQCopter-Cal AP and wait for sensor packets'
                     if self.wifi else f'Connected to {self.port} at {BAUD} baud'))
                 count_since_flush = 0
-                while not self.stop_event.is_set():
-                    # The I/O thread alone owns the CSV writer. Closing/rotating
-                    # here guarantees each saved segment is complete and can be
-                    # analyzed while a new one keeps recording.
-                    if self.checkpoint_request.is_set():
-                        self.checkpoint_request.clear()
-                        fp.flush()
-                        fp.close()
-                        old = self.current_file
-                        self.completed_files.append(old)
-                        self.segment_number += 1
-                        self.current_file = self._segment_filename(self.segment_number)
-                        fp = self.current_file.open('x', newline='', encoding='utf-8')
-                        csvw = csv.writer(fp)
-                        csvw.writerow(CSV_COLUMNS)
-                        fp.flush()
-                        count_since_flush = 0
-                        self.events.put(('saved_checkpoint', (old, self.current_file)))
+                while True:
+                    self._process_commands()
+                    if self.stop_event.is_set():
+                        break
                     data = ser.read(4096)
                     # Drain separately received LiDAR frames without waiting for
                     # its slower UART; record each with its own sensor clock.
                     for _ in range(128):
                         try:received, sample = self.lidar_queue.get_nowait()
                         except queue.Empty:break
-                        self._handle_lidar(sample,received,csvw)
+                        self._handle_lidar(sample,received)
                     if not data:
                         continue
                     self.bytes_total += len(data)
                     self.last_byte_at = time.monotonic()
                     frames = self.decoder.feed(data)
                     for frame in frames:
-                        self._handle_frame(frame, csvw)
+                        self._handle_frame(frame)
                         count_since_flush += 1
                     if count_since_flush >= 250:
-                        fp.flush()
+                        if self._fp is not None:
+                            self._fp.flush()
                         count_since_flush = 0
         except Exception as e:
             self.error = str(e)
             self.events.put(('error', str(e)))
         finally:
-            if fp is not None:
-                try:fp.flush();fp.close()
+            if self._fp is not None:
+                try:self._fp.flush();self._fp.close()
                 except OSError:pass
+                self._fp = self._csv_writer = None
             self.started.set()
             self.events.put(('stopped', None))
 
-    def _handle_lidar(self,sample,received,writer,*,source='serial'):
+    def _handle_lidar(self,sample,received,*,source='serial'):
         self.lidar_total+=1
         self.events.put(('lidar_sample',{
             'distance_m':sample.distance_m,'valid':bool(sample.valid),
@@ -649,7 +727,7 @@ class Recorder(threading.Thread):
                 f=self.last_frame
                 row['mpu_temp_c']=f'{f.temp/340.0+36.53:.3f}' if f.mpu_ok else ''
                 row['bmp_temp_c']=f'{f.bmp_tc100/100:.3f}' if f.bmp_ok else ''
-            writer.writerow([row[c] for c in CSV_COLUMNS])
+            self._write_row(row)
 
     @staticmethod
     def _phase_rejection_reason(f, stage):
@@ -664,17 +742,19 @@ class Recorder(threading.Thread):
             if not f.mag_ok:
                 return ('No magnetometer recognized: use Scan test for '
                         'HMC5883L=0x1E, QMC5883L=0x0D or QMC5883P=0x2C; '
-                        'Skip phase if device is physically absent')
+                        'stop this run if the device is physically absent')
             return None if f.mag_new else 'Waiting for FRESH magnetometer reading'
         if stage.sensor == 'bmp':
-            return None if (f.bmp_ok and f.bmp_new) else 'Waiting for FRESH BMP280 reading'
+            if not f.bmp_ok or not f.bmp_new:
+                return 'Waiting for FRESH BMP280 reading'
+            return None if math.isfinite(f.bmp()) else 'BMP pressure is invalid or has unknown wire scaling'
         return 'Unsupported calibration stage'
 
     @staticmethod
     def _accept_phase_frame(f, stage):
         return Recorder._phase_rejection_reason(f,stage) is None
 
-    def _handle_frame(self, f, writer):
+    def _handle_frame(self, f):
         now = time.monotonic()
         self.frames_total += 1
         self.mpu_total += int(f.mpu_ok)
@@ -715,14 +795,29 @@ class Recorder(threading.Thread):
                 sensor_time_ms=f.lidar_sensor_time_ms if f.lidar_sensor_time_ms is not None else 0,
                 module_id=f.lidar_module_id if f.lidar_module_id is not None else 0,
             )
-            self._handle_lidar(sample,now,writer,source='telemetry')
+            self._handle_lidar(sample,now,source='telemetry')
 
-        if f.bmp_new and f.bmp() > 10000:
-            if self.p0 is None:
-                self.p0_samples.append(f.bmp())
-                if len(self.p0_samples) >= 30:
-                    self.p0 = sorted(self.p0_samples)[len(self.p0_samples)//2]
-        altitude = (44330.0*(1.0-(f.bmp()/self.p0)**(1.0/5.255))) if f.bmp_ok and self.p0 else math.nan
+        pressure = f.bmp()
+        pressure_valid = f.bmp_ok and math.isfinite(pressure)
+        if pressure_valid and f.bmp_new and self.p0 is None:
+            # Build the reference only from actual BMP conversions; reused
+            # cached pressure values must not masquerade as separate samples.
+            self.p0_samples.append(pressure)
+            if len(self.p0_samples) >= 30:
+                self.p0 = sorted(self.p0_samples)[len(self.p0_samples)//2]
+        if not f.bmp_ok:
+            self.altitude_status = 'BMP280 status invalid; waiting for pressure.'
+        elif not math.isfinite(pressure):
+            self.altitude_status = 'BMP pressure invalid: expected 30,000–120,000 Pa.'
+        elif self.p0 is None:
+            self.altitude_status = f'Setting relative pressure reference: {len(self.p0_samples)}/30.'
+        else:
+            self.altitude_status = 'Relative barometric height from stream-start pressure.'
+        altitude = math.nan
+        if pressure_valid and self.p0 is not None and self.p0 > 0:
+            ratio = pressure/self.p0
+            if 0.2 < ratio < 2.0:
+                altitude = 44330.0*(1.0-ratio**(1.0/5.255))
         mx = f.mag()
         mx_board = map_mag(self.axis_map, mx)
         if f.mag_new:
@@ -749,6 +844,8 @@ class Recorder(threading.Thread):
                 if valid:
                     self.sample_count += 1
                     self.last_accepted_at = now
+                    key=(stage.pose,stage.mag_stage)
+                    self.stage_counts[key]=self.stage_counts.get(key,0)+1
                 count = self.sample_count
                 if (count != self.phase_last_progress and
                         (now-self.last_progress_emit_at >= 0.20 or count >= stage.target)):
@@ -759,7 +856,7 @@ class Recorder(threading.Thread):
                     self.events.put(('hint',
                         f'No new {stage.sensor.upper()} samples for {stage.pose}/{stage.mag_stage}. '
                         f'Reason: {self.last_reject_reason}. '
-                        'This stage does not check orientation; if sensor missing, use Skip phase.'))
+                        'This phase is not counted until valid fresh sensor data arrives.'))
                     self.next_hint_at = now + 8.0
                 expected_rate = {'mpu':500.0, 'mag':15.0, 'bmp':10.0, 'lidar':50.0}[stage.sensor]
                 slow_deadline = max(30.0, stage.target / expected_rate * 3.0)
@@ -767,7 +864,7 @@ class Recorder(threading.Thread):
                     self.stage_warning_issued = True
                     self.events.put(('hint',
                         f'Stage {stage.pose}/{stage.mag_stage} is unusually slow: '
-                        f'{count}/{stage.target} real samples. Use Skip phase if sensor unavailable.'))
+                        f'{count}/{stage.target} real samples. Check sensor status and connections.'))
                 if count >= stage.target:
                     self.active = None
                     self.events.put(('stage_done', (stage, count)))
@@ -824,7 +921,7 @@ class Recorder(threading.Thread):
                 row.update(bmp_ok=1,bmp_new=1,bmp_adc_p=f.bmp_raw_p,bmp_adc_t=f.bmp_raw_t,
                            bmp_temp_c=f'{f.bmp_tc100/100:.2f}',pressure_pa=f'{f.bmp():.2f}')
             assert len(row)==len(CSV_COLUMNS)
-            writer.writerow([row[c] for c in CSV_COLUMNS])
+            self._write_row(row)
 
         if now - self.last_emit >= 0.12:
             self.last_emit = now
@@ -835,7 +932,7 @@ class Recorder(threading.Thread):
                 't': now, 'a': f.accel() if f.mpu_ok else (math.nan,)*3,
                 'g': f.gyro() if f.mpu_ok else (math.nan,)*3,
                 'm': mx_board if f.mag_ok else (math.nan,)*3,
-                'p': f.bmp() if f.bmp_ok else math.nan, 'h': altitude,
+                'p': pressure if pressure_valid else math.nan, 'h': altitude,
                 'seq': f.seq, 'drop': self.seq_gaps, 'crc': self.decoder.bad_crc,
                 'mpu': f.mpu_ok, 'mag': f.mag_ok, 'bmp': f.bmp_ok,
                 'rate': self.frames_total/max(.001,(now-self.run_started)) if hasattr(self,'run_started') else 0,
@@ -844,6 +941,7 @@ class Recorder(threading.Thread):
                 'mpu_temp': f.temp/340.0+36.53 if f.mpu_ok else math.nan,
                 'bmp_temp': f.bmp_tc100/100.0 if f.bmp_ok else math.nan,
                 'bmp_new': f.bmp_new,
+                'altitude_status': self.altitude_status,
                 'mag_point': self.pending_mag_plot,
                 'version':f.version,
             }))
@@ -856,6 +954,11 @@ class Application:
         from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
         self.tk, self.ttk, self.msg = tk, ttk, messagebox
         self.args, self.stages, self.output = args, stage_list, output
+        self.axis_name=axis_name
+        self.default_storage = output is None
+        self.output_dir = (SESSION_INCOMPLETE_DIR if self.default_storage else Path(output).parent)
+        self.output_prefix = 'calibration' if self.default_storage else Path(output).stem
+        self.output = None
         self.root=tk.Tk()
         self.root.title('IntelQCopter | 500 Hz IMU / 200 Hz QMC calibration')
         self.root.geometry('1240x800')
@@ -865,8 +968,10 @@ class Application:
         self.stage_index=0
         self.finished=False
         self.capture_active=False
+        self.session_active=False
+        self.session_ready=False
+        self.pending_begin=False
         self.analysis_running=False
-        self.skipped_stages=[]
         self.start_time=time.monotonic()
         self.lines=[]
         self.times=deque(maxlen=500)
@@ -885,9 +990,13 @@ class Application:
         self.mag_popup_last_draw=0.0
         self.info=tk.StringVar(value='Connecting sensor telemetry...')
         self.saved_info=tk.StringVar(value=(
-            'Saves accepted calibration samples only; live packet data stays in the GUI.'))
+            'Accepted calibration samples only; complete sessions auto-save. LiDAR is excluded for this run.'))
         self.headline=tk.StringVar(value='')
         self.instruction=tk.StringVar(value='')
+        self.capture_label=tk.StringVar(value=(
+            f'New sessions: {SESSION_INCOMPLETE_DIR.relative_to(PROJECT_ROOT)}' if self.default_storage
+            else f'New sessions: {self.output_dir}')+f'  ·  MAG axes: {axis_name}')
+        self.altitude_status='Waiting for valid BMP280 pressure (30–120 kPa).'
         self.progress=tk.StringVar(value='')
         self.paused_status=tk.StringVar(value='')
         self.health=tk.StringVar(value='Opening sensor stream…')
@@ -911,7 +1020,7 @@ class Application:
 
         top=ttk.Frame(self.root,padding=8);top.pack(fill='x')
         ttk.Label(top,text='IntelQCopter | 500 Hz IMU · 200 Hz QMC calibration',font=('Segoe UI',15,'bold')).pack(anchor='w')
-        ttk.Label(top,text=f'Capture: {Path(output).name}  ·  MAG axes: {axis_name}',font=('Segoe UI',8)).pack(anchor='w')
+        ttk.Label(top,textvariable=self.capture_label,font=('Segoe UI',8)).pack(anchor='w')
         ttk.Label(top,textvariable=self.info,font=('Segoe UI',8)).pack(anchor='w',pady=(3,0))
         ttk.Separator(self.root,orient='horizontal').pack(fill='x')
         phase=ttk.Frame(self.root,padding=8);phase.pack(fill='x')
@@ -927,9 +1036,7 @@ class Application:
         self.pause.pack(side='left',padx=8)
         self.redo=ttk.Button(buttons,text='Redo phase',command=self.redo_phase)
         self.redo.pack(side='left',padx=5)
-        self.skip=ttk.Button(buttons,text='Skip phase (incomplete)',command=self.skip_phase)
-        self.skip.pack(side='left',padx=8)
-        self.save_now=ttk.Button(buttons,text='Save CSV / Restart calibration',command=self.save_current)
+        self.save_now=ttk.Button(buttons,text='Save & begin new calibration',command=self.save_current)
         self.save_now.pack(side='left',padx=5)
         self.stop=ttk.Button(buttons,text='Stop / close',command=self.close)
         self.stop.pack(side='left',padx=8)
@@ -998,7 +1105,7 @@ class Application:
             (ax_gyro,'Gyro · 500 Hz',('gx','gy','gz'),'°/s'),
             (ax_mag,'MAG · raw axes',('mx','my','mz'),'µT'),
             (ax_pressure,'BMP pressure',('pressure',),'Pa'),
-            (ax_alt,'Relative height',('altitude',),'m')]:
+            (ax_alt,'Relative barometric height',('altitude',),'m')]:
             ax.set_title(title,fontsize=9,pad=3)
             ax.set_ylabel(unit,fontsize=8,labelpad=2)
             ax.set_xlabel('' if ax in (ax_acc,ax_gyro) else 'Time (s)',fontsize=8,labelpad=1)
@@ -1010,6 +1117,9 @@ class Application:
                 lines.append((key,line))
             ax.legend(loc='upper right',fontsize=8)
             self.charts.append((ax,lines))
+        self.altitude_annotation=ax_alt.text(
+            .5,.5,self.altitude_status,transform=ax_alt.transAxes,
+            ha='center',va='center',fontsize=8,color='#7A4B00',wrap=True)
         self.canvas=FigureCanvasTkAgg(fig,master=self.tab_live)
         self.canvas.draw(); self.canvas.get_tk_widget().pack(fill='both',expand=True,padx=3,pady=3)
         # Temperature is recorded at native sensor rates; thermal graphs use
@@ -1253,55 +1363,91 @@ class Application:
         if not self.worker or not self.worker.started.is_set() or self.worker.error:
             self.msg.showwarning('Recorder unavailable','Connect the serial recorder first.')
             return
-        # Save the current segment; preserve all completed calibrations in captures/.
-        # The user can run another full calibration (restart) without losing previous results.
-        self.worker.save_checkpoint()
-        self.saved_info.set('Calibration saved: previous results preserved in captures/. You can calibrate again.')
-        choice = self.msg.askyesnocancel('Run another calibration?',
-            'This session completed the calibration stages.\n'
-            'Previous completed calibration files are preserved in captures/.\n'
-            'Choose YES to restart the full calibration from stage 1, NO to save current segment and continue, CANCEL to skip.')
-        if choice is False:  # user selected NO (restart full calibration from stage 1)
-            # Restart: reset stage index to 0, clear all series, and reset attempt
-            # Preserve previous completed files; start a new session
-            self.stage_index = 0
-            self.skipped_stages.clear()
-            self.finished = False
-            self.capture_active = False
-            self.attempt_counter = 0
-            self.current_attempt = 0
-            self.mag_points.clear()
-            self.times.clear()
-            self.latency_times.clear()
-            for d in self.series.values():
-                d.clear()
-            for d in self.latency_series.values():
-                d.clear()
-            self.thermal_pressure_t.clear()
-            self.thermal_pressure_p.clear()
-            self.saved_info.set('Calibration restarted from beginning — new attempt starting.')
-            self.info.set('RESTARTED: calibration run restarted from stage 1. Previous completed files preserved in captures/.')
-            self.mag_plot_total = 0
-            # Ensure the worker creates a new file name on the next checkpoint
-            # (already handled by save_checkpoint setting current_file to a new part file)
+        if self.finished:
+            self._start_new_session()
+            return
+        if not self.session_active:
+            self._start_new_session()
+            return
+        missing=self._missing_stage_descriptions()
+        if not missing:
+            self.worker.end_stage()
+            self.stage_index=len(self.stages)
             self.update_stage()
-            self.begin.config(state='normal' if (self.worker and self.worker.started.is_set() and not self.worker.error) else 'disabled')
-        elif choice is None:
-            # CANCEL — just saved, do not restart
-            self.saved_info.set('Segment saved; calibration continues with no restart.')
+            return
+        choice=self.msg.askyesnocancel(
+            'Begin a new calibration?',
+            'The current calibration is incomplete.\n\n'
+            'Yes: save it as incomplete, with missing phases listed, then begin a new session.\n'
+            'No: delete this session data and begin a new session.\n'
+            'Cancel: return to the current calibration.')
+        if choice is None:
+            return
+        self.worker.end_stage()
+        self.capture_active=False
+        self.pause.config(text='Pause',state='disabled')
+        if choice:
+            self.worker.finalize_session('incomplete',missing)
         else:
-            # YES — save and continue (default existing behavior)
-            self.info.set('Segment saved; calibration continues.')
+            self.worker.discard_session()
+        self._start_new_session()
+
+    def _new_session_paths(self):
+        stamp=datetime.now().astimezone().strftime('%Y%m%d_%H%M%S_%f')
+        stem=f'{self.output_prefix}_{stamp}'
+        if self.default_storage:
+            incomplete=SESSION_INCOMPLETE_DIR/f'{stem}_incomplete.csv'
+            complete=SESSION_COMPLETE_DIR/f'{stem}_complete.csv'
+        else:
+            incomplete=self.output_dir/f'{stem}_incomplete.csv'
+            complete=self.output_dir/f'{stem}_complete.csv'
+        return incomplete,complete
+
+    def _reset_session_view(self):
+        self.stage_index=0
+        self.finished=False
+        self.capture_active=False
+        self.mag_points.clear()
+        self.times.clear()
+        self.latency_times.clear()
+        for values in self.series.values():values.clear()
+        for values in self.latency_series.values():values.clear()
+        self.thermal_pressure_t.clear()
+        self.thermal_pressure_p.clear()
+        self.mag_plot_total=0
+        self.start_time=time.monotonic()
+        self.bar['value']=0
+
+    def _start_new_session(self):
+        started=datetime.now(timezone.utc).isoformat(timespec='milliseconds')
+        incomplete,complete=self._new_session_paths()
+        self.worker.start_session(incomplete,complete,started)
+        self.output=incomplete
+        self.session_active=True
+        self.session_ready=False
+        self._reset_session_view()
+        self.capture_label.set(f'Session: {incomplete}  ·  MAG axes: {self.axis_name}')
+        self.saved_info.set('New session ready. A CSV is created only after its first accepted sample.')
+        self.info.set('New calibration session ready. Position the board and press ENTER to begin.')
+        self.update_stage()
+
+    def _missing_stage_descriptions(self):
+        with self.worker.lock:
+            counts=dict(self.worker.stage_counts)
+        return [f'{stage.pose}/{stage.mag_stage} {counts.get((stage.pose,stage.mag_stage),0)}/{stage.target}'
+                for stage in self.stages
+                if counts.get((stage.pose,stage.mag_stage),0)<stage.target]
 
     def update_stage(self):
         if self.stage_index>=len(self.stages):
             self.finished=True
-            self.headline.set('COMPLETED — all scheduled captures saved')
-            self.instruction.set('Press Calculate Calibration. Check JSON warnings and validate each measured sensor.')
-            self.progress.set(f'Saved to: {self.output}')
+            self.headline.set('COMPLETED — all calibration phases collected')
+            self.instruction.set('The session is being finalized automatically. Review the saved CSV before using its calibration.')
+            self.progress.set('Saving complete session…')
             self.bar['value']=100
             self.begin.config(state='disabled')
-            self.info.set('Finished. The serial connection can be closed with Stop / save.')
+            self.worker.finalize_session('complete')
+            self.info.set('All phases complete. Saving the calibration session automatically.')
             return
         s=self.stages[self.stage_index]
         self.headline.set(f'{self.stage_index+1}/{len(self.stages)}  ·  {s.pose} / {s.mag_stage}   ·   {s.target:,} valid {s.sensor.upper()} readings')
@@ -1316,8 +1462,8 @@ class Application:
         """Restart the current stage, or return to the last completed stage.
 
         A new phase_attempt is allocated on Enter. Offline analysis retains
-        only the latest attempt for each pose in the same session, across
-        checkpoints, so previously recorded bad poses are never blended in.
+        only the latest attempt for each pose in the same session, so previously
+        recorded bad poses are never blended in.
         """
         if not self.worker or self.finished:
             return
@@ -1333,27 +1479,6 @@ class Application:
         self.finished=False
         self.update_stage()
         self.info.set('READY TO REDO: position the drone; press ENTER for a new attempt.')
-
-    def skip_phase(self):
-        if self.finished or not self.worker:
-            return
-        stage=self.stages[self.stage_index]
-        if not self.msg.askyesno('Skip uncalibrated phase?',
-            f'Skip {stage.pose}/{stage.mag_stage}?\nThis stage will be MISSING or INCOMPLETE in the calibration report.\n'
-            'Skipped readings are not counted as calibrated data.'):
-            return
-        self.worker.skip_stage()
-        self.skipped_stages.append({'pose':stage.pose,'mag_stage':stage.mag_stage})
-        self.stage_index+=1
-        self.capture_active=False
-        self.update_stage()
-        self._save_skip_manifest()
-        self.info.set('Stage SKIPPED. Missing or incomplete calibration will be reported, not treated as valid.')
-
-    def _save_skip_manifest(self):
-        manifest=self.output.with_suffix('.skipped.json')
-        manifest.parent.mkdir(parents=True,exist_ok=True)
-        manifest.write_text(json.dumps({'skipped_stages':self.skipped_stages},indent=2),encoding='utf-8')
 
     def toggle_live_graphs(self):
         self.live_plot_enabled=not self.live_plot_enabled
@@ -1373,6 +1498,14 @@ class Application:
 
     def begin_phase(self):
         if self.finished or self.capture_active or not self.worker or not self.worker.started.is_set() or self.worker.error:
+            return
+        if not self.session_active:
+            self.pending_begin=True
+            self._start_new_session()
+            return
+        if not self.session_ready:
+            self.pending_begin=True
+            self.info.set('Preparing a new session; the phase will start as soon as its session is ready.')
             return
         s=self.stages[self.stage_index]
         # Always honor ENTER: start a countdown, then count only actual sensor
@@ -1476,7 +1609,7 @@ class Application:
                     self.root.update_idletasks()
             elif kind=='stage_done':
                 s,count=payload
-                # Ignore a queued completion after a user-initiated skip.
+                # Ignore duplicate/stale completion events from an older phase.
                 if self.finished or s != self.stages[self.stage_index]:
                     continue
                 # Match the existing countdown-finished cue: make each
@@ -1490,17 +1623,34 @@ class Application:
                 if not self.finished:
                     self.info.set(f'Completed {s.pose}/{s.mag_stage}: {count:,} valid readings. Position for next phase and press Enter.')
                 else:
-                    self.info.set(f'All {len(self.stages)} phases complete. Saved to {self.output}')
+                    self.info.set(f'All {len(self.stages)} phases complete. Finalizing the session CSV.')
             elif kind=='lidar_status':
                 self.lidar_status_var.set(payload)
             elif kind=='lidar_sample':
                 if payload.get('valid') and math.isfinite(payload.get('distance_m',math.nan)):
                     self.geometry_vars['distance'].set(f"{payload['distance_m']:.6f}")
                     self.calculate_geometry()
-            elif kind=='saved_checkpoint':
-                saved, new_file=payload
-                self.saved_info.set(f'SAVED: {saved.name} | now recording {new_file.name}')
-                self.info.set('CSV segment safely closed. The GUI and active capture continue.')
+            elif kind=='session_saved':
+                status,path,rows,missing=payload
+                if path is None:
+                    self.saved_info.set('No CSV created: this session contained no accepted samples.')
+                else:
+                    self.saved_info.set(f'{status.upper()} session saved: {path} ({rows:,} samples + session metadata).')
+                    if self.output is not None and self.output.name.replace('_incomplete.csv','_complete.csv') == path.name:
+                        self.output=path
+                        self.capture_label.set(f'Saved: {path}')
+                if status=='complete':
+                    self.info.set(f'Calibration complete and saved: {path}' if path else
+                                  'Calibration completed with no accepted samples; no CSV was created.')
+            elif kind=='session_started':
+                self.session_active=True
+                self.session_ready=True
+                if self.pending_begin:
+                    self.pending_begin=False
+                    self.begin_phase()
+            elif kind=='session_discarded':
+                path,rows=payload
+                self.saved_info.set('Previous incomplete session data discarded; the new session is ready.')
             elif kind=='analysis_done':
                 ok, report=payload
                 self.analysis_running=False
@@ -1542,6 +1692,7 @@ class Application:
 
     def add_point(self,p):
         now=p['t']-self.start_time
+        self.altitude_status=p.get('altitude_status',self.altitude_status)
         mag_point=p.get('mag_point')
         if mag_point is not None:
             self.mag_points.append(mag_point)
@@ -1584,6 +1735,9 @@ class Application:
             self._draw_magnetic_axes(thin)
         else:
             self._draw_magnetic_axes([])
+        ready=self.altitude_status.startswith('Relative barometric height')
+        self.altitude_annotation.set_text('' if ready else self.altitude_status)
+        self.altitude_annotation.set_visible(not ready)
         self.canvas.draw_idle()
 
     def redraw_thermal(self):
@@ -1650,22 +1804,25 @@ class Application:
             self.msg.showinfo('Analysis already running','Please finish the current analysis first.')
             return
         # Live capture can continue while analysis runs, provided the user
-        # selects only fully closed checkpoint segments, not the active writer.
+        # selects only closed session files, not the active writer.
         names=filedialog.askopenfilenames(parent=self.root,
             title='Select one or more completed calibration CSV files (Ctrl+click)',
-            initialdir=str(ROOT/'captures'),filetypes=[('Calibration CSV','*.csv')])
+            initialdir=str(SESSION_COMPLETE_DIR if SESSION_COMPLETE_DIR.exists() else SESSION_INCOMPLETE_DIR),
+            filetypes=[('Calibration CSV','*.csv')])
         if not names:
             return
         paths=[Path(p).resolve() for p in names]
-        if self.worker and self.worker.is_alive() and self.worker.current_file.resolve() in paths:
+        if (self.worker and self.worker.is_alive() and self.worker._fp is not None
+                and self.worker.current_file is not None
+                and self.worker.current_file.resolve() in paths):
             self.msg.showwarning('Active CSV cannot be analyzed safely',
-                'The current CSV is still being written. Click "Save CSV segment / continue" '
-                'and select only the closed segment(s), or finish the current phase first.')
+                'The current session CSV is still being written. Finish it or start a new session before analysis.')
             return
         self.analysis_running=True
         self.calc.config(state='disabled')
         self.info.set(f'Analyzing {len(paths)} selected CSV file(s) in background; GUI remains responsive.')
-        output_prefix=ROOT/'captures'/('combined_'+datetime.now().strftime('%Y%m%d_%H%M%S'))
+        ANALYSIS_DIR.mkdir(parents=True,exist_ok=True)
+        output_prefix=ANALYSIS_DIR/('combined_'+datetime.now().strftime('%Y%m%d_%H%M%S'))
         def job():
             try:
                 command=[sys.executable,str(ROOT/'tools/calibrate.py'),*[str(p) for p in paths],
@@ -1684,10 +1841,12 @@ class Application:
             return
         names=filedialog.askopenfilenames(parent=self.root,
             title='Select completed calibration CSV file(s) containing the four LiDAR references',
-            initialdir=str(ROOT/'captures'),filetypes=[('Calibration CSV','*.csv')])
+            initialdir=str(SESSION_COMPLETE_DIR if SESSION_COMPLETE_DIR.exists() else SESSION_INCOMPLETE_DIR),
+            filetypes=[('Calibration CSV','*.csv')])
         if not names:return
         paths=[Path(name).resolve() for name in names]
-        if self.worker and self.worker.is_alive() and self.worker.current_file.resolve() in paths:
+        if (self.worker and self.worker.is_alive() and self.worker._fp is not None
+                and self.worker.current_file is not None and self.worker.current_file.resolve() in paths):
             self.msg.showwarning('Active CSV','Save or close the current CSV segment before analyzing it.')
             return
         self.analysis_running=True
@@ -1714,28 +1873,28 @@ class Application:
         names=filedialog.askopenfilenames(parent=self.root,
             title='Select calibration CSV files (Ctrl+click for multiple). '
                   'Results .json files are optional. '
-                  'Example: captures/iq_500hz_YYYYMMDD_HHMMSS.csv',
-            initialdir=str(ROOT/'captures'),
+                  'Example: measurements/calibration/esp32s3/sessions/complete/calibration_<timestamp>_complete.csv',
+            initialdir=str(SESSION_COMPLETE_DIR if SESSION_COMPLETE_DIR.exists() else SESSION_INCOMPLETE_DIR),
             filetypes=[('Calibration data','*.csv *.json'),('CSV recordings','*.csv'),('Saved reports','*.json')])
         if not names:
             # Show a help dialog explaining which files to select
             self.msg.showinfo('How to combine calibration data',
                 'To combine CSV calibration results:\n\n'
-                '1. Click "Save CSV segment / continue" during or after a phase, '
-                'or use the completed CSV files in captures/.\n'
+                '1. Select a completed or explicitly saved incomplete CSV session.\n'
                 '2. Select the .csv file(s) from the calibration run.\n'
                 '3. Optionally include saved *_calibration.json result files.\n'
-                '4. Click OK; the combined output is saved as merged_YYYYMMDD_HHMMSS.csv/json.\n\n'
-                'Example file: captures/iq_500hz_YYYYMMDD_HHMMSS.csv')
+                '4. Click OK; the combined output is saved under measurements/calibration/esp32s3/analysis/.')
             return
         paths=[Path(n).resolve() for n in names]
-        if self.worker and self.worker.is_alive() and self.worker.current_file.resolve() in paths:
-            self.msg.showwarning('Active CSV','Click Save CSV segment / continue, and choose closed CSV files.')
+        if (self.worker and self.worker.is_alive() and self.worker._fp is not None
+                and self.worker.current_file is not None and self.worker.current_file.resolve() in paths):
+            self.msg.showwarning('Active CSV','Finish the current session or begin a new one before analysis.')
             return
         self.analysis_running=True
         self.calc.config(state='disabled')
         self.combine_button.config(state='disabled')
-        target=ROOT/'captures'/('merged_'+datetime.now().strftime('%Y%m%d_%H%M%S'))
+        ANALYSIS_DIR.mkdir(parents=True,exist_ok=True)
+        target=ANALYSIS_DIR/('merged_'+datetime.now().strftime('%Y%m%d_%H%M%S'))
         self.info.set(f'Merging {len(paths)} completed calibration inputs with provenance checks...')
         def job():
             try:
@@ -1755,17 +1914,20 @@ class Application:
             return
         names=filedialog.askopenfilenames(parent=self.root,
             title='Select one or more COMPLETED magnetometer CSV sessions',
-            initialdir=str(ROOT/'captures'),filetypes=[('Calibration CSV','*.csv')])
+            initialdir=str(SESSION_COMPLETE_DIR if SESSION_COMPLETE_DIR.exists() else SESSION_INCOMPLETE_DIR),
+            filetypes=[('Calibration CSV','*.csv')])
         if not names:return
         paths=[Path(n).resolve() for n in names]
-        if self.worker and self.worker.is_alive() and self.worker.current_file.resolve() in paths:
+        if (self.worker and self.worker.is_alive() and self.worker._fp is not None
+                and self.worker.current_file is not None and self.worker.current_file.resolve() in paths):
             self.msg.showwarning('Active recording','Save CSV segment / continue first, then select closed CSV files.')
             return
         self.analysis_running=True
         self.calc.config(state='disabled')
         self.mag_quality_button.config(state='disabled')
         self.info.set('Magnetometer quality study running: held-out fit, 3D coverage, bootstrap...')
-        target=ROOT/'captures'/('mag_quality_'+datetime.now().strftime('%Y%m%d_%H%M%S'))
+        ANALYSIS_DIR.mkdir(parents=True,exist_ok=True)
+        target=ANALYSIS_DIR/('mag_quality_'+datetime.now().strftime('%Y%m%d_%H%M%S'))
         def job():
             try:
                 cmd=[sys.executable,str(ROOT/'tools/magnetometer_quality.py'),
@@ -1778,13 +1940,29 @@ class Application:
 
     def close(self):
         if self.worker:
-            self._save_skip_manifest()
+            if self.session_active and not self.finished:
+                choice=self.msg.askyesnocancel(
+                    'Close calibration GUI?',
+                    'The current session is incomplete.\n\n'
+                    'Yes: save it with an incomplete tag and missing-phase details.\n'
+                    'No: delete its captured samples.\n'
+                    'Cancel: return to the GUI.')
+                if choice is None:
+                    return
+                self.worker.end_stage()
+                if choice:
+                    missing=self._missing_stage_descriptions()
+                    self.worker.finalize_session('complete' if not missing else 'incomplete',missing)
+                else:
+                    self.worker.discard_session()
             self.worker.stop_event.set()
             self.worker.join(timeout=3)
+            if not self.worker.is_alive():
+                self.worker._process_commands()
         self.root.destroy()
 
     def launch(self,port,axis_matrix):
-        self.worker=Recorder(port,self.output,self.events,axis_matrix,
+        self.worker=Recorder(port,self.events,axis_matrix,
                              settle_seconds=self.args.settle_seconds,
                              wifi=self.args.wifi, wifi_host=self.args.wifi_host,
                              wifi_port=self.args.wifi_port, lidar_port=self.args.lidar_port)
@@ -1807,21 +1985,18 @@ def main():
     ap.add_argument('--mag-tumble-samples',type=int,default=8000)
     ap.add_argument('--bmp-samples',type=int,default=1000)
     ap.add_argument('--skip-bmp',action='store_true')
-    ap.add_argument('--with-lidar',dest='skip_lidar',action='store_false',
-                    help='Add the four F2 range phases after BMP calibration')
-    ap.add_argument('--skip-lidar',dest='skip_lidar',action='store_true',
-                    help='Omit F2 range phases (default for the current calibration flow)')
-    ap.set_defaults(skip_lidar=True)
-    ap.add_argument('--lidar-port',default='',help='3.3V USB-UART COM port for the single TOFSense F2 Mini (not ESP32 COM port)')
-    ap.add_argument('--lidar-samples',type=int,default=300,help='Fresh valid range readings per reference distance')
     ap.add_argument('--mag-only',action='store_true',help='Record only the four QMC/HMC 3D rotation stages; combine with full six-face CSV later')
     ap.add_argument('--settle-seconds',type=float,default=3.0,help='Preparation delay after Enter before recording (default 3s)')
     ap.add_argument('--self-test',action='store_true')
     ns=ap.parse_args()
+    # LiDAR calibration is deliberately held until after the competition.
+    ns.skip_lidar=True
+    ns.lidar_port=''
+    ns.lidar_samples=300
     if ns.self_test:
         selftest()
         return
-    if any(getattr(ns,n)<1 for n in ('gyro_samples','accel_samples','mag_turn_samples','mag_tumble_samples','bmp_samples','lidar_samples')):
+    if any(getattr(ns,n)<1 for n in ('gyro_samples','accel_samples','mag_turn_samples','mag_tumble_samples','bmp_samples')):
         ap.error('All sample targets must be positive')
     if not (0.0 <= ns.settle_seconds <= 30.0) or not math.isfinite(ns.settle_seconds):
         ap.error('--settle-seconds must be between 0 and 30')
@@ -1837,8 +2012,7 @@ def main():
     axis_name, axis_matrix=load_axis_map(ns.config)
     if abs(abs(determinant(axis_matrix))-1)>1e-6:
         ap.error('Mag axis mapping must have determinant +/-1')
-    out=ns.output or ROOT/'captures'/('iq_500hz_'+datetime.now().strftime('%Y%m%d_%H%M%S')+'.csv')
-    out=Path(out).resolve()
+    out=Path(ns.output).resolve() if ns.output else None
     import tkinter as tk
     ui=Application(tk,ns,stages(ns),axis_name,axis_matrix,out)
     ui.launch(ns.port,axis_matrix)

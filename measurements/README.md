@@ -6,6 +6,26 @@ CSV files in templates/ contain **headers only**. Copy one into a dated session 
 preserve raw readings, and record reference uncertainty and configuration alongside it.
 Do not replace unknown measurements with teaching examples.
 
+## ESP32-S3 calibration sessions
+
+The guided calibration GUI stores sensor sessions in
+`measurements/calibration/esp32s3/sessions/complete/` and
+`measurements/calibration/esp32s3/sessions/incomplete/`. It creates a CSV only
+after the first accepted phase sample, auto-saves a fully completed 12-phase
+session, and records the start time and missing phase counts inside an
+incomplete CSV. Derived fits and reports belong in
+`measurements/calibration/esp32s3/analysis/`. LiDAR calibration is deferred
+until after the competition.
+
+Historical GUI CSVs and their old skip manifests are preserved in
+`measurements/calibration/esp32s3/archive/legacy_gui_captures/`, grouped by
+capture date. See that folder's `ARCHIVE_INDEX.md` for original paths, hashes,
+and provenance limits. The original files are retained byte-for-byte; older
+diagnostic captures and audit packages remain in the bench `captures/` folder.
+Raw session and legacy CSVs are local measurement records and are Git-ignored;
+track analysis reports, metadata and software changes without committing the
+entire raw capture collection by default.
+
 ## Order of work
 
 | Order | Quantity | Method | What it improves |

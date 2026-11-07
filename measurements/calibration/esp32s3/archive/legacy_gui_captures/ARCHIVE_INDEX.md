@@ -1,0 +1,150 @@
+# Legacy calibration GUI capture archive
+
+Moved from `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/` on 2026-11-07. These files retain their original bytes and names. Their completion status is **unclassified**; this archive does not assert any session was 100% complete. Files are grouped by capture date. Historical `_partNN` outputs and `.skipped.json` manifests are preserved as evidence and are no longer produced by the current GUI.
+
+Each entry records its original relative path, size and verified SHA-256. The raw CSV files remain in this local workspace and are ignored by Git to avoid committing hundreds of megabytes of measurement data; the index and small tracked skip-manifest evidence can be versioned normally.
+
+## Files
+
+- `iq_500hz_20261103_220545.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-03/iq_500hz_20261103_220545.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261103_220545.csv`; size: 595 bytes; SHA-256: `30146DF12BFE5D289DAC9F4E453E45A74B9CE3E4983224FD9D6D58E18D80CCB7`.
+- `iq_500hz_20261103_220545.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-03/iq_500hz_20261103_220545.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261103_220545.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261103_222246.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-03/iq_500hz_20261103_222246.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261103_222246.csv`; size: 595 bytes; SHA-256: `30146DF12BFE5D289DAC9F4E453E45A74B9CE3E4983224FD9D6D58E18D80CCB7`.
+- `iq_500hz_20261103_222246.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-03/iq_500hz_20261103_222246.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261103_222246.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261103_224515.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-03/iq_500hz_20261103_224515.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261103_224515.csv`; size: 595 bytes; SHA-256: `30146DF12BFE5D289DAC9F4E453E45A74B9CE3E4983224FD9D6D58E18D80CCB7`.
+- `iq_500hz_20261103_224957.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-03/iq_500hz_20261103_224957.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261103_224957.csv`; size: 595 bytes; SHA-256: `30146DF12BFE5D289DAC9F4E453E45A74B9CE3E4983224FD9D6D58E18D80CCB7`.
+- `iq_500hz_20261103_225402.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-03/iq_500hz_20261103_225402.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261103_225402.csv`; size: 595 bytes; SHA-256: `30146DF12BFE5D289DAC9F4E453E45A74B9CE3E4983224FD9D6D58E18D80CCB7`.
+- `iq_500hz_20261104_002504.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-04/iq_500hz_20261104_002504.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261104_002504.csv`; size: 595 bytes; SHA-256: `30146DF12BFE5D289DAC9F4E453E45A74B9CE3E4983224FD9D6D58E18D80CCB7`.
+- `iq_500hz_20261104_002504.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-04/iq_500hz_20261104_002504.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261104_002504.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261104_003711.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-04/iq_500hz_20261104_003711.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261104_003711.csv`; size: 595 bytes; SHA-256: `30146DF12BFE5D289DAC9F4E453E45A74B9CE3E4983224FD9D6D58E18D80CCB7`.
+- `iq_500hz_20261104_003832.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-04/iq_500hz_20261104_003832.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261104_003832.csv`; size: 595 bytes; SHA-256: `30146DF12BFE5D289DAC9F4E453E45A74B9CE3E4983224FD9D6D58E18D80CCB7`.
+- `iq_500hz_20261104_004315.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-04/iq_500hz_20261104_004315.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261104_004315.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261104_004508.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-04/iq_500hz_20261104_004508.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261104_004508.csv`; size: 595 bytes; SHA-256: `30146DF12BFE5D289DAC9F4E453E45A74B9CE3E4983224FD9D6D58E18D80CCB7`.
+- `iq_500hz_20261104_004508.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-04/iq_500hz_20261104_004508.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261104_004508.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261104_005052.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-04/iq_500hz_20261104_005052.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261104_005052.csv`; size: 595 bytes; SHA-256: `30146DF12BFE5D289DAC9F4E453E45A74B9CE3E4983224FD9D6D58E18D80CCB7`.
+- `iq_500hz_20261104_005052.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-04/iq_500hz_20261104_005052.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261104_005052.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261104_005509.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-04/iq_500hz_20261104_005509.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261104_005509.csv`; size: 595 bytes; SHA-256: `30146DF12BFE5D289DAC9F4E453E45A74B9CE3E4983224FD9D6D58E18D80CCB7`.
+- `iq_500hz_20261104_005509.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-04/iq_500hz_20261104_005509.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261104_005509.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261104_005625.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-04/iq_500hz_20261104_005625.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261104_005625.csv`; size: 595 bytes; SHA-256: `30146DF12BFE5D289DAC9F4E453E45A74B9CE3E4983224FD9D6D58E18D80CCB7`.
+- `iq_500hz_20261104_025733_part02.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-04/iq_500hz_20261104_025733_part02.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261104_025733_part02.csv`; size: 595 bytes; SHA-256: `30146DF12BFE5D289DAC9F4E453E45A74B9CE3E4983224FD9D6D58E18D80CCB7`.
+- `iq_500hz_20261104_025733.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-04/iq_500hz_20261104_025733.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261104_025733.csv`; size: 50787524 bytes; SHA-256: `D1604A34ED9E06A1238CCEB6CF82DFA1D02108049FDF60E3815CCE8BB0CFA132`.
+- `iq_500hz_20261104_025733.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-04/iq_500hz_20261104_025733.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261104_025733.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261104_031731_part02.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-04/iq_500hz_20261104_031731_part02.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261104_031731_part02.csv`; size: 595 bytes; SHA-256: `30146DF12BFE5D289DAC9F4E453E45A74B9CE3E4983224FD9D6D58E18D80CCB7`.
+- `iq_500hz_20261104_031731.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-04/iq_500hz_20261104_031731.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261104_031731.csv`; size: 52893909 bytes; SHA-256: `D11AF0EA6CED4997E0560C4378392A1D1F4394BF9599DFCBA79550250F555E66`.
+- `iq_500hz_20261104_031731.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-04/iq_500hz_20261104_031731.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261104_031731.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261104_035804.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-04/iq_500hz_20261104_035804.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261104_035804.csv`; size: 595 bytes; SHA-256: `30146DF12BFE5D289DAC9F4E453E45A74B9CE3E4983224FD9D6D58E18D80CCB7`.
+- `iq_500hz_20261104_035804.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-04/iq_500hz_20261104_035804.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261104_035804.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261104_040827.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-04/iq_500hz_20261104_040827.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261104_040827.csv`; size: 10420205 bytes; SHA-256: `EC5E283F043E6384629677DCBF1BB2529E1A5E519385BB9FAE7D14F87A4BC365`.
+- `iq_500hz_20261104_040827.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-04/iq_500hz_20261104_040827.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261104_040827.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261104_100907_part02.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-04/iq_500hz_20261104_100907_part02.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261104_100907_part02.csv`; size: 595 bytes; SHA-256: `30146DF12BFE5D289DAC9F4E453E45A74B9CE3E4983224FD9D6D58E18D80CCB7`.
+- `iq_500hz_20261104_100907.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-04/iq_500hz_20261104_100907.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261104_100907.csv`; size: 33384396 bytes; SHA-256: `E1628158C5D5F8BD99519B75D306E8A548C91654B21BE21076EB190E4AECAD0A`.
+- `iq_500hz_20261104_100907.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-04/iq_500hz_20261104_100907.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261104_100907.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261104_103123.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-04/iq_500hz_20261104_103123.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261104_103123.csv`; size: 595 bytes; SHA-256: `30146DF12BFE5D289DAC9F4E453E45A74B9CE3E4983224FD9D6D58E18D80CCB7`.
+- `iq_500hz_20261104_103123.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-04/iq_500hz_20261104_103123.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261104_103123.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261106_113128.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_113128.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_113128.csv`; size: 52930048 bytes; SHA-256: `BBF3BB69C81C74560E03A57E754E42E233EE3DA3BD6F5313374A96B66B22B896`.
+- `iq_500hz_20261106_113128.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_113128.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_113128.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261106_184043.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_184043.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_184043.csv`; size: 13210381 bytes; SHA-256: `CBB026472F2242863211FD433541AFA1C60876E55A4CCB7DADF76C1FA22D507D`.
+- `iq_500hz_20261106_184043.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_184043.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_184043.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261106_184159.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_184159.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_184159.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261106_184349.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_184349.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_184349.csv`; size: 5693577 bytes; SHA-256: `17BEAA30658F46B08994A823567FB93910D5A80FB4A22A60AD398A5463554E42`.
+- `iq_500hz_20261106_184349.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_184349.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_184349.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261106_184547.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_184547.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_184547.csv`; size: 843 bytes; SHA-256: `9CDF9F83A947AA4595CE95EE6D04D01750A7CA2BB480B2F944D176FD92AC8590`.
+- `iq_500hz_20261106_184547.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_184547.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_184547.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261106_185833.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_185833.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_185833.csv`; size: 772979 bytes; SHA-256: `F466CC1944CE45FF27801AC64D4C36C21B672F1D6EE5975C51E28FFF4A0B4BEF`.
+- `iq_500hz_20261106_185833.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_185833.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_185833.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261106_193438.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_193438.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_193438.csv`; size: 843 bytes; SHA-256: `9CDF9F83A947AA4595CE95EE6D04D01750A7CA2BB480B2F944D176FD92AC8590`.
+- `iq_500hz_20261106_193438.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_193438.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_193438.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261106_194920.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_194920.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_194920.csv`; size: 843 bytes; SHA-256: `9CDF9F83A947AA4595CE95EE6D04D01750A7CA2BB480B2F944D176FD92AC8590`.
+- `iq_500hz_20261106_194920.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_194920.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_194920.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261106_195722.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_195722.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_195722.csv`; size: 1875970 bytes; SHA-256: `5842802125BCFE2B7CA4A51DECF5C138EACCFA1FD672AC4C12D0BC6109CD1FDB`.
+- `iq_500hz_20261106_195722.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_195722.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_195722.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261106_201741.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_201741.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_201741.csv`; size: 2959740 bytes; SHA-256: `A338FA036BF879C4D9D64D530B86F1432A0D4DB450EDEC92E31CCC8D909BAF49`.
+- `iq_500hz_20261106_201741.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_201741.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_201741.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261106_202225_part02.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_202225_part02.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_202225_part02.csv`; size: 843 bytes; SHA-256: `9CDF9F83A947AA4595CE95EE6D04D01750A7CA2BB480B2F944D176FD92AC8590`.
+- `iq_500hz_20261106_202225_part03.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_202225_part03.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_202225_part03.csv`; size: 843 bytes; SHA-256: `9CDF9F83A947AA4595CE95EE6D04D01750A7CA2BB480B2F944D176FD92AC8590`.
+- `iq_500hz_20261106_202225_part04.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_202225_part04.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_202225_part04.csv`; size: 843 bytes; SHA-256: `9CDF9F83A947AA4595CE95EE6D04D01750A7CA2BB480B2F944D176FD92AC8590`.
+- `iq_500hz_20261106_202225_part05.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_202225_part05.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_202225_part05.csv`; size: 843 bytes; SHA-256: `9CDF9F83A947AA4595CE95EE6D04D01750A7CA2BB480B2F944D176FD92AC8590`.
+- `iq_500hz_20261106_202225.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_202225.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_202225.csv`; size: 57992879 bytes; SHA-256: `36E2D2950135F1F89715075C5D4D73662559FC4DF9F0886DFFE915457C407038`.
+- `iq_500hz_20261106_202225.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_202225.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_202225.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261106_203105.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_203105.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_203105.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261106_204902.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_204902.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_204902.csv`; size: 2420989 bytes; SHA-256: `5A77E1256851830AA19DD7F224E14097D064F9A8A00A3048B97CEA3F2EB7665F`.
+- `iq_500hz_20261106_204902.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_204902.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_204902.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261106_205042_part02.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_205042_part02.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_205042_part02.csv`; size: 843 bytes; SHA-256: `9CDF9F83A947AA4595CE95EE6D04D01750A7CA2BB480B2F944D176FD92AC8590`.
+- `iq_500hz_20261106_205042.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_205042.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_205042.csv`; size: 62411214 bytes; SHA-256: `5C9827FBCA418803333E26921E5070F206FC33F4C1125558C70CCD4F186AEE14`.
+- `iq_500hz_20261106_205042.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_205042.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_205042.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261106_205914.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_205914.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_205914.csv`; size: 66362579 bytes; SHA-256: `B0BC9711A1EAEB5103651D47134EEE01204BEA263B376229D81875120C24BB2E`.
+- `iq_500hz_20261106_205914.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-06/iq_500hz_20261106_205914.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261106_205914.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261107_003702.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-07/iq_500hz_20261107_003702.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261107_003702.csv`; size: 843 bytes; SHA-256: `9CDF9F83A947AA4595CE95EE6D04D01750A7CA2BB480B2F944D176FD92AC8590`.
+- `iq_500hz_20261107_003702.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-07/iq_500hz_20261107_003702.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261107_003702.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.
+- `iq_500hz_20261107_004243.csv` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-07/iq_500hz_20261107_004243.csv`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261107_004243.csv`; size: 843 bytes; SHA-256: `9CDF9F83A947AA4595CE95EE6D04D01750A7CA2BB480B2F944D176FD92AC8590`.
+- `iq_500hz_20261107_004243.skipped.json` → `measurements/calibration/esp32s3/archive/legacy_gui_captures/2026-11-07/iq_500hz_20261107_004243.skipped.json`
+  - Original: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/iq_500hz_20261107_004243.skipped.json`; size: 28 bytes; SHA-256: `191D3CE41FAD6CADB11246BB156EF8643EFCDBFBC973DA072D1EE544D79FA706`.

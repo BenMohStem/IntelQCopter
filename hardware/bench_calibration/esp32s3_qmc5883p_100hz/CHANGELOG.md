@@ -1,5 +1,23 @@
 # Bench calibration changes and evidence
 
+## 2026-11-07 — calibration session lifecycle and BMP altitude plotting
+
+- GUI sessions now create one CSV lazily on the first accepted sample. Full
+  sessions auto-finalize into `measurements/calibration/esp32s3/sessions/complete/`;
+  unfinished sessions can be saved with missing-phase metadata, discarded, or
+  left untouched from the new-session prompt. New runs do not create empty CSVs,
+  skip manifests, or `_part02` segments. LiDAR calibration controls/stages are
+  disabled for the competition run.
+- Fixed BMP pressure decoding for the two observed v3 encodings: whole Pa from
+  the bench firmware and centi-Pa from the DSH candidate. The live relative
+  altitude plot now builds a 30-reading median pressure reference from plausible
+  BMP values and displays a status when pressure/reference data is unavailable.
+- Historical root-level GUI capture CSVs and skip manifests were moved
+  byte-for-byte into the measurements archive with a SHA-256 index. Diagnostic
+  logs and audit packages remain in their evidence folder.
+- No tests, GUI launch, sensor capture, firmware build, upload, or hardware
+  access was run for this source change.
+
 ## 2026-11-07 — save only accepted calibration samples
 
 - `tools/live_calibration_gui.py` now writes a CSV row only when the active
