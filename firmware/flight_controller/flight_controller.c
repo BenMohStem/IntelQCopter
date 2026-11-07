@@ -34,6 +34,9 @@
 #include <string.h>
 #include <float.h>
 
+#include "flight_controller.h"
+#include "wifi_pid_tuner.h"
+
 /* BEGIN WIRE PROTOCOL v1: keep identical in both firmware files. */
 /* Fixed-size, endian-stable command frame shared by the two Pico firmwares. */
 #include <stdbool.h>
@@ -763,6 +766,9 @@ void fc_init(void) {
     rt_boost_state = 0.0f;
     altitude_ref_m = 0.0f;
     altitude_ref_initialized = false;
+
+    /* Initialize WiFi PID tuner (Access Point + WebSocket server) */
+    wifi_pid_tuner_init();
 }
 
 static pilot_command_t pilot_cmd;
@@ -914,4 +920,77 @@ float fc_get_baro_zero_offset(void) {
 
 float fc_get_altitude_ref(void) {
     return altitude_ref_m;
+}
+
+/* ===========================================================================
+   PID Tuning API (for WiFi tuner integration)
+   =========================================================================== */
+
+void fc_get_pid_values(float *kp, float *ki, float *kd, const char *axis) {
+    if (!kp || !ki || !kd || !axis) return;
+
+    if (strcmp(axis, PID_AXIS_ROLL_ANGLE) == 0) {
+        *kp = pid_roll_angle.kp; *ki = pid_roll_angle.ki; *kd = pid_roll_angle.kd;
+    } else if (strcmp(axis, PID_AXIS_PITCH_ANGLE) == 0) {
+        *kp = pid_pitch_angle.kp; *ki = pid_pitch_angle.ki; *kd = pid_pitch_angle.kd;
+    } else if (strcmp(axis, PID_AXIS_ROLL_RATE) == 0) {
+        *kp = pid_roll_rate.kp; *ki = pid_roll_rate.ki; *kd = pid_roll_rate.kd;
+    } else if (strcmp(axis, PID_AXIS_PITCH_RATE) == 0) {
+        *kp = pid_pitch_rate.kp; *ki = pid_pitch_rate.ki; *kd = pid_pitch_rate.kd;
+    } else if (strcmp(axis, PID_AXIS_YAW_RATE) == 0) {
+        *kp = pid_yaw_rate.kp; *ki = pid_yaw_rate.ki; *kd = pid_yaw_rate.kd;
+    } else if (strcmp(axis, PID_AXIS_ALTITUDE) == 0) {
+        *kp = pid_altitude.kp; *ki = pid_altitude.ki; *kd = pid_altitude.kd;
+    } else if (strcmp(axis, PID_AXIS_VERT_SPEED) == 0) {
+        *kp = pid_vertical_speed.kp; *ki = pid_vertical_speed.ki; *kd = pid_vertical_speed.kd;
+    }
+}
+
+bool fc_set_pid_values(const char *axis, float kp, float ki, float kd) {
+    if (!axis || !isfinite(kp) || !isfinite(ki) || !isfinite(kd)) return false;
+
+    if (strcmp(axis, PID_AXIS_ROLL_ANGLE) == 0) {
+        pid_roll_angle.kp = kp; pid_roll_angle.ki = ki; pid_roll_angle.kd = kd;
+    } else if (strcmp(axis, PID_AXIS_PITCH_ANGLE) == 0) {
+        pid_pitch_angle.kp = kp; pid_pitch_angle.ki = ki; pid_pitch_angle.kd = kd;
+    } else if (strcmp(axis, PID_AXIS_ROLL_RATE) == 0) {
+        pid_roll_rate.kp = kp; pid_roll_rate.ki = ki; pid_roll_rate.kd = kd;
+    } else if (strcmp(axis, PID_AXIS_PITCH_RATE) == 0) {
+        pid_pitch_rate.kp = kp; pid_pitch_rate.ki = ki; pid_pitch_rate.kd = kd;
+    } else if (strcmp(axis, PID_AXIS_YAW_RATE) == 0) {
+        pid_yaw_rate.kp = kp; pid_yaw_rate.ki = ki; pid_yaw_rate.kd = kd;
+    } else if (strcmp(axis, PID_AXIS_ALTITUDE) == 0) {
+        pid_altitude.kp = kp; pid_altitude.ki = ki; pid_altitude.kd = kd;
+    } else if (strcmp(axis, PID_AXIS_VERT_SPEED) == 0) {
+        pid_vertical_speed.kp = kp; pid_vertical_speed.ki = ki; pid_vertical_speed.kd = kd;
+    } else {
+        return false;
+    }
+    return true;
+}
+
+void fc_get_telemetry(float *roll, float *pitch, float *yaw,
+                       float *roll_rate, float *pitch_rate,
+                       float *yaw_rate, float *altitude,
+                       float *vert_speed, float *motor0,
+                       float *motor1, float *motor2, float *motor3,
+                       bool *armed_out, float *loop_rate) {
+    if (roll) *roll = attitude.roll_deg;
+    if (pitch) *pitch = attitude.pitch_deg;
+    if (yaw) *yaw = attitude.yaw_deg;
+    if (roll_rate) *roll_rate = attitude.roll_rate_dps;
+    if (pitch_rate) *pitch_rate = attitude.pitch_rate_dps;
+    if (yaw_rate) *yaw_rate = attitude.yaw_rate_dps;
+    if (altitude) *altitude = alt_kf.height_m;
+    if (vert_speed) *vert_speed = alt_kf.velocity_mps;
+    if (motor0) *motor0 = mixer.last_cmd[0];
+    if (motor1) *motor1 = mixer.last_cmd[1];
+    if (motor2) *motor2 = mixer.last_cmd[2];
+    if (motor3) *motor3 = mixer.last_cmd[3];
+    if (armed_out) *armed_out = armed;
+    if (loop_rate) *loop_rate = FC_LOOP_HZ;
+}
+
+float fc_get_loop_dt(void) {
+    return FC_LOOP_DT;
 }
