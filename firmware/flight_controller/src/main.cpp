@@ -266,6 +266,7 @@ static int httpSock = -1;
 static int wsSock   = -1;
 static int wsClient = -1;
 static bool motorOutputReady = false;
+static bool motorOutputFaulted = false;
 static int8_t benchTestMotor = -1;
 static uint32_t benchTestUntilMs = 0;
 static char serialCommandBuffer[32] = {};
@@ -609,6 +610,16 @@ static void resetControlState(){
   altitudeRefInitialized = false;
   ltReduceState = 0.0f;
   boostState = 0.0f;
+  for(float& motorCommand : motorLastCmd){
+    motorCommand = cal::motor_idle_fraction;
+  }
+}
+
+static void disarmFlight(bool controlFault){
+  const bool stateChanged = armed || failsafe != controlFault;
+  armed = false;
+  failsafe = controlFault;
+  if(stateChanged) resetControlState();
 }
 
 static void updateArmingFromXbox(const PilotCommand& cmd){
@@ -616,7 +627,7 @@ static void updateArmingFromXbox(const PilotCommand& cmd){
   const bool chordHeld = (cmd.buttons & armChord) == armChord;
   if(!cmd.valid){
     if(armed){
-      armed = false;
+      disarmFlight(true);
       disarmTimeMs = millis();
       Serial.println("DISARMED: Xbox link/input timeout.");
     }
@@ -625,7 +636,7 @@ static void updateArmingFromXbox(const PilotCommand& cmd){
   }
   if((cmd.buttons & (cal::btn_south | cal::btn_b)) != 0u){
     if(armed){
-      armed = false;
+      disarmFlight(false);
       disarmTimeMs = millis();
       Serial.println("DISARMED by Xbox D-pad Down / B.");
     }
@@ -637,7 +648,7 @@ static void updateArmingFromXbox(const PilotCommand& cmd){
 
   const bool safeThrottle = cmd.throttle <= -0.95f
       && cmd.rt <= 0.05f && cmd.lt <= 0.05f;
-  const bool armReady = motorOutputReady && imu.valid
+  const bool armReady = motorOutputReady && !motorOutputFaulted && imu.valid
       && attitudeInitialized && calibrationLoaded && safeThrottle;
   if(!armed && !armGestureLatched && chordHeld && armReady){
     if(!armGestureActive){
@@ -645,6 +656,7 @@ static void updateArmingFromXbox(const PilotCommand& cmd){
       armGestureStartedMs = millis();
     } else if(uint32_t(millis() - armGestureStartedMs) >= 1000u){
       armed = true;
+      failsafe = false;
       armTimeMs = millis();
       resetControlState();
       armGestureLatched = true;
@@ -1112,12 +1124,15 @@ static bool configureMotorOutputs(){
   return true;
 }
 
-static void writeEscPulse(uint8_t motor, uint16_t pulseUs){
-  if(motor >= 4) return;
+static bool writeEscPulse(uint8_t motor, uint16_t pulseUs){
+  if(motor >= 4) return false;
   pulseUs = (uint16_t)constrain(pulseUs, kEscMinPulseUs, kEscMaxPulseUs);
-  ledc_set_duty(LEDC_LOW_SPEED_MODE, (ledc_channel_t)motor,
-                escPulseToDuty(pulseUs));
-  ledc_update_duty(LEDC_LOW_SPEED_MODE, (ledc_channel_t)motor);
+  if(ledc_set_duty(LEDC_LOW_SPEED_MODE, (ledc_channel_t)motor,
+                   escPulseToDuty(pulseUs)) != ESP_OK){
+    return false;
+  }
+  return ledc_update_duty(LEDC_LOW_SPEED_MODE, (ledc_channel_t)motor)
+      == ESP_OK;
 }
 
 static void pollBenchMotorTest(){
@@ -1132,7 +1147,7 @@ static void pollBenchMotorTest(){
       } else if(strncmp(serialCommandBuffer, "MTEST ", 6) == 0){
         char* end = nullptr;
         long motorNumber = strtol(serialCommandBuffer + 6, &end, 10);
-        if(!motorOutputReady){
+        if(!motorOutputReady || motorOutputFaulted){
           Serial.println("MTEST rejected: ESC PWM setup failed.");
         } else if(armed){
           Serial.println("MTEST rejected: flight controller is armed.");
@@ -1168,6 +1183,12 @@ static void pollBenchMotorTest(){
 
 static void writeMotorOutputs(const float command[4]){
   if(!motorOutputReady) return;
+  if(motorOutputFaulted){
+    for(uint8_t i = 0; i < 4; ++i){
+      writeEscPulse(i, kEscMinPulseUs);
+    }
+    return;
+  }
   const bool benchActive = !armed && benchTestMotor >= 0
       && (int32_t)(millis() - benchTestUntilMs) < 0;
   for(uint8_t i = 0; i < 4; ++i){
@@ -1179,7 +1200,17 @@ static void writeMotorOutputs(const float command[4]){
       pulseUs = (uint16_t)(kEscMinPulseUs
           + fraction * (kEscMaxPulseUs - kEscMinPulseUs) + 0.5f);
     }
-    writeEscPulse(i, pulseUs);
+    if(!writeEscPulse(i, pulseUs)){
+      motorOutputFaulted = true;
+      disarmFlight(true);
+      benchTestMotor = -1;
+      Serial.printf("ESC PWM write failed on motor %u; latched disarmed, sending minimum pulses.\n",
+                    (unsigned)(i + 1));
+      for(uint8_t safeMotor = 0; safeMotor < 4; ++safeMotor){
+        writeEscPulse(safeMotor, kEscMinPulseUs);
+      }
+      return;
+    }
   }
 }
 
@@ -1603,13 +1634,17 @@ static int pidNameToAxis(const char* axis){
    ============================================================================ */
 
 static void computeControl(const PilotCommand& cmd, float dt, float out[4]){
+  if(!armed){
+    for(int i = 0; i < 4; i++) out[i] = 0.0f;
+    return;
+  }
   const bool imuOk = calibrationLoaded && calAccelValid && calGyroValid
       && imu.valid && attitudeInitialized;
   const bool pilotOk = cmd.valid
       && uint32_t(millis() - cmd.timestampMs) < 250u;
-  if(!imuOk || !pilotOk || !motorOutputReady
+  if(!imuOk || !pilotOk || !motorOutputReady || motorOutputFaulted
       || !isfinite(dt) || dt <= 0.0f || dt > 0.01f){
-    armed = false; failsafe = true;
+    disarmFlight(true);
     for(int i=0; i<4; i++) out[i] = 0.0f;
     return;
   }
@@ -1671,10 +1706,6 @@ static void computeControl(const PilotCommand& cmd, float dt, float out[4]){
   motorMixer(coll, rollTorque, pitchTorque, yawTorque, ceiling,
              cal::motor_idle_fraction, dt, out);
 
-  /* Zero motors if not armed (safety) */
-  if(!armed){
-    for(int i=0; i<4; i++) out[i] = 0.0f;
-  }
 }
 
 /* ============================================================================
@@ -1688,7 +1719,7 @@ void setup(){
   Serial.println("Target: ESP32-S3 DevKitC-1 N8");
   Serial.println("WiFi PID Tuner: Enabled");
   Serial.println("ESC PWM: GPIO 12/11/14/13, 50 Hz, 1000-2000 us");
-  Serial.println("Flight arming: BLOCKED until fresh pilot input is implemented");
+  Serial.println("Flight arm: Xbox BLE gesture only; WiFi arming disabled");
   Serial.println();
 
   /* Load calibration once at startup */
@@ -1957,7 +1988,7 @@ void loop(){
           if(arm){
             Serial.println("WiFi ARM rejected; use Xbox LB+RB+D-pad Up gesture.");
           } else if(armed){
-            armed = false;
+            disarmFlight(false);
             disarmTimeMs = millis();
             Serial.println("DISARMED via WiFi");
           }

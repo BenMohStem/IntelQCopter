@@ -8,11 +8,13 @@
 
 ## Firmware behavior
 
-`firmware/flight_controller/src/main.cpp` configures four ESP32-S3 LEDC channels at 50 Hz and 14-bit resolution. At boot and while disarmed, it sends 1000 µs to every ESC. A serial `MTEST 1` through `MTEST 4` command sends 1100 µs to only that motor for one second, then returns all outputs to 1000 µs. `STOP` ends the pulse early.
+`firmware/flight_controller/src/main.cpp` configures four ESP32-S3 LEDC channels at 50 Hz and 14-bit resolution. At boot and while disarmed, it sends 1000 µs to every ESC. A serial `MTEST 1` through `MTEST 4` command sends 1100 µs to only that motor for one second, then returns all outputs to 1000 µs. `STOP` ends the pulse early. If an LEDC duty write or update reports an error, the firmware latches the output fault, disarms, cancels a bench pulse, resets controller state and repeatedly attempts minimum pulses; re-arming and bench commands remain inhibited until reboot.
 
 The flight-control candidate now uses `XboxSeriesXControllerESP32_asukiaaa` 1.1.3 over BLE. Stick mapping is left X→roll, left Y→pitch, right X→yaw, right Y→vertical-speed command; RT requests boost and LT reduces the vertical-speed command. The library runs in a separate FreeRTOS task. Commands older than 150 ms become invalid and disarm. Arming requires holding D-pad Up + LB + RB for one second while the right stick is held fully down and both triggers are released. D-pad Down or B disarms. Wi-Fi cannot arm the motors.
 
-While disarmed, fresh stick and trigger values are printed at 5 Hz to the 921600-baud serial monitor for props-off direction checks.
+While disarmed, fresh stick and trigger values are printed at 5 Hz to the 921600-baud serial monitor for props-off direction checks. The PlatformIO monitor default is set to the same baud rate.
+
+Disarming now bypasses the mixer, resets PID and throttle state, and initializes the stored motor slew state to the 10% armed-idle fraction. This prevents commands calculated during a disarmed interval from becoming the first motor command after arming.
 
 Build from the repository root:
 
