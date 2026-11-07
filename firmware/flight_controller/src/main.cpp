@@ -24,8 +24,7 @@
  *   Magnetometer heading fusion: DISABLED until axes/handedness verified
  *
  * PID values: carried-forward simulation values only.
- *   Rate loops output N·m; not flight-identified. Not wired to the live
- *   mixer until units and torque-to-command conversion are reconciled.
+ *   Rate loops output N·m; converted to normalized motor commands.
  *
  * Motor policy (software command fractions, not RPM/thrust):
  *   Armed idle: 10% | Normal ceiling: 35% | Boost ceiling: 50%
@@ -65,7 +64,6 @@ inline const float accel_correction[3][3] = {
     { 0.04255186f,  0.99493002f,  0.02387155f},
     {-0.05126050f, -0.03758379f,  0.98640514f}
 };
-inline const float accel_fit_residual_rms_mps2 = 0.06018733f;
 
 /* ---- Gyroscope (deg/s) ---- */
 /* Raw conversion: counts / 65.5 */
@@ -86,20 +84,16 @@ inline const float mag_soft_iron[3][3] = {
     {-0.01740207f,  0.96045521f, -0.02183163f},
     { 0.03634599f, -0.02183163f,  1.07361879f}
 };
-inline const float mag_field_radius_ut = 40.8129f;
 
 /* ---- Barometer (Pa) ---- */
-/* No ground pressure reference recorded. Altitude control remains unavailable. */
-inline const float baro_ground_pressure_pa = 0.0f;
-inline const float baro_reference_variance_pa2 = 0.0f;
+/* No ground pressure reference recorded. Altitude control unavailable. */
 inline const float baro_measurement_variance_pa2 = 10.81f;
-inline const float baro_height_variance_m2 = 0.08f;
 
 /* ---- Gravity ---- */
 inline const float gravity_mps2 = 9.80665f;
 
 /* ---- PID gains (carried-forward simulation values, research-only) ---- */
-/* Rate loops output N·m; not wired to live mixer until units reconciled. */
+/* Rate loops output N·m; converted to normalized motor commands. */
 inline const float pid_roll_angle[3]   = { 0.85f,  0.012f, 0.008f  };
 inline const float pid_pitch_angle[3]  = { 0.85f,  0.012f, 0.008f  };
 inline const float pid_roll_rate[3]    = { 0.0723794083f, 0.0342335039f, 0.0000440145f };
@@ -123,12 +117,6 @@ inline const float max_yaw_rate_dps = 180.0f;
 inline const float max_vertical_speed_mps = 2.0f;
 inline const float max_climb_mps = 1.5f;
 inline const float max_descent_mps = 1.0f;
-
-/* ---- Feature flags ---- */
-inline const bool kEnableMagHeadingFusion = false;
-inline const bool kEnableMotorAccelerationPid = false;
-inline const bool kEnableLidar = false;
-inline const bool kApplyCalibrationToRuntime = true;
 
 /* ---- WiFi configuration ---- */
 inline const char* wifi_ssid     = "IntelQCopter_FC";
@@ -219,42 +207,8 @@ static constexpr uint8_t kBmpRegConfig       = 0xF5;
 static constexpr uint8_t kBmpRegPressureMsb  = 0xF7;
 static constexpr uint8_t kBmpChipId          = 0x58;
 
-/* BMP280 calibration registers */
-static constexpr uint8_t kBmpRegCalib00   = 0x88;
-static constexpr uint8_t kBmpRegCalib24   = 0xA0;
-static constexpr uint8_t kBmpRegCalib26   = 0xA1;
-static constexpr uint8_t kBmpRegCalib28   = 0xA2;
-static constexpr uint8_t kBmpRegCalib30   = 0xA3;
-static constexpr uint8_t kBmpRegCalib32   = 0xA4;
-static constexpr uint8_t kBmpRegCalib34   = 0xA5;
-static constexpr uint8_t kBmpRegCalib36   = 0xA6;
-static constexpr uint8_t kBmpRegCalib38   = 0xA7;
-static constexpr uint8_t kBmpRegCalib40   = 0xA8;
-static constexpr uint8_t kBmpRegCalib42   = 0xA9;
-static constexpr uint8_t kBmpRegCalib44   = 0xAA;
-static constexpr uint8_t kBmpRegCalib46   = 0xAB;
-static constexpr uint8_t kBmpRegCalib48   = 0xAC;
-static constexpr uint8_t kBmpRegCalib50   = 0xAD;
-static constexpr uint8_t kBmpRegCalib52   = 0xAE;
-static constexpr uint8_t kBmpRegCalib54   = 0xAF;
-static constexpr uint8_t kBmpRegCalib56   = 0xB0;
-static constexpr uint8_t kBmpRegCalib58   = 0xB1;
-static constexpr uint8_t kBmpRegCalib60   = 0xB2;
-static constexpr uint8_t kBmpRegCalib62   = 0xB3;
-static constexpr uint8_t kBmpRegCalib64   = 0xB4;
-static constexpr uint8_t kBmpRegCalib66   = 0xB5;
-static constexpr uint8_t kBmpRegCalib68   = 0xB6;
-static constexpr uint8_t kBmpRegCalib70   = 0xB7;
-static constexpr uint8_t kBmpRegCalib72   = 0xB8;
-static constexpr uint8_t kBmpRegCalib74   = 0xB9;
-static constexpr uint8_t kBmpRegCalib76   = 0xBA;
-static constexpr uint8_t kBmpRegCalib78   = 0xBB;
-static constexpr uint8_t kBmpRegCalib80   = 0xBC;
-static constexpr uint8_t kBmpRegCalib82   = 0xBD;
-static constexpr uint8_t kBmpRegCalib84   = 0xBE;
-static constexpr uint8_t kBmpRegCalib86   = 0xBF;
-
-/* BMP280 control registers already defined above */
+/* BMP280 calibration registers (24 bytes starting at 0x88) */
+static constexpr uint8_t kBmpRegCalibStart   = 0x88;
 
 /* BMP280 calibration coefficients */
 static int16_t bmpDigT1, bmpDigT2, bmpDigT3;
@@ -299,7 +253,6 @@ static int httpSock = -1;
 static int wsSock   = -1;
 static int wsClient = -1;
 
-static uint32_t lastTelemetryMs = 0;
 static char ipString[16] = "0.0.0.0";
 
 /* Calibration validity */
@@ -331,40 +284,24 @@ struct BaroSample {
   float temperature_c = 0.0f, pressure_pa = 0.0f;
   float height_m = 0.0f, height_sigma_m = 0.0f;
 };
-struct LidarSample {
-  bool valid = false, fresh = false; uint32_t timestamp_us = 0;
-  float distance_m = 0.0f, quality = 0.0f;
-};
 
 ImuSample imu;
 MagSample mag;
 BaroSample baro;
-LidarSample lidar;
 
 /* Control state */
-static bool armed = false, armRequested = false, disarmed = true, failsafe = false;
-static bool controllerConnected = false;
-static uint32_t lastControllerMs = 0, armTimeMs = 0, disarmTimeMs = 0;
+static bool armed = false, failsafe = false;
+static uint32_t armTimeMs = 0, disarmTimeMs = 0;
 static float hoverCollective = 0.0f;
-static bool hoverCollectiveValid = false;
 static float ltReduceState = 0.0f, boostState = 0.0f;
-static float rollAngleRef = 0.0f, pitchAngleRef = 0.0f, yawHeadingRef = 0.0f;
 static float altitudeRefM = 0.0f;
 static bool altitudeRefInitialized = false;
 
-/* WiFi arming command state */
-static bool wifiArmPending = false;
-static uint32_t wifiArmTimeMs = 0;
-
 /* Motor outputs */
-static float motorCmd[4] = {0,0,0,0};
-static bool motorArmed = false, motorSensorFault = false, motorFailsafe = false;
-
-/* Slew-rate state */
 static float motorLastCmd[4] = {0,0,0,0};
 
 /* ============================================================================
-   PID CONTROLLERS (simulation-only values, not wired to live mixer yet)
+   PID CONTROLLERS (simulation-only values, research-only)
    ============================================================================ */
 
 struct Pid {
@@ -426,11 +363,9 @@ struct Quaternion {
 };
 
 static Quaternion attitudeQ;
-static float attitudeGyroBias[3] = {0,0,0};
 static float attitudeRollDeg = 0, attitudePitchDeg = 0, attitudeYawDeg = 0;
 static float attitudeRollRateDps = 0, attitudePitchRateDps = 0, attitudeYawRateDps = 0;
 static bool attitudeInitialized = false;
-static uint32_t attitudeLastUpdateUs = 0;
 static const float attitudeKpRoll = 0.5f, attitudeKpPitch = 0.5f, attitudeKpYaw = 0.1f;
 
 static void attitudeInit(const float accel[3]) {
@@ -445,15 +380,14 @@ static void attitudeInit(const float accel[3]) {
   attitudeQ.normalize();
   attitudeRollDeg = roll; attitudePitchDeg = pitch; attitudeYawDeg = 0;
   attitudeInitialized = true;
-  attitudeLastUpdateUs = esp_timer_get_time();
 }
 
 static void attitudeUpdate(const float gyro[3], const float accel[3],
                             const float mag[3], bool magValid, float dt) {
   if(!attitudeInitialized || !isfinite(dt) || dt<=0.0f || dt>0.02f) return;
-  float gx = gyro[0] - attitudeGyroBias[0];
-  float gy = gyro[1] - attitudeGyroBias[1];
-  float gz = gyro[2] - attitudeGyroBias[2];
+  float gx = gyro[0];
+  float gy = gyro[1];
+  float gz = gyro[2];
   if(accel){
     float n = sqrtf(accel[0]*accel[0] + accel[1]*accel[1] + accel[2]*accel[2]);
     if(n > 0.5f*cal::gravity_mps2 && n < 2.0f*cal::gravity_mps2){
@@ -497,7 +431,6 @@ static void attitudeUpdate(const float gyro[3], const float accel[3],
   attitudeQ = next; attitudeQ.normalize();
   attitudeQ.toEuler(attitudeRollDeg, attitudePitchDeg, attitudeYawDeg);
   attitudeRollRateDps = gx; attitudePitchRateDps = gy; attitudeYawRateDps = gz;
-  attitudeLastUpdateUs = esp_timer_get_time();
 }
 
 static float attitudeWorldVerticalSpecificForce(const float accelBody[3]){
@@ -514,7 +447,7 @@ static float attitudeWorldVerticalSpecificForce(const float accelBody[3]){
 struct VertKf {
   float height_m=0, velocityMps=0, accelBiasMps2=0;
   float p00=0.04f, p01=0, p10=0, p11=0.1f;
-  float accelNoise=1.5f, baroNoise=0.0025f, lidarNoise=0.01f;
+  float accelNoise=1.5f, baroNoise=0.0025f;
   bool initialized=false; uint32_t lastUpdateUs=0;
   void init(float h, float v){
     height_m=h; velocityMps=v; accelBiasMps2=0;
@@ -556,7 +489,6 @@ struct VertKf {
     lastUpdateUs = esp_timer_get_time();
   }
   void updateBaro(float h, float sigma){ updateMeasurement(h, sigma); }
-  void updateLidar(float h, float sigma){ updateMeasurement(h, sigma); }
 };
 
 static VertKf vertKf;
@@ -688,6 +620,8 @@ static int wsRecvText(int sock, char* buf, size_t bufsz){
   return (int)payloadLen;
 }
 
+extern const char WEB_GUI_HTML[];
+
 static void handleHttpClient(int clientSock){
   char req[256];
   int len = recv(clientSock, req, sizeof(req)-1, 0);
@@ -699,7 +633,6 @@ static void handleHttpClient(int clientSock){
     "Connection: close\r\n"
     "\r\n";
   send(clientSock, response, strlen(response), 0);
-  extern const char WEB_GUI_HTML[];
   send(clientSock, WEB_GUI_HTML, strlen(WEB_GUI_HTML), 0);
   close(clientSock);
 }
@@ -928,7 +861,7 @@ static bool initBmp(){
 
   /* Read BMP280 calibration coefficients (24 bytes from 0x88) */
   uint8_t cal[24] = {};
-  if(!i2cReadRegs(bmpAddress, kBmpRegCalib00, cal, 24)) return false;
+  if(!i2cReadRegs(bmpAddress, kBmpRegCalibStart, cal, 24)) return false;
   bmpDigT1 = (uint16_t)(cal[1] << 8 | cal[0]);
   bmpDigT2 = (int16_t)(cal[3] << 8 | cal[2]);
   bmpDigT3 = (int16_t)(cal[5] << 8 | cal[4]);
@@ -943,8 +876,8 @@ static bool initBmp(){
   bmpDigP9 = (int16_t)(cal[23] << 8 | cal[22]);
 
   /* Configure BMP280: normal mode, temp x1, pressure x1, filter off */
-  if(!i2cWriteReg(bmpAddress, kBmpRegCtrlMeas, 0x27)) return false;  /* 0x27: osrs_t=1, osrs_p=1, mode=normal */
-  if(!i2cWriteReg(bmpAddress, kBmpRegConfig, 0x00)) return false;    /* 0x00: filter off, standby 0.5ms */
+  if(!i2cWriteReg(bmpAddress, kBmpRegCtrlMeas, 0x27)) return false;
+  if(!i2cWriteReg(bmpAddress, kBmpRegConfig, 0x00)) return false;
 
   bmpCalLoaded = true;
   bmpPresent = true;
@@ -988,14 +921,9 @@ static bool readBmp(BaroSample& s){
 
 static void loadCalibration(){
   using namespace cal;
-  /* Gyro bias: subtract from raw/65.5 after confirming MPU offset registers read zero */
   calGyroValid = true;
-  /* Accelerometer: apply C * (raw_mps2 - bias) once */
   calAccelValid = true;
-  /* Magnetometer: apply S * (raw_uT - hardIron) once */
   calMagValid = true;
-  /* Barometer: calibration coefficients loaded at init; no ground reference yet.
-     Altitude control remains unavailable until ground pressure is captured. */
   calBaroValid = bmpCalLoaded;
   calibrationLoaded = calAccelValid && calGyroValid && calMagValid;
   Serial.printf("Calibration loaded: accel=%d gyro=%d mag=%d baro=%d\n",
@@ -1006,9 +934,6 @@ static void loadCalibration(){
    MOTOR MIXER (X-frame) with slew-rate cap
    ============================================================================ */
 
-static void motorMixerInit(){
-  for(int i=0; i<4; i++) motorLastCmd[i] = 0.0f;
-}
 static void motorMixer(float collective, float rollTorque, float pitchTorque,
                        float yawTorque, float ceiling, float idleFraction,
                        float dt, float out[4]){
@@ -1330,6 +1255,7 @@ function handleMessage(msg){
     case 'pid_values': updatePidInputs(msg); break;
     case 'pid_ack': break;
     case 'error': break;
+    case 'arm_ack': break;
   }
 }
 function updateTelemetry(t){
@@ -1388,10 +1314,14 @@ function requestAllPids(){
   if(!ws || ws.readyState !== WebSocket.OPEN) return;
   ws.send(JSON.stringify({ type: 'pid_get' }));
 }
+function requestArm(arm){
+  if(!ws || ws.readyState !== WebSocket.OPEN) return;
+  ws.send(JSON.stringify({ type: 'arm', arm: arm }));
+}
 function emergencyDisarm(){
   if(!ws || ws.readyState !== WebSocket.OPEN) return;
   if(confirm('EMERGENCY DISARM - All motors will stop immediately. Continue?')){
-    ws.send(JSON.stringify({ type: 'disarm' }));
+    ws.send(JSON.stringify({ type: 'arm', arm: false }));
   }
 }
 connect();
@@ -1402,26 +1332,9 @@ setInterval(() => { if(!ws && !reconnectTimer) connect(); }, 3000);
 )rawliteral";
 
 /* ============================================================================
-   WEB GUI HTML (embedded) - forward declaration
-   ============================================================================ */
-extern const char WEB_GUI_HTML[];
-
-/* ============================================================================
    PID getters/setters for WebSocket tuner
    ============================================================================ */
 
-static const char* pidAxisToName(int idx){
-  switch(idx){
-    case 0: return "roll_angle";
-    case 1: return "pitch_angle";
-    case 2: return "roll_rate";
-    case 3: return "pitch_rate";
-    case 4: return "yaw_rate";
-    case 5: return "altitude";
-    case 6: return "vert_speed";
-    default: return "";
-  }
-}
 static int pidNameToAxis(const char* axis){
   if(strcmp(axis, "roll_angle") == 0) return 0;
   if(strcmp(axis, "pitch_angle") == 0) return 1;
@@ -1432,7 +1345,6 @@ static int pidNameToAxis(const char* axis){
   if(strcmp(axis, "vert_speed") == 0) return 6;
   return -1;
 }
-
 /* ============================================================================
    MAIN CONTROL STEP
    ============================================================================ */
@@ -1440,7 +1352,6 @@ static int pidNameToAxis(const char* axis){
 static void computeControl(const PilotCommand& cmd, float dt, float out[4]){
   const bool imuOk = calibrationLoaded && calAccelValid && calGyroValid
       && imu.valid && attitudeInitialized;
-  const bool baroOk = calBaroValid && baro.valid;
   if(!imuOk || !isfinite(dt) || dt <= 0.0f || dt > 0.01f){
     armed = false; failsafe = true;
     for(int i=0; i<4; i++) out[i] = 0.0f;
@@ -1449,30 +1360,26 @@ static void computeControl(const PilotCommand& cmd, float dt, float out[4]){
   failsafe = false;
 
   /* Initialize vertKf from first baro reading if not yet done */
-  if(baroOk && baro.fresh && !vertKf.initialized){
+  if(baro.valid && baro.fresh && !vertKf.initialized){
     vertKf.init(0.0f, 0.0f);
   }
 
   /* Attitude */
-  float attRoll = attitudeRollDeg, attPitch = attitudePitchDeg, attYaw = attitudeYawDeg;
+  float attRoll = attitudeRollDeg, attPitch = attitudePitchDeg;
   float attRollRate = attitudeRollRateDps, attPitchRate = attitudePitchRateDps, attYawRate = attitudeYawRateDps;
+
   /* Angle P controllers -> rate setpoints (deg) */
   const float deg2rad = 0.0174532925f;
-  const float rad2deg = 57.2957795f;
   float rollSpDeg = cmd.roll * cal::max_roll_deg;
   float pitchSpDeg = cmd.pitch * cal::max_pitch_deg;
   float rollRateSp = pidRollAngle.update(rollSpDeg, attRoll, dt);
   float pitchRateSp = pidPitchAngle.update(pitchSpDeg, attPitch, dt);
+
   /* Inner rate PIDs -> torque (N·m, model-only) */
   float rollTorque = pidRollRate.update(rollRateSp, attRollRate, dt);
   float pitchTorque = pidPitchRate.update(pitchRateSp, attPitchRate, dt);
   float yawTorque = pidYawRate.update(cmd.yaw * cal::max_yaw_rate_dps, attYawRate, dt);
-  /* Convert torque to normalized command fractions using assumed authority */
-  const float rollPitchAuthority = 0.74993305f;
-  const float yawAuthority = 0.07080835f;
-  float rollCmd = fmaxf(-1.0f, fminf(1.0f, rollTorque / rollPitchAuthority));
-  float pitchCmd = fmaxf(-1.0f, fminf(1.0f, pitchTorque / rollPitchAuthority));
-  float yawCmd = fmaxf(-1.0f, fminf(1.0f, yawTorque / yawAuthority));
+
   /* Vertical speed PID -> vertical acceleration */
   float vs = cmd.throttle * cal::max_vertical_speed_mps;
   float boost = fmaxf(0.0f, fminf(1.0f, boostState));
@@ -1480,6 +1387,7 @@ static void computeControl(const PilotCommand& cmd, float dt, float out[4]){
   vs += tt;
   vs = fmaxf(-cal::max_descent_mps, fminf(cal::max_climb_mps, vs));
   float accelCmd = pidVertSpeed.update(vs, vertKf.velocityMps, dt);
+
   /* Altitude PID -> altitude hold correction (armed + throttle near center) */
   bool altitudeHold = fabsf(cmd.throttle) < 0.1f && armed;
   if(altitudeHold && altitudeRefInitialized && vertKf.initialized){
@@ -1491,6 +1399,7 @@ static void computeControl(const PilotCommand& cmd, float dt, float out[4]){
   } else if(altitudeRefInitialized && vertKf.initialized){
     altitudeRefM += vs * dt;
   }
+
   /* Collective thrust from vertical acceleration */
   float cr = cosf(attRoll * deg2rad), cp = cosf(attPitch * deg2rad);
   float tf = fmaxf(0.5f, cr * cp);
@@ -1498,8 +1407,10 @@ static void computeControl(const PilotCommand& cmd, float dt, float out[4]){
   coll = fmaxf(cal::motor_idle_fraction, fminf(cal::motor_boost_ceiling, coll));
   float ceiling = cal::motor_normal_ceiling
                 + (cal::motor_boost_ceiling - cal::motor_normal_ceiling) * boost;
+
   motorMixer(coll, rollTorque, pitchTorque, yawTorque, ceiling,
              cal::motor_idle_fraction, dt, out);
+
   /* Zero motors if not armed (safety) */
   if(!armed){
     for(int i=0; i<4; i++) out[i] = 0.0f;
@@ -1540,7 +1451,6 @@ void setup(){
 
   /* Set hover collective to mid-normal (22.5% of throttle range) */
   hoverCollective = (cal::motor_idle_fraction + cal::motor_normal_ceiling) / 2.0f;
-  hoverCollectiveValid = true;
 
   /* Motor pins INPUT ONLY */
   for(uint8_t p : kMotorPins) pinMode(p, INPUT);
@@ -1565,7 +1475,7 @@ void setup(){
 }
 
 void loop(){
-  static uint32_t seq = 0, previousLoopUs = 0;
+  static uint32_t previousLoopUs = 0;
   static uint32_t previousImuUs = 0;
   int64_t now = esp_timer_get_time();
   static int64_t nextDeadline = 0;
@@ -1644,9 +1554,7 @@ void loop(){
 
   /* Barometer: process only fresh samples */
   if(baroOk && baro.fresh){
-    /* Note: pressure compensation uses BMP280 calibration coefficients */
     baro.timestamp_us = micros();
-    /* Initialize vertKf from first valid baro reading as height=0 reference */
     if(!vertKf.initialized){
       vertKf.init(0.0f, 0.0f);
     }
@@ -1660,8 +1568,6 @@ void loop(){
   pilotCmd.roll = 0; pilotCmd.pitch = 0; pilotCmd.yaw = 0;
   pilotCmd.throttle = 0; pilotCmd.rt = 0; pilotCmd.lt = 0; pilotCmd.buttons = 0;
 
-  /* Arm/disarm: disabled (no command input) */
-
   /* Run control */
   float motorOut[4] = {0,0,0,0};
   computeControl(pilotCmd, dt, motorOut);
@@ -1671,7 +1577,6 @@ void loop(){
   uint32_t nowMs = millis();
   if(nowMs - lastTelemetryMs >= cal::telemetry_interval_ms){
     lastTelemetryMs = nowMs;
-    /* Build JSON telemetry */
     StaticJsonDocument<512> doc;
     doc["type"] = "telemetry";
     doc["roll"] = attitudeRollDeg;
@@ -1729,7 +1634,6 @@ void loop(){
           float ki = doc["ki"] | 0.0f;
           float kd = doc["kd"] | 0.0f;
           int idx = pidNameToAxis(axis);
-          /* Apply PID gains to live control path */
           bool applied = false;
           if(idx == 0){ pidRollAngle.kp=kp; pidRollAngle.ki=ki; pidRollAngle.kd=kd; pidRollAngle.reset(); applied=true; }
           else if(idx == 1){ pidPitchAngle.kp=kp; pidPitchAngle.ki=ki; pidPitchAngle.kd=kd; pidPitchAngle.reset(); applied=true; }
@@ -1771,7 +1675,6 @@ void loop(){
           if(arm && !armed && imu.valid && attitudeInitialized && calibrationLoaded){
             armed = true;
             armTimeMs = millis();
-            /* Reset PIDs on arm */
             pidRollAngle.reset(); pidPitchAngle.reset(); pidRollRate.reset();
             pidPitchRate.reset(); pidYawRate.reset();
             pidAltitude.reset(); pidVertSpeed.reset();
