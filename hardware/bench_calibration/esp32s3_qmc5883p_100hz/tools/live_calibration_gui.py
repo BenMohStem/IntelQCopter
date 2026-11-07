@@ -17,15 +17,19 @@ from datetime import datetime, timezone
 from collections import deque
 import json
 import math
+import os
+import re
 import socket
 import queue
 import struct
 import subprocess
 import sys
+import tempfile
 import threading
 import time
 from types import SimpleNamespace
 from pathlib import Path
+from zipfile import ZipFile
 
 MAGIC = b'\xA5\x5A'
 PACKET_SIZES = {2: 52, 3: 52, 4: 92}
@@ -40,6 +44,61 @@ CALIBRATION_ROOT = PROJECT_ROOT/'measurements'/'calibration'/'esp32s3'
 SESSION_COMPLETE_DIR = CALIBRATION_ROOT/'sessions'/'complete'
 SESSION_INCOMPLETE_DIR = CALIBRATION_ROOT/'sessions'/'incomplete'
 ANALYSIS_DIR = CALIBRATION_ROOT/'analysis'
+
+
+def prepare_tk_runtime():
+    """Provide Tcl/Tk script libraries when Python ships them in zip archives.
+
+    Some Windows Python distributions, including the configured Python 3.15
+    install, include Tcl/Tk library archives but do not unpack them. Tkinter
+    needs the extracted scripts and its matching DLL before the GUI opens.
+    """
+    import tkinter
+
+    base = Path(sys.base_prefix)
+    tcl_root = base/'tcl'
+    if (tcl_root/'tcl9.0'/'init.tcl').is_file():
+        return
+
+    tcl_archives = sorted(tcl_root.glob('libtcl*.zip'))
+    tk_archives = sorted(tcl_root.glob('libtk*.zip'))
+    if not tcl_archives or not tk_archives:
+        return
+
+    runtime = Path(tempfile.gettempdir())/(
+        f'qcopter_tk_{sys.version_info.major}{sys.version_info.minor}')
+    tcl_dest = runtime/'tcl'
+    tk_dest = runtime/'tk'
+    if not (tcl_dest/'tcl_library'/'init.tcl').is_file():
+        tcl_dest.mkdir(parents=True, exist_ok=True)
+        with ZipFile(tcl_archives[-1]) as archive:
+            archive.extractall(tcl_dest)
+    if not (tk_dest/'tk_library'/'tk.tcl').is_file():
+        tk_dest.mkdir(parents=True, exist_ok=True)
+        with ZipFile(tk_archives[-1]) as archive:
+            archive.extractall(tk_dest)
+
+    version_match = re.search(r'libtk([0-9.]+)\.zip$', tk_archives[-1].name)
+    version = version_match.group(1) if version_match else str(tkinter.TkVersion)
+    dll_version = ''.join(version.split('.')[:2])
+    dll = base/'DLLs'/f'tcl9tk{dll_version}.dll'
+    if not dll.is_file():
+        matches = list((base/'DLLs').glob('tcl*tk*.dll'))
+        if not matches:
+            return
+        dll = matches[0]
+
+    package_dir = runtime/'package'
+    package_dir.mkdir(parents=True, exist_ok=True)
+    package_dir.joinpath('pkgIndex.tcl').write_text(
+        f'package ifneeded tk {version} [list load [file normalize {{{dll.as_posix()}}}]]\n'
+        f'package ifneeded Tk {version} [list package require -exact tk {version}]\n',
+        encoding='utf-8')
+    os.environ['TCL_LIBRARY'] = str(tcl_dest/'tcl_library')
+    os.environ['TK_LIBRARY'] = str(tk_dest/'tk_library')
+    os.environ['TCLLIBPATH'] = '{'+package_dir.as_posix()+'}'
+    if hasattr(os, 'add_dll_directory'):
+        os.add_dll_directory(str(base/'DLLs'))
 
 CSV_COLUMNS = (
     'kind,seq,t_us,pose,mpu_ok,bmp_ok,mag_ok,ax_raw,ay_raw,az_raw,gx_raw,gy_raw,gz_raw,'
@@ -2013,6 +2072,7 @@ def main():
     if abs(abs(determinant(axis_matrix))-1)>1e-6:
         ap.error('Mag axis mapping must have determinant +/-1')
     out=Path(ns.output).resolve() if ns.output else None
+    prepare_tk_runtime()
     import tkinter as tk
     ui=Application(tk,ns,stages(ns),axis_name,axis_matrix,out)
     ui.launch(ns.port,axis_matrix)

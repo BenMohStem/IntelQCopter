@@ -107,6 +107,14 @@ The board revision and QMC supply/wiring remain assumed; observed I2C address is
   only after a phase starts. Use the binary preflight for hardware acceptance
   before starting any phase.
 
+### GUI entry-point consolidation — 2026-11-07
+
+The `launch_calibration_gui.py` helper described above was a historical Windows
+Tk bootstrap. Its Tcl/Tk archive setup is now included in
+`tools/live_calibration_gui.py`; the helper was removed and
+`tools/start_calibration.ps1` invokes the GUI file directly. The recorded
+November 3 hardware measurements and results above are unchanged.
+
 The zero-packet issue was caused by the board running a 115200-baud text
 diagnostic rather than the GUI's 921600-baud v3 binary firmware. The board is
 currently restored to the normal calibration image; the latest combined

@@ -54,11 +54,29 @@ current board state or explain why the integrated firmware reports none.
 
 ## Open the GUI
 
+All calibration GUI code and its Windows Tcl/Tk runtime setup are in one Python
+file: `hardware/bench_calibration/esp32s3_qmc5883p_100hz/tools/live_calibration_gui.py`.
+The PowerShell launcher invokes that file directly.
+
 To start the installed-firmware GUI without flashing, run:
 
 ```powershell
 .\qcopter.ps1 calibration-gui
 ```
+
+To bypass the launcher and start the same GUI file directly from the repository
+root, install the listed dependencies if needed and run:
+
+```powershell
+python -m pip install -r .\hardware\bench_calibration\esp32s3_qmc5883p_100hz\requirements.txt
+python .\hardware\bench_calibration\esp32s3_qmc5883p_100hz\tools\live_calibration_gui.py `
+  --port COM3 --gyro-samples 30000 --accel-samples 5000 `
+  --mag-turn-samples 5000 --mag-tumble-samples 20000 `
+  --bmp-samples 1000 --settle-seconds 3
+```
+
+The direct command does not flash firmware. Use `-UploadFirmware` with the
+PowerShell launcher only when you intend to upload the bench image.
 
 This uses the installed firmware (no upload) and starts the guided GUI. USB
 serial uses 921600 baud; Wi-Fi uses the configured AP and local UDP port. The

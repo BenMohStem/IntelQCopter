@@ -1,5 +1,18 @@
 # Bench calibration changes and evidence
 
+## 2026-11-07 — single Python GUI entry point
+
+- Folded the Windows Tcl/Tk runtime setup into `tools/live_calibration_gui.py`.
+  `tools/start_calibration.ps1` now calls this GUI file directly for USB and
+  Wi-Fi sessions, and the redundant `tools/launch_calibration_gui.py` wrapper
+  was removed. The GUI, decoder, session storage and plots remain together in
+  one Python entry point.
+- Added direct Python launch instructions to the bench README and GUI guide.
+  Direct invocation does not upload firmware; the PowerShell launcher retains
+  its optional upload/preflight flow.
+- No tests, GUI launch, firmware build, upload or hardware access was run for
+  this file consolidation.
+
 ## 2026-11-07 — calibration session lifecycle and BMP altitude plotting
 
 - GUI sessions now create one CSV lazily on the first accepted sample. Full

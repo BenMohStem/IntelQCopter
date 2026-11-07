@@ -6,7 +6,13 @@ ESC/motor output and physical arming remain disabled.
 
 ## Launch
 
-From the QCopter repository root:
+The calibration GUI, binary decoder, session writer, plots, and Windows Tcl/Tk
+runtime preparation are all in one Python file:
+`tools/live_calibration_gui.py`. The PowerShell launcher calls that file
+directly; there is no second Python GUI bootstrap file.
+
+From the QCopter repository root, the recommended launcher starts the installed
+firmware without flashing:
 
 ```powershell
 .\qcopter.ps1 calibration-gui
@@ -19,6 +25,21 @@ runs a serial preflight and exits without opening the GUI:
 ```powershell
 .\qcopter.ps1 calibration-gui -UploadFirmware -Check -Seconds 20
 ```
+
+To start the GUI directly with Python, install its dependencies if needed and
+run the same single source file:
+
+```powershell
+python -m pip install -r .\hardware\bench_calibration\esp32s3_qmc5883p_100hz\requirements.txt
+python .\hardware\bench_calibration\esp32s3_qmc5883p_100hz\tools\live_calibration_gui.py `
+  --port COM3 --gyro-samples 30000 --accel-samples 5000 `
+  --mag-turn-samples 5000 --mag-tumble-samples 20000 `
+  --bmp-samples 1000 --settle-seconds 3
+```
+
+The direct Python command opens the GUI only; it does not build or upload
+firmware. It uses the same 12 phases and session-saving behavior as the
+PowerShell launcher.
 
 The GUI also supports `-Wifi` for the ESP32 AP/UDP path. Cable-free capture is
 not hardware-validated yet. Do not assume that selecting Wi-Fi proves the AP,

@@ -965,3 +965,14 @@ High:
 - The archive index records original paths and SHA-256 hashes for the files
   moved from the bench captures root. No captures were deleted. No tests, GUI
   launch, build, flash, or physical sensor check was performed for this edit.
+
+## 36. Revision 21 — 2026-11-07: keep the calibration GUI in one Python file
+
+- Folded the former Windows Tcl/Tk launcher helper into
+  `tools/live_calibration_gui.py`, which now contains the standalone GUI entry
+  point, decoder, session recording, and live plots. The PowerShell launcher
+  calls this file directly; `launch_calibration_gui.py` was removed.
+- Added direct Python execution commands and dependency instructions to the
+  bench README and GUI guide. Direct execution opens the currently installed
+  firmware stream and does not flash the ESP32-S3.
+- No test, GUI launch, firmware build/upload, or hardware session was performed.
