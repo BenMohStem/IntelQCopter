@@ -1839,6 +1839,14 @@ void loop(){
   /* Read the latest fresh Xbox BLE command; stale input invalidates arming. */
   PilotCommand pilotCmd = readPilotCommand();
   updateArmingFromXbox(pilotCmd);
+  static uint32_t lastXboxDebugMs = 0;
+  if(!armed && pilotCmd.valid
+      && uint32_t(millis() - lastXboxDebugMs) >= 200u){
+    lastXboxDebugMs = millis();
+    Serial.printf("XBOX roll=%+.2f pitch=%+.2f yaw=%+.2f vertical=%+.2f LT=%.2f RT=%.2f\n",
+                  pilotCmd.roll, pilotCmd.pitch, pilotCmd.yaw,
+                  pilotCmd.throttle, pilotCmd.lt, pilotCmd.rt);
+  }
   pollBenchMotorTest();
 
   /* Run control */

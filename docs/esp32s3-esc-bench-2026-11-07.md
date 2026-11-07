@@ -12,6 +12,8 @@
 
 The flight-control candidate now uses `XboxSeriesXControllerESP32_asukiaaa` 1.1.3 over BLE. Stick mapping is left X→roll, left Y→pitch, right X→yaw, right Y→vertical-speed command; RT requests boost and LT reduces the vertical-speed command. The library runs in a separate FreeRTOS task. Commands older than 150 ms become invalid and disarm. Arming requires holding D-pad Up + LB + RB for one second while the right stick is held fully down and both triggers are released. D-pad Down or B disarms. Wi-Fi cannot arm the motors.
 
+While disarmed, fresh stick and trigger values are printed at 5 Hz to the 921600-baud serial monitor for props-off direction checks.
+
 Build from the repository root:
 
 ```powershell
