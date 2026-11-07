@@ -347,6 +347,8 @@ static bool armed = false, failsafe = false;
 static uint32_t armTimeMs = 0, disarmTimeMs = 0;
 static float hoverCollective = 0.0f;
 static float ltReduceState = 0.0f, boostState = 0.0f;
+static bool verticalCollectiveSaturatedHigh = false;
+static bool verticalCollectiveSaturatedLow = false;
 static float altitudeRefM = 0.0f;
 static bool altitudeRefInitialized = false;
 
@@ -365,7 +367,7 @@ struct Pid {
   void reset(){
     integrator=0; prevMeas=0; initialized=false; derivFilt=0;
   }
-  float update(float sp, float meas, float dt){
+  float update(float sp, float meas, float dt, bool allowIntegration=true){
     if(!isfinite(sp)||!isfinite(meas)||!isfinite(dt)||dt<=0.0f||dt>0.01f
        ||!isfinite(kp)||!isfinite(ki)||!isfinite(kd)
        ||!isfinite(integratorLimit)||integratorLimit<0.0f
@@ -381,7 +383,9 @@ struct Pid {
       derivFilt = alpha*derivFilt + (1.0f-alpha)*der;
       der = derivFilt;
     }
-    float ci = integrator + err*dt;
+    // A caller can freeze integration when a downstream actuator clamp is
+    // active, preventing windup outside this PID's own output limit.
+    float ci = integrator + (allowIntegration ? err*dt : 0.0f);
     ci = fmaxf(-integratorLimit, fminf(integratorLimit, ci));
     float raw = kp*err + ki*ci - kd*der;
     if(!isfinite(raw)||!isfinite(ci)){ reset(); return 0.0f; }
@@ -1850,7 +1854,12 @@ static void computeControl(const PilotCommand& cmd, float dt, float out[4]){
   float tt = (boost - ltReduceState) * 1.0f;
   vs += tt;
   vs = fmaxf(-cal::max_descent_mps, fminf(cal::max_climb_mps, vs));
-  float accelCmd = pidVertSpeed.update(vs, vertKf.velocityMps, dt);
+  const float verticalSpeedError = vs - vertKf.velocityMps;
+  const bool allowVerticalIntegration = !(
+      (verticalCollectiveSaturatedHigh && verticalSpeedError > 0.0f)
+      || (verticalCollectiveSaturatedLow && verticalSpeedError < 0.0f));
+  float accelCmd = pidVertSpeed.update(
+      vs, vertKf.velocityMps, dt, allowVerticalIntegration);
 
   /* Altitude PID -> altitude hold correction (armed + throttle near center) */
   bool altitudeHold = fabsf(cmd.throttle) < 0.1f && armed;
@@ -1867,10 +1876,13 @@ static void computeControl(const PilotCommand& cmd, float dt, float out[4]){
   /* Collective thrust from vertical acceleration */
   float cr = cosf(attRoll * deg2rad), cp = cosf(attPitch * deg2rad);
   float tf = fmaxf(0.5f, cr * cp);
-  float coll = (hoverCollective + accelCmd * 0.05f) / tf;
-  coll = fmaxf(cal::motor_idle_fraction, fminf(cal::motor_boost_ceiling, coll));
   float ceiling = cal::motor_normal_ceiling
                 + (cal::motor_boost_ceiling - cal::motor_normal_ceiling) * boost;
+  const float requestedCollective = (hoverCollective + accelCmd * 0.05f) / tf;
+  verticalCollectiveSaturatedHigh = requestedCollective > ceiling;
+  verticalCollectiveSaturatedLow = requestedCollective < cal::motor_idle_fraction;
+  const float coll = fmaxf(cal::motor_idle_fraction,
+                           fminf(ceiling, requestedCollective));
 
   motorMixer(coll, rollTorque, pitchTorque, yawTorque, ceiling,
              cal::motor_idle_fraction, dt, out);
