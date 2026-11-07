@@ -8,13 +8,14 @@
  * UART: 921600 baud, 8N1, 52-byte CRC-protected v3 binary packets
  * I²C: 400 kHz shared bus for MPU6050, BMP280, QMC5883P
  * WiFi: Access Point "IntelQCopter_FC", WebSocket on port 81 (PID tuning)
- * Motor outputs: DISABLED (pins 12/11/14/13 = INPUT ONLY)
+ * ESC outputs: GPIO 12/11/14/13, 50 Hz standard PWM, 1000-2000 us.
  *
  * Architecture:
  *   500 Hz control loop (IMU, MAG, Baro, estimation, PID, mixing)
  *   Wireless PID tuning via WebSocket web server
  *   No auto-arm on startup/reconnect
- *   Physical motor arming remains disabled
+ *   Flight arming remains blocked until a fresh pilot input is implemented.
+ *   Props-off motor checks use a one-second, 1100 us serial test pulse.
  *
  * Calibration (Nov 7 completed-session fit, software candidate only):
  *   MPU6050: ±8 g / ±500 deg/s, software bias + matrix applied once
@@ -36,6 +37,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <ArduinoJson.h>
+#include "driver/ledc.h"
 
 /* ESP-IDF WiFi and networking (direct, avoids Arduino WiFi lib conflicts) */
 #include "esp_wifi.h"
@@ -244,6 +246,12 @@ static bool bmpCompensate(uint32_t rawTemp, uint32_t rawPress, float& tC, float&
 }
 
 static constexpr uint8_t kMotorPins[4] = {12, 11, 14, 13};
+static constexpr uint32_t kEscPwmFrequencyHz = 50;
+static constexpr uint8_t kEscPwmResolutionBits = 14;
+static constexpr uint16_t kEscMinPulseUs = 1000;
+static constexpr uint16_t kEscMaxPulseUs = 2000;
+static constexpr uint16_t kEscBenchPulseUs = 1100;
+static constexpr uint32_t kEscBenchPulseDurationMs = 1000;
 
 /* ============================================================================
    GLOBAL STATE
@@ -252,6 +260,11 @@ static constexpr uint8_t kMotorPins[4] = {12, 11, 14, 13};
 static int httpSock = -1;
 static int wsSock   = -1;
 static int wsClient = -1;
+static bool motorOutputReady = false;
+static int8_t benchTestMotor = -1;
+static uint32_t benchTestUntilMs = 0;
+static char serialCommandBuffer[32] = {};
+static size_t serialCommandLength = 0;
 
 static char ipString[16] = "0.0.0.0";
 
@@ -931,6 +944,109 @@ static void loadCalibration(){
 }
 
 /* ============================================================================
+   ESP32-S3 ESC OUTPUTS
+   ============================================================================ */
+
+static uint32_t escPulseToDuty(uint16_t pulseUs){
+  const uint32_t periodTicks = 1UL << kEscPwmResolutionBits;
+  return ((uint32_t)pulseUs * kEscPwmFrequencyHz * periodTicks) / 1000000UL;
+}
+
+static bool configureMotorOutputs(){
+  ledc_timer_config_t timer = {};
+  timer.speed_mode = LEDC_LOW_SPEED_MODE;
+  timer.duty_resolution = (ledc_timer_bit_t)kEscPwmResolutionBits;
+  timer.timer_num = LEDC_TIMER_0;
+  timer.freq_hz = kEscPwmFrequencyHz;
+  timer.clk_cfg = LEDC_AUTO_CLK;
+  if(ledc_timer_config(&timer) != ESP_OK) return false;
+
+  for(uint8_t i = 0; i < 4; ++i){
+    ledc_channel_config_t channel = {};
+    channel.gpio_num = kMotorPins[i];
+    channel.speed_mode = LEDC_LOW_SPEED_MODE;
+    channel.channel = (ledc_channel_t)i;
+    channel.intr_type = LEDC_INTR_DISABLE;
+    channel.timer_sel = LEDC_TIMER_0;
+    channel.duty = escPulseToDuty(kEscMinPulseUs);
+    channel.hpoint = 0;
+    if(ledc_channel_config(&channel) != ESP_OK) return false;
+  }
+  return true;
+}
+
+static void writeEscPulse(uint8_t motor, uint16_t pulseUs){
+  if(motor >= 4) return;
+  pulseUs = (uint16_t)constrain(pulseUs, kEscMinPulseUs, kEscMaxPulseUs);
+  ledc_set_duty(LEDC_LOW_SPEED_MODE, (ledc_channel_t)motor,
+                escPulseToDuty(pulseUs));
+  ledc_update_duty(LEDC_LOW_SPEED_MODE, (ledc_channel_t)motor);
+}
+
+static void pollBenchMotorTest(){
+  while(Serial.available() > 0){
+    char ch = (char)Serial.read();
+    if(ch == '\r') continue;
+    if(ch == '\n'){
+      serialCommandBuffer[serialCommandLength] = '\0';
+      if(strcmp(serialCommandBuffer, "STOP") == 0){
+        benchTestMotor = -1;
+        Serial.println("Bench motor test stopped; all ESCs at 1000 us.");
+      } else if(strncmp(serialCommandBuffer, "MTEST ", 6) == 0){
+        char* end = nullptr;
+        long motorNumber = strtol(serialCommandBuffer + 6, &end, 10);
+        if(!motorOutputReady){
+          Serial.println("MTEST rejected: ESC PWM setup failed.");
+        } else if(armed){
+          Serial.println("MTEST rejected: flight controller is armed.");
+        } else if(end == serialCommandBuffer + 6 || *end != '\0'
+                  || motorNumber < 1 || motorNumber > 4){
+          Serial.println("Use MTEST 1, MTEST 2, MTEST 3, MTEST 4, or STOP.");
+        } else {
+          benchTestMotor = (int8_t)(motorNumber - 1);
+          benchTestUntilMs = millis() + kEscBenchPulseDurationMs;
+          Serial.printf("Motor %ld: %u us for %lu ms. REMOVE ALL PROPELLERS.\n",
+                        motorNumber, kEscBenchPulseUs,
+                        (unsigned long)kEscBenchPulseDurationMs);
+        }
+      } else if(serialCommandLength != 0){
+        Serial.println("Bench command: MTEST 1..4 or STOP.");
+      }
+      serialCommandLength = 0;
+      serialCommandBuffer[0] = '\0';
+    } else if(serialCommandLength < sizeof(serialCommandBuffer) - 1){
+      serialCommandBuffer[serialCommandLength++] = ch;
+    } else {
+      serialCommandLength = 0;
+      serialCommandBuffer[0] = '\0';
+    }
+  }
+
+  if(benchTestMotor >= 0
+      && (int32_t)(millis() - benchTestUntilMs) >= 0){
+    benchTestMotor = -1;
+    Serial.println("Bench pulse complete; all ESCs at 1000 us.");
+  }
+}
+
+static void writeMotorOutputs(const float command[4]){
+  if(!motorOutputReady) return;
+  const bool benchActive = !armed && benchTestMotor >= 0
+      && (int32_t)(millis() - benchTestUntilMs) < 0;
+  for(uint8_t i = 0; i < 4; ++i){
+    uint16_t pulseUs = kEscMinPulseUs;
+    if(benchActive && i == (uint8_t)benchTestMotor){
+      pulseUs = kEscBenchPulseUs;
+    } else if(armed && !failsafe && isfinite(command[i])){
+      const float fraction = fmaxf(0.0f, fminf(1.0f, command[i]));
+      pulseUs = (uint16_t)(kEscMinPulseUs
+          + fraction * (kEscMaxPulseUs - kEscMinPulseUs) + 0.5f);
+    }
+    writeEscPulse(i, pulseUs);
+  }
+}
+
+/* ============================================================================
    MOTOR MIXER (X-frame) with slew-rate cap
    ============================================================================ */
 
@@ -1352,7 +1468,10 @@ static int pidNameToAxis(const char* axis){
 static void computeControl(const PilotCommand& cmd, float dt, float out[4]){
   const bool imuOk = calibrationLoaded && calAccelValid && calGyroValid
       && imu.valid && attitudeInitialized;
-  if(!imuOk || !isfinite(dt) || dt <= 0.0f || dt > 0.01f){
+  const bool pilotOk = cmd.valid
+      && uint32_t(millis() - cmd.timestampMs) < 250u;
+  if(!imuOk || !pilotOk || !motorOutputReady
+      || !isfinite(dt) || dt <= 0.0f || dt > 0.01f){
     armed = false; failsafe = true;
     for(int i=0; i<4; i++) out[i] = 0.0f;
     return;
@@ -1427,7 +1546,8 @@ void setup(){
   Serial.println("=== IntelQCopter Flight Controller ===");
   Serial.println("Target: ESP32-S3 DevKitC-1 N8");
   Serial.println("WiFi PID Tuner: Enabled");
-  Serial.println("Motor Outputs: DISABLED (INPUT ONLY)");
+  Serial.println("ESC PWM: GPIO 12/11/14/13, 50 Hz, 1000-2000 us");
+  Serial.println("Flight arming: BLOCKED until fresh pilot input is implemented");
   Serial.println();
 
   /* Load calibration once at startup */
@@ -1452,8 +1572,15 @@ void setup(){
   /* Set hover collective to mid-normal (22.5% of throttle range) */
   hoverCollective = (cal::motor_idle_fraction + cal::motor_normal_ceiling) / 2.0f;
 
-  /* Motor pins INPUT ONLY */
-  for(uint8_t p : kMotorPins) pinMode(p, INPUT);
+  /* Keep ESC signals low during setup, then send the standard minimum pulse. */
+  for(uint8_t p : kMotorPins){
+    pinMode(p, OUTPUT);
+    digitalWrite(p, LOW);
+  }
+  motorOutputReady = configureMotorOutputs();
+  Serial.printf("ESC PWM initialization: %s\n",
+                motorOutputReady ? "READY" : "FAILED - outputs remain unavailable");
+  Serial.println("Props-off bench commands: MTEST 1..4 (1100 us, 1 second), STOP");
 
   /* Start WiFi AP + WebSocket */
   if(startWifiAp()){
@@ -1567,10 +1694,12 @@ void loop(){
   pilotCmd.timestampMs = millis();
   pilotCmd.roll = 0; pilotCmd.pitch = 0; pilotCmd.yaw = 0;
   pilotCmd.throttle = 0; pilotCmd.rt = 0; pilotCmd.lt = 0; pilotCmd.buttons = 0;
+  pollBenchMotorTest();
 
   /* Run control */
   float motorOut[4] = {0,0,0,0};
   computeControl(pilotCmd, dt, motorOut);
+  writeMotorOutputs(motorOut);
 
   /* Telemetry */
   static uint32_t lastTelemetryMs = 0;
@@ -1672,7 +1801,10 @@ void loop(){
           wsSendText(wsClient, msg.c_str());
         } else if(strcmp(typeStr, "arm") == 0){
           bool arm = doc["arm"] | false;
-          if(arm && !armed && imu.valid && attitudeInitialized && calibrationLoaded){
+          if(arm && !armed && pilotCmd.valid
+              && uint32_t(millis() - pilotCmd.timestampMs) < 250u
+              && imu.valid && attitudeInitialized && calibrationLoaded
+              && motorOutputReady){
             armed = true;
             armTimeMs = millis();
             pidRollAngle.reset(); pidPitchAngle.reset(); pidRollRate.reset();
@@ -1681,6 +1813,9 @@ void loop(){
             altitudeRefInitialized = false;
             ltReduceState = 0.0f; boostState = 0.0f;
             Serial.println("ARMED via WiFi");
+          } else if(arm && !pilotCmd.valid){
+            armed = false;
+            Serial.println("ARM rejected: this firmware has no live pilot input.");
           } else if(!arm && armed){
             armed = false;
             disarmTimeMs = millis();
