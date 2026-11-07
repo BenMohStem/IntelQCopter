@@ -581,12 +581,8 @@ static float normalizeXboxAxis(uint16_t raw, bool invert){
 }
 
 static void xboxControllerTask(void*){
-  xboxController.begin();
-  // The library's Core scanner does not enable active scanning by default.
-  // Xbox discovery also matches the HID service UUID, which may be returned
-  // in the scan response rather than the initial advertisement.
-  NimBLEDevice::getScan()->setActiveScan(true);
-  Serial.println("Xbox BLE active scan started; hold the controller pair button.");
+  // Keep BLE servicing off the 500 Hz Arduino loop. Core is initialized once
+  // from setup(), matching the earlier ESP32 Xbox integration.
   bool wasFresh = false;
   uint32_t lastStatusPrintMs = 0;
   for(;;){
@@ -1948,6 +1944,12 @@ void setup(){
   Serial.printf("ESC PWM initialization: %s\n",
                 motorOutputReady ? "READY" : "FAILED - outputs remain unavailable");
   Serial.println("Props-off bench commands: MTEST 1..4 (1100 us, 1 second), STOP");
+
+  // Initialize Asukiaaa/NimBLE from setup before starting its worker task.
+  // Active scan gathers Xbox scan-response data used by the library matcher.
+  xboxController.begin();
+  NimBLEDevice::getScan()->setActiveScan(true);
+  Serial.println("Xbox BLE active scan initialized; put the controller in pairing mode.");
 
   /* Start WiFi AP + WebSocket */
   if(startWifiAp()){
