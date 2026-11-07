@@ -8,7 +8,7 @@
  *        not implemented in this source file
  *
  * SAFETY - Physical motor arming remains DISABLED:
- *   - No motor GPIO or ESC protocol is implemented here
+ *   - Motor GPIOs 12/11/14/13 = INPUT ONLY
  *   - No auto-arm on startup/reconnect
  *   - Internal arming state does not enable physical motor output
  *   - All motor outputs are mathematical demands only; no physical output
@@ -67,6 +67,11 @@ typedef struct {
 } qcopter_command_frame_t;
 
 /* ===========================================================================
+   CALIBRATION DATA (auto-generated)
+   =========================================================================== */
+#include "qcopter_calibration.h"
+
+/* ===========================================================================
    CONTROL LIMITS (ESC-command fractions 0..1, not RPM/thrust)
    =========================================================================== */
 #define FC_ARMED_IDLE_FRACTION   0.10f   /* 10% armed idle without throttle */
@@ -79,6 +84,7 @@ typedef struct {
 #define FC_MAX_PITCH_DEG 35.0f
 #define FC_MAX_YAW_RATE_DPS 180.0f
 #define FC_MAX_COLLECTIVE_ACCEL_MPS2 3.0f
+#define FC_MAX_SLEW_PER_SECOND 10.0f     /* max motor command change per second */
 #define FC_LOOP_HZ 500.0f
 #define FC_LOOP_PERIOD_US 2000u
 #define FC_LOOP_DT (1.0f / FC_LOOP_HZ)
@@ -98,15 +104,15 @@ typedef struct {
     int16_t accel_raw[3];
     int16_t gyro_raw[3];
     int16_t temp_raw;
-    float accel_x_g, accel_y_g, accel_z_g;   /* raw sensor values in g */
-    float gyro_x_dps, gyro_y_dps, gyro_z_dps; /* raw sensor values in deg/s */
+    float accel_x_g, accel_y_g, accel_z_g;   /* m/s^2, calibrated */
+    float gyro_x_dps, gyro_y_dps, gyro_z_dps; /* deg/s, calibrated */
     float temperature_c;
     float barometer_height_m;   /* meters relative to zero */
     bool barometer_valid;
     bool barometer_updated;
     float barometer_raw_pa;
     float barometer_temperature_c;
-    float magnetometer_x_uT, magnetometer_y_uT, magnetometer_z_uT; /* raw µT */
+    float magnetometer_x_uT, magnetometer_y_uT, magnetometer_z_uT;
     bool magnetometer_valid;
     bool magnetometer_fresh;
     float vertical_acceleration_mps2; /* gravity compensated */
@@ -124,11 +130,11 @@ typedef struct {
 static bool armed = false;
 static bool failsafe = false;
 static bool controller_connected = false;
-static uint64_t control_clock_ms = 0;
-static bool control_clock_initialized = false;
-static float hover_collective = 0.0f;
+static uint32_t last_controller_ms = 0;
+static float hover_collective = FC_HOVER_THROTTLE_PLACEHOLDER;
 static bool hover_collective_valid = false;
 static float baro_zero_offset_m = 0.0f;
+static bool baro_zeroed = false;
 static float lt_reduce_state = 0.0f;
 static float rt_boost_state = 0.0f;
 static float altitude_ref_m = 0.0f;
@@ -263,7 +269,7 @@ static void attitude_init(attitude_t *att, const float accel[3]) {
 }
 
 static void attitude_update(attitude_t *att, const float gyro_dps[3],
-                            const float accel_g[3],
+                            const float accel_mps2[3],
                             const float mag_uT[3], bool mag_valid, float dt) {
     if (!att->initialized) return;
     float gx = gyro_dps[0] - att->gyro_bias[0];
@@ -284,10 +290,10 @@ static void attitude_update(attitude_t *att, const float gyro_dps[3],
     att->q = qn; quat_normalize(&att->q);
 
     /* Accelerometer correction (roll/pitch only) */
-    if (accel_g) {
-        float n = sqrtf(accel_g[0]*accel_g[0] + accel_g[1]*accel_g[1] + accel_g[2]*accel_g[2]);
+    if (accel_mps2) {
+        float n = sqrtf(accel_mps2[0]*accel_mps2[0] + accel_mps2[1]*accel_mps2[1] + accel_mps2[2]*accel_mps2[2]);
         if (n > 0.5f && n < 2.0f) {
-            float ax = accel_g[0]/n, ay = accel_g[1]/n, az = accel_g[2]/n;
+            float ax = accel_mps2[0]/n, ay = accel_mps2[1]/n, az = accel_mps2[2]/n;
             float vx = 2.0f*(att->q.x*att->q.z - att->q.w*att->q.y);
             float vy = 2.0f*(att->q.y*att->q.z + att->q.w*att->q.x);
             float vz = att->q.w*att->q.w - att->q.x*att->q.x - att->q.y*att->q.y + att->q.z*att->q.z;
@@ -385,6 +391,22 @@ static void kf_update_baro(altitude_kf_t *kf, float height_m, float sigma_m) {
     kf->p11 = kf->p11 - 2.0f*k1*kf->p01 + k1*k1*kf->p00 + k1*k1*r;
 }
 
+static void kf_update_lidar(altitude_kf_t *kf, float height_m, float sigma_m) {
+    if (!kf->initialized || sigma_m <= 0.0f) return;
+    float r = sigma_m*sigma_m; if (r < 1e-6f) r = 1e-6f;
+    float innovation = height_m - kf->height_m;
+    float innovation_var = kf->p00 + r;
+    float k0 = kf->p00/innovation_var;
+    float k1 = kf->p10/innovation_var;
+    kf->height_m += k0 * innovation;
+    kf->velocity_mps += k1 * innovation;
+    float z = 1.0f - k0;
+    kf->p00 = z*z*kf->p00 + k0*k0*r;
+    kf->p01 = z*(kf->p01 - k1*kf->p00) + k0*k1*r;
+    kf->p10 = kf->p01;
+    kf->p11 = kf->p11 - 2.0f*k1*kf->p01 + k1*k1*kf->p00 + k1*k1*r;
+}
+
 /* ===========================================================================
    MOTOR MIXER (X-frame: FL, FR, RR, RL)
    =========================================================================== */
@@ -395,7 +417,7 @@ typedef struct {
 
 static void motor_mixer_init(motor_mixer_t *m) {
     for (int i = 0; i < 4; ++i) m->last_cmd[i] = 0.0f;
-    m->max_slew_per_second = 10.0f;
+    m->max_slew_per_second = g_max_slew_per_second;
 }
 
 static void motor_mixer_mix(motor_mixer_t *m,
@@ -453,13 +475,22 @@ typedef struct {
     float lt;        /* 0..1 left trigger */
 } pilot_command_t;
 
-static pilot_command_t pilot_cmd;
-static bool pilot_cmd_valid = false;
+static float deadzonef(float v, float zone) {
+    if (fabsf(v) < zone) return 0.0f;
+    return v > 0.0f ? (v - zone) / (1.0f - zone) : (v + zone) / (1.0f - zone);
+}
 
 static float smooth_state(float *state, float target, float dt, float tau) {
     float alpha = dt / (tau + dt);
     *state += alpha * (target - *state);
     return *state;
+}
+
+static bool pilot_button_pressed(uint8_t buttons, uint8_t button, bool *prev_state) {
+    bool pressed = (buttons & button) != 0;
+    bool changed = pressed && !*prev_state;
+    *prev_state = pressed;
+    return pressed;
 }
 
 /* ===========================================================================
@@ -483,39 +514,6 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
         return out;
     }
 
-    if (s == NULL || cmd == NULL || !cmd->valid || !s->valid || !s->fresh
-        || !isfinite(dt) || dt <= 0.0f || dt > FC_MAX_CONTROL_DT
-        || !isfinite(s->accel_x_g) || !isfinite(s->accel_y_g)
-        || !isfinite(s->accel_z_g) || !isfinite(s->gyro_x_dps)
-        || !isfinite(s->gyro_y_dps) || !isfinite(s->gyro_z_dps)
-        || !isfinite(s->vertical_acceleration_mps2)
-        || !s->barometer_valid || !isfinite(s->barometer_height_m)
-        || (s->magnetometer_valid && s->magnetometer_fresh
-            && (!isfinite(s->magnetometer_x_uT)
-                || !isfinite(s->magnetometer_y_uT)
-                || !isfinite(s->magnetometer_z_uT)))) {
-        armed = false;
-        failsafe = true;
-        motor_mixer_init(&mixer);
-        out.armed = false;
-        out.sensor_fault = true;
-        return out;
-    }
-    if (!calibration_loaded) {
-        armed = false;
-        failsafe = true;
-        motor_mixer_init(&mixer);
-        out.sensor_fault = true;
-        return out;
-    }
-    if (!hover_collective_valid) {
-        armed = false;
-        failsafe = true;
-        motor_mixer_init(&mixer);
-        out.sensor_fault = true;
-        return out;
-    }
-
     /* =========================================================================
        STEP 1: Apply calibration to sensor readings
        ========================================================================= */
@@ -531,24 +529,16 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
 
     if (calibration_loaded) {
         /* Apply accelerometer calibration: calibrated = scale * (raw - bias) */
-        /* Captures store accel calibration bias in m/s²; convert source g first. */
-        const float accel_raw[3] = {
-            accel_x * FC_GRAVITY_MPS2,
-            accel_y * FC_GRAVITY_MPS2,
-            accel_z * FC_GRAVITY_MPS2
-        };
-        float accel_calibrated[3];
-        for (int row = 0; row < 3; ++row) {
-            accel_calibrated[row] = 0.0f;
-            for (int col = 0; col < 3; ++col) {
-                accel_calibrated[row] += cal_accel_scale[row][col]
-                    * (accel_raw[col] - cal_accel_bias[col]);
-            }
-        }
-        /* The attitude estimator API uses g, so convert its calibrated result back. */
-        accel_x = accel_calibrated[0] / FC_GRAVITY_MPS2;
-        accel_y = accel_calibrated[1] / FC_GRAVITY_MPS2;
-        accel_z = accel_calibrated[2] / FC_GRAVITY_MPS2;
+        float ax = accel_x, ay = accel_y, az = accel_z;
+        accel_x = cal_accel_scale[0][0]*(ax - cal_accel_bias[0])
+                + cal_accel_scale[0][1]*(ay - cal_accel_bias[1])
+                + cal_accel_scale[0][2]*(az - cal_accel_bias[2]);
+        accel_y = cal_accel_scale[1][0]*(ax - cal_accel_bias[0])
+                + cal_accel_scale[1][1]*(ay - cal_accel_bias[1])
+                + cal_accel_scale[1][2]*(az - cal_accel_bias[2]);
+        accel_z = cal_accel_scale[2][0]*(ax - cal_accel_bias[0])
+                + cal_accel_scale[2][1]*(ay - cal_accel_bias[1])
+                + cal_accel_scale[2][2]*(az - cal_accel_bias[2]);
 
         /* Apply gyro calibration: calibrated = raw - bias */
         gyro_x -= cal_gyro_bias[0];
@@ -564,16 +554,6 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
         mag_z = cal_mag_soft_iron[2][0]*mx_c + cal_mag_soft_iron[2][1]*my_c + cal_mag_soft_iron[2][2]*mz_c;
     }
 
-    if (!isfinite(accel_x) || !isfinite(accel_y) || !isfinite(accel_z)
-        || !isfinite(gyro_x) || !isfinite(gyro_y) || !isfinite(gyro_z)
-        || !isfinite(mag_x) || !isfinite(mag_y) || !isfinite(mag_z)) {
-        armed = false;
-        failsafe = true;
-        motor_mixer_init(&mixer);
-        out.sensor_fault = true;
-        return out;
-    }
-
     /* =========================================================================
        STEP 2: Attitude estimation
        ========================================================================= */
@@ -585,7 +565,7 @@ static control_output_t flight_control_step(const sensor_sample_t *s,
                     s->magnetometer_valid && s->magnetometer_fresh, dt);
 
     /* =========================================================================
-       STEP 3: Vertical Kalman filter
+       STEP 2: Vertical Kalman filter
        ========================================================================= */
     if (!alt_kf_initialized) {
         kf_init(&alt_kf, s->barometer_height_m, 0.0f);
@@ -775,25 +755,23 @@ void fc_init(void) {
     armed = false;
     failsafe = false;
     controller_connected = false;
-    control_clock_ms = 0;
-    control_clock_initialized = false;
-    hover_collective = 0.0f;
-    hover_collective_valid = false;
-    calibration_loaded = false;
-    memset(&pilot_cmd, 0, sizeof(pilot_cmd));
-    pilot_cmd_valid = false;
+    last_controller_ms = 0;
+    hover_collective = FC_HOVER_THROTTLE_PLACEHOLDER;
     baro_zero_offset_m = 0.0f;
+    baro_zeroed = false;
     lt_reduce_state = 0.0f;
     rt_boost_state = 0.0f;
     altitude_ref_m = 0.0f;
     altitude_ref_initialized = false;
 }
 
+static pilot_command_t pilot_cmd;
+static bool pilot_cmd_valid = false;
+
 void fc_apply_command(const qcopter_command_frame_t *frame, uint64_t now_ms) {
-    if (!qcopter_frame_values_valid(frame)) return;
+    if (!frame) return;
     controller_connected = true;
-    control_clock_ms = now_ms;
-    control_clock_initialized = true;
+    last_controller_ms = now_ms;
 
     pilot_cmd.roll_deg = (float)frame->roll * 35.0f / QCOPTER_AXIS_SCALE;
     pilot_cmd.pitch_deg = (float)frame->pitch * 35.0f / QCOPTER_AXIS_SCALE;
@@ -828,7 +806,7 @@ control_output_t fc_get_output(const sensor_sample_t *s,
     }
 
     if (!control_clock_initialized) {
-        control_clock_ms = c->timestamp_ms;
+        control_clock_ms = now_ms;
         control_clock_initialized = true;
     } else {
         const uint32_t clock_now_ms = (uint32_t)control_clock_ms;
