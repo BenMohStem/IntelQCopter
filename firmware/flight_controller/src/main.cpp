@@ -352,6 +352,10 @@ static float rollAngleRef = 0.0f, pitchAngleRef = 0.0f, yawHeadingRef = 0.0f;
 static float altitudeRefM = 0.0f;
 static bool altitudeRefInitialized = false;
 
+/* WiFi arming command state */
+static bool wifiArmPending = false;
+static uint32_t wifiArmTimeMs = 0;
+
 /* Motor outputs */
 static float motorCmd[4] = {0,0,0,0};
 static bool motorArmed = false, motorSensorFault = false, motorFailsafe = false;
@@ -1436,15 +1440,19 @@ static int pidNameToAxis(const char* axis){
 static void computeControl(const PilotCommand& cmd, float dt, float out[4]){
   const bool imuOk = calibrationLoaded && calAccelValid && calGyroValid
       && imu.valid && attitudeInitialized;
-  const bool baroOk = calBaroValid && baro.valid && vertKf.initialized;
-  const bool pilotOk = cmd.valid
-      && uint32_t(millis() - cmd.timestampMs) < 250u;
-  if(!imuOk || !baroOk || !pilotOk || !isfinite(dt) || dt <= 0.0f || dt > 0.01f){
+  const bool baroOk = calBaroValid && baro.valid;
+  if(!imuOk || !isfinite(dt) || dt <= 0.0f || dt > 0.01f){
     armed = false; failsafe = true;
     for(int i=0; i<4; i++) out[i] = 0.0f;
     return;
   }
   failsafe = false;
+
+  /* Initialize vertKf from first baro reading if not yet done */
+  if(baroOk && baro.fresh && !vertKf.initialized){
+    vertKf.init(0.0f, 0.0f);
+  }
+
   /* Attitude */
   float attRoll = attitudeRollDeg, attPitch = attitudePitchDeg, attYaw = attitudeYawDeg;
   float attRollRate = attitudeRollRateDps, attPitchRate = attitudePitchRateDps, attYawRate = attitudeYawRateDps;
@@ -1472,16 +1480,15 @@ static void computeControl(const PilotCommand& cmd, float dt, float out[4]){
   vs += tt;
   vs = fmaxf(-cal::max_descent_mps, fminf(cal::max_climb_mps, vs));
   float accelCmd = pidVertSpeed.update(vs, vertKf.velocityMps, dt);
-  /* Altitude PID -> altitude hold correction */
-  bool altitudeHold = fabsf(cmd.throttle) < 0.1f;
-  if(altitudeHold && altitudeRefInitialized){
+  /* Altitude PID -> altitude hold correction (armed + throttle near center) */
+  bool altitudeHold = fabsf(cmd.throttle) < 0.1f && armed;
+  if(altitudeHold && altitudeRefInitialized && vertKf.initialized){
     float altCorr = pidAltitude.update(altitudeRefM, vertKf.height_m, dt);
     accelCmd += altCorr;
-  } else {
-    if(!altitudeRefInitialized){
-      altitudeRefM = vertKf.height_m;
-      altitudeRefInitialized = true;
-    }
+  } else if(!altitudeRefInitialized && vertKf.initialized){
+    altitudeRefM = vertKf.height_m;
+    altitudeRefInitialized = true;
+  } else if(altitudeRefInitialized && vertKf.initialized){
     altitudeRefM += vs * dt;
   }
   /* Collective thrust from vertical acceleration */
@@ -1491,8 +1498,12 @@ static void computeControl(const PilotCommand& cmd, float dt, float out[4]){
   coll = fmaxf(cal::motor_idle_fraction, fminf(cal::motor_boost_ceiling, coll));
   float ceiling = cal::motor_normal_ceiling
                 + (cal::motor_boost_ceiling - cal::motor_normal_ceiling) * boost;
-  motorMixer(coll, rollCmd, pitchCmd, yawCmd, ceiling,
+  motorMixer(coll, rollTorque, pitchTorque, yawTorque, ceiling,
              cal::motor_idle_fraction, dt, out);
+  /* Zero motors if not armed (safety) */
+  if(!armed){
+    for(int i=0; i<4; i++) out[i] = 0.0f;
+  }
 }
 
 /* ============================================================================
@@ -1526,6 +1537,10 @@ void setup(){
   pidAltitude.integratorLimit = 0.5f; pidAltitude.outputLimit = cal::max_vertical_speed_mps; pidAltitude.reset();
   pidVertSpeed.kp = cal::pid_vert_speed[0];  pidVertSpeed.ki = cal::pid_vert_speed[1];  pidVertSpeed.kd = cal::pid_vert_speed[2];
   pidVertSpeed.integratorLimit = 0.5f; pidVertSpeed.outputLimit = 5.0f; pidVertSpeed.reset();
+
+  /* Set hover collective to mid-normal (22.5% of throttle range) */
+  hoverCollective = (cal::motor_idle_fraction + cal::motor_normal_ceiling) / 2.0f;
+  hoverCollectiveValid = true;
 
   /* Motor pins INPUT ONLY */
   for(uint8_t p : kMotorPins) pinMode(p, INPUT);
@@ -1665,8 +1680,8 @@ void loop(){
     doc["roll_rate"] = attitudeRollRateDps;
     doc["pitch_rate"] = attitudePitchRateDps;
     doc["yaw_rate"] = attitudeYawRateDps;
-    doc["altitude"] = 0.0f;
-    doc["vert_speed"] = 0.0f;
+    doc["altitude"] = vertKf.initialized ? vertKf.height_m : 0.0f;
+    doc["vert_speed"] = vertKf.initialized ? vertKf.velocityMps : 0.0f;
     doc["armed"] = armed;
     doc["loop_rate"] = 500.0f;
     JsonArray motors = doc.createNestedArray("motor");
@@ -1714,10 +1729,19 @@ void loop(){
           float ki = doc["ki"] | 0.0f;
           float kd = doc["kd"] | 0.0f;
           int idx = pidNameToAxis(axis);
-          /* PID setters not yet wired to live control path (research-only) */
+          /* Apply PID gains to live control path */
+          bool applied = false;
+          if(idx == 0){ pidRollAngle.kp=kp; pidRollAngle.ki=ki; pidRollAngle.kd=kd; pidRollAngle.reset(); applied=true; }
+          else if(idx == 1){ pidPitchAngle.kp=kp; pidPitchAngle.ki=ki; pidPitchAngle.kd=kd; pidPitchAngle.reset(); applied=true; }
+          else if(idx == 2){ pidRollRate.kp=kp; pidRollRate.ki=ki; pidRollRate.kd=kd; pidRollRate.reset(); applied=true; }
+          else if(idx == 3){ pidPitchRate.kp=kp; pidPitchRate.ki=ki; pidPitchRate.kd=kd; pidPitchRate.reset(); applied=true; }
+          else if(idx == 4){ pidYawRate.kp=kp; pidYawRate.ki=ki; pidYawRate.kd=kd; pidYawRate.reset(); applied=true; }
+          else if(idx == 5){ pidAltitude.kp=kp; pidAltitude.ki=ki; pidAltitude.kd=kd; pidAltitude.reset(); applied=true; }
+          else if(idx == 6){ pidVertSpeed.kp=kp; pidVertSpeed.ki=ki; pidVertSpeed.kd=kd; pidVertSpeed.reset(); applied=true; }
           StaticJsonDocument<128> ack;
           ack["type"] = "pid_ack";
           ack["axis"] = axis;
+          ack["applied"] = applied;
           String ackMsg;
           serializeJson(ack, ackMsg);
           wsSendText(wsClient, ackMsg.c_str());
@@ -1725,13 +1749,46 @@ void loop(){
           StaticJsonDocument<512> docOut;
           docOut["type"] = "pid_values";
           JsonObject pids = docOut.createNestedObject("pids");
-          for(int i=0; i<7; i++){
-            JsonObject a = pids.createNestedObject(pidAxisToName(i));
-            a["kp"] = 0.0f; a["ki"] = 0.0f; a["kd"] = 0.0f;
-          }
+          JsonObject a0 = pids.createNestedObject("roll_angle");
+          a0["kp"]=pidRollAngle.kp; a0["ki"]=pidRollAngle.ki; a0["kd"]=pidRollAngle.kd;
+          JsonObject a1 = pids.createNestedObject("pitch_angle");
+          a1["kp"]=pidPitchAngle.kp; a1["ki"]=pidPitchAngle.ki; a1["kd"]=pidPitchAngle.kd;
+          JsonObject a2 = pids.createNestedObject("roll_rate");
+          a2["kp"]=pidRollRate.kp; a2["ki"]=pidRollRate.ki; a2["kd"]=pidRollRate.kd;
+          JsonObject a3 = pids.createNestedObject("pitch_rate");
+          a3["kp"]=pidPitchRate.kp; a3["ki"]=pidPitchRate.ki; a3["kd"]=pidPitchRate.kd;
+          JsonObject a4 = pids.createNestedObject("yaw_rate");
+          a4["kp"]=pidYawRate.kp; a4["ki"]=pidYawRate.ki; a4["kd"]=pidYawRate.kd;
+          JsonObject a5 = pids.createNestedObject("altitude");
+          a5["kp"]=pidAltitude.kp; a5["ki"]=pidAltitude.ki; a5["kd"]=pidAltitude.kd;
+          JsonObject a6 = pids.createNestedObject("vert_speed");
+          a6["kp"]=pidVertSpeed.kp; a6["ki"]=pidVertSpeed.ki; a6["kd"]=pidVertSpeed.kd;
           String msg;
           serializeJson(docOut, msg);
           wsSendText(wsClient, msg.c_str());
+        } else if(strcmp(typeStr, "arm") == 0){
+          bool arm = doc["arm"] | false;
+          if(arm && !armed && imu.valid && attitudeInitialized && calibrationLoaded){
+            armed = true;
+            armTimeMs = millis();
+            /* Reset PIDs on arm */
+            pidRollAngle.reset(); pidPitchAngle.reset(); pidRollRate.reset();
+            pidPitchRate.reset(); pidYawRate.reset();
+            pidAltitude.reset(); pidVertSpeed.reset();
+            altitudeRefInitialized = false;
+            ltReduceState = 0.0f; boostState = 0.0f;
+            Serial.println("ARMED via WiFi");
+          } else if(!arm && armed){
+            armed = false;
+            disarmTimeMs = millis();
+            Serial.println("DISARMED via WiFi");
+          }
+          StaticJsonDocument<128> ack;
+          ack["type"] = "arm_ack";
+          ack["armed"] = armed;
+          String ackMsg;
+          serializeJson(ack, ackMsg);
+          wsSendText(wsClient, ackMsg.c_str());
         }
       }
     } else if(len == -2){
