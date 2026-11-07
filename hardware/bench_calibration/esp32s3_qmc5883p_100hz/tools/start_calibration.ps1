@@ -21,6 +21,7 @@ param(
     [int]$BmpSamples = 1000,
     [ValidateRange(0,30)][double]$SettleSeconds = 3.0,
     [switch]$SkipBmp,
+    [switch]$SkipLidar, # Compatibility switch; LiDAR is already excluded in competition mode.
     [switch]$MagOnly,
     [switch]$MagProbe,
     [switch]$Wifi,  # Enable ESP32-S3 Wi-Fi AP calibration (UDP)
