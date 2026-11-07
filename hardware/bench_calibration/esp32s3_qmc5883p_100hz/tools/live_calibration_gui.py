@@ -35,6 +35,13 @@ MAGIC = b'\xA5\x5A'
 PACKET_SIZES = {2: 52, 3: 52, 4: 92}
 BAUD = 921600
 G = 9.80665
+# Intended MPU6050 capture profile. The packet does not carry register readback,
+# so these engineering-unit conversions assume the firmware configured these ranges.
+MPU_ACCEL_FULL_SCALE_G = 8.0
+MPU_ACCEL_COUNTS_PER_G = 4096.0
+MPU_GYRO_FULL_SCALE_DPS = 500.0
+MPU_GYRO_COUNTS_PER_DPS = 65.5
+MPU_ACCEL_FULL_SCALE_MPS2 = MPU_ACCEL_FULL_SCALE_G * G
 HMC_COUNTS_PER_UT = 1090.0 / 100.0
 QMC_COUNTS_PER_UT = 3000.0 / 100.0  # QMC5883L +/-8 G
 QMCP_COUNTS_PER_UT = 3750.0 / 100.0  # QMC5883P +/-8 G, QST datasheet Rev E
@@ -173,10 +180,12 @@ class Frame:
                 and 20 <= self.lidar_distance_mm <= 7800)
 
     def accel(self):
-        return tuple(x * G / 16384.0 for x in (self.ax,self.ay,self.az))
+        """Convert raw counts using the configured ±8 g MPU6050 scale."""
+        return tuple(x * G / MPU_ACCEL_COUNTS_PER_G for x in (self.ax,self.ay,self.az))
 
     def gyro(self):
-        return tuple(x / 131.0 for x in (self.gx,self.gy,self.gz))
+        """Convert raw counts using the configured ±500 °/s MPU6050 scale."""
+        return tuple(x / MPU_GYRO_COUNTS_PER_DPS for x in (self.gx,self.gy,self.gz))
 
     def mag(self):
         counts_per_ut = (QMCP_COUNTS_PER_UT if self.mag_sensor_type == 'QMC5883P'
@@ -261,7 +270,7 @@ class BinaryDecoder:
         return frames
 
 
-def make_test_packet(seq, ax=0, ay=0, az=16384, flags=0x1F, mag=(0,0,0), version=2):
+def make_test_packet(seq, ax=0, ay=0, az=int(MPU_ACCEL_COUNTS_PER_G), flags=0x1F, mag=(0,0,0), version=2):
     b = bytearray(MAGIC + bytes([version, flags]))
     b += struct.pack('<IIH7h3hIIhIH', seq, (seq*2000)&0xFFFFFFFF, 0,
         ax,ay,az,0,0,0,0,*mag,500000,500000,2350,10132500,0)
@@ -273,13 +282,13 @@ def make_test_packet(seq, ax=0, ay=0, az=16384, flags=0x1F, mag=(0,0,0), version
 def selftest():
     d = BinaryDecoder()
     d.feed(b'noise')
-    packet = make_test_packet(123, 16384, 0, 0, mag=(100,200,-80))
+    packet = make_test_packet(123, int(MPU_ACCEL_COUNTS_PER_G), 0, 0, mag=(100,200,-80))
     result = []
     for bit in (packet[:1], packet[1:17], packet[17:39], packet[39:]):
         result += d.feed(bit)
     assert len(result) == 1
     f = result[0]
-    assert f.seq == 123 and f.ax == 16384 and f.my == 200
+    assert f.seq == 123 and f.ax == int(MPU_ACCEL_COUNTS_PER_G) and f.my == 200
     assert abs(f.accel()[0]-G)<1e-5
     assert f.mag_new and f.bmp_new
     bad = bytearray(make_test_packet(124)); bad[28] ^= 0x01
@@ -1174,8 +1183,10 @@ class Application:
         self._mag_triads=configure_magnetic_axes(ax_3d,[],enlarged=False)
         self.charts=[]
         for ax,title,keys,unit,minimum_span,initial_limits in [
-            (ax_acc,'Accel · 500 Hz',('ax','ay','az'),'m/s²',2.0,(-80,80)),
-            (ax_gyro,'Gyro · 500 Hz',('gx','gy','gz'),'°/s',10.0,(-500,500)),
+            (ax_acc,'Accel · ±8 g expected',('ax','ay','az'),'m/s²',2.0,
+             (-MPU_ACCEL_FULL_SCALE_MPS2,MPU_ACCEL_FULL_SCALE_MPS2)),
+            (ax_gyro,'Gyro · ±500°/s expected',('gx','gy','gz'),'°/s',10.0,
+             (-MPU_GYRO_FULL_SCALE_DPS,MPU_GYRO_FULL_SCALE_DPS)),
             (ax_mag,'MAG · raw axes',('mx','my','mz'),'µT',10.0,(-100,100)),
             (ax_pressure,'BMP pressure',('pressure',),'Pa',100.0,(30000,120000)),
             (ax_alt,'Relative barometric height',('altitude',),'m',0.20,(-1,1))]:
@@ -1192,6 +1203,12 @@ class Application:
                 lines.append((key,line))
             ax.legend(loc='upper right',fontsize=8)
             self.charts.append((ax,lines,minimum_span,initial_limits))
+        # Show the sensor's configured measurement range after data arrives.
+        # Dynamic autoscaling made out-of-range conversion errors look plausible.
+        self.fixed_sensor_limits={
+            ax_acc:(-MPU_ACCEL_FULL_SCALE_MPS2,MPU_ACCEL_FULL_SCALE_MPS2),
+            ax_gyro:(-MPU_GYRO_FULL_SCALE_DPS,MPU_GYRO_FULL_SCALE_DPS),
+        }
         self.altitude_annotation=ax_alt.text(
             .5,.5,self.altitude_status,transform=ax_alt.transAxes,
             ha='center',va='center',fontsize=8,color='#7A4B00',wrap=True)
@@ -1799,6 +1816,9 @@ class Application:
             visible_values=(value for key,_line in lines
                             for sample_time,value in zip(ts,self.series[key])
                             if sample_time>=x_left)
+            if ax in self.fixed_sensor_limits:
+                ax.set_ylim(*self.fixed_sensor_limits[ax])
+                continue
             limits=live_plot_y_limits(visible_values,minimum_span)
             if limits is not None:
                 ax.set_ylim(*limits)
