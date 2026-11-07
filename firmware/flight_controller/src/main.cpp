@@ -69,7 +69,7 @@ inline const float accel_correction[3][3] = {
 /* Raw conversion: counts / 65.5 */
 /* Apply once: calibrated = raw - bias */
 inline const float gyro_bias_dps[3] = {
-    -11.04461742f, 6.99774234f, -1.10236200f
+    -11.04462f,  6.99774f, -1.10236f
 };
 
 /* ---- QMC5883P magnetometer (chip-frame microtesla) ---- */
