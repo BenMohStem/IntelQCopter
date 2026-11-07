@@ -40,6 +40,7 @@
 #include <Wire.h>
 #include <ArduinoJson.h>
 #include <XboxSeriesXControllerESP32_asukiaaa.hpp>
+#include <NimBLEDevice.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <strings.h>
@@ -581,8 +582,13 @@ static float normalizeXboxAxis(uint16_t raw, bool invert){
 
 static void xboxControllerTask(void*){
   xboxController.begin();
-  Serial.println("Xbox BLE scan started; hold controller pair button if needed.");
+  // The library's Core scanner does not enable active scanning by default.
+  // Xbox discovery also matches the HID service UUID, which may be returned
+  // in the scan response rather than the initial advertisement.
+  NimBLEDevice::getScan()->setActiveScan(true);
+  Serial.println("Xbox BLE active scan started; hold the controller pair button.");
   bool wasFresh = false;
+  uint32_t lastStatusPrintMs = 0;
   for(;;){
     xboxController.onLoop();
 
@@ -622,6 +628,13 @@ static void xboxControllerTask(void*){
                     xboxController.battery);
     } else if(!fresh && wasFresh){
       Serial.println("Xbox input lost/stale; flight control will disarm.");
+    }
+    if(!fresh && uint32_t(millis() - lastStatusPrintMs) >= 2000u){
+      lastStatusPrintMs = millis();
+      Serial.printf("Xbox BLE status: link=%s, waiting_first_report=%s, failed_connections=%u\n",
+          xboxController.isConnected() ? "connected" : "searching",
+          xboxController.isWaitingForFirstNotification() ? "yes" : "no",
+          xboxController.getCountFailedConnection());
     }
     wasFresh = fresh;
     vTaskDelay(pdMS_TO_TICKS(2));
