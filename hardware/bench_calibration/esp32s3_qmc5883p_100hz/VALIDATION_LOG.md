@@ -419,3 +419,18 @@ verification. Its first preflight received 361 boot-console bytes and zero
 binary packets (`captures/usb_preflight_20261104_023413.csv`); it did not yet
 verify the combined sensor stream. A clean post-flash startup/power-cycle and
 new full-stream capture are required before claiming MAG fixed in the GUI.
+
+## 2026-11-07 — GUI analysis callback and plot-scale source repair
+
+The user reported a Tkinter callback exception after analysis completion:
+`Application.pump` attempted to configure a `mag_quality_button` that the
+current GUI never creates. Removed the stale callback reference and the unused,
+unbound MAG-quality GUI method. Updated live chart scaling to use the same
+30-second window shown on screen, add readable unit-specific minimum ranges,
+and keep pressure labels in plain Pa. Empty plots show sensor-relevant ranges;
+the latency tab remains explicitly unavailable without measured per-sensor
+telemetry. Added a direct launch example for commands run from the parent
+`Desktop\Work` folder.
+
+This is a source/documentation repair only. No GUI launch, test, COM3 access,
+build, firmware upload, sensor capture or physical hardware check was performed.

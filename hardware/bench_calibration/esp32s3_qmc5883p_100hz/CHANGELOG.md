@@ -1,5 +1,20 @@
 # Bench calibration changes and evidence
 
+## 2026-11-07 — repair GUI callback and live chart scales
+
+- Removed a stale magnetometer-quality button reference from the analysis
+  completion callback and removed its unused, unbound GUI method. Completing
+  CSV analysis no longer raises `AttributeError` for a widget that is not part
+  of the current layout.
+- Live chart Y limits now use only samples inside the displayed 30-second
+  window, with per-sensor minimum spans (m/s², °/s, µT, Pa and m). Empty plots
+  show sensible measurement ranges; near-constant pressure stays legible in
+  plain Pa. The latency chart uses the same visible time window and still
+  refuses to invent timing values.
+- Added the correct direct Python command for a PowerShell prompt in the parent
+  `Desktop\Work` folder. No GUI/COM3 session, test, build, upload or hardware
+  check was run for this change.
+
 ## 2026-11-07 — single Python GUI entry point
 
 - Folded the Windows Tcl/Tk runtime setup into `tools/live_calibration_gui.py`.

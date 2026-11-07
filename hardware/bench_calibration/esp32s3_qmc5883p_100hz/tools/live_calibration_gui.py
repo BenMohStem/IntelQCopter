@@ -372,6 +372,20 @@ def configure_magnetic_axes(ax, points, *, enlarged=False):
     return artists
 
 
+def live_plot_y_limits(values, minimum_span):
+    """Return padded limits that remain readable for nearly steady sensors."""
+    finite=[value for value in values if math.isfinite(value)]
+    if not finite:
+        return None
+    low=min(finite)
+    high=max(finite)
+    span=max(high-low,float(minimum_span))
+    center=(low+high)*.5
+    margin=max(span*.10,float(minimum_span)*.02)
+    half=span*.5+margin
+    return center-half,center+half
+
+
 @dataclass(frozen=True)
 class Stage:
     pose: str
@@ -1159,23 +1173,25 @@ class Application:
         self.mag_scatter=ax_3d.scatter([],[],[],s=6,alpha=.48,c='#6243B7',depthshade=False,edgecolors='w',linewidth=.3)
         self._mag_triads=configure_magnetic_axes(ax_3d,[],enlarged=False)
         self.charts=[]
-        for ax,title,keys,unit in [
-            (ax_acc,'Accel · 500 Hz',('ax','ay','az'),'m/s²'),
-            (ax_gyro,'Gyro · 500 Hz',('gx','gy','gz'),'°/s'),
-            (ax_mag,'MAG · raw axes',('mx','my','mz'),'µT'),
-            (ax_pressure,'BMP pressure',('pressure',),'Pa'),
-            (ax_alt,'Relative barometric height',('altitude',),'m')]:
+        for ax,title,keys,unit,minimum_span,initial_limits in [
+            (ax_acc,'Accel · 500 Hz',('ax','ay','az'),'m/s²',2.0,(-80,80)),
+            (ax_gyro,'Gyro · 500 Hz',('gx','gy','gz'),'°/s',10.0,(-500,500)),
+            (ax_mag,'MAG · raw axes',('mx','my','mz'),'µT',10.0,(-100,100)),
+            (ax_pressure,'BMP pressure',('pressure',),'Pa',100.0,(30000,120000)),
+            (ax_alt,'Relative barometric height',('altitude',),'m',0.20,(-1,1))]:
             ax.set_title(title,fontsize=9,pad=3)
             ax.set_ylabel(unit,fontsize=8,labelpad=2)
             ax.set_xlabel('' if ax in (ax_acc,ax_gyro) else 'Time (s)',fontsize=8,labelpad=1)
             ax.tick_params(labelsize=7,pad=1)
             ax.grid(alpha=0.25)
+            ax.set_ylim(*initial_limits)
+            ax.ticklabel_format(axis='y',style='plain',useOffset=False)
             lines=[]
             for key in keys:
                 line,=ax.plot([],[],label=key,linewidth=1.1)
                 lines.append((key,line))
             ax.legend(loc='upper right',fontsize=8)
-            self.charts.append((ax,lines))
+            self.charts.append((ax,lines,minimum_span,initial_limits))
         self.altitude_annotation=ax_alt.text(
             .5,.5,self.altitude_status,transform=ax_alt.transAxes,
             ha='center',va='center',fontsize=8,color='#7A4B00',wrap=True)
@@ -1713,10 +1729,8 @@ class Application:
             elif kind=='analysis_done':
                 ok, report=payload
                 self.analysis_running=False
-                self.calc.config(state='normal')
-                self.combine_button.config(state='normal')
-                self.mag_quality_button.config(state='normal')
-                self.lidar_analysis_button.config(state='normal')
+                for button in (self.calc,self.combine_button,self.lidar_analysis_button):
+                    button.config(state='normal')
                 if ok:self.msg.showinfo('Analysis finished',report[-5000:])
                 else:self.msg.showerror('Calibration failed',report[-5000:])
             elif kind=='plot':
@@ -1776,15 +1790,20 @@ class Application:
     def redraw(self):
         ts=list(self.times)
         if not ts:return
-        for ax,lines in self.charts:
+        x_right=max(30,ts[-1]+0.1)
+        x_left=max(0,ts[-1]-30)
+        for ax,lines,minimum_span,initial_limits in self.charts:
             for key,line in lines:
                 line.set_data(ts,list(self.series[key]))
-            ax.set_xlim(max(0,ts[-1]-30),max(30,ts[-1]+0.1))
-            finite=[v for key,line in lines for v in self.series[key] if math.isfinite(v)]
-            if finite:
-                lo,hi=min(finite),max(finite)
-                margin=max((hi-lo)*0.12,1e-3)
-                ax.set_ylim(lo-margin,hi+margin)
+            ax.set_xlim(x_left,x_right)
+            visible_values=(value for key,_line in lines
+                            for sample_time,value in zip(ts,self.series[key])
+                            if sample_time>=x_left)
+            limits=live_plot_y_limits(visible_values,minimum_span)
+            if limits is not None:
+                ax.set_ylim(*limits)
+            else:
+                ax.set_ylim(*initial_limits)
         if self.mag_points:
             pts=list(self.mag_points)
             stride=max(1,len(pts)//1800)
@@ -1805,6 +1824,7 @@ class Application:
         for key,line in self.temp_lines:
             line.set_data(ts,list(self.series[key]))
         self.temp_plot.set_xlim(max(0,ts[-1]-60),max(60,ts[-1]+1))
+        self.temp_plot.set_ylim(-40,85)
         finite=[v for key,line in self.temp_lines for v in self.series[key] if math.isfinite(v)]
         if finite:
             lo,hi=min(finite),max(finite)
@@ -1816,13 +1836,24 @@ class Application:
         self.thermal_scatter.set_ylabel('Pressure (Pa)')
         self.thermal_scatter.grid(alpha=.25)
         if self.thermal_pressure_t:
-            self.thermal_scatter.scatter(self.thermal_pressure_t[::3],self.thermal_pressure_p[::3],s=7,alpha=.45)
+            temperatures=self.thermal_pressure_t[::3]
+            pressures=self.thermal_pressure_p[::3]
+            self.thermal_scatter.scatter(temperatures,pressures,s=7,alpha=.45)
+            self.thermal_scatter.set_xlim(-40,85)
+            limits=live_plot_y_limits(pressures,100.0)
+            if limits is not None:
+                self.thermal_scatter.set_ylim(*limits)
+        else:
+            self.thermal_scatter.set_xlim(-40,85)
+            self.thermal_scatter.set_ylim(30000,120000)
+        self.thermal_scatter.ticklabel_format(axis='y',style='plain',useOffset=False)
         self.temperature_canvas.draw_idle()
 
     def redraw_latency(self):
         ts=list(self.latency_times)
         summary=[]
         any_measurements=False
+        x_left=max(0,ts[-1]-30) if ts else 0
         for index,sensor in enumerate(('MPU','QMC','BMP','LiDAR')):
             ax=self.latency_axes[index]
             age_line,service_line,empty_label=self.latency_lines[sensor]
@@ -1831,8 +1862,12 @@ class Application:
             age_line.set_data(ts,ages)
             service_line.set_data(ts,service)
             if ts:
-                ax.set_xlim(max(0,ts[-1]-30),max(30,ts[-1]+0.1))
-            finite=[value for value in (*ages,*service) if math.isfinite(value)]
+                ax.set_xlim(x_left,max(30,ts[-1]+0.1))
+            visible_ages=[value for sample_time,value in zip(ts,ages)
+                          if sample_time>=x_left and math.isfinite(value)]
+            visible_service=[value for sample_time,value in zip(ts,service)
+                             if sample_time>=x_left and math.isfinite(value)]
+            finite=[*visible_ages,*visible_service]
             if finite:
                 any_measurements=True
                 empty_label.set_visible(False)
@@ -1847,10 +1882,10 @@ class Application:
                 if not clean:return 'n/a'
                 def at(q):return clean[round((len(clean)-1)*q)]
                 return '/'.join(str(round(at(q))) for q in (0.50,0.95,0.99,1.0))
-            summary.append(f'{sensor} age P50/P95/P99/max {percentile_stats(ages)} µs; '
-                           f'service {percentile_stats(service)} µs')
+            summary.append(f'{sensor} age P50/P95/P99/max {percentile_stats(visible_ages)} µs; '
+                           f'service {percentile_stats(visible_service)} µs')
         if any_measurements:
-            self.latency_summary.set('Rolling window (~15 s), measured P50/P95/P99/max: '+' | '.join(summary))
+            self.latency_summary.set('Displayed 30 s window, measured P50/P95/P99/max: '+' | '.join(summary))
         else:
             self.latency_summary.set(
                 'UNAVAILABLE — no measured per-sensor age or service-time values have arrived. '
@@ -1961,38 +1996,6 @@ class Application:
                          *map(str,paths),'--output-prefix',str(target)]
                 proc=subprocess.run(command,capture_output=True,text=True,timeout=600)
                 self.events.put(('analysis_done',(proc.returncode==0,(proc.stdout+'\n'+proc.stderr).strip())))
-            except Exception as exc:
-                self.events.put(('analysis_done',(False,str(exc))))
-        threading.Thread(target=job,daemon=True).start()
-
-    def assess_mag_quality(self):
-        """Assess true held-out magnetic radial error without interrupting acquisition."""
-        from tkinter import filedialog
-        if self.analysis_running:
-            self.msg.showinfo('Analysis running','Finish the current analysis first.')
-            return
-        names=filedialog.askopenfilenames(parent=self.root,
-            title='Select one or more COMPLETED magnetometer CSV sessions',
-            initialdir=str(SESSION_COMPLETE_DIR if SESSION_COMPLETE_DIR.exists() else SESSION_INCOMPLETE_DIR),
-            filetypes=[('Calibration CSV','*.csv')])
-        if not names:return
-        paths=[Path(n).resolve() for n in names]
-        if (self.worker and self.worker.is_alive() and self.worker._fp is not None
-                and self.worker.current_file is not None and self.worker.current_file.resolve() in paths):
-            self.msg.showwarning('Active recording','Save CSV segment / continue first, then select closed CSV files.')
-            return
-        self.analysis_running=True
-        self.calc.config(state='disabled')
-        self.mag_quality_button.config(state='disabled')
-        self.info.set('Magnetometer quality study running: held-out fit, 3D coverage, bootstrap...')
-        ANALYSIS_DIR.mkdir(parents=True,exist_ok=True)
-        target=ANALYSIS_DIR/('mag_quality_'+datetime.now().strftime('%Y%m%d_%H%M%S'))
-        def job():
-            try:
-                cmd=[sys.executable,str(ROOT/'tools/magnetometer_quality.py'),
-                     *[str(p) for p in paths],'--output-prefix',str(target)]
-                res=subprocess.run(cmd,capture_output=True,text=True,timeout=360)
-                self.events.put(('analysis_done',(res.returncode==0,(res.stdout+'\n'+res.stderr).strip())))
             except Exception as exc:
                 self.events.put(('analysis_done',(False,str(exc))))
         threading.Thread(target=job,daemon=True).start()

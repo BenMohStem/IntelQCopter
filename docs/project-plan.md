@@ -1,6 +1,6 @@
 # QCopter project organization and engineering plan
 
-Updated: 2026-11-06 (Africa/Lagos)
+Updated: 2026-11-07 (Africa/Lagos)
 
 Convenience copy: `C:\Users\Mohamed\Desktop\Work\PLAN.md`.
 
@@ -29,28 +29,34 @@ work and flight validation. The detailed selected bench profile and evidence
 ledger are in [the ESP32-S3 readiness plan](esp32-competition-readiness-plan-2026-11-06.md).
 The aircraft is reported connected, but no new hardware data were collected.
 
-The calibration GUI now appends LiDAR distance-reference stages 13–16 at 0.25,
-0.50, 1.00 and 2.00 m, with 300 fresh valid samples per range by default. It
-adds an editable geometry worksheet and a dedicated sensor-latency tab. The
-worksheet applies the reported F450 central underside mount and full vector
-equation, but is not a flight estimator. The default COM lever arm remains a
-preliminary measurement. See [the LiDAR geometry note](lidar-geometry-and-altitude-fusion-2026-11-06.md).
-Firmware v2/v3 still lacks per-sensor age and
-service telemetry; the GUI waits for the planned v4 fields instead of plotting
-packet interval as latency. Cable-free in-band LiDAR also depends on DSH
-forwarding the sensor in v4. The revised Xbox mapping remains a plan until
-source audit and transport evidence pass.
+### Current desktop and calibration status — 2026-11-07
+
+The guided GUI currently has 12 IMU, magnetometer and BMP phases. LiDAR stages
+13–16, geometry setup and LiDAR capture are deferred at the user's request;
+retain the geometry requirements in
+[the LiDAR note](lidar-geometry-and-altitude-fusion-2026-11-06.md) for the later
+hardware step. The GUI, packet decoder, session writer, plots and Windows
+Tcl/Tk preparation are consolidated in
+`hardware/bench_calibration/esp32s3_qmc5883p_100hz/tools/live_calibration_gui.py`.
+The PowerShell launcher calls this file directly; the old bootstrap script has
+been removed. The GUI's Sensor Latency tab must only be treated as measured
+when the firmware actually supplies sensor-age/service timing fields.
+
+No new COM-port or physical hardware check was performed during this cleanup.
+The PCB repair, fitted sensor identity and wiring remain unverified in this
+work session. The supplied relative competition countdown is stale; the
+competition outcome and exact date are not recorded here.
 
 The sensor plan targets a fixed 400 kHz I²C bus for MPU6050, QMC5883P and
 BMP280; a nonblocking 500 Hz loop that always uses the latest available sensor
 snapshot; MPU 188 Hz first, then a measured 256 Hz trial, with 98 Hz only if 188
 fails; ±500 °/s, ±8 g and FIFO; and the fastest verified BMP conversion with
-noise/delay measured separately. These remain targets. At this update the DSH
-working tree still contains the prior 42/44 Hz, ±250 °/s, ±2 g, FIFO-disabled
-MPU configuration, QMC bus clock switching to 100 kHz, and 52-byte v3 stream.
-Its staged one-line default clock change is not a fix, and no new compile or
-hardware capture was performed. The exact branch/source status is in the GPT
-Cloud handoff; see the detailed [readiness plan](esp32-competition-readiness-plan-2026-11-06.md).
+noise/delay measured separately. These remain targets. The 2026-11-06 DSH
+working-tree inspection recorded an earlier 42/44 Hz, ±250 °/s, ±2 g,
+FIFO-disabled MPU setup, QMC clock switching to 100 kHz, and a 52-byte v3
+stream. Treat that as a dated snapshot, not current source status; review the
+active candidate and its validation records before relying on it. See the
+detailed [readiness plan](esp32-competition-readiness-plan-2026-11-06.md).
 
 The user also requested a cable-free calibration session for easier 3D
 magnetometer tumbling. The desktop launcher and GUI contain a Wi-Fi/UDP option,
@@ -58,17 +64,20 @@ but end-to-end capture, v4 LiDAR forwarding, and magnetic interference still
 require verification. Codex owns desktop GUI and analysis work; DSH owns ESP32
 firmware and sensor telemetry. Motor outputs remain disabled.
 
-Only the November 4 `iq_500hz_20261104_100907.csv` is currently admitted as a
-100% complete calibration session: 98,868 rows, exact target counts for all 12
-stages, empty skip manifest, independent audit and matching SHA-256. Keep its
-parameters provisional because it was captured at the old ±250 °/s, ±2 g and
-low-DLPF profile. The large November 6 capture is preserved but excluded from
-fits; its launch settings and accepted-count/attempt mapping are unresolved.
+The Nov 6 raw-data handoff contains the three latest sessions the user identified
+as fully completed (start times 20:22, 20:50 and 20:59 Africa/Lagos). It preserves
+about 187 MB of original CSV data in a roughly 32 MB ZIP at
+`C:\Users\Mohamed\Desktop\Work\IntelQCopter_Calibration_Handoff_Latest3_2026-11-06.zip`.
+This package is the primary input for any further fit; it does not itself validate
+calibration constants or PID gains. The separate Nov 4 session remains the
+previously audited baseline: 98,868 rows, exact targets for 12 phases, empty skip
+manifest and matching result JSON. Its settings were the older ±250 °/s, ±2 g
+and low-DLPF profile. Other Nov 6 captures with unresolved launch or phase-attempt
+mapping remain excluded unless their provenance is resolved.
 
-The competition window is described as approximately two days away in the
-supplied text, but its date is unconfirmed. Keep the release scope conservative;
-defer continuous QMC, advanced estimator/filter research and RP2350 migration to
-separate post-window work.
+Keep continuous QMC, advanced estimator/filter research and RP2350 migration in
+separate follow-up work. Do not use the old relative competition countdown as a
+current schedule; the outcome and exact event date have not been confirmed.
 
 ## Cleanup phases
 
@@ -119,11 +128,16 @@ command. Continue with documentation and non-destructive classification.
 
 ### D. Calibration analysis — candidate audit imported; independent rerun pending
 
-- Current candidate complete session is the November 4 10:09 capture. Raw
-  evidence: 12 phase attempts; target accepted counts (30,000 stationary, six ×
-  5,000 accelerometer, three × 2,000 magnetic turns, 8,000 MAG tumble, 1,000
-  BMP); empty skipped-stage list; matching calibration JSON; 38,652 fresh MAG
-  rows across the capture and ~195 Hz within active phase windows.
+- The user's three-session Nov 6 handoff is the current raw-data input for
+  analysis. It contains the latest three fully completed sessions selected by
+  the user. The 20:59 capture preserves redo attempts; use the newest completed
+  attempt for each phase when fitting. No fit or PID gain is validated by the
+  raw-data package itself.
+- The Nov 4 10:09 session remains an earlier independent audit baseline. It has
+  12 phase attempts; target accepted counts (30,000 stationary, six × 5,000
+  accelerometer, three × 2,000 magnetic turns, 8,000 MAG tumble, 1,000 BMP);
+  an empty skipped-stage list; matching calibration JSON; 38,652 fresh MAG rows
+  across the capture; and about 195 Hz during active phase windows.
 - The independent audit report, candidate JSON/header, corrected CSV derivative,
   model comparison and plots are organized beside the captures at
   `hardware/bench_calibration/esp32s3_qmc5883p_100hz/captures/independent_audit_20261104/`.

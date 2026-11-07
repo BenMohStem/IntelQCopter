@@ -976,3 +976,32 @@ High:
   bench README and GUI guide. Direct execution opens the currently installed
   firmware stream and does not flash the ESP32-S3.
 - No test, GUI launch, firmware build/upload, or hardware session was performed.
+
+## 37. Revision 22 — 2026-11-07: archive stale bench notes and refresh cleanup status
+
+- Moved the two orphaned ESP32-S3 package-root notes into
+  `archive/calibration/esp32s3_qmc5883p_100hz/2026-11-03/`. Their bytes and
+  SHA-256 values are preserved and indexed in
+  `archive/project-cleanup-manifest.md`. The LiDAR note describes an older GUI
+  that enabled stages by default; the QMC note describes proposed repair edits,
+  not a verified firmware result.
+- Refreshed the current project plan and AI coordination summary: the active GUI
+  has 12 IMU/MAG/BMP phases, LiDAR steps are deferred, and the previous
+  calibration-in-progress report and competition countdown are historical, not
+  confirmed current status. The one-file GUI entry point is
+  `tools/live_calibration_gui.py`.
+- No firmware behavior, calibration measurements, hardware state or raw capture
+  was changed. No GUI, test, build, upload or hardware check was run.
+
+## 38. Revision 23 — 2026-11-07: fix analysis callback and live graph scaling
+
+- Fixed the reported Tkinter analysis-completion exception. `Application.pump`
+  attempted to configure a retired `mag_quality_button`, which is not created
+  by the current GUI. Removed that stale reference and the unused unbound method.
+- Live plot autoscaling now considers only the points inside its displayed
+  30-second window and applies readable minimum spans in each plotted unit.
+  Empty plots show relevant sensor ranges; the latency tab continues to show
+  unavailable when the telemetry lacks actual age/service measurements.
+- Added direct launch instructions for both the repository root and its parent
+  `Desktop\Work` directory, matching the user's corrected invocation.
+- No GUI, test, COM3 session, build, upload or hardware check was performed.

@@ -41,6 +41,20 @@ The direct Python command opens the GUI only; it does not build or upload
 firmware. It uses the same 12 phases and session-saving behavior as the
 PowerShell launcher.
 
+From `C:\Users\Mohamed\Desktop\Work` instead of the repository root, prefix
+the path with `QCopter\`:
+
+```powershell
+python .\QCopter\hardware\bench_calibration\esp32s3_qmc5883p_100hz\tools\live_calibration_gui.py `
+  --port COM3 --gyro-samples 30000 --accel-samples 5000 `
+  --mag-turn-samples 5000 --mag-tumble-samples 20000 `
+  --bmp-samples 1000 --settle-seconds 3
+```
+
+Live chart Y scales follow the displayed time window and use each sensor's
+physical units; the latency view remains explicitly unavailable without
+measured firmware timing fields.
+
 The GUI also supports `-Wifi` for the ESP32 AP/UDP path. Cable-free capture is
 not hardware-validated yet. Do not assume that selecting Wi-Fi proves the AP,
 telemetry, or LiDAR forwarding works.

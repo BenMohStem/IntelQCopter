@@ -9,6 +9,9 @@ them as active project instructions or firmware settings without review.
 - `imported-documents/cloud-gpt-a-to-z-2026-11-05/` contains the owner's A-to-Z
   Markdown snapshot and a readme with its source ZIP hash and verified manifest.
 - `thought-bases/` contains the byte-preserved historical thought database.
+- `calibration/` contains dated retired bench notes with checksums and current
+  status labels; consult the ESP32-S3 package README and validation log for
+  active procedure/evidence.
 - `review-candidates/` contains unreviewed DSH working-tree source preserved for
   comparison; it is not adopted firmware.
 - `source-snapshots/` contains distinct prior source versions retained with

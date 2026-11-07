@@ -78,6 +78,22 @@ python .\hardware\bench_calibration\esp32s3_qmc5883p_100hz\tools\live_calibratio
 The direct command does not flash firmware. Use `-UploadFirmware` with the
 PowerShell launcher only when you intend to upload the bench image.
 
+If your PowerShell prompt is in `C:\Users\Mohamed\Desktop\Work` (one folder
+above the repository), prefix the repository folder in the same command:
+
+```powershell
+python .\QCopter\hardware\bench_calibration\esp32s3_qmc5883p_100hz\tools\live_calibration_gui.py `
+  --port COM3 --gyro-samples 30000 --accel-samples 5000 `
+  --mag-turn-samples 5000 --mag-tumble-samples 20000 `
+  --bmp-samples 1000 --settle-seconds 3
+```
+
+The main live charts now scale from the last 30 seconds actually displayed,
+with readable minimum spans in each sensor's units. Pressure plots use plain Pa
+labels, and empty plots start with sensor-range labels instead of Matplotlib's
+generic near-zero axes. The latency tab continues to show unavailable data until
+the firmware supplies measured age/service fields.
+
 This uses the installed firmware (no upload) and starts the guided GUI. USB
 serial uses 921600 baud; Wi-Fi uses the configured AP and local UDP port. The
 competition launcher runs 12 phases: 30,000 stationary gyro samples, 5,000

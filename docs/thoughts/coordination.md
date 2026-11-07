@@ -1,9 +1,31 @@
 # QCopter AI coordination
 
-Updated: 2026-11-06 (Africa/Lagos)
+Updated: 2026-11-07 (Africa/Lagos)
 
 Read in this order: `AGENTS.md`, this summary, `thought-database.md`, then the
 relevant subsystem README and `VALIDATION_LOG.md`.
+
+## Current cleanup update — 2026-11-07
+
+- The current user request is project cleanup and organization. The latest
+  committed GUI change is `30d1c41`: the GUI, decoder, session writer, plots and
+  Tcl/Tk setup are in
+  `hardware/bench_calibration/esp32s3_qmc5883p_100hz/tools/live_calibration_gui.py`;
+  the PowerShell launcher calls it directly. No firmware behavior or physical
+  hardware was changed for that milestone.
+- The GUI has 12 IMU/MAG/BMP phases. LiDAR calibration and geometry stages are
+  deferred until the later hardware step. Do not follow the older readiness-plan
+  paragraphs that describe stages 13–16 as active GUI behavior.
+- The user reported a Tkinter callback failure after analysis completion. The
+  source fix removes the stale reference to a nonexistent MAG-quality button;
+  chart scales now use the displayed time window and unit-aware minimum spans.
+  This source change has not been run in the GUI.
+- The Nov 6 handoff reported a calibration session in progress. Its present
+  completion state is unknown. Treat COM3 and any live capture as user-owned;
+  do not open the port or inspect changing capture files without a fresh user
+  update.
+- The relative competition countdown is stale. Its outcome/date has not been
+  confirmed here; don't present the old countdown as a current schedule.
 
 ## Current state
 
@@ -12,11 +34,12 @@ relevant subsystem README and `VALIDATION_LOG.md`.
 - The user-supplied competition specification is translated into
   `docs/esp32-competition-readiness-plan-2026-11-06.md`. It is a design request,
   not validation evidence; current motor and hardware restrictions still apply.
-- The user reports that the final 12-phase IMU/MAG/BMP calibration is currently
-  running; LiDAR is excluded. Treat COM3 and active capture files as owned by the
-  user. Do not open the port, restart the GUI, or inspect the active CSV until the
-  user says the run is complete. Completion requires all 12 phases at target and
-  no skipped or partial stage attempts.
+- As of the Nov 6 handoff, the user reported that the final 12-phase IMU/MAG/BMP
+  calibration was running with LiDAR excluded. Current run status is unknown.
+  Treat COM3 and active capture files as user-owned. Do not open the port,
+  restart the GUI, or inspect changing capture files until the user confirms the
+  run is complete. Completion requires all 12 phases at target and no skipped
+  or partial stage attempts.
 - DSH's latest shared ESP32 calibration commit is `a7e464d`. It adds I²C read
   duration fields in `src/main.cpp`; those values are not yet serialized into the
   GUI's v4 telemetry fields and are not per-sensor sample age. Review the source
@@ -86,18 +109,23 @@ The canonical ESP32 bench chronology and failed-trial record is
 [`VALIDATION_LOG.md`](../../hardware/bench_calibration/esp32s3_qmc5883p_100hz/VALIDATION_LOG.md).
 Read it before making calibration claims or changing bench procedures.
 
-The user reports a new LiDAR-free guided session in progress. Do not select any
-current capture for analysis until the user confirms completion and the session
-manifest/CSV show all 12 phases reached target without skips. Preserve partial
-segments and skipped-stage manifests. The November 4 guided session
+The previous handoff mentioned a LiDAR-free guided session in progress; no later
+completion confirmation is recorded here. Do not select a current capture for
+analysis until the user confirms completion and the session manifest/CSV show
+all 12 phases reached target without skips. Preserve partial segments and
+skipped-stage manifests. The user later selected the three latest fully
+completed Nov 6 sessions for the raw-data handoff at
+`C:\Users\Mohamed\Desktop\Work\IntelQCopter_Calibration_Handoff_Latest3_2026-11-06.zip`.
+The November 4 guided session
 `captures/calibration_package_20261104/iq_500hz_20261104_100907.csv` has evidence
 for all 12 target phases, no skipped stages, and a matching result JSON. Raw
 review confirms 38,652 fresh MAG samples at about 195 Hz during active phases;
-`mag_ok` alone includes cached, non-fresh rows. It is the only identified fully
-completed session. Keep candidate fits provisional: the saved MAG fit is
-diagonal after a degenerate ellipsoid fit. The independent audit reports 3.794%
-and 3.456% MAG magnitude RMS on separate 02:57 and 03:17 sessions (raw hashes
-matched locally; the analysis was not rerun in this cleanup pass). PCB/axis and
+`mag_ok` alone includes cached, non-fresh rows. It is the earlier audited
+baseline, not the only completed session. Keep its candidate fit provisional:
+the saved MAG fit is diagonal after a degenerate ellipsoid fit. The independent
+audit reports 3.794% and 3.456% MAG magnitude RMS on separate 02:57 and 03:17
+sessions (raw hashes matched locally; the analysis was not rerun in this cleanup
+pass). PCB/axis and
 physical heading validation remain pending. See `cloud-gpt-a-to-z-review.md`
 and the imported audit report for details.
 
