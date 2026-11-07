@@ -1,0 +1,524 @@
+{
+  "schema": "IntelQCopter calibration v3 multiCSV thermal 500Hz",
+  "input_file": "C:\\Users\\Mohamed\\Desktop\\Work\\QCopter\\measurements\\calibration\\esp32s3\\sessions\\complete\\calibration_20261107_021542_146786_complete.csv",
+  "input_files": [
+    "C:\\Users\\Mohamed\\Desktop\\Work\\QCopter\\measurements\\calibration\\esp32s3\\sessions\\complete\\calibration_20261107_021542_146786_complete.csv"
+  ],
+  "input_file_stats": [
+    {
+      "file": "C:\\Users\\Mohamed\\Desktop\\Work\\QCopter\\measurements\\calibration\\esp32s3\\sessions\\complete\\calibration_20261107_021542_146786_complete.csv",
+      "rows": 101000,
+      "time_spanned_s": 1078.898
+    }
+  ],
+  "input_rows": 101000,
+  "retained_analysis_rows": 48000,
+  "superseded_analysis_rows": 1000,
+  "logging_quality": {
+    "mean_rate_hz_during_selected_file_spans": 93.61311263900758,
+    "mpu_valid_rows": 65000,
+    "device_sequence_gaps_within_phases": 4611,
+    "rows_late_over_300us": 0,
+    "phase_metrics": {
+      "REST/STILL": {
+        "rows": 30000,
+        "accepted": 30000,
+        "rejected": 0,
+        "mpu_valid": 30000,
+        "mag_fresh": 0,
+        "bmp_fresh": 0,
+        "seq_gaps": 0,
+        "late_over_300us": 0,
+        "measured_sample_rate_hz": 500.0,
+        "duration_seconds": 59.998,
+        "file_chunks": 1,
+        "mpu_die_temp_c": {
+          "median": 28.127,
+          "minimum": 28.039,
+          "maximum": 28.212,
+          "span": 0.17299999999999827,
+          "samples": 30000
+        }
+      },
+      "+X/STILL": {
+        "rows": 10000,
+        "accepted": 10000,
+        "rejected": 0,
+        "mpu_valid": 10000,
+        "mag_fresh": 0,
+        "bmp_fresh": 0,
+        "seq_gaps": 4611,
+        "late_over_300us": 0,
+        "measured_sample_rate_hz": 500.0,
+        "duration_seconds": 19.998,
+        "file_chunks": 1,
+        "mpu_die_temp_c": {
+          "median": 28.098,
+          "minimum": -43.291,
+          "maximum": 113.33,
+          "span": 156.62099999999998,
+          "samples": 10000
+        }
+      },
+      "-X/STILL": {
+        "rows": 5000,
+        "accepted": 5000,
+        "rejected": 0,
+        "mpu_valid": 5000,
+        "mag_fresh": 0,
+        "bmp_fresh": 0,
+        "seq_gaps": 0,
+        "late_over_300us": 0,
+        "measured_sample_rate_hz": 500.0,
+        "duration_seconds": 9.998,
+        "file_chunks": 1,
+        "mpu_die_temp_c": {
+          "median": 28.121,
+          "minimum": 28.039,
+          "maximum": 28.195,
+          "span": 0.1559999999999988,
+          "samples": 5000
+        }
+      },
+      "+Y/STILL": {
+        "rows": 5000,
+        "accepted": 5000,
+        "rejected": 0,
+        "mpu_valid": 5000,
+        "mag_fresh": 0,
+        "bmp_fresh": 0,
+        "seq_gaps": 0,
+        "late_over_300us": 0,
+        "measured_sample_rate_hz": 500.0,
+        "duration_seconds": 9.998,
+        "file_chunks": 1,
+        "mpu_die_temp_c": {
+          "median": 28.145,
+          "minimum": 28.068,
+          "maximum": 28.233,
+          "span": 0.16499999999999915,
+          "samples": 5000
+        }
+      },
+      "-Y/STILL": {
+        "rows": 5000,
+        "accepted": 5000,
+        "rejected": 0,
+        "mpu_valid": 5000,
+        "mag_fresh": 0,
+        "bmp_fresh": 0,
+        "seq_gaps": 0,
+        "late_over_300us": 0,
+        "measured_sample_rate_hz": 500.0,
+        "duration_seconds": 9.998,
+        "file_chunks": 1,
+        "mpu_die_temp_c": {
+          "median": 28.527,
+          "minimum": 28.442,
+          "maximum": 28.618,
+          "span": 0.17599999999999838,
+          "samples": 5000
+        }
+      },
+      "+Z/STILL": {
+        "rows": 5000,
+        "accepted": 5000,
+        "rejected": 0,
+        "mpu_valid": 5000,
+        "mag_fresh": 0,
+        "bmp_fresh": 0,
+        "seq_gaps": 0,
+        "late_over_300us": 0,
+        "measured_sample_rate_hz": 500.0,
+        "duration_seconds": 9.998,
+        "file_chunks": 1,
+        "mpu_die_temp_c": {
+          "median": 26.583,
+          "minimum": 26.383,
+          "maximum": 26.765,
+          "span": 0.38200000000000145,
+          "samples": 5000
+        }
+      },
+      "-Z/STILL": {
+        "rows": 5000,
+        "accepted": 5000,
+        "rejected": 0,
+        "mpu_valid": 5000,
+        "mag_fresh": 0,
+        "bmp_fresh": 0,
+        "seq_gaps": 0,
+        "late_over_300us": 0,
+        "measured_sample_rate_hz": 500.0,
+        "duration_seconds": 9.998,
+        "file_chunks": 1,
+        "mpu_die_temp_c": {
+          "median": 26.0845,
+          "minimum": 25.886,
+          "maximum": 26.309,
+          "span": 0.4230000000000018,
+          "samples": 5000
+        }
+      },
+      "MAG/YAW": {
+        "rows": 5000,
+        "accepted": 5000,
+        "rejected": 0,
+        "mpu_valid": 0,
+        "mag_fresh": 5000,
+        "bmp_fresh": 0,
+        "seq_gaps": 0,
+        "late_over_300us": 0,
+        "measured_sample_rate_hz": null,
+        "duration_seconds": 0.0,
+        "file_chunks": 1
+      },
+      "MAG/PITCH": {
+        "rows": 5000,
+        "accepted": 5000,
+        "rejected": 0,
+        "mpu_valid": 0,
+        "mag_fresh": 5000,
+        "bmp_fresh": 0,
+        "seq_gaps": 0,
+        "late_over_300us": 0,
+        "measured_sample_rate_hz": null,
+        "duration_seconds": 0.0,
+        "file_chunks": 1
+      },
+      "MAG/ROLL": {
+        "rows": 5000,
+        "accepted": 5000,
+        "rejected": 0,
+        "mpu_valid": 0,
+        "mag_fresh": 5000,
+        "bmp_fresh": 0,
+        "seq_gaps": 0,
+        "late_over_300us": 0,
+        "measured_sample_rate_hz": null,
+        "duration_seconds": 0.0,
+        "file_chunks": 1
+      },
+      "MAG/TUMBLE": {
+        "rows": 20000,
+        "accepted": 20000,
+        "rejected": 0,
+        "mpu_valid": 0,
+        "mag_fresh": 20000,
+        "bmp_fresh": 0,
+        "seq_gaps": 0,
+        "late_over_300us": 0,
+        "measured_sample_rate_hz": null,
+        "duration_seconds": 0.0,
+        "file_chunks": 1
+      },
+      "BMP/STILL": {
+        "rows": 1000,
+        "accepted": 1000,
+        "rejected": 0,
+        "mpu_valid": 0,
+        "mag_fresh": 0,
+        "bmp_fresh": 1000,
+        "seq_gaps": 0,
+        "late_over_300us": 0,
+        "measured_sample_rate_hz": null,
+        "duration_seconds": 0.0,
+        "file_chunks": 1,
+        "bmp_die_temp_c": {
+          "median": 23.39,
+          "minimum": 23.34,
+          "maximum": 23.43,
+          "span": 0.08999999999999986,
+          "samples": 1000
+        }
+      }
+    }
+  },
+  "g_mps2": 9.80665,
+  "units": "accel m/s2; gyro degrees/s; magnetic microtesla; pressure pascal",
+  "warnings": [
+    "4611 missing serial frames within captured phases",
+    "accelerometer: Six-pose validation failed: {'+X': 'Board moving during pose (std >0.4 m/s2)', '-X': 'Measured norm far from g: 2.517', '+Y': 'Measured norm far from g: 2.505', '-Y': 'Measured norm far from g: 2.439', '+Z': 'Measured norm far from g: 2.255', '-Z': 'Measured norm far from g: 2.710'}",
+    "BMP280 temperature residual correction NOT identified (no independent reference-pressure file); Bosch factory compensation retained."
+  ],
+  "hardware_validation": "Sensor logs do not demonstrate flight readiness.",
+  "gyro": {
+    "bias_dps": [
+      -5.518167936999976,
+      3.5055203539999966,
+      -0.5385966638333259
+    ],
+    "std_dps": [
+      0.03517411669660935,
+      0.03998961115719556,
+      0.03826740981695122
+    ],
+    "sample_count": 6000,
+    "mpu_temperature_c_at_calibration": 28.12737816666667,
+    "scale_matrix_3x3": [
+      [
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "scale_note": "Gyro scale and axis cross-coupling CANNOT be determined from stationary six-face measurements. Requires a known angular-rate source/rotation profile.",
+    "formula": "omega_corrected_dps = omega_measured_dps - bias_dps",
+    "thermal_reference_model": "INSUFFICIENT_SESSION_COUNT"
+  },
+  "magnetometer": {
+    "sensor": "QMC5883P (firmware ID-checked)",
+    "calibration_stage_fresh_samples": {
+      "YAW": 5000,
+      "PITCH": 5000,
+      "ROLL": 5000,
+      "TUMBLE": 20000
+    },
+    "hard_iron_offset_uT": [
+      -6.685495492266932,
+      -13.91180497765488,
+      -23.382975621264492
+    ],
+    "soft_iron_matrix_3x3_dimensionless": [
+      [
+        0.9643956594229134,
+        -0.010202224131002085,
+        0.04587026515945469
+      ],
+      [
+        -0.010202224131002085,
+        0.9492333163597553,
+        -0.021179855184882652
+      ],
+      [
+        0.04587026515945469,
+        -0.021179855184882652,
+        1.0814361654327271
+      ]
+    ],
+    "unit_sphere_matrix_3x3_inverse_uT": [
+      [
+        0.024110135935769383,
+        -0.00025505818928388545,
+        0.001146768255952151
+      ],
+      [
+        -0.00025505818928388545,
+        0.023731073515915416,
+        -0.0005295017481860081
+      ],
+      [
+        0.001146768255952151,
+        -0.0005295017481860081,
+        0.027036178252857812
+      ]
+    ],
+    "reference_radius_uT_approx_from_data": 39.99959444410069,
+    "formula": "m_corrected_uT = soft_iron_matrix_3x3_dimensionless @ (m_measured_uT - hard_iron_offset_uT)",
+    "note": "Absolute magnetic field magnitude/gain cannot be established by rotations alone; scale keeps approximate measured radius. Calibrate mounted on the vehicle, with representative nearby electronics, away from steel and moving motors.",
+    "samples": 35000,
+    "samples_used_in_fit": 7000,
+    "axis_span_uT": [
+      81.573334,
+      96.47999999999999,
+      82.96
+    ],
+    "pre_fit_radius_cv": 0.06310396246314631,
+    "post_fit_radius_cv": 0.044810244954812534,
+    "unit_sphere_rms_error": 0.044825719495923226,
+    "orientation_coverage": {
+      "fibonacci_directions_total": 128,
+      "coverage_fraction_within_18_degrees": 0.9296875,
+      "positive_hemisphere_fractions_xyz": [
+        0.4088,
+        0.7525714285714286,
+        0.4758857142857143
+      ],
+      "octant_counts_sensor_frame": {
+        "---": 1609,
+        "--+": 1394,
+        "-+-": 8392,
+        "-++": 9297,
+        "+--": 3005,
+        "+-+": 2652,
+        "++-": 5338,
+        "+++": 3313
+      },
+      "least_sampled_octants_sensor_frame": [
+        "--+",
+        "---",
+        "+-+"
+      ],
+      "interpretation": "Orientation coverage is sampled on 128 quasi-uniform directions; a high value is helpful but does not certify heading accuracy. Octants use corrected sensor axes, not the aircraft frame."
+    },
+    "warnings": []
+  },
+  "bmp280": {
+    "p0_pa_at_reference_height": 99126.0,
+    "pressure_std_pa": 3.014402760083662,
+    "sample_count": 1000,
+    "temperature_mean_c": 23.389400000000002,
+    "altitude_formula": "h_relative_m = 44330*(1-(P/P0)**0.19029496) [ISA approximation]",
+    "note": "P0 is local pressure at the reference elevation, NOT a sensor bias or sea-level pressure. Absolute pressure offset/temperature calibration requires reference instruments. BMP280 library already applies factory trimming coefficients."
+  },
+  "temperature_analysis": {
+    "gyro_bias_versus_mpu_temperature": {
+      "status": "INSUFFICIENT_SESSION_COUNT",
+      "required": "3 complete valid sessions at different temperatures",
+      "session_count": 1,
+      "sessions": [
+        {
+          "file": "C:\\Users\\Mohamed\\Desktop\\Work\\QCopter\\measurements\\calibration\\esp32s3\\sessions\\complete\\calibration_20261107_021542_146786_complete.csv",
+          "temperature_c": 28.127,
+          "bias_dps": [
+            -5.518167936999976,
+            3.5055203539999966,
+            -0.5385966638333259
+          ],
+          "n": 6000
+        }
+      ],
+      "units": "degrees/s and degrees/s/\u00b0C"
+    },
+    "accelerometer_bias_versus_mpu_temperature": {
+      "status": "INSUFFICIENT_SESSION_COUNT",
+      "required": "3 complete valid sessions at different temperatures",
+      "session_count": 0,
+      "sessions": [],
+      "units": "m/s\u00b2 and m/s\u00b2/\u00b0C"
+    },
+    "accelerometer_scale_versus_mpu_temperature": {
+      "status": "INSUFFICIENT_SESSION_COUNT",
+      "required": "3 complete valid sessions at different temperatures",
+      "session_count": 0,
+      "sessions": [],
+      "units": "dimensionless and 1/\u00b0C"
+    },
+    "bmp280_pressure_versus_temperature_diagnostic": {
+      "status": "INSUFFICIENT_SESSION_COUNT",
+      "required": "3 complete valid sessions at different temperatures",
+      "session_count": 1,
+      "sessions": [
+        {
+          "file": "C:\\Users\\Mohamed\\Desktop\\Work\\QCopter\\measurements\\calibration\\esp32s3\\sessions\\complete\\calibration_20261107_021542_146786_complete.csv",
+          "temperature_c": 23.389400000000002,
+          "pressure_pa": 99126.0,
+          "pressure_std_pa": 3.014402760083662,
+          "n_fresh": 1000
+        }
+      ],
+      "units": "Pa and Pa/\u00b0C (diagnostic only)"
+    },
+    "bmp280_sessions": [
+      {
+        "file": "C:\\Users\\Mohamed\\Desktop\\Work\\QCopter\\measurements\\calibration\\esp32s3\\sessions\\complete\\calibration_20261107_021542_146786_complete.csv",
+        "temperature_c": 23.389400000000002,
+        "pressure_pa": 99126.0,
+        "pressure_std_pa": 3.014402760083662,
+        "n_fresh": 1000
+      }
+    ],
+    "notes": [
+      "A single capture cannot identify a temperature slope.",
+      "At least three stationary REST sessions with \u22653 \u00b0C span are required to estimate a gyro thermal slope.",
+      "Acceleration temperature coefficients require repeated FULL six-face captures at different temperatures.",
+      "BMP280 pressure/temperature relation without a known stable physical reference is descriptive only.",
+      "Temperature coefficient estimates require independent validation; do not deploy automatically."
+    ]
+  },
+  "temperature_uncertainty_analysis": {
+    "schema": "IntelQCopter thermal characterization v1",
+    "sessions": [
+      {
+        "name": "calibration_20261107_021542_146786_complete",
+        "files": [
+          "C:\\Users\\Mohamed\\Desktop\\Work\\QCopter\\measurements\\calibration\\esp32s3\\sessions\\complete\\calibration_20261107_021542_146786_complete.csv"
+        ],
+        "rest_samples": 30000,
+        "bmp_fresh_samples": 1000,
+        "mpu_die_temp_median_c": 28.127,
+        "mpu_die_temp_span_c": 0.17299999999999827,
+        "gyro_mean_dps": [
+          -5.518478619966457,
+          3.505874553166647,
+          -0.5381266935332697
+        ],
+        "gyro_std_dps": [
+          0.03522763727132152,
+          0.039887709720311026,
+          0.03769185137448616
+        ],
+        "accel_std_mps2": [
+          0.0068197581665304105,
+          0.0069824424455035925,
+          0.009711776875053918
+        ],
+        "gyro_noise_cov_dps2": [
+          [
+            0.0012409864277196016,
+            6.957241435026047e-06,
+            -1.4025113949032558e-05
+          ],
+          [
+            6.957241435026047e-06,
+            0.0015910293867319283,
+            8.508752075685182e-08
+          ],
+          [
+            -1.4025113949032558e-05,
+            8.508752075685182e-08,
+            0.00142067566003648
+          ]
+        ],
+        "stationary_quality": "PASS",
+        "bmp_die_temp_median_c": 23.39,
+        "bmp_die_temp_span_c": 0.08999999999999986,
+        "pressure_median_pa": 99126.0,
+        "pressure_std_pa": 3.0159110928075643,
+        "pressure_reference_pa": null
+      }
+    ],
+    "gyro_bias_model": {
+      "status": "INSUFFICIENT_INDEPENDENT_SESSIONS",
+      "count": 1,
+      "required": 3
+    },
+    "gyro_log_variance_model": {
+      "status": "INSUFFICIENT_INDEPENDENT_SESSIONS",
+      "count": 1,
+      "required": 4
+    },
+    "bmp_pressure_residual_model": {
+      "status": "INSUFFICIENT_INDEPENDENT_SESSIONS",
+      "count": 0,
+      "required": 3
+    },
+    "warnings": [
+      "Temperature is the sensors DIE temperature, not calibrated ambient air temperature.",
+      "MPU gyro bias regression uses independent REST sessions only; warm-up transient invalidates slope.",
+      "Do not use gyro noise slope for filter tuning until cross-validated and confirmed on the board.",
+      "BMP280 already uses Bosch factory temperature compensation. NO correction without independent pressure reference.",
+      "Hysteresis: heating and cooling may produce different bias at the same temperature.",
+      "The calibration software does not drive motors or control the aircraft."
+    ],
+    "reference_source": null,
+    "model_deployment": "DIAGNOSTIC_UNTIL_VALIDATED"
+  },
+  "temperature_dependent_measurement_equations": {
+    "gyro": "omega_corrected(T) = gyro_measured(T) - [b_g(T_ref)+k_g*(T_MPU-T_ref)], only where multi-temperature model is valid",
+    "accel": "f_corrected(T) = S_a(T) @ [a_measured - b_a(T)], only for repeated six-face thermal datasets",
+    "bmp": "p_compensated = Bosch_factory_compensation(raw_adc,T_BMP); residual correction ONLY with independent pressure reference",
+    "thermal_covariance": "R_g(T) = diag(exp(alpha_g + beta_g*(T_MPU-T_ref))) when independently identified; else constant conservative R_g",
+    "time_alignment": "Record MPU and BMP temperatures separately; do not treat their die temperatures as ambient or synchronous LiDAR temperature."
+  }
+}
