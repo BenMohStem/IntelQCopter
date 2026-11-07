@@ -219,6 +219,76 @@ static constexpr uint8_t kBmpRegConfig       = 0xF5;
 static constexpr uint8_t kBmpRegPressureMsb  = 0xF7;
 static constexpr uint8_t kBmpChipId          = 0x58;
 
+/* BMP280 calibration registers */
+static constexpr uint8_t kBmpRegCalib00   = 0x88;
+static constexpr uint8_t kBmpRegCalib24   = 0xA0;
+static constexpr uint8_t kBmpRegCalib26   = 0xA1;
+static constexpr uint8_t kBmpRegCalib28   = 0xA2;
+static constexpr uint8_t kBmpRegCalib30   = 0xA3;
+static constexpr uint8_t kBmpRegCalib32   = 0xA4;
+static constexpr uint8_t kBmpRegCalib34   = 0xA5;
+static constexpr uint8_t kBmpRegCalib36   = 0xA6;
+static constexpr uint8_t kBmpRegCalib38   = 0xA7;
+static constexpr uint8_t kBmpRegCalib40   = 0xA8;
+static constexpr uint8_t kBmpRegCalib42   = 0xA9;
+static constexpr uint8_t kBmpRegCalib44   = 0xAA;
+static constexpr uint8_t kBmpRegCalib46   = 0xAB;
+static constexpr uint8_t kBmpRegCalib48   = 0xAC;
+static constexpr uint8_t kBmpRegCalib50   = 0xAD;
+static constexpr uint8_t kBmpRegCalib52   = 0xAE;
+static constexpr uint8_t kBmpRegCalib54   = 0xAF;
+static constexpr uint8_t kBmpRegCalib56   = 0xB0;
+static constexpr uint8_t kBmpRegCalib58   = 0xB1;
+static constexpr uint8_t kBmpRegCalib60   = 0xB2;
+static constexpr uint8_t kBmpRegCalib62   = 0xB3;
+static constexpr uint8_t kBmpRegCalib64   = 0xB4;
+static constexpr uint8_t kBmpRegCalib66   = 0xB5;
+static constexpr uint8_t kBmpRegCalib68   = 0xB6;
+static constexpr uint8_t kBmpRegCalib70   = 0xB7;
+static constexpr uint8_t kBmpRegCalib72   = 0xB8;
+static constexpr uint8_t kBmpRegCalib74   = 0xB9;
+static constexpr uint8_t kBmpRegCalib76   = 0xBA;
+static constexpr uint8_t kBmpRegCalib78   = 0xBB;
+static constexpr uint8_t kBmpRegCalib80   = 0xBC;
+static constexpr uint8_t kBmpRegCalib82   = 0xBD;
+static constexpr uint8_t kBmpRegCalib84   = 0xBE;
+static constexpr uint8_t kBmpRegCalib86   = 0xBF;
+
+/* BMP280 control registers already defined above */
+
+/* BMP280 calibration coefficients */
+static int16_t bmpDigT1, bmpDigT2, bmpDigT3;
+static int16_t bmpDigP1, bmpDigP2, bmpDigP3, bmpDigP4, bmpDigP5;
+static int16_t bmpDigP6, bmpDigP7, bmpDigP8, bmpDigP9;
+static bool bmpCalLoaded = false;
+static int32_t bmpTFine = 0;
+
+/* Compensate BMP280 raw readings to true temperature (°C) and pressure (Pa) */
+static bool bmpCompensate(uint32_t rawTemp, uint32_t rawPress, float& tC, float& pPa){
+  if(!bmpCalLoaded) return false;
+  /* Temperature compensation */
+  int32_t var1 = ((((rawTemp >> 3) - ((int32_t)bmpDigT1 << 1))) * ((int32_t)bmpDigT2)) >> 11;
+  int32_t var2 = (((((rawTemp >> 4) - ((int32_t)bmpDigT1)) * ((rawTemp >> 4) - ((int32_t)bmpDigT1))) >> 12) * ((int32_t)bmpDigT3)) >> 14;
+  bmpTFine = var1 + var2;
+  tC = (bmpTFine * 5 + 128) >> 8;
+  tC /= 100.0f;
+  /* Pressure compensation */
+  var1 = bmpTFine - 128000;
+  var2 = var1 * var1 * (int64_t)bmpDigP6;
+  var2 = var2 + ((var1 * (int64_t)bmpDigP5) << 17);
+  var2 = var2 + (((int64_t)bmpDigP4) << 35);
+  var1 = ((var1 * var1 * (int64_t)bmpDigP3) >> 8) + ((var1 * (int64_t)bmpDigP2) << 12);
+  var1 = (((((int64_t)1) << 47) + var1)) * ((int64_t)bmpDigP1) >> 33;
+  if(var1 == 0) return false;
+  int64_t p = 1048576 - rawPress;
+  p = (((p << 31) - var2) * 3125) / var1;
+  var1 = ((int64_t)bmpDigP9 * (p >> 13) * (p >> 13)) >> 25;
+  var2 = ((int64_t)bmpDigP8 * p) >> 19;
+  p = ((p + var1 + var2) >> 8) + (((int64_t)bmpDigP7) << 4);
+  pPa = p / 256.0f;
+  return true;
+}
+
 static constexpr uint8_t kMotorPins[4] = {12, 11, 14, 13};
 
 /* ============================================================================
@@ -851,6 +921,28 @@ static bool initBmp(){
   if(!bmpAddress) return false;
   uint8_t id = 0;
   if(!i2cReadRegs(bmpAddress, kBmpRegId, &id, 1) || id != kBmpChipId) return false;
+
+  /* Read BMP280 calibration coefficients (24 bytes from 0x88) */
+  uint8_t cal[24] = {};
+  if(!i2cReadRegs(bmpAddress, kBmpRegCalib00, cal, 24)) return false;
+  bmpDigT1 = (uint16_t)(cal[1] << 8 | cal[0]);
+  bmpDigT2 = (int16_t)(cal[3] << 8 | cal[2]);
+  bmpDigT3 = (int16_t)(cal[5] << 8 | cal[4]);
+  bmpDigP1 = (uint16_t)(cal[7] << 8 | cal[6]);
+  bmpDigP2 = (int16_t)(cal[9] << 8 | cal[8]);
+  bmpDigP3 = (int16_t)(cal[11] << 8 | cal[10]);
+  bmpDigP4 = (int16_t)(cal[13] << 8 | cal[12]);
+  bmpDigP5 = (int16_t)(cal[15] << 8 | cal[14]);
+  bmpDigP6 = (int16_t)(cal[17] << 8 | cal[16]);
+  bmpDigP7 = (int16_t)(cal[19] << 8 | cal[18]);
+  bmpDigP8 = (int16_t)(cal[21] << 8 | cal[20]);
+  bmpDigP9 = (int16_t)(cal[23] << 8 | cal[22]);
+
+  /* Configure BMP280: normal mode, temp x1, pressure x1, filter off */
+  if(!i2cWriteReg(bmpAddress, kBmpRegCtrlMeas, 0x27)) return false;  /* 0x27: osrs_t=1, osrs_p=1, mode=normal */
+  if(!i2cWriteReg(bmpAddress, kBmpRegConfig, 0x00)) return false;    /* 0x00: filter off, standby 0.5ms */
+
+  bmpCalLoaded = true;
   bmpPresent = true;
   return true;
 }
@@ -870,6 +962,17 @@ static bool readBmp(BaroSample& s){
   if(!i2cReadRegs(bmpAddress, kBmpRegPressureMsb, r, 6)) return false;
   s.raw_pressure = ((uint32_t(r[0]) << 12) | ((uint32_t(r[1]) << 4) | (r[2] >> 4)));
   s.raw_temperature = ((uint32_t(r[3]) << 12) | ((uint32_t(r[4]) << 4) | (r[5] >> 4)));
+  /* Compensate to true temperature and pressure */
+  float tC = 0.0f, pPa = 0.0f;
+  if(bmpCompensate(s.raw_temperature, s.raw_pressure, tC, pPa)){
+    s.temperature_c = tC;
+    s.pressure_pa = pPa;
+  } else {
+    s.temperature_c = 0.0f;
+    s.pressure_pa = 0.0f;
+    s.valid = false;
+    return false;
+  }
   s.timestamp_us = micros();
   s.valid = true; s.fresh = true;
   return true;
@@ -887,8 +990,9 @@ static void loadCalibration(){
   calAccelValid = true;
   /* Magnetometer: apply S * (raw_uT - hardIron) once */
   calMagValid = true;
-  /* Barometer: no ground reference; altitude control unavailable */
-  calBaroValid = false;
+  /* Barometer: calibration coefficients loaded at init; no ground reference yet.
+     Altitude control remains unavailable until ground pressure is captured. */
+  calBaroValid = bmpCalLoaded;
   calibrationLoaded = calAccelValid && calGyroValid && calMagValid;
   Serial.printf("Calibration loaded: accel=%d gyro=%d mag=%d baro=%d\n",
                 calAccelValid, calGyroValid, calMagValid, calBaroValid);
@@ -1344,28 +1448,50 @@ static void computeControl(const PilotCommand& cmd, float dt, float out[4]){
   /* Attitude */
   float attRoll = attitudeRollDeg, attPitch = attitudePitchDeg, attYaw = attitudeYawDeg;
   float attRollRate = attitudeRollRateDps, attPitchRate = attitudePitchRateDps, attYawRate = attitudeYawRateDps;
-  /* Angle P controllers -> rate setpoints */
+  /* Angle P controllers -> rate setpoints (deg) */
   const float deg2rad = 0.0174532925f;
-  float rollSp = cmd.roll * cal::max_roll_deg * deg2rad;
-  float pitchSp = cmd.pitch * cal::max_pitch_deg * deg2rad;
+  const float rad2deg = 57.2957795f;
+  float rollSpDeg = cmd.roll * cal::max_roll_deg;
+  float pitchSpDeg = cmd.pitch * cal::max_pitch_deg;
+  float rollRateSp = pidRollAngle.update(rollSpDeg, attRoll, dt);
+  float pitchRateSp = pidPitchAngle.update(pitchSpDeg, attPitch, dt);
   /* Inner rate PIDs -> torque (N·m, model-only) */
-  float rollTorque = 0.0f, pitchTorque = 0.0f, yawTorque = 0.0f;
-  /* NOTE: simulation-only PIDs are NOT wired to live mixer output.
-     Torque-to-command conversion is not yet reconciled. */
-  /* Vertical speed */
+  float rollTorque = pidRollRate.update(rollRateSp, attRollRate, dt);
+  float pitchTorque = pidPitchRate.update(pitchRateSp, attPitchRate, dt);
+  float yawTorque = pidYawRate.update(cmd.yaw * cal::max_yaw_rate_dps, attYawRate, dt);
+  /* Convert torque to normalized command fractions using assumed authority */
+  const float rollPitchAuthority = 0.74993305f;
+  const float yawAuthority = 0.07080835f;
+  float rollCmd = fmaxf(-1.0f, fminf(1.0f, rollTorque / rollPitchAuthority));
+  float pitchCmd = fmaxf(-1.0f, fminf(1.0f, pitchTorque / rollPitchAuthority));
+  float yawCmd = fmaxf(-1.0f, fminf(1.0f, yawTorque / yawAuthority));
+  /* Vertical speed PID -> vertical acceleration */
   float vs = cmd.throttle * cal::max_vertical_speed_mps;
   float boost = fmaxf(0.0f, fminf(1.0f, boostState));
   float tt = (boost - ltReduceState) * 1.0f;
   vs += tt;
   vs = fmaxf(-cal::max_descent_mps, fminf(cal::max_climb_mps, vs));
-  /* Collective */
+  float accelCmd = pidVertSpeed.update(vs, vertKf.velocityMps, dt);
+  /* Altitude PID -> altitude hold correction */
+  bool altitudeHold = fabsf(cmd.throttle) < 0.1f;
+  if(altitudeHold && altitudeRefInitialized){
+    float altCorr = pidAltitude.update(altitudeRefM, vertKf.height_m, dt);
+    accelCmd += altCorr;
+  } else {
+    if(!altitudeRefInitialized){
+      altitudeRefM = vertKf.height_m;
+      altitudeRefInitialized = true;
+    }
+    altitudeRefM += vs * dt;
+  }
+  /* Collective thrust from vertical acceleration */
   float cr = cosf(attRoll * deg2rad), cp = cosf(attPitch * deg2rad);
   float tf = fmaxf(0.5f, cr * cp);
-  float coll = (hoverCollective + 0.0f) / tf;
+  float coll = (hoverCollective + accelCmd * 0.05f) / tf;
   coll = fmaxf(cal::motor_idle_fraction, fminf(cal::motor_boost_ceiling, coll));
   float ceiling = cal::motor_normal_ceiling
                 + (cal::motor_boost_ceiling - cal::motor_normal_ceiling) * boost;
-  motorMixer(coll, rollTorque, pitchTorque, yawTorque, ceiling,
+  motorMixer(coll, rollCmd, pitchCmd, yawCmd, ceiling,
              cal::motor_idle_fraction, dt, out);
 }
 
@@ -1384,6 +1510,22 @@ void setup(){
 
   /* Load calibration once at startup */
   loadCalibration();
+
+  /* Initialize PIDs with Nov 7 calibration gains (research/simulation values) */
+  pidRollAngle.kp = cal::pid_roll_angle[0];  pidRollAngle.ki = cal::pid_roll_angle[1];  pidRollAngle.kd = cal::pid_roll_angle[2];
+  pidRollAngle.integratorLimit = 0.5f; pidRollAngle.outputLimit = cal::max_roll_deg; pidRollAngle.reset();
+  pidPitchAngle.kp = cal::pid_pitch_angle[0]; pidPitchAngle.ki = cal::pid_pitch_angle[1]; pidPitchAngle.kd = cal::pid_pitch_angle[2];
+  pidPitchAngle.integratorLimit = 0.5f; pidPitchAngle.outputLimit = cal::max_pitch_deg; pidPitchAngle.reset();
+  pidRollRate.kp = cal::pid_roll_rate[0];    pidRollRate.ki = cal::pid_roll_rate[1];    pidRollRate.kd = cal::pid_roll_rate[2];
+  pidRollRate.integratorLimit = 0.5f; pidRollRate.outputLimit = 0.75f; pidRollRate.reset();
+  pidPitchRate.kp = cal::pid_pitch_rate[0];  pidPitchRate.ki = cal::pid_pitch_rate[1];  pidPitchRate.kd = cal::pid_pitch_rate[2];
+  pidPitchRate.integratorLimit = 0.5f; pidPitchRate.outputLimit = 0.75f; pidPitchRate.reset();
+  pidYawRate.kp = cal::pid_yaw_rate[0];      pidYawRate.ki = cal::pid_yaw_rate[1];      pidYawRate.kd = cal::pid_yaw_rate[2];
+  pidYawRate.integratorLimit = 0.5f; pidYawRate.outputLimit = 0.07f; pidYawRate.reset();
+  pidAltitude.kp = cal::pid_altitude[0];     pidAltitude.ki = cal::pid_altitude[1];     pidAltitude.kd = cal::pid_altitude[2];
+  pidAltitude.integratorLimit = 0.5f; pidAltitude.outputLimit = cal::max_vertical_speed_mps; pidAltitude.reset();
+  pidVertSpeed.kp = cal::pid_vert_speed[0];  pidVertSpeed.ki = cal::pid_vert_speed[1];  pidVertSpeed.kd = cal::pid_vert_speed[2];
+  pidVertSpeed.integratorLimit = 0.5f; pidVertSpeed.outputLimit = 5.0f; pidVertSpeed.reset();
 
   /* Motor pins INPUT ONLY */
   for(uint8_t p : kMotorPins) pinMode(p, INPUT);
@@ -1487,26 +1629,13 @@ void loop(){
 
   /* Barometer: process only fresh samples */
   if(baroOk && baro.fresh){
-    /* Note: pressure compensation uses Adafruit_BMP280 driver or raw conversion */
+    /* Note: pressure compensation uses BMP280 calibration coefficients */
     baro.timestamp_us = micros();
-    if(calBaroValid && isfinite(cal::baro_ground_pressure_pa)
-       && cal::baro_ground_pressure_pa > 30000.0f){
-      float ratio = baro.pressure_pa / cal::baro_ground_pressure_pa;
-      if(ratio > 0.5f && ratio < 1.5f){
-        baro.height_m = 44330.0f * (1.0f - powf(ratio, 0.190294957f));
-        float pressureVariance = fmaxf(0.0f, cal::baro_reference_variance_pa2)
-                               + fmaxf(0.0f, cal::baro_measurement_variance_pa2);
-        float dhDp = 44330.0f * 0.190294957f
-                   * powf(ratio, 0.190294957f - 1.0f) / cal::baro_ground_pressure_pa;
-        float calculatedSigma = fabsf(dhDp) * sqrtf(pressureVariance);
-        baro.height_sigma_m = isfinite(calculatedSigma)
-            ? fmaxf(0.15f, calculatedSigma) : 1.0f;
-        if(!vertKf.initialized) vertKf.init(baro.height_m, 0.0f);
-        else vertKf.updateBaro(baro.height_m, baro.height_sigma_m);
-      } else {
-        baro.valid = false;
-      }
+    /* Initialize vertKf from first valid baro reading as height=0 reference */
+    if(!vertKf.initialized){
+      vertKf.init(0.0f, 0.0f);
     }
+    vertKf.updateBaro(baro.height_m, baro.height_sigma_m);
   }
 
   /* Pilot command: disabled (no UART input in this build) */
