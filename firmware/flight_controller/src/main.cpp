@@ -14,8 +14,10 @@
  *   500 Hz control loop (IMU, MAG, Baro, estimation, PID, mixing)
  *   Wireless PID tuning via WebSocket web server
  *   No auto-arm on startup/reconnect
- *   Flight arming remains blocked until a fresh pilot input is implemented.
- *   Props-off motor checks use a one-second, 1100 us serial test pulse.
+ *   Xbox Series X|S model 1914 connects directly using BLE.
+ *   Fresh controller data is required continuously; loss disarms.
+ *   Arm: hold D-pad Up + LB + RB with throttle low for 1 second.
+ *   Disarm: D-pad Down or B.
  *
  * Calibration (Nov 7 completed-session fit, software candidate only):
  *   MPU6050: ±8 g / ±500 deg/s, software bias + matrix applied once
@@ -25,7 +27,7 @@
  *   Magnetometer heading fusion: DISABLED until axes/handedness verified
  *
  * PID values: carried-forward simulation values only.
- *   Rate loops output N·m; converted to normalized motor commands.
+ *   Rate loops output N·m; mixer authority is still an unvalidated assumption.
  *
  * Motor policy (software command fractions, not RPM/thrust):
  *   Armed idle: 10% | Normal ceiling: 35% | Boost ceiling: 50%
@@ -37,6 +39,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <ArduinoJson.h>
+#include <XboxSeriesXControllerESP32_asukiaaa.hpp>
 #include "driver/ledc.h"
 
 /* ESP-IDF WiFi and networking (direct, avoids Arduino WiFi lib conflicts) */
@@ -146,6 +149,8 @@ inline const uint8_t btn_north= 1u << 2;
 inline const uint8_t btn_east = 1u << 3;
 inline const uint8_t btn_south= 1u << 4;
 inline const uint8_t btn_west = 1u << 5;
+inline const uint8_t btn_a    = 1u << 6;
+inline const uint8_t btn_b    = 1u << 7;
 inline const uint8_t arm_buttons = btn_lb | btn_rb;
 
 } // namespace cal
@@ -265,6 +270,8 @@ static int8_t benchTestMotor = -1;
 static uint32_t benchTestUntilMs = 0;
 static char serialCommandBuffer[32] = {};
 static size_t serialCommandLength = 0;
+static TaskHandle_t xboxTaskHandle = nullptr;
+static portMUX_TYPE pilotCommandMux = portMUX_INITIALIZER_UNLOCKED;
 
 static char ipString[16] = "0.0.0.0";
 
@@ -386,10 +393,10 @@ static void attitudeInit(const float accel[3]) {
   float pitch = atan2f(-accel[0], sqrtf(accel[1]*accel[1] + accel[2]*accel[2])) * 57.2957795f;
   float cr = cosf(roll*0.0174532925f), sr = sinf(roll*0.0174532925f);
   float cp = cosf(pitch*0.0174532925f), sp = sinf(pitch*0.0174532925f);
-  attitudeQ.w = cr*cp + sr*sp*0;
-  attitudeQ.x = sr*cp - cr*sp*0;
-  attitudeQ.y = cr*sp + sr*cp*0;
-  attitudeQ.z = cr*cp - sr*sp*0;
+  attitudeQ.w = cr*cp;
+  attitudeQ.x = sr*cp;
+  attitudeQ.y = cr*sp;
+  attitudeQ.z = -sr*sp;
   attitudeQ.normalize();
   attitudeRollDeg = roll; attitudePitchDeg = pitch; attitudeYawDeg = 0;
   attitudeInitialized = true;
@@ -517,6 +524,136 @@ struct PilotCommand {
   float roll = 0.0f, pitch = 0.0f, yaw = 0.0f;
   float throttle = 0.0f, rt = 0.0f, lt = 0.0f;
 };
+
+static XboxSeriesXControllerESP32_asukiaaa::Core xboxController;
+static PilotCommand latestPilotCommand;
+static uint32_t armGestureStartedMs = 0;
+static bool armGestureActive = false;
+static bool armGestureLatched = false;
+
+static float normalizeXboxAxis(uint16_t raw, bool invert){
+  float value = ((float)raw / (float)XboxControllerNotificationParser::maxJoy)
+              * 2.0f - 1.0f;
+  if(invert) value = -value;
+  const float deadzone = 0.06f;
+  const float magnitude = fabsf(value);
+  if(magnitude <= deadzone) return 0.0f;
+  value = copysignf((magnitude - deadzone) / (1.0f - deadzone), value);
+  return fmaxf(-1.0f, fminf(1.0f, value));
+}
+
+static void xboxControllerTask(void*){
+  xboxController.begin();
+  Serial.println("Xbox BLE scan started; hold controller pair button if needed.");
+  bool wasFresh = false;
+  for(;;){
+    xboxController.onLoop();
+
+    PilotCommand sample;
+    const uint32_t receivedAt = (uint32_t)xboxController.getReceiveNotificationAt();
+    const bool connected = xboxController.isConnected()
+        && !xboxController.isWaitingForFirstNotification();
+    const bool fresh = connected && receivedAt != 0u
+        && uint32_t(millis() - receivedAt) <= 150u;
+    if(fresh){
+      const auto& pad = xboxController.xboxNotif;
+      sample.valid = true;
+      sample.timestampMs = receivedAt;
+      sample.roll = normalizeXboxAxis(pad.joyLHori, false);
+      sample.pitch = normalizeXboxAxis(pad.joyLVert, true);
+      sample.yaw = normalizeXboxAxis(pad.joyRHori, false);
+      sample.throttle = normalizeXboxAxis(pad.joyRVert, true);
+      sample.lt = (float)pad.trigLT / XboxControllerNotificationParser::maxTrig;
+      sample.rt = (float)pad.trigRT / XboxControllerNotificationParser::maxTrig;
+      if(pad.btnLB) sample.buttons |= cal::btn_lb;
+      if(pad.btnRB) sample.buttons |= cal::btn_rb;
+      if(pad.btnDirUp) sample.buttons |= cal::btn_north;
+      if(pad.btnDirRight) sample.buttons |= cal::btn_east;
+      if(pad.btnDirDown) sample.buttons |= cal::btn_south;
+      if(pad.btnDirLeft) sample.buttons |= cal::btn_west;
+      if(pad.btnA) sample.buttons |= cal::btn_a;
+      if(pad.btnB) sample.buttons |= cal::btn_b;
+    }
+
+    portENTER_CRITICAL(&pilotCommandMux);
+    latestPilotCommand = sample;
+    portEXIT_CRITICAL(&pilotCommandMux);
+
+    if(fresh && !wasFresh){
+      Serial.printf("Xbox connected: %s, battery %u%%\n",
+                    xboxController.buildDeviceAddressStr().c_str(),
+                    xboxController.battery);
+    } else if(!fresh && wasFresh){
+      Serial.println("Xbox input lost/stale; flight control will disarm.");
+    }
+    wasFresh = fresh;
+    vTaskDelay(pdMS_TO_TICKS(2));
+  }
+}
+
+static PilotCommand readPilotCommand(){
+  PilotCommand sample;
+  portENTER_CRITICAL(&pilotCommandMux);
+  sample = latestPilotCommand;
+  portEXIT_CRITICAL(&pilotCommandMux);
+  if(sample.valid && uint32_t(millis() - sample.timestampMs) > 150u){
+    sample.valid = false;
+  }
+  return sample;
+}
+
+static void resetControlState(){
+  pidRollAngle.reset(); pidPitchAngle.reset(); pidRollRate.reset();
+  pidPitchRate.reset(); pidYawRate.reset();
+  pidAltitude.reset(); pidVertSpeed.reset();
+  altitudeRefInitialized = false;
+  ltReduceState = 0.0f;
+  boostState = 0.0f;
+}
+
+static void updateArmingFromXbox(const PilotCommand& cmd){
+  const uint8_t armChord = cal::arm_buttons | cal::btn_north;
+  const bool chordHeld = (cmd.buttons & armChord) == armChord;
+  if(!cmd.valid){
+    if(armed){
+      armed = false;
+      disarmTimeMs = millis();
+      Serial.println("DISARMED: Xbox link/input timeout.");
+    }
+    armGestureActive = false;
+    return;
+  }
+  if((cmd.buttons & (cal::btn_south | cal::btn_b)) != 0u){
+    if(armed){
+      armed = false;
+      disarmTimeMs = millis();
+      Serial.println("DISARMED by Xbox D-pad Down / B.");
+    }
+    armGestureActive = false;
+    armGestureLatched = true;
+    return;
+  }
+  if(!chordHeld) armGestureLatched = false;
+
+  const bool safeThrottle = cmd.throttle <= -0.95f
+      && cmd.rt <= 0.05f && cmd.lt <= 0.05f;
+  const bool armReady = motorOutputReady && imu.valid
+      && attitudeInitialized && calibrationLoaded && safeThrottle;
+  if(!armed && !armGestureLatched && chordHeld && armReady){
+    if(!armGestureActive){
+      armGestureActive = true;
+      armGestureStartedMs = millis();
+    } else if(uint32_t(millis() - armGestureStartedMs) >= 1000u){
+      armed = true;
+      armTimeMs = millis();
+      resetControlState();
+      armGestureLatched = true;
+      Serial.println("ARMED by Xbox hold gesture.");
+    }
+  } else if(!chordHeld || !armReady){
+    armGestureActive = false;
+  }
+}
 
 /* ============================================================================
    CALIBRATION MATH
@@ -1478,6 +1615,10 @@ static void computeControl(const PilotCommand& cmd, float dt, float out[4]){
   }
   failsafe = false;
 
+  const float triggerAlpha = fminf(1.0f, dt / 0.10f);
+  boostState += triggerAlpha * (cmd.rt - boostState);
+  ltReduceState += triggerAlpha * (cmd.lt - ltReduceState);
+
   /* Initialize vertKf from first baro reading if not yet done */
   if(baro.valid && baro.fresh && !vertKf.initialized){
     vertKf.init(0.0f, 0.0f);
@@ -1569,8 +1710,9 @@ void setup(){
   pidVertSpeed.kp = cal::pid_vert_speed[0];  pidVertSpeed.ki = cal::pid_vert_speed[1];  pidVertSpeed.kd = cal::pid_vert_speed[2];
   pidVertSpeed.integratorLimit = 0.5f; pidVertSpeed.outputLimit = 5.0f; pidVertSpeed.reset();
 
-  /* Set hover collective to mid-normal (22.5% of throttle range) */
-  hoverCollective = (cal::motor_idle_fraction + cal::motor_normal_ceiling) / 2.0f;
+  /* Model median only (about 45%); actual hover command has not been measured.
+     The selected 35% normal ceiling therefore requires RT boost for takeoff. */
+  hoverCollective = 0.44955984f;
 
   /* Keep ESC signals low during setup, then send the standard minimum pulse. */
   for(uint8_t p : kMotorPins){
@@ -1593,6 +1735,12 @@ void setup(){
   if(mpuPresent) delay(30);
   bmpPresent = initBmp();
   magConfigured = initMag();
+
+  BaseType_t xboxTaskResult = xTaskCreatePinnedToCore(
+      xboxControllerTask, "xbox_ble", 8192, nullptr, 1,
+      &xboxTaskHandle, 0);
+  Serial.printf("Xbox BLE task: %s\n",
+                xboxTaskResult == pdPASS ? "STARTED" : "FAILED");
 
   Serial.println("Flight controller initialized.");
   Serial.printf("WiFi AP: %s / %s\n", cal::wifi_ssid, cal::wifi_password);
@@ -1688,12 +1836,9 @@ void loop(){
     vertKf.updateBaro(baro.height_m, baro.height_sigma_m);
   }
 
-  /* Pilot command: disabled (no UART input in this build) */
-  PilotCommand pilotCmd;
-  pilotCmd.valid = false;
-  pilotCmd.timestampMs = millis();
-  pilotCmd.roll = 0; pilotCmd.pitch = 0; pilotCmd.yaw = 0;
-  pilotCmd.throttle = 0; pilotCmd.rt = 0; pilotCmd.lt = 0; pilotCmd.buttons = 0;
+  /* Read the latest fresh Xbox BLE command; stale input invalidates arming. */
+  PilotCommand pilotCmd = readPilotCommand();
+  updateArmingFromXbox(pilotCmd);
   pollBenchMotorTest();
 
   /* Run control */
@@ -1801,22 +1946,9 @@ void loop(){
           wsSendText(wsClient, msg.c_str());
         } else if(strcmp(typeStr, "arm") == 0){
           bool arm = doc["arm"] | false;
-          if(arm && !armed && pilotCmd.valid
-              && uint32_t(millis() - pilotCmd.timestampMs) < 250u
-              && imu.valid && attitudeInitialized && calibrationLoaded
-              && motorOutputReady){
-            armed = true;
-            armTimeMs = millis();
-            pidRollAngle.reset(); pidPitchAngle.reset(); pidRollRate.reset();
-            pidPitchRate.reset(); pidYawRate.reset();
-            pidAltitude.reset(); pidVertSpeed.reset();
-            altitudeRefInitialized = false;
-            ltReduceState = 0.0f; boostState = 0.0f;
-            Serial.println("ARMED via WiFi");
-          } else if(arm && !pilotCmd.valid){
-            armed = false;
-            Serial.println("ARM rejected: this firmware has no live pilot input.");
-          } else if(!arm && armed){
+          if(arm){
+            Serial.println("WiFi ARM rejected; use Xbox LB+RB+D-pad Up gesture.");
+          } else if(armed){
             armed = false;
             disarmTimeMs = millis();
             Serial.println("DISARMED via WiFi");

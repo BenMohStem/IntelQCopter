@@ -10,6 +10,8 @@
 
 `firmware/flight_controller/src/main.cpp` configures four ESP32-S3 LEDC channels at 50 Hz and 14-bit resolution. At boot and while disarmed, it sends 1000 µs to every ESC. A serial `MTEST 1` through `MTEST 4` command sends 1100 µs to only that motor for one second, then returns all outputs to 1000 µs. `STOP` ends the pulse early.
 
+The flight-control candidate now uses `XboxSeriesXControllerESP32_asukiaaa` 1.1.3 over BLE. Stick mapping is left X→roll, left Y→pitch, right X→yaw, right Y→vertical-speed command; RT requests boost and LT reduces the vertical-speed command. The library runs in a separate FreeRTOS task. Commands older than 150 ms become invalid and disarm. Arming requires holding D-pad Up + LB + RB for one second while the right stick is held fully down and both triggers are released. D-pad Down or B disarms. Wi-Fi cannot arm the motors.
+
 Build from the repository root:
 
 ```powershell
@@ -32,8 +34,8 @@ Use `MTEST 1`, `MTEST 2`, `MTEST 3`, or `MTEST 4`; `STOP` cancels the active pul
 
 ## Flight readiness
 
-Flight arming is blocked because this firmware has no live pilot-input parser or receiver connection. The WebSocket arm request cannot arm it, and a stale or invalid pilot command forces disarm. The carried-forward PID gains are simulation-only, and the barometer has no saved ground reference. This code is therefore for a props-off ESC signal check only; successful compilation or motor spin does not establish flight readiness.
+Xbox arming is implemented, but has not been validated with the user's controller or aircraft. The quaternion initialization error was fixed. The carried-forward PID gains and 45% hover collective are model candidates, not flight measurements; the normal 35% command cap may be below the actual hover point. The BMP280 has no captured ground-pressure reference, magnetometer heading fusion is disabled, and motor torque-to-command authority has not been measured. A successful build or motor spin does not establish flight readiness.
 
 ## Verification and limits
 
-PlatformIO successfully compiled the ESP32-S3 DevKitC-1 N8 target with Espressif32 8.0.0 / Arduino-ESP32 3.3.12. No firmware was flashed and no physical ESC or motor test was performed. GPIO wiring and 50 Hz / 1000–2000 µs were supplied by the user; signal timing, motor order, spin direction, ESC endpoints, and fail-safe behavior still require props-off hardware verification.
+PlatformIO successfully compiled the ESP32-S3 DevKitC-1 N8 target with Espressif32 8.0.0 / Arduino-ESP32 3.3.12, XboxSeriesXControllerESP32_asukiaaa 1.1.3, and NimBLE-Arduino 2.5.2. No firmware was flashed and no physical ESC, controller, or motor test was performed. GPIO wiring and 50 Hz / 1000–2000 µs were supplied by the user; signal timing, motor order, spin direction, ESC endpoints, controller pairing, stick signs, failsafe timing, and flight behavior remain unvalidated.
