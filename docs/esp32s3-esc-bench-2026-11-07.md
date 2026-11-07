@@ -16,6 +16,10 @@ While disarmed, fresh stick and trigger values are printed at 5 Hz to the 921600
 
 Disarming now bypasses the mixer, resets PID and throttle state, and initializes the stored motor slew state to the 10% armed-idle fraction. This prevents commands calculated during a disarmed interval from becoming the first motor command after arming.
 
+The BMP280 trim decoding now treats `dig_T1` and `dig_P1` as unsigned, and its pressure compensation keeps the Bosch 64-bit intermediates at 64 bits. MPU samples older than 4 ms are invalidated even when an I²C transaction fails, and the attitude estimator is reinitialized after that stale-data condition. The BMP280 still has no saved ground-pressure reference in this candidate, so a valid pressure reading does not yet provide a valid relative altitude; no pressure baseline or altitude capability is claimed here.
+
+The HTTP and WebSocket listeners are nonblocking, the WebSocket HTTP upgrade is completed before frames are parsed, and frame reads preserve partial TCP data across control-loop iterations. HTTP serving and PID gain changes are available only while disarmed and with no one-motor bench pulse active. An established WebSocket remains nonblocking while armed so the GUI's emergency-disarm message still works; PID changes are rejected and telemetry pauses until disarmed.
+
 Build from the repository root:
 
 ```powershell

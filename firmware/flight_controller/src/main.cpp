@@ -40,7 +40,12 @@
 #include <Wire.h>
 #include <ArduinoJson.h>
 #include <XboxSeriesXControllerESP32_asukiaaa.hpp>
+#include <errno.h>
+#include <fcntl.h>
+#include <strings.h>
 #include "driver/ledc.h"
+#include "mbedtls/base64.h"
+#include "mbedtls/sha1.h"
 
 /* ESP-IDF WiFi and networking (direct, avoids Arduino WiFi lib conflicts) */
 #include "esp_wifi.h"
@@ -218,8 +223,10 @@ static constexpr uint8_t kBmpChipId          = 0x58;
 static constexpr uint8_t kBmpRegCalibStart   = 0x88;
 
 /* BMP280 calibration coefficients */
-static int16_t bmpDigT1, bmpDigT2, bmpDigT3;
-static int16_t bmpDigP1, bmpDigP2, bmpDigP3, bmpDigP4, bmpDigP5;
+static uint16_t bmpDigT1;
+static int16_t bmpDigT2, bmpDigT3;
+static uint16_t bmpDigP1;
+static int16_t bmpDigP2, bmpDigP3, bmpDigP4, bmpDigP5;
 static int16_t bmpDigP6, bmpDigP7, bmpDigP8, bmpDigP9;
 static bool bmpCalLoaded = false;
 static int32_t bmpTFine = 0;
@@ -228,26 +235,32 @@ static int32_t bmpTFine = 0;
 static bool bmpCompensate(uint32_t rawTemp, uint32_t rawPress, float& tC, float& pPa){
   if(!bmpCalLoaded) return false;
   /* Temperature compensation */
-  int32_t var1 = ((((rawTemp >> 3) - ((int32_t)bmpDigT1 << 1))) * ((int32_t)bmpDigT2)) >> 11;
-  int32_t var2 = (((((rawTemp >> 4) - ((int32_t)bmpDigT1)) * ((rawTemp >> 4) - ((int32_t)bmpDigT1))) >> 12) * ((int32_t)bmpDigT3)) >> 14;
-  bmpTFine = var1 + var2;
+  const int32_t tempVar1 = ((((int32_t)(rawTemp >> 3)
+      - ((int32_t)bmpDigT1 << 1)) * (int32_t)bmpDigT2) >> 11);
+  const int32_t tempDelta = (int32_t)(rawTemp >> 4) - (int32_t)bmpDigT1;
+  const int32_t tempVar2 = (((tempDelta * tempDelta) >> 12)
+      * (int32_t)bmpDigT3) >> 14;
+  bmpTFine = tempVar1 + tempVar2;
   tC = (bmpTFine * 5 + 128) >> 8;
   tC /= 100.0f;
   /* Pressure compensation */
-  var1 = bmpTFine - 128000;
-  var2 = var1 * var1 * (int64_t)bmpDigP6;
-  var2 = var2 + ((var1 * (int64_t)bmpDigP5) << 17);
-  var2 = var2 + (((int64_t)bmpDigP4) << 35);
-  var1 = ((var1 * var1 * (int64_t)bmpDigP3) >> 8) + ((var1 * (int64_t)bmpDigP2) << 12);
-  var1 = (((((int64_t)1) << 47) + var1)) * ((int64_t)bmpDigP1) >> 33;
-  if(var1 == 0) return false;
-  int64_t p = 1048576 - rawPress;
-  p = (((p << 31) - var2) * 3125) / var1;
-  var1 = ((int64_t)bmpDigP9 * (p >> 13) * (p >> 13)) >> 25;
-  var2 = ((int64_t)bmpDigP8 * p) >> 19;
-  p = ((p + var1 + var2) >> 8) + (((int64_t)bmpDigP7) << 4);
+  int64_t pressureVar1 = (int64_t)bmpTFine - 128000;
+  int64_t pressureVar2 = pressureVar1 * pressureVar1 * (int64_t)bmpDigP6;
+  pressureVar2 += (pressureVar1 * (int64_t)bmpDigP5) * 131072LL;
+  pressureVar2 += (int64_t)bmpDigP4 * 34359738368LL;
+  pressureVar1 = ((pressureVar1 * pressureVar1 * (int64_t)bmpDigP3) >> 8)
+      + (pressureVar1 * (int64_t)bmpDigP2) * 4096LL;
+  pressureVar1 = (((((int64_t)1) << 47) + pressureVar1)
+      * (int64_t)bmpDigP1) >> 33;
+  if(pressureVar1 == 0) return false;
+  int64_t p = (int64_t)1048576 - (int64_t)rawPress;
+  p = (((p << 31) - pressureVar2) * 3125) / pressureVar1;
+  pressureVar1 = ((int64_t)bmpDigP9 * (p >> 13) * (p >> 13)) >> 25;
+  pressureVar2 = ((int64_t)bmpDigP8 * p) >> 19;
+  p = ((p + pressureVar1 + pressureVar2) >> 8)
+      + (int64_t)bmpDigP7 * 16LL;
   pPa = p / 256.0f;
-  return true;
+  return isfinite(tC) && isfinite(pPa) && pPa > 0.0f;
 }
 
 static constexpr uint8_t kMotorPins[4] = {12, 11, 14, 13};
@@ -257,6 +270,7 @@ static constexpr uint16_t kEscMinPulseUs = 1000;
 static constexpr uint16_t kEscMaxPulseUs = 2000;
 static constexpr uint16_t kEscBenchPulseUs = 1100;
 static constexpr uint32_t kEscBenchPulseDurationMs = 1000;
+static constexpr uint32_t kMpuMaxSampleAgeUs = 4000;
 
 /* ============================================================================
    GLOBAL STATE
@@ -265,6 +279,11 @@ static constexpr uint32_t kEscBenchPulseDurationMs = 1000;
 static int httpSock = -1;
 static int wsSock   = -1;
 static int wsClient = -1;
+static bool wsHandshakeComplete = false;
+static char wsHandshakeBuffer[512] = {};
+static size_t wsHandshakeLength = 0;
+static uint8_t wsRxBuffer[1024] = {};
+static size_t wsRxLength = 0;
 static bool motorOutputReady = false;
 static bool motorOutputFaulted = false;
 static int8_t benchTestMotor = -1;
@@ -273,6 +292,14 @@ static char serialCommandBuffer[32] = {};
 static size_t serialCommandLength = 0;
 static TaskHandle_t xboxTaskHandle = nullptr;
 static portMUX_TYPE pilotCommandMux = portMUX_INITIALIZER_UNLOCKED;
+
+static void clearWebSocketClient(){
+  if(wsClient >= 0) close(wsClient);
+  wsClient = -1;
+  wsHandshakeComplete = false;
+  wsHandshakeLength = 0;
+  wsRxLength = 0;
+}
 
 static char ipString[16] = "0.0.0.0";
 
@@ -309,6 +336,11 @@ struct BaroSample {
 ImuSample imu;
 MagSample mag;
 BaroSample baro;
+
+static bool imuSampleIsRecent(){
+  return imu.valid && imu.timestamp_us != 0u
+      && uint32_t(micros() - imu.timestamp_us) <= kMpuMaxSampleAgeUs;
+}
 
 /* Control state */
 static bool armed = false, failsafe = false;
@@ -648,7 +680,8 @@ static void updateArmingFromXbox(const PilotCommand& cmd){
 
   const bool safeThrottle = cmd.throttle <= -0.95f
       && cmd.rt <= 0.05f && cmd.lt <= 0.05f;
-  const bool armReady = motorOutputReady && !motorOutputFaulted && imu.valid
+  const bool armReady = motorOutputReady && !motorOutputFaulted
+      && imuSampleIsRecent()
       && attitudeInitialized && calibrationLoaded && safeThrottle;
   if(!armed && !armGestureLatched && chordHeld && armReady){
     if(!armGestureActive){
@@ -707,6 +740,16 @@ static void applyMagCal(const float rawUt[3], float out[3]){
    WI-FI PID TUNER (WebSocket server)
    ============================================================================ */
 
+static bool setSocketNonBlocking(int sock){
+  const int flags = fcntl(sock, F_GETFL, 0);
+  return flags >= 0 && fcntl(sock, F_SETFL, flags | O_NONBLOCK) == 0;
+}
+
+static bool setSocketBlocking(int sock){
+  const int flags = fcntl(sock, F_GETFL, 0);
+  return flags >= 0 && fcntl(sock, F_SETFL, flags & ~O_NONBLOCK) == 0;
+}
+
 static int createServerSocket(uint16_t port){
   int sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
   if(sock < 0) return -1;
@@ -719,6 +762,7 @@ static int createServerSocket(uint16_t port){
   addr.sin_port = htons(port);
   if(bind(sock, (struct sockaddr*)&addr, sizeof(addr)) < 0){ close(sock); return -1; }
   if(listen(sock, 5) < 0){ close(sock); return -1; }
+  if(!setSocketNonBlocking(sock)){ close(sock); return -1; }
   return sock;
 }
 
@@ -755,31 +799,145 @@ static bool wsSendText(int sock, const char* payload){
   return true;
 }
 
-static int wsRecvText(int sock, char* buf, size_t bufsz){
-  struct timeval tv; tv.tv_sec=0; tv.tv_usec=1000;
-  setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
-  uint8_t header[2];
-  if(recv(sock, header, 2, MSG_WAITALL) != 2) return -1;
-  uint8_t opcode = header[0] & 0x0F;
-  if(opcode != 0x01 && opcode != 0x08) return -1;
-  if(opcode == 0x08) return -2;
-  uint8_t lenByte = header[1];
-  size_t payloadLen = lenByte & 0x7F;
-  bool masked = (lenByte & 0x80) != 0;
-  if(payloadLen == 126){
-    uint8_t ext[2];
-    if(recv(sock, ext, 2, MSG_WAITALL) != 2) return -1;
-    payloadLen = ((size_t)ext[0] << 8) | ext[1];
-  } else if(payloadLen == 127){ return -1; }
-  uint8_t mask[4] = {0,0,0,0};
-  if(masked){ if(recv(sock, mask, 4, MSG_WAITALL) != 4) return -1; }
-  if(payloadLen >= bufsz) payloadLen = bufsz - 1;
-  if(payloadLen > 0){
-    if(recv(sock, (uint8_t*)buf, payloadLen, MSG_WAITALL) != (int)payloadLen) return -1;
-    if(masked){ for(size_t i=0; i<payloadLen; i++) buf[i] ^= mask[i%4]; }
+static int wsPerformHandshake(int sock){
+  if(wsHandshakeLength >= sizeof(wsHandshakeBuffer) - 1u) return -1;
+  const int received = recv(sock, wsHandshakeBuffer + wsHandshakeLength,
+      sizeof(wsHandshakeBuffer) - wsHandshakeLength - 1u, 0);
+  if(received == 0) return -1;
+  if(received < 0){
+    if(errno == EAGAIN || errno == EWOULDBLOCK) return 0;
+    return -1;
   }
-  buf[payloadLen] = 0;
-  return (int)payloadLen;
+  wsHandshakeLength += (size_t)received;
+  wsHandshakeBuffer[wsHandshakeLength] = '\0';
+  if(strstr(wsHandshakeBuffer, "\r\n\r\n") == nullptr) return 0;
+
+  char clientKey[128] = {};
+  const char* line = wsHandshakeBuffer;
+  while(*line != '\0'){
+    const char* lineEnd = strstr(line, "\r\n");
+    if(lineEnd == nullptr) break;
+    const size_t lineLength = (size_t)(lineEnd - line);
+    static constexpr char keyHeader[] = "Sec-WebSocket-Key:";
+    if(lineLength >= sizeof(keyHeader) - 1u
+        && strncasecmp(line, keyHeader, sizeof(keyHeader) - 1u) == 0){
+      const char* value = line + sizeof(keyHeader) - 1u;
+      const char* valueEnd = lineEnd;
+      while(value < valueEnd && (*value == ' ' || *value == '\t')) ++value;
+      while(valueEnd > value && (valueEnd[-1] == ' ' || valueEnd[-1] == '\t')) --valueEnd;
+      const size_t keyLength = (size_t)(valueEnd - value);
+      if(keyLength == 0u || keyLength >= sizeof(clientKey)) return -1;
+      memcpy(clientKey, value, keyLength);
+      break;
+    }
+    line = lineEnd + 2;
+  }
+  if(clientKey[0] == '\0') return -1;
+
+  static constexpr char websocketGuid[] =
+      "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
+  char hashInput[sizeof(clientKey) + sizeof(websocketGuid)] = {};
+  const int hashInputLength = snprintf(hashInput, sizeof(hashInput), "%s%s",
+                                       clientKey, websocketGuid);
+  if(hashInputLength <= 0 || (size_t)hashInputLength >= sizeof(hashInput)) return -1;
+  unsigned char digest[20] = {};
+  if(mbedtls_sha1((const unsigned char*)hashInput,
+                  (size_t)hashInputLength, digest) != 0){
+    return -1;
+  }
+  unsigned char acceptKey[32] = {};
+  size_t acceptLength = 0;
+  if(mbedtls_base64_encode(acceptKey, sizeof(acceptKey), &acceptLength,
+                           digest, sizeof(digest)) != 0
+      || acceptLength >= sizeof(acceptKey)){
+    return -1;
+  }
+  acceptKey[acceptLength] = '\0';
+
+  char response[256] = {};
+  const int responseLength = snprintf(response, sizeof(response),
+      "HTTP/1.1 101 Switching Protocols\r\n"
+      "Upgrade: websocket\r\n"
+      "Connection: Upgrade\r\n"
+      "Sec-WebSocket-Accept: %s\r\n\r\n", acceptKey);
+  if(responseLength <= 0 || (size_t)responseLength >= sizeof(response)
+      || !sendAll(sock, (const uint8_t*)response, (size_t)responseLength)){
+    return -1;
+  }
+  return 1;
+}
+
+static void consumeWsFrame(size_t frameLength){
+  wsRxLength -= frameLength;
+  if(wsRxLength > 0u){
+    memmove(wsRxBuffer, wsRxBuffer + frameLength, wsRxLength);
+  }
+}
+
+static int wsExtractTextFrame(int sock, char* buf, size_t bufsz){
+  if(wsRxLength < 2u) return -3;
+  const uint8_t first = wsRxBuffer[0];
+  const uint8_t second = wsRxBuffer[1];
+  const uint8_t opcode = first & 0x0Fu;
+  if((first & 0x80u) == 0u || (first & 0x70u) != 0u
+      || (second & 0x80u) == 0u){
+    return -1;
+  }
+
+  size_t payloadLength = second & 0x7Fu;
+  size_t headerLength = 2u;
+  if(payloadLength == 126u){
+    if(wsRxLength < 4u) return -3;
+    payloadLength = ((size_t)wsRxBuffer[2] << 8) | wsRxBuffer[3];
+    headerLength = 4u;
+  } else if(payloadLength == 127u){
+    return -1;
+  }
+  if(payloadLength >= bufsz || payloadLength > 512u
+      || payloadLength + headerLength + 4u > sizeof(wsRxBuffer)){
+    return -1;
+  }
+  const size_t frameLength = headerLength + 4u + payloadLength;
+  if(wsRxLength < frameLength) return -3;
+  if(opcode != 0x01u && opcode != 0x08u && opcode != 0x09u){
+    return -1;
+  }
+  if((opcode == 0x08u || opcode == 0x09u) && payloadLength > 125u){
+    return -1;
+  }
+
+  const uint8_t* mask = wsRxBuffer + headerLength;
+  uint8_t payload[512] = {};
+  for(size_t i = 0; i < payloadLength; ++i){
+    payload[i] = wsRxBuffer[headerLength + 4u + i] ^ mask[i & 0x03u];
+  }
+  consumeWsFrame(frameLength);
+  if(opcode == 0x08u) return -2;
+  if(opcode == 0x09u){
+    const uint8_t pongHeader[2] = {0x8Au, (uint8_t)payloadLength};
+    if(!sendAll(sock, pongHeader, sizeof(pongHeader))
+        || !sendAll(sock, payload, payloadLength)) return -1;
+    return 0;
+  }
+  memcpy(buf, payload, payloadLength);
+  buf[payloadLength] = '\0';
+  return (int)payloadLength;
+}
+
+static int wsRecvText(int sock, char* buf, size_t bufsz){
+  int parsed = wsExtractTextFrame(sock, buf, bufsz);
+  if(parsed != -3) return parsed;
+  if(wsRxLength >= sizeof(wsRxBuffer)) return -1;
+  const int received = recv(sock, wsRxBuffer + wsRxLength,
+      sizeof(wsRxBuffer) - wsRxLength, 0);
+  if(received == 0) return -2;
+  if(received < 0){
+    if(errno == EAGAIN || errno == EWOULDBLOCK) return 0;
+    return -1;
+  }
+  wsRxLength += (size_t)received;
+  parsed = wsExtractTextFrame(sock, buf, bufsz);
+  return parsed == -3 ? 0 : parsed;
 }
 
 extern const char WEB_GUI_HTML[];
@@ -789,13 +947,18 @@ static void handleHttpClient(int clientSock){
   int len = recv(clientSock, req, sizeof(req)-1, 0);
   if(len <= 0){ close(clientSock); return; }
   req[len] = 0;
-  const char* response =
-    "HTTP/1.1 200 OK\r\n"
-    "Content-Type: text/html\r\n"
-    "Connection: close\r\n"
-    "\r\n";
-  send(clientSock, response, strlen(response), 0);
-  send(clientSock, WEB_GUI_HTML, strlen(WEB_GUI_HTML), 0);
+  const size_t htmlLength = strlen(WEB_GUI_HTML);
+  char response[160];
+  const int responseLength = snprintf(response, sizeof(response),
+      "HTTP/1.1 200 OK\r\n"
+      "Content-Type: text/html; charset=utf-8\r\n"
+      "Content-Length: %lu\r\n"
+      "Connection: close\r\n\r\n",
+      (unsigned long)htmlLength);
+  if(responseLength > 0 && (size_t)responseLength < sizeof(response)){
+    sendAll(clientSock, (const uint8_t*)response, (size_t)responseLength);
+    sendAll(clientSock, (const uint8_t*)WEB_GUI_HTML, htmlLength);
+  }
   close(clientSock);
 }
 
@@ -930,6 +1093,11 @@ static bool initMpu(){
 
 static bool readMpuFifo(ImuSample& s){
   s.fresh = false;
+  const uint32_t nowUs = micros();
+  if(s.timestamp_us == 0u
+      || uint32_t(nowUs - s.timestamp_us) > kMpuMaxSampleAgeUs){
+    s.valid = false;
+  }
   Wire.setClock(400000);
   if(!mpuPresent) return false;
   uint8_t fc[2] = {};
@@ -939,7 +1107,6 @@ static bool readMpuFifo(ImuSample& s){
   uint16_t fcnt = (uint16_t(fc[0]) << 8) | fc[1];
   uint16_t completeRecords = fcnt / 14u;
   s.fifo_count = completeRecords;
-  uint32_t nowUs = micros();
   if(fcnt >= 1024u){
     s.overflows++;
     i2cWriteReg(mpuAddress, kMpuRegUserCtrl, kMpuUserCtrlFifoEn | kMpuUserCtrlFifoReset);
@@ -947,7 +1114,8 @@ static bool readMpuFifo(ImuSample& s){
     return false;
   }
   if(completeRecords == 0u){
-    if(s.timestamp_us == 0u || uint32_t(nowUs - s.timestamp_us) > 4000u)
+    if(s.timestamp_us == 0u
+        || uint32_t(nowUs - s.timestamp_us) > kMpuMaxSampleAgeUs)
       s.valid = false;
     return s.valid;
   }
@@ -962,8 +1130,9 @@ static bool readMpuFifo(ImuSample& s){
   s.temp_raw = (int16_t)((uint16_t(d[6]) << 8) | d[7]);
   uint32_t backlogAgeUs = (completeRecords - 1u) * 2000u;
   s.timestamp_us = nowUs - backlogAgeUs;
-  s.valid = true; s.fresh = true;
-  return true;
+  s.valid = uint32_t(micros() - s.timestamp_us) <= kMpuMaxSampleAgeUs;
+  s.fresh = s.valid;
+  return s.fresh;
 }
 
 static bool initMag(){
@@ -1639,7 +1808,7 @@ static void computeControl(const PilotCommand& cmd, float dt, float out[4]){
     return;
   }
   const bool imuOk = calibrationLoaded && calAccelValid && calGyroValid
-      && imu.valid && attitudeInitialized;
+      && imuSampleIsRecent() && attitudeInitialized;
   const bool pilotOk = cmd.valid
       && uint32_t(millis() - cmd.timestampMs) < 250u;
   if(!imuOk || !pilotOk || !motorOutputReady || motorOutputFaulted
@@ -1806,7 +1975,8 @@ void loop(){
   nextDeadline += 2000;
 
   /* Read sensors */
-  bool imuOk = readMpuFifo(imu);
+  bool imuOk = readMpuFifo(imu) && imuSampleIsRecent();
+  if(!imuSampleIsRecent()) attitudeInitialized = false;
   bool magOk = readMag(mag);
   bool baroOk = readBmp(baro);
 
@@ -1907,32 +2077,53 @@ void loop(){
     motors.add(motorOut[2]); motors.add(motorOut[3]);
     String msg;
     serializeJson(doc, msg);
-    if(wsClient >= 0) wsSendText(wsClient, msg.c_str());
+    if(!armed && benchTestMotor < 0 && wsClient >= 0 && wsHandshakeComplete){
+      if(!wsSendText(wsClient, msg.c_str())) clearWebSocketClient();
+    }
   }
 
-  /* Handle HTTP connections */
-  if(httpSock >= 0){
-    struct timeval tv; tv.tv_sec = 0; tv.tv_usec = 0;
-    setsockopt(httpSock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+  /* HTTP clients can block, so accept and serve them only when idle. */
+  if(!armed && benchTestMotor < 0 && httpSock >= 0){
     int clientSock = accept(httpSock, NULL, NULL);
-    if(clientSock >= 0){ handleHttpClient(clientSock); }
-  }
-
-  /* Handle WebSocket connections */
-  if(wsSock >= 0){
-    struct timeval tv; tv.tv_sec = 0; tv.tv_usec = 0;
-    setsockopt(wsSock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
-    if(wsClient < 0){
-      int newClient = accept(wsSock, NULL, NULL);
-      if(newClient >= 0){
-        setsockopt(newClient, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
-        wsClient = newClient;
+    if(clientSock >= 0){
+      if(setSocketBlocking(clientSock)){
+        struct timeval clientTimeout = {0, 100000};
+        setsockopt(clientSock, SOL_SOCKET, SO_RCVTIMEO,
+                   &clientTimeout, sizeof(clientTimeout));
+        setsockopt(clientSock, SOL_SOCKET, SO_SNDTIMEO,
+                   &clientTimeout, sizeof(clientTimeout));
+        handleHttpClient(clientSock);
+      } else {
+        close(clientSock);
       }
     }
   }
 
-  /* Handle WebSocket client data */
-  if(wsClient >= 0){
+  if(!armed && benchTestMotor < 0 && wsSock >= 0){
+    if(wsClient < 0){
+      int newClient = accept(wsSock, NULL, NULL);
+      if(newClient >= 0 && setSocketNonBlocking(newClient)){
+        wsClient = newClient;
+        wsHandshakeComplete = false;
+        wsHandshakeLength = 0;
+        wsRxLength = 0;
+      } else if(newClient >= 0){
+        close(newClient);
+      }
+    }
+  }
+
+  if(benchTestMotor < 0 && wsClient >= 0 && !wsHandshakeComplete){
+    const int handshakeResult = wsPerformHandshake(wsClient);
+    if(handshakeResult > 0){
+      wsHandshakeComplete = true;
+    } else if(handshakeResult < 0){
+      clearWebSocketClient();
+    }
+  }
+
+  /* Established WebSocket reads are nonblocking, preserving emergency disarm. */
+  if(benchTestMotor < 0 && wsClient >= 0 && wsHandshakeComplete){
     char buf[512];
     int len = wsRecvText(wsClient, buf, sizeof(buf));
     if(len > 0){
@@ -1948,20 +2139,22 @@ void loop(){
           float kd = doc["kd"] | 0.0f;
           int idx = pidNameToAxis(axis);
           bool applied = false;
-          if(idx == 0){ pidRollAngle.kp=kp; pidRollAngle.ki=ki; pidRollAngle.kd=kd; pidRollAngle.reset(); applied=true; }
-          else if(idx == 1){ pidPitchAngle.kp=kp; pidPitchAngle.ki=ki; pidPitchAngle.kd=kd; pidPitchAngle.reset(); applied=true; }
-          else if(idx == 2){ pidRollRate.kp=kp; pidRollRate.ki=ki; pidRollRate.kd=kd; pidRollRate.reset(); applied=true; }
-          else if(idx == 3){ pidPitchRate.kp=kp; pidPitchRate.ki=ki; pidPitchRate.kd=kd; pidPitchRate.reset(); applied=true; }
-          else if(idx == 4){ pidYawRate.kp=kp; pidYawRate.ki=ki; pidYawRate.kd=kd; pidYawRate.reset(); applied=true; }
-          else if(idx == 5){ pidAltitude.kp=kp; pidAltitude.ki=ki; pidAltitude.kd=kd; pidAltitude.reset(); applied=true; }
-          else if(idx == 6){ pidVertSpeed.kp=kp; pidVertSpeed.ki=ki; pidVertSpeed.kd=kd; pidVertSpeed.reset(); applied=true; }
+          const bool gainsValid = !armed && isfinite(kp) && isfinite(ki)
+              && isfinite(kd);
+          if(gainsValid && idx == 0){ pidRollAngle.kp=kp; pidRollAngle.ki=ki; pidRollAngle.kd=kd; pidRollAngle.reset(); applied=true; }
+          else if(gainsValid && idx == 1){ pidPitchAngle.kp=kp; pidPitchAngle.ki=ki; pidPitchAngle.kd=kd; pidPitchAngle.reset(); applied=true; }
+          else if(gainsValid && idx == 2){ pidRollRate.kp=kp; pidRollRate.ki=ki; pidRollRate.kd=kd; pidRollRate.reset(); applied=true; }
+          else if(gainsValid && idx == 3){ pidPitchRate.kp=kp; pidPitchRate.ki=ki; pidPitchRate.kd=kd; pidPitchRate.reset(); applied=true; }
+          else if(gainsValid && idx == 4){ pidYawRate.kp=kp; pidYawRate.ki=ki; pidYawRate.kd=kd; pidYawRate.reset(); applied=true; }
+          else if(gainsValid && idx == 5){ pidAltitude.kp=kp; pidAltitude.ki=ki; pidAltitude.kd=kd; pidAltitude.reset(); applied=true; }
+          else if(gainsValid && idx == 6){ pidVertSpeed.kp=kp; pidVertSpeed.ki=ki; pidVertSpeed.kd=kd; pidVertSpeed.reset(); applied=true; }
           StaticJsonDocument<128> ack;
           ack["type"] = "pid_ack";
           ack["axis"] = axis;
           ack["applied"] = applied;
           String ackMsg;
           serializeJson(ack, ackMsg);
-          wsSendText(wsClient, ackMsg.c_str());
+          if(!wsSendText(wsClient, ackMsg.c_str())) clearWebSocketClient();
         } else if(strcmp(typeStr, "pid_get") == 0){
           StaticJsonDocument<512> docOut;
           docOut["type"] = "pid_values";
@@ -1982,7 +2175,7 @@ void loop(){
           a6["kp"]=pidVertSpeed.kp; a6["ki"]=pidVertSpeed.ki; a6["kd"]=pidVertSpeed.kd;
           String msg;
           serializeJson(docOut, msg);
-          wsSendText(wsClient, msg.c_str());
+          if(!wsSendText(wsClient, msg.c_str())) clearWebSocketClient();
         } else if(strcmp(typeStr, "arm") == 0){
           bool arm = doc["arm"] | false;
           if(arm){
@@ -1997,13 +2190,11 @@ void loop(){
           ack["armed"] = armed;
           String ackMsg;
           serializeJson(ack, ackMsg);
-          wsSendText(wsClient, ackMsg.c_str());
+          if(!wsSendText(wsClient, ackMsg.c_str())) clearWebSocketClient();
         }
       }
-    } else if(len == -2){
-      close(wsClient); wsClient = -1;
     } else if(len < 0){
-      close(wsClient); wsClient = -1;
+      clearWebSocketClient();
     }
   }
 
